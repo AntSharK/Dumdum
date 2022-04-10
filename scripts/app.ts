@@ -1,22 +1,29 @@
-﻿function TSButton() {
-    let name: string = "Fred";
-    document.getElementById("ts-example").innerHTML = greeter(user);
-}
+﻿class SimpleGame {
+    game: Phaser.Game;
+    constructor() {
+        this.game = new Phaser.Game(
+            {
+                width: 800,
+                height: 600,
+                type: Phaser.AUTO,
 
-class Student {
-    fullName: string;
-    constructor(public firstName: string, public middleInitial: string, public lastName: string) {
-        this.fullName = firstName + " " + middleInitial + " " + lastName;
+                scene: [Main]
+            });
     }
 }
 
-interface Person {
-    firstName: string;
-    lastName: string;
+class Main extends Phaser.Scene {
+    preload() {
+        this.load.image('logo', 'content/sky.png');
+    }
+
+    create() {
+        var logo = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'logo');
+    }
 }
 
-function greeter(person: Person) {
-    return "Hello, " + person.firstName + " " + person.lastName;
-}
+window.onload = () => {
 
-let user = new Student("Fred", "M.", "Smith");
+    var game = new SimpleGame();
+
+};
