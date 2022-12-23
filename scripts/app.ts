@@ -14,7 +14,8 @@
                     }
                 },
 
-                scene: [Main],
+                scene: [Main,
+                    TestScene],
 
                 scale: {
                     autoCenter: Phaser.Scale.Center.CENTER_BOTH
@@ -30,6 +31,10 @@ class Main extends Phaser.Scene {
     balls: Phaser.Physics.Arcade.Group;
 
     playerBalls: PlayerBall[] = [];
+
+    constructor() {
+        super({ key: 'Main', active: true });
+    }
 
     preload() {
         this.load.image('dummyimage', 'content/dummyimage.png');
@@ -94,18 +99,25 @@ class Main extends Phaser.Scene {
             var ball2 = body2 as PlayerBall;
             if (ball1 != null && ball2 != null) {
                 ball1.Hp = ball1.Hp - 10;
+                ball2.Hp = ball2.Hp - 10;
+
+                /* Changing ball size based on HP
                 ball1.body.position.x += 5;
                 ball1.body.position.y += 5;
                 ball1.Size = ball1.Hp;
 
-                ball2.Hp = ball2.Hp - 10;
                 ball2.Size = ball2.Hp;
                 ball2.body.position.x += 5;
                 ball2.body.position.y += 5;
+                */
 
                 ball1.setCircle(ball1.Size);
                 ball2.setCircle(ball2.Size);
                 console.log(ball1.Hp + " " + ball2.Hp);
+
+                if (ball1.Hp <= 50 || ball2.Hp <= 50) {
+                    this.scene.switch("TestScene");
+                }
             }
         });
     }
@@ -115,18 +127,16 @@ class Main extends Phaser.Scene {
 
         // Draw the arena
         this.graphics.lineStyle(50, 0xFF00FF);
-        this.graphics.fillStyle(0xFF00FF);
+        this.graphics.fillStyle(0xFFFFFF);
         this.graphics.fillCircle(400, 400, 300);
 
-        var drawBall = (ball) => {
-            var pb = ball as PlayerBall;
-
-            this.graphics.fillStyle(pb.Color);
+        for (let pb of this.playerBalls) {
+            this.graphics.fillStyle(pb.Color, pb.Hp / 100);
             this.graphics.fillCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size);
             pb.Text.x = pb.body.position.x;
             pb.Text.y = pb.body.position.y + pb.Size;
+            pb.Draw23(this.graphics);
         };
-        this.balls.children.each(drawBall);
     }
 }
 
@@ -135,6 +145,27 @@ class PlayerBall extends Phaser.Physics.Arcade.Sprite {
     Color: number;
     Hp: integer;
     Text: Phaser.GameObjects.Text;
+
+    Draw23(graphics: Phaser.GameObjects.Graphics): void {
+        console.log("TT");
+    }
+}
+
+class TestScene extends Phaser.Scene {
+    graphics: Phaser.GameObjects.Graphics;
+    constructor() {
+        super({ key: 'TestScene', active: false, visible: false });
+    }
+    create() {
+        this.graphics = this.add.graphics({ x: 0, y: 0 });
+        this.add.text(0, 0, "TEST SCREEN TRANSITION", { color: 'White' });
+    }
+
+    update() {
+        this.graphics.lineStyle(50, 0xFF00FF);
+        this.graphics.fillStyle(0xFF0000);
+        this.graphics.fillCircle(400, 400, 150);
+    }
 }
 
 window.onload = () => {
