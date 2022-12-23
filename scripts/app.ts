@@ -116,6 +116,7 @@ class Main extends Phaser.Scene {
                 console.log(ball1.Hp + " " + ball2.Hp);
 
                 if (ball1.Hp <= 50 || ball2.Hp <= 50) {
+                    this.scene.restart();
                     this.scene.switch("TestScene");
                 }
             }
@@ -135,7 +136,7 @@ class Main extends Phaser.Scene {
             this.graphics.fillCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size);
             pb.Text.x = pb.body.position.x;
             pb.Text.y = pb.body.position.y + pb.Size;
-            pb.Draw23(this.graphics);
+            //pb.Draw(this.graphics);
         };
     }
 }
@@ -146,25 +147,36 @@ class PlayerBall extends Phaser.Physics.Arcade.Sprite {
     Hp: integer;
     Text: Phaser.GameObjects.Text;
 
-    Draw23(graphics: Phaser.GameObjects.Graphics): void {
-        console.log("TT");
+    Draw(graphics: Phaser.GameObjects.Graphics): void {
+        // TODO: This doesn't work, so graphics is handled by the game loop
     }
 }
 
 class TestScene extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
+    ticks: number;
+
     constructor() {
         super({ key: 'TestScene', active: false, visible: false });
     }
     create() {
+        this.ticks = 0;
         this.graphics = this.add.graphics({ x: 0, y: 0 });
         this.add.text(0, 0, "TEST SCREEN TRANSITION", { color: 'White' });
+
+        this.time.addEvent({ delay: 2000, callback: this.sceneTransition, callbackScope: this })
     }
 
     update() {
         this.graphics.lineStyle(50, 0xFF00FF);
         this.graphics.fillStyle(0xFF0000);
-        this.graphics.fillCircle(400, 400, 150);
+        this.graphics.fillCircle(400 + this.ticks % 400, 400 + this.ticks % 400, 150);
+        this.ticks++;
+    }
+
+    sceneTransition() {
+        this.scene.restart();
+        this.scene.switch("Main");
     }
 }
 
