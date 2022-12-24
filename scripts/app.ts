@@ -81,11 +81,10 @@ class Main extends Phaser.Scene {
                 ball2.Size = ball2.Hp;
                 ball2.body.position.x += 5;
                 ball2.body.position.y += 5;
-                */
 
                 ball1.setCircle(ball1.Size);
                 ball2.setCircle(ball2.Size);
-                console.log(ball1.Hp + " " + ball2.Hp);
+                */
 
                 if (ball1.Hp <= 0 || ball2.Hp <= 0) {
                     this.scene.restart();
@@ -144,6 +143,16 @@ function PassInBallData() {
     serverData.Damage = 1;
     serverData.Armor = 0;
     BallData[0] = serverData;
+
+    serverData = new ServerData;
+    serverData.Color = 11079754;
+    serverData.Hp = 100;
+    serverData.Name = "SEPM";
+    serverData.SizeMultiplier = 2.0;
+    serverData.VelocityMultiplier = 1.0;
+    serverData.Damage = 1;
+    serverData.Armor = 0;
+    BallData[1] = serverData;
 }
 
 class PlayerBall extends Phaser.Physics.Arcade.Sprite {
@@ -167,28 +176,51 @@ class ServerData {
 function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.Scene): PlayerBall[] {
     var retVal: PlayerBall[] = [];
 
-    // Set the scale multiplier for initial drawing - we assume a coordinate of 1000, and scale according to current canvas size
+    // Set the scale multiplier for initial drawing - we assume a scale of 1000, and scale according to current canvas size
     // Autoscaling will take care of the rest
-    for (let data of BallData) {
-        var newBall = ballGroup.create(0, 0, ballGroup.defaultKey);
+    const ASSUMEDSCALE = 1000;
+    const PLACERADIUS = 300;
+    const BALLSIZE = 100;
 
-        newBall.setVelocityX(125);
-        newBall.setVelocityY(125);
-        newBall.Color = data.Color;
-        newBall.Hp = data.Hp;
-        newBall.MaxHp = data.Hp;
-        newBall.Size = data.Hp;
-        newBall.Text = scene.add.text(newBall.body.position.x, newBall.body.position.y, data.Name, { color: 'Black' });
-        retVal[0] = newBall;
+    // Total size of all balls should be about 40% of the area - Determined by AREATAKEN
+    const AREATAKEN = 0.2;
+
+    var boundingDimension = Math.min(scene.scale.canvas.width, scene.scale.canvas.height);
+    var scaleMultiplier = boundingDimension / ASSUMEDSCALE;
+
+    var totalBallSize = 0;
+    for (let data of BallData) {
+        totalBallSize += data.SizeMultiplier * data.SizeMultiplier;
     }
 
-    // Place balls in a circle
-    Phaser.Actions.PlaceOnCircle(retVal, new Phaser.Geom.Circle(scene.scale.canvas.width / 2, scene.scale.canvas.height / 2, 400));
+    var ballSizeBase = boundingDimension / Math.sqrt(totalBallSize) * AREATAKEN;
 
+    for (let data of BallData) {
+        var newBall = ballGroup.create(0, 0, ballGroup.defaultKey) as PlayerBall;
+        newBall.Color = data.Color;
+
+        // TODO Scale the velocity
+        newBall.setVelocityX(125);
+        newBall.setVelocityY(125);
+
+        newBall.Hp = data.Hp;
+        newBall.MaxHp = data.Hp;
+        newBall.Size = ballSizeBase * data.SizeMultiplier;
+
+        newBall.Text = scene.add.text(newBall.body.position.x, newBall.body.position.y, data.Name, { color: 'Black', font: 'Comic-Sans' });
+        newBall.Text.scale = newBall.Size * 0.022;
+        retVal.push(newBall);
+    }
+
+    // Set ball collision and offset
     ballGroup.children.each(function (b) {
         var pb = b as PlayerBall;
         (<Phaser.Physics.Arcade.Sprite>b).setCircle(pb.Size);
+        pb.body.setOffset(-pb.Size, -pb.Size);
     });
+
+    // Place balls in a circle
+    Phaser.Actions.PlaceOnCircle(retVal, new Phaser.Geom.Circle(scene.scale.canvas.width / 2, scene.scale.canvas.height / 2, PLACERADIUS * scaleMultiplier));
 
     return retVal;
 }
@@ -197,10 +229,10 @@ function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBal
     graphics.lineStyle(10, 0x000000);                        
     for (let pb of playerBalls) {
         graphics.strokeCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size)
-        graphics.fillStyle(pb.Color, pb.Hp / 100);
+        graphics.fillStyle(pb.Color, pb.Hp / pb.MaxHp);
         graphics.fillCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size);
-        pb.Text.x = pb.body.position.x;
-        pb.Text.y = pb.body.position.y + pb.Size;
+        pb.Text.x = pb.body.position.x + pb.Size * 0.25;
+        pb.Text.y = pb.body.position.y + pb.Size * 0.95;
     };
 }
 
