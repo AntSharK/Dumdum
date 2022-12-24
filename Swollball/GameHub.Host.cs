@@ -51,7 +51,14 @@ namespace Swollball
             else
             {
                 room.ConnectionId = Context.ConnectionId;
-                await Clients.Caller.SendAsync("Reconnect_ResumeRoom", room);
+
+                switch(room.State)
+                {
+                    case GameRoom.RoomState.SettingUp:
+                        await Clients.Caller.SendAsync("Reconnect_ResumeRoomSetup", room);
+                        break;
+                }
+
             }
         }
     }

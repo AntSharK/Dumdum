@@ -25,7 +25,6 @@
 }
 
 class Main extends Phaser.Scene {
-    //logo: Phaser.GameObjects.Image
     graphics: Phaser.GameObjects.Graphics;
 
     balls: Phaser.Physics.Arcade.Group;

@@ -1,4 +1,7 @@
-﻿document.getElementById("createroombutton").addEventListener("click", function (event) {
+﻿/***
+BUTTON CLICKS
+***/
+document.getElementById("createroombutton").addEventListener("click", function (event) {
     connection.invoke("CreateRoom").catch(function (err) {
         return console.error(err.toString());
     });
@@ -13,15 +16,35 @@ document.getElementById("startbutton").addEventListener("click", function (event
     event.preventDefault();
 });
 
-// Update the lobby state when a player joins
+/***
+MESSAGES FROM HUB
+***/
+connection.on("FreshConnection", function () {
+    var sessionRoomId = sessionStorage.getItem(RoomIdSessionStorageKey);
+    if (sessionRoomId != null) {
+        connection.invoke("ResumeHostSession", sessionRoomId).catch(function (err) {
+            return console.error(err.toString());
+        });
+    }
+});
+
 connection.on("CreateRoom_GetId", function (roomId) {
     SwitchToHostView(roomId);
 });
 
-connection.on("Reconnect_ResumeRoom", function (room) {
+connection.on("Reconnect_ResumeRoomSetup", function (room) {
     SwitchToHostView(room.roomId);
     UpdatePlayerList(room.players);
 })
+
+connection.on("StartGame", function (playersConcat, userJoined) {
+    document.body.innerHTML = "";
+    var game = new SimpleGame();
+});
+
+/***
+VIEW CHANGES
+***/
 
 var SwitchToHostView = function (sessionRoomId) {
     // Write to session storage
@@ -47,18 +70,3 @@ var UpdatePlayerList = function (players) {
 
     document.getElementById("lobbyplayercount").textContent = players.length;
 }
-
-connection.on("FreshConnection", function () {
-    var sessionRoomId = sessionStorage.getItem(RoomIdSessionStorageKey);
-    if (sessionRoomId != null) {
-        connection.invoke("ResumeHostSession", sessionRoomId).catch(function (err) {
-            return console.error(err.toString());
-        });
-    }
-});
-
-// Update the lobby state when a player joins
-connection.on("StartGame", function (playersConcat, userJoined) {
-    document.body.innerHTML = "";
-    var game = new SimpleGame();
-});

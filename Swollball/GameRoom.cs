@@ -8,10 +8,18 @@ namespace Swollball
 {
     public class GameRoom
     {
+        public enum RoomState
+        {
+            SettingUp,
+            Playing,
+            TearingDown
+        }
+
         public string RoomId { get; private set; }
         public string ConnectionId { get; set; }
         public HashSet<Player> Players { get; private set; } = new HashSet<Player>();
         public DateTime UpdatedTime { get; private set; } = DateTime.UtcNow;
+        public RoomState State { get; private set; } = RoomState.SettingUp;
 
         public GameRoom(string roomId, string connectionId)
         {
