@@ -1,4 +1,6 @@
-﻿class SimpleGame {
+﻿declare var BallData: ServerData[];
+
+class SimpleGame {
     game: Phaser.Game;
     constructor() {
         this.game = new Phaser.Game(
@@ -58,8 +60,8 @@ class Main extends Phaser.Scene {
         var newBall = this.balls.create(0, 0, this.balls.defaultKey);
         newBall.setVelocityX(125);
         newBall.setVelocityY(125);
-        newBall.Color = 11745079;
-        newBall.Hp = 100;
+        newBall.Color = BallData[0].Color;
+        newBall.Hp = BallData[0].Hp;
         newBall.Size = newBall.Hp;
         newBall.Text = this.add.text(newBall.body.position.x, newBall.body.position.y, "LLABTSET", { color: 'Black' });
         this.playerBalls[0] = newBall;
@@ -149,8 +151,15 @@ class TestScene extends Phaser.Scene {
     }
 }
 
-function CallThisFunction(game: Phaser.Game) {
-    console.log(game.scene.getAt(0).scale + " LOG.");
+function PassInBallData() {
+    BallData = [];
+
+    // TODO: Pass in ball data
+
+    var serverData = new ServerData;
+    serverData.Color = 11745079;
+    serverData.Hp = 100;
+    BallData[0] = serverData;
 }
 
 class PlayerBall extends Phaser.Physics.Arcade.Sprite {
@@ -158,6 +167,13 @@ class PlayerBall extends Phaser.Physics.Arcade.Sprite {
     Color: number;
     Hp: integer;
     Text: Phaser.GameObjects.Text;
+}
+
+class ServerData {
+    Size: number;
+    Color: number;
+    Hp: integer;
+    Name: string;
 }
 
 function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBall[]) {

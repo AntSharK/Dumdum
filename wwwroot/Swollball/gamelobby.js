@@ -1,6 +1,8 @@
 ﻿/***
 BUTTON CLICKS
 ***/
+var Game;
+
 document.getElementById("createroombutton").addEventListener("click", function (event) {
     connection.invoke("CreateRoom").catch(function (err) {
         return console.error(err.toString());
@@ -41,9 +43,10 @@ connection.on("HostUpdateRoom", function (room) {
     UpdatePlayerList(room.players);
 })
 
-connection.on("StartGame", function (playersConcat, userJoined) {
+connection.on("StartGame", function () {
     document.body.innerHTML = "";
-    var game = new SimpleGame();
+    Game = new SimpleGame();
+    PassInBallData();
 });
 
 /***
