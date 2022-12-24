@@ -10,7 +10,7 @@
                 physics: {
                     default: 'arcade',
                     arcade: {
-                        //debug: true
+                        debug: true
                     }
                 },
 
@@ -26,10 +26,9 @@
 
 class Main extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
-
     balls: Phaser.Physics.Arcade.Group;
-
     playerBalls: PlayerBall[] = [];
+    arena: Arena;
 
     constructor() {
         super({ key: 'Main', active: false });
@@ -42,23 +41,13 @@ class Main extends Phaser.Scene {
     create() {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
 
-        var arena = this.physics.add.group({
+        this.arena = new Arena(this.physics.add.group({
             defaultKey: 'dummyimage',
             bounceX: -1,
             bounceY: -1,
-        });
+        }), this.game.canvas);
 
-        var create = arena.createMultiple({
-            quantity: 72,
-            key: 'dummyimage',
-        });
-
-        Phaser.Actions.PlaceOnCircle(create, new Phaser.Geom.Circle(400, 400, 300));
-
-        arena.children.each(function (b) {
-            (<Phaser.Physics.Arcade.Sprite>b).setPushable(false);
-            (<Phaser.Physics.Arcade.Sprite>b).setImmovable(true);
-        });
+        this.arena.Initialize();
 
         this.balls = this.physics.add.group({
             defaultKey: 'dummyimage',
@@ -66,10 +55,10 @@ class Main extends Phaser.Scene {
             bounceY: 1,            
         });
 
-        var newBall = this.balls.create(300, 300, this.balls.defaultKey);
+        var newBall = this.balls.create(800, 800, this.balls.defaultKey);
         newBall.setVelocityX(125);
         newBall.setVelocityY(125);
-        newBall.Color = 0x00FFFF;
+        newBall.Color = 11745079;
         newBall.Hp = 100;
         newBall.Size = newBall.Hp;
         newBall.Text = this.add.text(newBall.body.position.x, newBall.body.position.y, "LLABTSET", { color: 'Black' });
@@ -89,7 +78,7 @@ class Main extends Phaser.Scene {
             (<Phaser.Physics.Arcade.Sprite>b).setCircle(pb.Size);
         });
 
-        this.physics.add.collider(this.balls, arena, (body1, body2) => {
+        this.physics.add.collider(this.balls, this.arena.PhysicsGroup, (body1, body2) => {
             //body2.body.stop();
         });
 
@@ -114,7 +103,7 @@ class Main extends Phaser.Scene {
                 ball2.setCircle(ball2.Size);
                 console.log(ball1.Hp + " " + ball2.Hp);
 
-                if (ball1.Hp <= 50 || ball2.Hp <= 50) {
+                if (ball1.Hp <= 0 || ball2.Hp <= 0) {
                     this.scene.restart();
                     this.scene.switch("TestScene");
                 }
@@ -124,30 +113,8 @@ class Main extends Phaser.Scene {
 
     update() {
         this.graphics.clear();
-
-        // Draw the arena
-        this.graphics.lineStyle(50, 0xFF00FF);
-        this.graphics.fillStyle(0xFFFFFF);
-        this.graphics.fillCircle(400, 400, 300);
-
-        for (let pb of this.playerBalls) {
-            this.graphics.fillStyle(pb.Color, pb.Hp / 100);
-            this.graphics.fillCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size);
-            pb.Text.x = pb.body.position.x;
-            pb.Text.y = pb.body.position.y + pb.Size;
-            //pb.Draw(this.graphics);
-        };
-    }
-}
-
-class PlayerBall extends Phaser.Physics.Arcade.Sprite {
-    Size: number;
-    Color: number;
-    Hp: integer;
-    Text: Phaser.GameObjects.Text;
-
-    Draw(graphics: Phaser.GameObjects.Graphics): void {
-        // TODO: This doesn't work, so graphics is handled by the game loop
+        DrawArena(this.graphics, this.arena);
+        DrawBalls(this.graphics, this.playerBalls);
     }
 }
 
@@ -183,6 +150,55 @@ function CallThisFunction(game: Phaser.Game) {
     console.log(game.scene.getAt(0).scale + " LOG.");
 }
 
-window.onload = () => {
-    //var game = new SimpleGame();
-};
+class PlayerBall extends Phaser.Physics.Arcade.Sprite {
+    Size: number;
+    Color: number;
+    Hp: integer;
+    Text: Phaser.GameObjects.Text;
+}
+
+function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBall[]) {
+    graphics.lineStyle(10, 0x000000);                        
+    for (let pb of playerBalls) {
+        graphics.strokeCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size)
+        graphics.fillStyle(pb.Color, pb.Hp / 100);
+        graphics.fillCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size);
+        pb.Text.x = pb.body.position.x;
+        pb.Text.y = pb.body.position.y + pb.Size;
+    };
+}
+
+class Arena {
+    PhysicsGroup: Phaser.Physics.Arcade.Group;
+    XPos: integer;
+    YPos: integer;
+    Radius: integer;
+
+    constructor(physicsGroup: Phaser.Physics.Arcade.Group, canvas: HTMLCanvasElement) {
+        this.PhysicsGroup = physicsGroup;
+        this.XPos = canvas.width / 2;
+        this.YPos = canvas.height / 2;
+        this.Radius = Math.min(this.XPos, this.YPos) * 0.9;
+    }
+
+    public Initialize(): void {
+        var create = this.PhysicsGroup.createMultiple({
+            quantity: 180,
+            key: 'dummyimage',
+        });
+
+        Phaser.Actions.PlaceOnCircle(create, new Phaser.Geom.Circle(this.XPos, this.YPos, this.Radius));
+
+        this.PhysicsGroup.children.each(function (b) {
+            (<Phaser.Physics.Arcade.Sprite>b).setPushable(false);
+            (<Phaser.Physics.Arcade.Sprite>b).setImmovable(true);
+        });
+    }
+}
+
+function DrawArena(graphics: Phaser.GameObjects.Graphics, arena: Arena) {
+    graphics.lineStyle(20, 0xFF00FF);                        
+    graphics.fillStyle(0xFFFFFF);
+    graphics.strokeCircle(arena.XPos, arena.YPos, arena.Radius)
+    graphics.fillCircle(arena.XPos, arena.YPos, arena.Radius);
+}

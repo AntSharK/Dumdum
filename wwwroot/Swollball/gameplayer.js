@@ -4,8 +4,9 @@ BUTTON CLICKS
 document.getElementById("joinroombutton").addEventListener("click", function (event) {
     var userNameIn = document.getElementById("username").value;
     var roomIdIn = document.getElementById("roomid").value;
+    var colorIn = document.getElementById("colorpicker").value;
 
-    connection.invoke("JoinRoom", userNameIn, roomIdIn).catch(function (err) {
+    connection.invoke("JoinRoom", userNameIn, roomIdIn, colorIn).catch(function (err) {
         return console.error(err.toString());
     });
     event.preventDefault();

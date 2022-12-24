@@ -4,7 +4,7 @@ namespace Swollball
 {
     public partial class GameHub : Hub
     {
-        public async Task JoinRoom(string userName, string roomId)
+        public async Task JoinRoom(string userName, string roomId, string colorIn)
         {
             var room = GameLobby.Rooms.FirstOrDefault(r => r.RoomId == roomId);
             if (room == null)
@@ -19,6 +19,9 @@ namespace Swollball
                 await Clients.Caller.SendAsync("ShowError", "Player could not be created. Pick another name.");
                 return;
             }
+
+            var color = int.Parse(colorIn.TrimStart('#'), System.Globalization.NumberStyles.HexNumber);
+            player.Ball.Color = color;
 
             await Clients.Caller.SendAsync("PlayerJoinRoom", player.Name, roomId);
             await Clients.Client(room.ConnectionId).SendAsync("HostUpdateRoom", room);
