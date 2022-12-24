@@ -2,3 +2,5 @@
 /obj
 /wwwroot/js
 /.vs
+*.pdb
+*.dll
