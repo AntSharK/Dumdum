@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace Dumdum.Hubs
+namespace Swollball
 {
-    public class SwollBallHub : Hub
+    public class GameHub : Hub
     {
         /// <inheritdoc />
         public override async Task OnConnectedAsync()
@@ -18,6 +18,7 @@ namespace Dumdum.Hubs
         public async Task CreateRoom()
         {
             // TODO
+            await Clients.Caller.SendAsync("StartGame");
         }
     }
 }

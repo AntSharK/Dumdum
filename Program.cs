@@ -1,5 +1,3 @@
-using Dumdum.Hubs;
-
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSignalR();
 
@@ -10,6 +8,6 @@ app.UseStaticFiles();
 
 //app.MapGet("/", () => "Hello World!");
 
-app.MapHub<SwollBallHub>("/swollBallHub");
+app.MapHub<Swollball.GameHub>("/swollBallHub");
 
 app.Run();

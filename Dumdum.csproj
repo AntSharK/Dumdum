@@ -25,4 +25,8 @@
     <Folder Include="wwwroot\content\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="Swollball\Swollball.csproj" />
+  </ItemGroup>
+
 </Project>

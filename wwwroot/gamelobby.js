@@ -5,10 +5,6 @@ var reconnecting = true;
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/swollBallHub").build();
 
-connection.on("ShowError", function (errorMessage) {
-    window.alert(errorMessage);
-});
-
 // Create a new room in the lobby
 document.getElementById("createroombutton").addEventListener("click", function (event) {
     connection.invoke("CreateRoom").catch(function (err) {
@@ -31,34 +27,14 @@ connection.on("JoinRoom_UpdateState", function (playersConcat, userJoined) {
     document.getElementById("lobbyplayercount").textContent = players.length + "/20";
 });
 
+// Update the lobby state when a player joins
+connection.on("StartGame", function (playersConcat, userJoined) {
+    document.body.innerHTML = "";
+    var game = new SimpleGame();
+});
+
 connection.start().catch(function (err) {
     return console.error(err.toString());
 });
-
-connection.on("FreshConnection", function () {
-    var sessionRoomId = sessionStorage.getItem(RoomIdSessionStorageKey);
-    //reconnecting = false;
-
-    if (sessionRoomId != null) {
-        // Resume the session
-        roomId = sessionRoomId;
-
-        connection.invoke("ResumeHost", roomId).catch(function (err) {
-            return console.error(err.toString());
-        });
-    }
-});
-
-connection.on("ClearState", function () {
-    sessionStorage.removeItem(RoomIdSessionStorageKey);
-})
-
-var conditionalReload = function () {
-    var sessionRoomId = sessionStorage.getItem(RoomIdSessionStorageKey);
-
-    if (sessionRoomId != null) {
-        // TODO: Reload state
-    }
-}
 
 window.onload = conditionalReload;
