@@ -55,7 +55,7 @@ class Main extends Phaser.Scene {
             bounceY: 1,            
         });
 
-        var newBall = this.balls.create(800, 800, this.balls.defaultKey);
+        var newBall = this.balls.create(0, 0, this.balls.defaultKey);
         newBall.setVelocityX(125);
         newBall.setVelocityY(125);
         newBall.Color = 11745079;
@@ -64,7 +64,7 @@ class Main extends Phaser.Scene {
         newBall.Text = this.add.text(newBall.body.position.x, newBall.body.position.y, "LLABTSET", { color: 'Black' });
         this.playerBalls[0] = newBall;
 
-        newBall = this.balls.create(500, 500, this.balls.defaultKey);
+        newBall = this.balls.create(0, 0, this.balls.defaultKey);
         newBall.setVelocityX(-125);
         newBall.setVelocityY(-105);
         newBall.Color = 0xFFFF00;
@@ -72,6 +72,9 @@ class Main extends Phaser.Scene {
         newBall.Size = newBall.Hp;
         newBall.Text = this.add.text(newBall.body.position.x, newBall.body.position.y, "TESTBALL", { color: 'Black' });
         this.playerBalls[1] = newBall;
+
+        // Place balls in a circle
+        Phaser.Actions.PlaceOnCircle(this.playerBalls, new Phaser.Geom.Circle(this.game.canvas.width/2, this.game.canvas.height/2, 400));
 
         this.balls.children.each(function (b) {
             var pb = b as PlayerBall;
