@@ -18,8 +18,8 @@ namespace Swollball
             this.RoomId = roomId;
             this.ConnectionId = connectionId;
 
-            this.CreatePlayer("TESTPLAYER", "ASDF");
-            this.CreatePlayer("TESTPLAYER2", "FDSA");
+            //this.CreatePlayer("TESTPLAYER", "ASDF");
+            //this.CreatePlayer("TESTPLAYER2", "FDSA");
         }
 
         public Player CreatePlayer(string playerName, string connectionId)

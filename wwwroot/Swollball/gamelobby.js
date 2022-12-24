@@ -1,9 +1,4 @@
-﻿const RoomIdSessionStorageKey = "roomid";
-
-var reconnecting = true;
-var connection = new signalR.HubConnectionBuilder().withUrl("/swollBallHub").build();
-
-document.getElementById("createroombutton").addEventListener("click", function (event) {
+﻿document.getElementById("createroombutton").addEventListener("click", function (event) {
     connection.invoke("CreateRoom").catch(function (err) {
         return console.error(err.toString());
     });
@@ -53,16 +48,6 @@ var UpdatePlayerList = function (players) {
     document.getElementById("lobbyplayercount").textContent = players.length;
 }
 
-// Update the lobby state when a player joins
-connection.on("StartGame", function (playersConcat, userJoined) {
-    document.body.innerHTML = "";
-    var game = new SimpleGame();
-});
-
-connection.start().catch(function (err) {
-    return console.error(err.toString());
-});
-
 connection.on("FreshConnection", function () {
     var sessionRoomId = sessionStorage.getItem(RoomIdSessionStorageKey);
     if (sessionRoomId != null) {
@@ -72,10 +57,8 @@ connection.on("FreshConnection", function () {
     }
 });
 
-connection.on("ClearState", function () {
-    sessionStorage.removeItem(RoomIdSessionStorageKey);
-})
-
-connection.on("ShowError", function (errorMessage) {
-    window.alert(errorMessage);
+// Update the lobby state when a player joins
+connection.on("StartGame", function (playersConcat, userJoined) {
+    document.body.innerHTML = "";
+    var game = new SimpleGame();
 });

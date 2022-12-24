@@ -2,17 +2,8 @@
 
 namespace Swollball
 {
-    public class GameHub : Hub
+    public partial class GameHub : Hub
     {
-        private static Lobby GameLobby = new Lobby();
-
-        /// <inheritdoc />
-        public override async Task OnConnectedAsync()
-        {
-            await Clients.Caller.SendAsync("FreshConnection");
-            await base.OnConnectedAsync();
-        }
-
         public async Task CreateRoom()
         {
             var newRoom = GameLobby.CreateRoom(Context.ConnectionId);

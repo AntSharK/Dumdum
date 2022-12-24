@@ -37,7 +37,7 @@ class Main extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('dummyimage', 'content/dummyimage.png');
+        this.load.image('dummyimage', '/content/dummyimage.png');
     }
 
     create() {
