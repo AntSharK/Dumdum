@@ -179,6 +179,10 @@ class TestScene extends Phaser.Scene {
     }
 }
 
+function CallThisFunction(game: Phaser.Game) {
+    console.log(game.scene.getAt(0).scale + " LOG.");
+}
+
 window.onload = () => {
     //var game = new SimpleGame();
 };

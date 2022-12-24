@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <script src="/lib/signalr/dist/browser/signalr.js"></script>
+    <script src="/phaser/phaser.js"></script>
+    <script src="/js/Swollball_Player_App.js"></script>
+    <meta charset="utf-8" />
+    <title>SWOLLBALL PLAYER</title>
+</head>
+<body>
+    <div id="pageName" class="display-4" style="text-decoration:underline; text-align:center">JOIN GAME</div>
+
+    <div class="state" id="joinroom">
+        <div class="display-4" style="text-align:center">
+            Username - Max 10 letters or numbers
+            <input type="text" id="username" maxlength="10" size="10" oninput="this.value = this.value.toUpperCase()" /><br />
+        </div>
+        <hr />
+        <div class="display-4" style="text-align:center">
+            Room ID: <input type="text" id="roomid" maxlength="5" size="5" oninput="this.value = this.value.toUpperCase()" /><br />
+            <input type="button" class="display-1" id="joinroombutton" value="JOIN" />
+        </div>
+        <hr />
+    </div>
+
+    <div class="state" id="startLobby" style="display:none">
+        <h3><div style="text-align:center"><u>WAITING FOR GAME TO START</u></h3></div>
+    </div>
+    <div class="row">&nbsp;</div>
+
+</body>
+</html>
+<script src="common.js"></script>
+<script src="gameplayer.js"></script>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>

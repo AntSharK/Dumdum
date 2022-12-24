@@ -33,13 +33,18 @@ namespace Swollball
         public Player CreatePlayer(string playerName, string connectionId)
         {
             var newPlayer = new Player(playerName, connectionId, this.RoomId);
+            if (Players.Contains(newPlayer))
+            {
+                return null;
+            }
+
             Players.Add(newPlayer);
             return newPlayer;
         }
 
         public void StartGame()
         {
-            // TODO nothing for now
+            this.State = RoomState.Playing;
         }
 
         public override int GetHashCode()

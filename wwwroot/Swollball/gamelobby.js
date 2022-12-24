@@ -37,6 +37,10 @@ connection.on("Reconnect_ResumeRoomSetup", function (room) {
     UpdatePlayerList(room.players);
 })
 
+connection.on("HostUpdateRoom", function (room) {
+    UpdatePlayerList(room.players);
+})
+
 connection.on("StartGame", function (playersConcat, userJoined) {
     document.body.innerHTML = "";
     var game = new SimpleGame();
@@ -68,5 +72,5 @@ var UpdatePlayerList = function (players) {
         playerList.appendChild(li);
     }
 
-    document.getElementById("lobbyplayercount").textContent = players.length;
+    document.getElementById("lobbyplayercount").textContent = players.length + " PLAYERS JOINED";
 }

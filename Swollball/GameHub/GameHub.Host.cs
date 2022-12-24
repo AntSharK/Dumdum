@@ -38,6 +38,7 @@ namespace Swollball
 
             roomToStart.StartGame();
             await Clients.Caller.SendAsync("StartGame");
+            await Clients.Group(roomToStart.RoomId).SendAsync("StartGame");
         }
 
         public async Task ResumeHostSession(string roomId)
@@ -47,18 +48,16 @@ namespace Swollball
             {
                 await Clients.Caller.SendAsync("ShowError", "ERROR RESUMING ROOM.");
                 await Clients.Caller.SendAsync("ClearState");
+                return;
             }
-            else
+
+            room.ConnectionId = Context.ConnectionId;
+
+            switch(room.State)
             {
-                room.ConnectionId = Context.ConnectionId;
-
-                switch(room.State)
-                {
-                    case GameRoom.RoomState.SettingUp:
-                        await Clients.Caller.SendAsync("Reconnect_ResumeRoomSetup", room);
-                        break;
-                }
-
+                case GameRoom.RoomState.SettingUp:
+                    await Clients.Caller.SendAsync("Reconnect_ResumeRoomSetup", room);
+                    break;
             }
         }
     }
