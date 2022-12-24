@@ -30,7 +30,7 @@ namespace Swollball
             //this.CreatePlayer("TESTPLAYER2", "FDSA");
         }
 
-        public Player CreatePlayer(string playerName, string connectionId)
+        public Player? CreatePlayer(string playerName, string connectionId)
         {
             var newPlayer = new Player(playerName, connectionId, this.RoomId);
             if (Players.Contains(newPlayer))
