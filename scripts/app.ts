@@ -1,4 +1,5 @@
 ﻿declare var BallData: ServerData[];
+declare var Game: SimpleGame;
 
 class SimpleGame {
     game: Phaser.Game;
@@ -20,7 +21,8 @@ class SimpleGame {
                     TestScene],
 
                 scale: {
-                    autoCenter: Phaser.Scale.Center.CENTER_BOTH
+                    autoCenter: Phaser.Scale.Center.CENTER_BOTH,
+                    mode: Phaser.Scale.FIT,
                 },
             });
     }
@@ -57,36 +59,13 @@ class Main extends Phaser.Scene {
             bounceY: 1,            
         });
 
-        var newBall = this.balls.create(0, 0, this.balls.defaultKey);
-        newBall.setVelocityX(125);
-        newBall.setVelocityY(125);
-        newBall.Color = BallData[0].Color;
-        newBall.Hp = BallData[0].Hp;
-        newBall.Size = newBall.Hp;
-        newBall.Text = this.add.text(newBall.body.position.x, newBall.body.position.y, "LLABTSET", { color: 'Black' });
-        this.playerBalls[0] = newBall;
-
-        newBall = this.balls.create(0, 0, this.balls.defaultKey);
-        newBall.setVelocityX(-125);
-        newBall.setVelocityY(-105);
-        newBall.Color = 0xFFFF00;
-        newBall.Hp = 75;
-        newBall.Size = newBall.Hp;
-        newBall.Text = this.add.text(newBall.body.position.x, newBall.body.position.y, "TESTBALL", { color: 'Black' });
-        this.playerBalls[1] = newBall;
-
-        // Place balls in a circle
-        Phaser.Actions.PlaceOnCircle(this.playerBalls, new Phaser.Geom.Circle(this.game.canvas.width/2, this.game.canvas.height/2, 400));
-
-        this.balls.children.each(function (b) {
-            var pb = b as PlayerBall;
-            (<Phaser.Physics.Arcade.Sprite>b).setCircle(pb.Size);
-        });
+        this.playerBalls = InitializeBalls(this.balls, this);
 
         this.physics.add.collider(this.balls, this.arena.PhysicsGroup, (body1, body2) => {
-            //body2.body.stop();
+            // This makes the balls collide with the arena
         });
 
+        // This marshalls ball to ball collision
         this.physics.add.collider(this.balls, this.balls, (body1, body2) => {
             var ball1 = body1 as PlayerBall;
             var ball2 = body2 as PlayerBall;
@@ -159,6 +138,11 @@ function PassInBallData() {
     var serverData = new ServerData;
     serverData.Color = 11745079;
     serverData.Hp = 100;
+    serverData.Name = "TEST";
+    serverData.SizeMultiplier = 1.0;
+    serverData.VelocityMultiplier = 1.0;
+    serverData.Damage = 1;
+    serverData.Armor = 0;
     BallData[0] = serverData;
 }
 
@@ -166,14 +150,47 @@ class PlayerBall extends Phaser.Physics.Arcade.Sprite {
     Size: number;
     Color: number;
     Hp: integer;
+    MaxHp: integer;
     Text: Phaser.GameObjects.Text;
 }
 
 class ServerData {
-    Size: number;
+    SizeMultiplier: number;
+    VelocityMultiplier: number;
+    Damage: integer;
+    Armor: integer;
     Color: number;
     Hp: integer;
     Name: string;
+}
+
+function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.Scene): PlayerBall[] {
+    var retVal: PlayerBall[] = [];
+
+    // Set the scale multiplier for initial drawing - we assume a coordinate of 1000, and scale according to current canvas size
+    // Autoscaling will take care of the rest
+    for (let data of BallData) {
+        var newBall = ballGroup.create(0, 0, ballGroup.defaultKey);
+
+        newBall.setVelocityX(125);
+        newBall.setVelocityY(125);
+        newBall.Color = data.Color;
+        newBall.Hp = data.Hp;
+        newBall.MaxHp = data.Hp;
+        newBall.Size = data.Hp;
+        newBall.Text = scene.add.text(newBall.body.position.x, newBall.body.position.y, data.Name, { color: 'Black' });
+        retVal[0] = newBall;
+    }
+
+    // Place balls in a circle
+    Phaser.Actions.PlaceOnCircle(retVal, new Phaser.Geom.Circle(scene.scale.canvas.width / 2, scene.scale.canvas.height / 2, 400));
+
+    ballGroup.children.each(function (b) {
+        var pb = b as PlayerBall;
+        (<Phaser.Physics.Arcade.Sprite>b).setCircle(pb.Size);
+    });
+
+    return retVal;
 }
 
 function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBall[]) {
