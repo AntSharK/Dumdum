@@ -19,7 +19,7 @@ namespace Swollball
             this.cleanupTimer = new Timer(this.Cleanup, null /*State*/, CLEANUPINTERVAL, CLEANUPINTERVAL);
         }
 
-        public GameRoom? CreateRoom()
+        public GameRoom? CreateRoom(string connectionId)
         {
             const int ROOMIDLENGTH = 5;
             var allKeys = this.Rooms.Select(g => g.RoomId);
@@ -30,7 +30,7 @@ namespace Swollball
                 return null;
             }
 
-            var newRoom = new GameRoom(roomId);
+            var newRoom = new GameRoom(roomId, connectionId);
             this.Rooms.Add(newRoom);
             return newRoom;
         }

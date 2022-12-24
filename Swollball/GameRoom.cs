@@ -9,19 +9,29 @@ namespace Swollball
     public class GameRoom
     {
         public string RoomId { get; private set; }
+        public string ConnectionId { get; set; }
         public HashSet<Player> Players { get; private set; } = new HashSet<Player>();
         public DateTime UpdatedTime { get; private set; } = DateTime.UtcNow;
 
-        public GameRoom(string roomId)
+        public GameRoom(string roomId, string connectionId)
         {
             this.RoomId = roomId;
+            this.ConnectionId = connectionId;
+
+            this.CreatePlayer("TESTPLAYER", "ASDF");
+            this.CreatePlayer("TESTPLAYER2", "FDSA");
         }
 
-        public Player CreatePlayer(string playerName, int connectionId)
+        public Player CreatePlayer(string playerName, string connectionId)
         {
             var newPlayer = new Player(playerName, connectionId, this.RoomId);
             Players.Add(newPlayer);
             return newPlayer;
+        }
+
+        public void StartGame()
+        {
+            // TODO nothing for now
         }
 
         public override int GetHashCode()

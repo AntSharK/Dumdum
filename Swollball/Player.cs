@@ -10,10 +10,10 @@ namespace Swollball
     {
         public Ball Ball { get; private set; }
         public string Name { get; private set; }
-        public int ConnectionId { get; private set; }
+        public string ConnectionId { get; private set; }
         public string RoomId { get; private set; }
 
-        public Player(string name, int connectionId, string roomName)
+        public Player(string name, string connectionId, string roomName)
         {
             this.Name = name;
             this.ConnectionId = connectionId;
