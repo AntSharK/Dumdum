@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dumdum", "Dumdum.csproj", "{0E82608A-78C8-4624-9AA5-3C965EE1B07E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dumdum", "Dumdum.csproj", "{0E82608A-78C8-4624-9AA5-3C965EE1B07E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swollball", "Swollball\Swollball.csproj", "{8233F958-2B23-41E4-B824-E3D1AA744B44}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{0E82608A-78C8-4624-9AA5-3C965EE1B07E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E82608A-78C8-4624-9AA5-3C965EE1B07E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E82608A-78C8-4624-9AA5-3C965EE1B07E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8233F958-2B23-41E4-B824-E3D1AA744B44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8233F958-2B23-41E4-B824-E3D1AA744B44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8233F958-2B23-41E4-B824-E3D1AA744B44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8233F958-2B23-41E4-B824-E3D1AA744B44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

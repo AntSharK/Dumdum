@@ -33,7 +33,7 @@ class Main extends Phaser.Scene {
     playerBalls: PlayerBall[] = [];
 
     constructor() {
-        super({ key: 'Main', active: true });
+        super({ key: 'Main', active: false });
     }
 
     preload() {
@@ -181,5 +181,5 @@ class TestScene extends Phaser.Scene {
 }
 
 window.onload = () => {
-    var game = new SimpleGame();
+    //var game = new SimpleGame();
 };
