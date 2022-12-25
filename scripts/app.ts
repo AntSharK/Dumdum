@@ -36,6 +36,10 @@ class Main extends Phaser.Scene {
     playerBalls: PlayerBall[] = [];
     arena: Arena;
 
+    roundTimer: Phaser.Time.TimerEvent;
+    timeLeftDisplay: Phaser.GameObjects.Text;
+
+
     constructor() {
         super({ key: 'Main', active: false });
     }
@@ -46,6 +50,13 @@ class Main extends Phaser.Scene {
 
     create() {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
+
+        const ROUNDDURATIONSECONDS = 10;
+        this.roundTimer = new Phaser.Time.TimerEvent({ delay: ROUNDDURATIONSECONDS * 1000, callback: this.finishScene, callbackScope: this });
+        this.time.addEvent(this.roundTimer);
+        this.timeLeftDisplay = this.add.text(0, 0, ROUNDDURATIONSECONDS.toString(), { color: 'White' });
+        var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
+        this.timeLeftDisplay.scale = boundingDimension * 0.005;
 
         this.arena = new Arena(this.physics.add.group({
             defaultKey: 'dummyimage',
@@ -100,6 +111,7 @@ class Main extends Phaser.Scene {
         this.graphics.clear();
         DrawArena(this.graphics, this.arena);
         DrawBalls(this.graphics, this.playerBalls);
+        this.timeLeftDisplay.text = Math.ceil(this.roundTimer.getRemainingSeconds()).toString();
     }
 
     finishScene() {
@@ -115,24 +127,23 @@ class Main extends Phaser.Scene {
 
 class TestScene extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
-    ticks: number;
+    timer: Phaser.Time.TimerEvent;
 
     constructor() {
         super({ key: 'TestScene', active: false, visible: false });
     }
     create() {
-        this.ticks = 0;
         this.graphics = this.add.graphics({ x: 0, y: 0 });
         this.add.text(0, 0, "TEST SCREEN TRANSITION", { color: 'White' });
 
-        this.time.addEvent({ delay: 2000, callback: this.sceneTransition, callbackScope: this })
+        this.timer = new Phaser.Time.TimerEvent({ delay: 2000, callback: this.sceneTransition, callbackScope: this });
+        this.time.addEvent(this.timer);
     }
 
     update() {
         this.graphics.lineStyle(50, 0xFF00FF);
         this.graphics.fillStyle(0xFF0000);
-        this.graphics.fillCircle(400 + this.ticks % 400, 400 + this.ticks % 400, 150);
-        this.ticks++;
+        this.graphics.fillCircle(400 + this.timer.elapsed % 400, 400 + this.timer.elapsed % 400, 150);
     }
 
     sceneTransition() {

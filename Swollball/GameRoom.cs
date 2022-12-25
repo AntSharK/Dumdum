@@ -31,11 +31,15 @@ namespace Swollball
             tp.Ball.Color = 11745079;
             var tp2 = this.CreatePlayer("RANDARA", "YAYA");
             tp2.Ball.Color = 11045079;
-            tp2.Ball.Dmg = 25;
+            tp2.Ball.Dmg = 4;
             tp2.Ball.SpeedMultiplier = 1.5f;
             tp2.Ball.SizeMultiplier = 1.1f;
             var tp3 = this.CreatePlayer("LCBATA", "BARA");
             tp3.Ball.Color = 01745079;
+            var tp4 = this.CreatePlayer("ANOTHER", "PPAR");
+            tp4.Ball.Color = 00745079;
+            var tp5 = this.CreatePlayer("MORETHINGS", "RARW");
+            tp5.Ball.Color = 10000079;
         }
 
         public Player? CreatePlayer(string playerName, string connectionId)
