@@ -79,8 +79,18 @@ class Main extends Phaser.Scene {
                 ball2.Hp = ball2.Hp - damageDoneTo2;
                 RoundLog.push(new RoundEvent(ball1.Text.text, ball2.Text.text, damageDoneTo2));
 
+                if (ball1.Hp <= 0) {
+                    DisableBall(ball1);
+                    this.balls.remove(ball1);
+                }
+
+                if (ball2.Hp <= 0) {
+                    DisableBall(ball2);
+                    this.balls.remove(ball2);
+                }
+
                 if (ball1.Hp <= 0 || ball2.Hp <= 0) {
-                    this.finishScene();
+                    //this.finishScene();
                 }
             }
         });
@@ -169,6 +179,11 @@ class ServerData {
     Name: string;
 }
 
+function DisableBall(ball: PlayerBall) {
+    ball.active = false;
+    ball.Text.setVisible(false);
+}
+
 function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.Scene): PlayerBall[] {
     var retVal: PlayerBall[] = [];
 
@@ -226,11 +241,13 @@ function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.S
 function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBall[]) {
     graphics.lineStyle(10, 0x000000);                        
     for (let pb of playerBalls) {
-        graphics.fillStyle(pb.Color, pb.Hp / pb.MaxHp);
-        graphics.fillCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size);
-        graphics.strokeCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size - 5)
-        pb.Text.x = pb.body.position.x + pb.Size * 0.25;
-        pb.Text.y = pb.body.position.y + pb.Size * 0.95;
+        if (pb.active) {
+            graphics.fillStyle(pb.Color, pb.Hp / pb.MaxHp);
+            graphics.fillCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size);
+            graphics.strokeCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size - 5)
+            pb.Text.x = pb.body.position.x + pb.Size * 0.25;
+            pb.Text.y = pb.body.position.y + pb.Size * 0.95;
+        }
     };
 }
 
