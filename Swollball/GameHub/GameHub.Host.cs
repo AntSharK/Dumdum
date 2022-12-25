@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using System.Text.Json;
 
 namespace Swollball
 {
@@ -40,6 +41,11 @@ namespace Swollball
             await Clients.Caller.SendAsync("UpdateBalls", roomToStart.Players.Select(p => p.Ball));
             await Clients.Caller.SendAsync("StartGame");
             await Clients.Group(roomToStart.RoomId).SendAsync("StartGame");
+        }
+
+        public async Task FinishRound(RoundEvent[] roundEvents)
+        {
+            // Do nothing for now
         }
 
         public async Task ResumeHostSession(string roomId)

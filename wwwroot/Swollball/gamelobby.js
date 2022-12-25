@@ -42,7 +42,7 @@ connection.on("HostUpdateRoom", function (room) {
 })
 
 connection.on("UpdateBalls", function (ballData) {
-    PassInBallData(ballData);
+    InitializeBallData(ballData);
 })
 
 connection.on("StartGame", function () {

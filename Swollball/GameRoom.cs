@@ -26,6 +26,7 @@ namespace Swollball
             this.RoomId = roomId;
             this.ConnectionId = connectionId;
 
+            // Insert test players
             var tp = this.CreatePlayer("TESTPLAYER", "ASDF");
             tp.Ball.Color = 11745079;
             var tp2 = this.CreatePlayer("RANDARA", "YAYA");
