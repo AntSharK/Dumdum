@@ -26,8 +26,13 @@ namespace Swollball
             this.RoomId = roomId;
             this.ConnectionId = connectionId;
 
-            //this.CreatePlayer("TESTPLAYER", "ASDF");
-            //this.CreatePlayer("TESTPLAYER2", "FDSA");
+            var tp = this.CreatePlayer("TESTPLAYER", "ASDF");
+            tp.Ball.Color = 11745079;
+            var tp2 = this.CreatePlayer("RANDARA", "YAYA");
+            tp2.Ball.Color = 11045079;
+            tp2.Ball.Dmg = 25;
+            tp2.Ball.SpeedMultiplier = 1.5f;
+            tp2.Ball.SizeMultiplier = 1.1f;
         }
 
         public Player? CreatePlayer(string playerName, string connectionId)

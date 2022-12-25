@@ -129,30 +129,21 @@ class TestScene extends Phaser.Scene {
     }
 }
 
-function PassInBallData() {
+function PassInBallData(dataIn: any[]) {
     BallData = [];
 
-    // TODO: Pass in ball data
+    for (let data of dataIn) {
+        var serverData = new ServerData();
+        serverData.Armor = data.armor;
+        serverData.Color = data.color;
+        serverData.Damage = data.dmg;
+        serverData.Hp = data.hp;
+        serverData.Name = data.playerName;
+        serverData.SizeMultiplier = data.sizeMultiplier;
+        serverData.VelocityMultiplier = data.speedMultiplier;
 
-    var serverData = new ServerData;
-    serverData.Color = 11745079;
-    serverData.Hp = 100;
-    serverData.Name = "TEST";
-    serverData.SizeMultiplier = 1.0;
-    serverData.VelocityMultiplier = 1.0;
-    serverData.Damage = 1;
-    serverData.Armor = 0;
-    BallData[0] = serverData;
-
-    serverData = new ServerData;
-    serverData.Color = 11079754;
-    serverData.Hp = 100;
-    serverData.Name = "SEPM";
-    serverData.SizeMultiplier = 2.0;
-    serverData.VelocityMultiplier = 1.0;
-    serverData.Damage = 1;
-    serverData.Armor = 0;
-    BallData[1] = serverData;
+        BallData.push(serverData);
+    }
 }
 
 class PlayerBall extends Phaser.Physics.Arcade.Sprite {
@@ -181,7 +172,8 @@ function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.S
     const ASSUMEDSCALE = 1000;
     const PLACERADIUS = 300;
     const FONTSIZEMULTIPLIER = 0.022;
-    const BASEVELOCITY = 10;
+    const BASEVELOCITY = 125;
+    const DEFLECTIONANGLE = 0.6;
 
     // Total size of all balls should be about 40% of the area - Determined by AREATAKEN
     const AREATAKEN = 0.2;
@@ -215,6 +207,7 @@ function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.S
         // Set the velocity
         var direction = new Phaser.Math.Vector2(scene.scale.canvas.width / 2 - pb.x, scene.scale.canvas.height / 2 - pb.y);
         var normalizedDirection = direction.normalize();
+        normalizedDirection.setAngle(normalizedDirection.angle() + (Math.random() * DEFLECTIONANGLE * 2) - DEFLECTIONANGLE);
         pb.setVelocityX(normalizedDirection.x * BASEVELOCITY);
         pb.setVelocityY(normalizedDirection.y * BASEVELOCITY);
 

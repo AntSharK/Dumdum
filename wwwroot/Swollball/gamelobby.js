@@ -41,8 +41,11 @@ connection.on("HostUpdateRoom", function (room) {
     UpdatePlayerList(room.players);
 })
 
+connection.on("UpdateBalls", function (ballData) {
+    PassInBallData(ballData);
+})
+
 connection.on("StartGame", function () {
-    PassInBallData();
     document.body.innerHTML = "";
     Game = new SimpleGame();
 });
