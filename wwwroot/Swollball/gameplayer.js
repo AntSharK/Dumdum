@@ -11,6 +11,16 @@ document.getElementById("joinroombutton").addEventListener("click", function (ev
     });
     event.preventDefault();
 });
+
+document.getElementById("leaveroombutton").addEventListener("click", function (event) {
+    var sessionRoomId = sessionStorage.getItem(RoomIdSessionStorageKey);
+    var sessionUserName = sessionStorage.getItem(UserIdSessionStorageKey)
+
+    connection.invoke("KickPlayer", sessionRoomId, sessionUserName).catch(function (err) {
+        return console.error(err.toString());
+    });
+    event.preventDefault();
+});
 /***
 MESSAGES FROM HUB
 ***/

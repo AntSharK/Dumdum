@@ -43,18 +43,6 @@ namespace Swollball
             await Clients.Group(roomToStart.RoomId).SendAsync("StartGame");
         }
 
-        public async Task KickPlayer(string roomId, string playerId)
-        {
-            (var player, var room) = await this.FindPlayer(playerId, roomId);
-            room.Players.Remove(player);
-
-            await Groups.RemoveFromGroupAsync(player.ConnectionId, roomId);
-            await Clients.Client(room.ConnectionId).SendAsync("HostUpdateRoom", room);
-
-            await Clients.Client(player.ConnectionId).SendAsync("ClearState");
-            await Clients.Client(player.ConnectionId).SendAsync("ShowError", "You have been removed from the lobby.", true /*Should Reload*/);
-        }
-
         public async Task FinishRound(RoundEvent[] roundEvents)
         {
             // Do nothing for now

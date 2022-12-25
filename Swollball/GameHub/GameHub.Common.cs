@@ -13,6 +13,18 @@ namespace Swollball
             await base.OnConnectedAsync();
         }
 
+        public async Task KickPlayer(string roomId, string playerId)
+        {
+            (var player, var room) = await this.FindPlayer(playerId, roomId);
+            room.Players.Remove(player);
+
+            await Groups.RemoveFromGroupAsync(player.ConnectionId, roomId);
+            await Clients.Client(room.ConnectionId).SendAsync("HostUpdateRoom", room);
+
+            await Clients.Client(player.ConnectionId).SendAsync("ClearState");
+            await Clients.Client(player.ConnectionId).SendAsync("ShowError", "You are no longer in the lobby.", true /*Should Reload*/);
+        }
+
         private async Task<(Player, GameRoom)> FindPlayer(string userName, string roomId)
         {
             var room = GameLobby.Rooms.FirstOrDefault(r => r.RoomId == roomId);
