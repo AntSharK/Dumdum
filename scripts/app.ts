@@ -180,7 +180,8 @@ function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.S
     // Autoscaling will take care of the rest
     const ASSUMEDSCALE = 1000;
     const PLACERADIUS = 300;
-    const BALLSIZE = 100;
+    const FONTSIZEMULTIPLIER = 0.022;
+    const BASEVELOCITY = 10;
 
     // Total size of all balls should be about 40% of the area - Determined by AREATAKEN
     const AREATAKEN = 0.2;
@@ -199,28 +200,28 @@ function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.S
         var newBall = ballGroup.create(0, 0, ballGroup.defaultKey) as PlayerBall;
         newBall.Color = data.Color;
 
-        // TODO Scale the velocity
-        newBall.setVelocityX(125);
-        newBall.setVelocityY(125);
-
         newBall.Hp = data.Hp;
         newBall.MaxHp = data.Hp;
         newBall.Size = ballSizeBase * data.SizeMultiplier;
 
         newBall.Text = scene.add.text(newBall.body.position.x, newBall.body.position.y, data.Name, { color: 'Black', font: 'Comic-Sans' });
-        newBall.Text.scale = newBall.Size * 0.022;
+        newBall.Text.scale = newBall.Size * FONTSIZEMULTIPLIER;
         retVal.push(newBall);
     }
 
-    // Set ball collision and offset
-    ballGroup.children.each(function (b) {
-        var pb = b as PlayerBall;
-        (<Phaser.Physics.Arcade.Sprite>b).setCircle(pb.Size);
-        pb.body.setOffset(-pb.Size, -pb.Size);
-    });
-
     // Place balls in a circle
     Phaser.Actions.PlaceOnCircle(retVal, new Phaser.Geom.Circle(scene.scale.canvas.width / 2, scene.scale.canvas.height / 2, PLACERADIUS * scaleMultiplier));
+    for (let pb of retVal) {
+        // Set the velocity
+        var direction = new Phaser.Math.Vector2(scene.scale.canvas.width / 2 - pb.x, scene.scale.canvas.height / 2 - pb.y);
+        var normalizedDirection = direction.normalize();
+        pb.setVelocityX(normalizedDirection.x * BASEVELOCITY);
+        pb.setVelocityY(normalizedDirection.y * BASEVELOCITY);
+
+        // Offset the object
+        pb.setCircle(pb.Size);
+        pb.body.setOffset(-pb.Size, -pb.Size);
+    };
 
     return retVal;
 }
@@ -228,9 +229,9 @@ function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.S
 function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBall[]) {
     graphics.lineStyle(10, 0x000000);                        
     for (let pb of playerBalls) {
-        graphics.strokeCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size)
         graphics.fillStyle(pb.Color, pb.Hp / pb.MaxHp);
         graphics.fillCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size);
+        graphics.strokeCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size - 5)
         pb.Text.x = pb.body.position.x + pb.Size * 0.25;
         pb.Text.y = pb.body.position.y + pb.Size * 0.95;
     };
