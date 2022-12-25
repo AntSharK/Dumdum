@@ -192,7 +192,7 @@ function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.S
     const ASSUMEDSCALE = 1000;
     const PLACERADIUS = 300;
     const FONTSIZEMULTIPLIER = 0.022;
-    const BASEVELOCITY = 200;
+    const BASEVELOCITY = 100;
     const DEFLECTIONANGLE = 0.6;
     const AREATAKENBYBALLS = 0.25;
 
@@ -227,8 +227,8 @@ function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.S
         var direction = new Phaser.Math.Vector2(scene.scale.canvas.width / 2 - pb.x, scene.scale.canvas.height / 2 - pb.y);
         var normalizedDirection = direction.normalize();
         normalizedDirection.setAngle(normalizedDirection.angle() + (Math.random() * DEFLECTIONANGLE * 2) - DEFLECTIONANGLE);
-        pb.setVelocityX(normalizedDirection.x * BASEVELOCITY);
-        pb.setVelocityY(normalizedDirection.y * BASEVELOCITY);
+        pb.setVelocityX(normalizedDirection.x * BASEVELOCITY * scaleMultiplier);
+        pb.setVelocityY(normalizedDirection.y * BASEVELOCITY * scaleMultiplier);
 
         // Offset the object
         pb.setCircle(pb.Size);
