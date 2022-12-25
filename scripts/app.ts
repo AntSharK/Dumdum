@@ -15,7 +15,7 @@ class SimpleGame {
                 physics: {
                     default: 'arcade',
                     arcade: {
-                        debug: true
+                        debug: false
                     }
                 },
 
@@ -89,8 +89,8 @@ class Main extends Phaser.Scene {
                     this.balls.remove(ball2);
                 }
 
-                if (ball1.Hp <= 0 || ball2.Hp <= 0) {
-                    //this.finishScene();
+                if (this.balls.countActive() <= 1) {
+                    this.finishScene();
                 }
             }
         });
@@ -192,8 +192,8 @@ function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.S
     const ASSUMEDSCALE = 1000;
     const PLACERADIUS = 300;
     const FONTSIZEMULTIPLIER = 0.022;
-    const BASEVELOCITY = 100;
-    const DEFLECTIONANGLE = 0.6;
+    const BASEVELOCITY = 200;
+    const MAXDEFLECTIONANGLE = 0.6;
     const AREATAKENBYBALLS = 0.25;
 
     var boundingDimension = Math.min(scene.scale.canvas.width, scene.scale.canvas.height);
@@ -226,7 +226,7 @@ function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.S
         // Set the velocity
         var direction = new Phaser.Math.Vector2(scene.scale.canvas.width / 2 - pb.x, scene.scale.canvas.height / 2 - pb.y);
         var normalizedDirection = direction.normalize();
-        normalizedDirection.setAngle(normalizedDirection.angle() + (Math.random() * DEFLECTIONANGLE * 2) - DEFLECTIONANGLE);
+        normalizedDirection.setAngle(normalizedDirection.angle() + (Math.random() * MAXDEFLECTIONANGLE * 2) - MAXDEFLECTIONANGLE);
         pb.setVelocityX(normalizedDirection.x * BASEVELOCITY * scaleMultiplier);
         pb.setVelocityY(normalizedDirection.y * BASEVELOCITY * scaleMultiplier);
 

@@ -34,6 +34,8 @@ namespace Swollball
             tp2.Ball.Dmg = 25;
             tp2.Ball.SpeedMultiplier = 1.5f;
             tp2.Ball.SizeMultiplier = 1.1f;
+            var tp3 = this.CreatePlayer("LCBATA", "BARA");
+            tp3.Ball.Color = 01745079;
         }
 
         public Player? CreatePlayer(string playerName, string connectionId)
