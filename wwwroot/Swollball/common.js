@@ -9,8 +9,11 @@ connection.start().catch(function (err) {
 connection.on("ClearState", function () {
     sessionStorage.removeItem(RoomIdSessionStorageKey);
     sessionStorage.removeItem(UserIdSessionStorageKey);
-})
+});
 
-connection.on("ShowError", function (errorMessage) {
+connection.on("ShowError", function (errorMessage, shouldReload = false) {
     window.alert(errorMessage);
+    if (shouldReload) {
+        window.location.reload();
+    }
 });

@@ -19,8 +19,8 @@ class SimpleGame {
                     }
                 },
 
-                scene: [Main,
-                    TestScene],
+                scene: [BallArena,
+                    Leaderboard],
 
                 scale: {
                     autoCenter: Phaser.Scale.Center.CENTER_BOTH,
@@ -30,7 +30,7 @@ class SimpleGame {
     }
 }
 
-class Main extends Phaser.Scene {
+class BallArena extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
     balls: Phaser.Physics.Arcade.Group;
     playerBalls: PlayerBall[] = [];
@@ -41,7 +41,7 @@ class Main extends Phaser.Scene {
 
 
     constructor() {
-        super({ key: 'Main', active: false });
+        super({ key: 'BallArena', active: false });
     }
 
     preload() {
@@ -116,7 +116,7 @@ class Main extends Phaser.Scene {
 
     finishScene() {
         this.scene.restart();
-        this.scene.switch("TestScene");
+        this.scene.switch("Leaderboard");
 
         // Invokes the call to the server
         connection.invoke("FinishRound", RoundLog).catch(function (err) {
@@ -125,12 +125,12 @@ class Main extends Phaser.Scene {
     }
 }
 
-class TestScene extends Phaser.Scene {
+class Leaderboard extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
     timer: Phaser.Time.TimerEvent;
 
     constructor() {
-        super({ key: 'TestScene', active: false, visible: false });
+        super({ key: 'Leaderboard', active: false, visible: false });
     }
     create() {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
@@ -148,7 +148,7 @@ class TestScene extends Phaser.Scene {
 
     sceneTransition() {
         this.scene.restart();
-        this.scene.switch("Main");
+        this.scene.switch("BallArena");
     }
 }
 

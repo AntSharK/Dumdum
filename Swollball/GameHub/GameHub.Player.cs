@@ -30,21 +30,8 @@ namespace Swollball
 
         public async Task ResumePlayerSession(string userName, string roomId)
         {
-            var room = GameLobby.Rooms.FirstOrDefault(r => r.RoomId == roomId);
-            if (room == null)
-            {
-                await Clients.Caller.SendAsync("ShowError", "Room not found.");
-                await Clients.Caller.SendAsync("ClearState");
-                return;
-            }
-
-            var player = room.Players.FirstOrDefault(p => p.Name == userName);
-            if (player == null)
-            {
-                await Clients.Caller.SendAsync("ShowError", "Could not find player in room.");
-                await Clients.Caller.SendAsync("ClearState");
-                return;
-            }
+            (var player, var room) = await this.FindPlayer(userName, roomId);
+            if (player == null) return;
 
             await Groups.RemoveFromGroupAsync(player.ConnectionId, roomId);
             player.ConnectionId = Context.ConnectionId;

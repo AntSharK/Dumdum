@@ -72,7 +72,20 @@ var UpdatePlayerList = function (players) {
     playerList.innerHTML = "";
     for (let i = 0; i < players.length; i++) {
         var li = document.createElement("li");
-        li.textContent = players[i].name;
+        li.textContent = players[i].name + "\t";
+        
+        var kickbutton = document.createElement("input");
+        kickbutton.type = "button";
+        kickbutton.value = "BOOT";
+        kickbutton.addEventListener("click", function (event) {
+            var sessionRoomId = sessionStorage.getItem(RoomIdSessionStorageKey);
+            connection.invoke("KickPlayer", sessionRoomId, players[i].name).catch(function (err) {
+                return console.error(err.toString());
+            });
+            event.preventDefault()
+        });
+
+        li.appendChild(kickbutton);
         playerList.appendChild(li);
     }
 
