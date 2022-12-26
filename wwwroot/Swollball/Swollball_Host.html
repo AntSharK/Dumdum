@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <script src="/lib/signalr/dist/browser/signalr.js"></script>
+    <script src="/phaser/phaser.js"></script>
+    <script src="/js/Swollball_Lobby_App.js"></script>
+    <meta charset="utf-8" />
+    <title>SWOLLBALL HOST</title>
+</head>
+<body>
+    <div id="pageName" class="display-4" style="text-decoration:underline; text-align:center">CREATE GAME</div>
+
+    <div class="state" id="startLobby" style="display:none">
+        <div id="lobbyplayercount" class="h3"><u>0 PLAYERS IN GAME</u></div>
+        <ul id="lobbyList" class="h4"></ul>
+        <div style="text-align:center" class="display-2"><input type="button" id="startbutton"  value="BEGIN GAME"/><br /><br /></div>
+    </div>
+    <div class="row">&nbsp;</div>
+
+    <div class="state" id="joinroom">
+        <div style="text-align:center" class="display-4">
+            Room ID automatically generated on creation
+        </div>
+        <div style="text-align:center" class="display-1">
+            <input type="button" id="createroombutton" value="CREATE" />
+        </div>
+    </div>
+
+</body>
+</html>
+<script src="common.js"></script>
+<script src="gamelobby.js"></script>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>

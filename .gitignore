@@ -2,3 +2,7 @@
 /obj
 /wwwroot/js
 /.vs
+*.pdb
+*.dll
+/Swollball/bin
+/Swollball/obj
