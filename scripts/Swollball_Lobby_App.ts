@@ -196,16 +196,15 @@ function InitializeBallData(dataIn: any[]) {
 }
 
 function StartNextRound() {
+    // Assume the game isn't restarting - only works if transitioning from the Leaderboard scene
     var scene = Game.game.scene.getScene("Leaderboard");
-    scene.scene.restart();
+    if (scene.scene.isActive) { 
+        scene.scene.restart();
+    }
     scene.scene.switch("BallArena");
 }
 
 function InitializeLeaderboardData(dataIn: any[]) {
-    var scene = Game.game.scene.getScene("BallArena");
-    scene.scene.restart();
-    scene.scene.switch("Leaderboard");
-
     RoundScoreData = [];
     for (let data of dataIn) {
         var serverData = new ServerRoundScoreData();
@@ -217,6 +216,13 @@ function InitializeLeaderboardData(dataIn: any[]) {
 
         RoundScoreData.push(serverData);
     }
+
+    // Assume the game isn't restarting - this only works if there is a transition
+    var scene = Game.game.scene.getScene("BallArena");
+    if (scene.scene.isActive) {
+        scene.scene.restart();
+    }
+    scene.scene.switch("Leaderboard");
 }
 
 class ServerBallData {

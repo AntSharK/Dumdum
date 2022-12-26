@@ -80,6 +80,16 @@ namespace Swollball
                 case GameRoom.RoomState.SettingUp:
                     await Clients.Caller.SendAsync("Reconnect_ResumeRoomSetup", room);
                     break;
+                case GameRoom.RoomState.Arena:
+                    await Clients.Caller.SendAsync("UpdateBalls", room.Players.Values.Select(p => p.Ball));
+                    await Clients.Caller.SendAsync("StartGame");
+                    break;
+                case GameRoom.RoomState.Leaderboard:
+                    // TODO: This isn't properly working yet
+                    await Clients.Caller.SendAsync("StartGame");
+                    await Clients.Caller.SendAsync("DisplayLeaderboard", room.Players.Values.Select(s => s.PlayerScore));
+                    break;
+
             }
         }
     }
