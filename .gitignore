@@ -4,5 +4,5 @@
 /.vs
 *.pdb
 *.dll
-/Swollball/bin
-/Swollball/obj
+/Swollball/bin/
+/Swollball/obj/
