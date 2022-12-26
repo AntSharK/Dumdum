@@ -63,7 +63,7 @@ namespace Swollball
             foreach (var roundEvent in roundEvents)
             {
                 this.Players[roundEvent.AttackerId].PlayerScore.RoundDamageDone += roundEvent.DamageDone;
-                this.Players[roundEvent.ReceiverId].PlayerScore.RoundDamageReceived += roundEvent.DamageDone / 2;
+                this.Players[roundEvent.ReceiverId].PlayerScore.RoundDamageReceived += roundEvent.DamageDone;
             }
 
             foreach (var player in this.Players.Values)
