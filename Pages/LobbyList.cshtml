@@ -1,11 +1,11 @@
 ﻿@page
 @model Dumdum.LobbyListModel
 @{
-    <th>Room ID</th>
-    <th>Updated Time</th>
-    <th>Player Count</th>
-    <th>Round Number</th>
     <table border="1">
+        <th>Room ID</th>
+        <th>Updated Time</th>
+        <th>Player Count</th>
+        <th>Round Number</th>
         @foreach (var room in Model.Rooms)
         {
             <tr>
