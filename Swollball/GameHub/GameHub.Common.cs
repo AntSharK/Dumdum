@@ -4,7 +4,12 @@ namespace Swollball
 {
     public partial class GameHub : Hub
     {
-        private static Lobby GameLobby = new Lobby();
+        private Lobby GameLobby;
+
+        public GameHub(Lobby lobby)
+        {
+            this.GameLobby = lobby;
+        }
 
         /// <inheritdoc />
         public override async Task OnConnectedAsync()
@@ -29,14 +34,14 @@ namespace Swollball
 
         private async Task<(Player?, GameRoom?)> FindPlayerAndRoom(string userName, string roomId)
         {
-            if (!GameLobby.Rooms.ContainsKey(roomId))
+            if (!this.GameLobby.Rooms.ContainsKey(roomId))
             {
                 await Clients.Caller.SendAsync("ShowError", "Room not found.");
                 await Clients.Caller.SendAsync("ClearState");
                 return (null, null);
             }
 
-            var room = GameLobby.Rooms[roomId];
+            var room = this.GameLobby.Rooms[roomId];
             if (userName == null)
             {
                 return (null, room);

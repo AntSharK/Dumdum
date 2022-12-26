@@ -1,0 +1,20 @@
+﻿@page
+@model Dumdum.LobbyListModel
+@{
+    <th>Room ID</th>
+    <th>Updated Time</th>
+    <th>Player Count</th>
+    <th>Round Number</th>
+    <table border="1">
+        @foreach (var room in Model.Rooms)
+        {
+            <tr>
+                <th>@room.Item1</th>
+                <th>@room.Item2.ToString()</th>
+                <th>@room.Item3.ToString()</th>
+                <th>@room.Item4.ToString()</th>
+            </tr>
+        }
+    </table>
+    <br />
+}

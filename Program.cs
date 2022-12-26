@@ -1,5 +1,6 @@
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSignalR();
+builder.Services.AddSingleton<Swollball.Lobby>();
 
 var app = builder.Build();
 
