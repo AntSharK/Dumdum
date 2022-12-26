@@ -29,10 +29,10 @@ namespace Swollball
             return true;
         }
 
-        public static string GenerateId(int totalLength, IEnumerable<string> existingIds)
+        public static string? GenerateId(int totalLength, IEnumerable<string> existingIds)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            string id = null;
+            string? id = null;
             int tries = 0;
             while (tries < 300 &&
                 (id == null || existingIds.Contains(id)))

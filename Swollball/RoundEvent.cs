@@ -12,8 +12,8 @@ namespace Swollball
     /// </summary>
     public class RoundEvent
     {
-        public string AttackerId { get; set; }
-        public string ReceiverId { get; set; }
+        public string AttackerId { get; set; } = string.Empty;
+        public string ReceiverId { get; set; } = string.Empty;
         public int DamageDone { get; set; }
     }
 }

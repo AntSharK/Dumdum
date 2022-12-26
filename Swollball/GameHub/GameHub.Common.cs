@@ -16,6 +16,8 @@ namespace Swollball
         public async Task KickPlayer(string roomId, string playerId)
         {
             (var player, var room) = await this.FindPlayerAndRoom(playerId, roomId);
+            if (player == null || room == null) return;
+
             room.Players.Remove(player.Name);
 
             await Groups.RemoveFromGroupAsync(player.ConnectionId, roomId);

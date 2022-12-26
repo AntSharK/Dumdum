@@ -39,7 +39,7 @@ namespace Swollball
         /// The function to cleanup idle rooms
         /// </summary>
         /// <param name="state">The state object passed in by the timer</param>
-        private void Cleanup(object state)
+        private void Cleanup(object? state)
         {
             HashSet<string> roomsToDestroy = new HashSet<string>();
             foreach (var room in Rooms.Values)
