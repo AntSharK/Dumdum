@@ -12,8 +12,7 @@ namespace Swollball
         public string Name { get; private set; }
         public string ConnectionId { get; set; }
         public string RoomId { get; private set; }
-        public int Score { get; set; } = 0;
-        public int RoundScore { get; set; } = 0;
+        public Score PlayerScore { get; private set; } = new Score();
 
         public Player(string name, string connectionId, string roomName)
         {
@@ -39,6 +38,26 @@ namespace Swollball
 
                 return p.Name == this.Name
                     && p.RoomId == this.RoomId;
+            }
+        }
+        public class Score
+        {
+            public int TotalScore { get; set; } = 0;
+            public int RoundScore { get; set; } = 0;
+            public int RoundDamageDone { get; set; } = 0;
+            public int RoundDamageReceived { get; set; } = 0;
+
+            public void ResetRound()
+            {
+                this.RoundDamageReceived = 0;
+                this.RoundDamageDone = 0;
+                this.RoundScore = 0;
+            }
+
+            public void UpdateRound()
+            {
+                this.RoundScore = this.RoundScore + this.RoundDamageDone - this.RoundDamageReceived / 2;
+                this.TotalScore += this.RoundScore;
             }
         }
     }

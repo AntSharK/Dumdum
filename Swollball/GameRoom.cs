@@ -8,14 +8,6 @@ namespace Swollball
 {
     public class GameRoom
     {
-        public enum RoomState
-        {
-            SettingUp,
-            Arena,
-            Leaderboard,
-            TearingDown,
-        }
-
         public string RoomId { get; private set; }
         public string ConnectionId { get; set; }
         public Dictionary<string, Player> Players { get; private set; } = new Dictionary<string, Player>();
@@ -65,18 +57,18 @@ namespace Swollball
             this.State = RoomState.Leaderboard;
             foreach (var player in this.Players.Values)
             {
-                player.RoundScore = 0;
+                player.PlayerScore.ResetRound();
             }
 
             foreach (var roundEvent in roundEvents)
             {
-                this.Players[roundEvent.AttackerId].RoundScore += roundEvent.DamageDone;
-                this.Players[roundEvent.ReceiverId].RoundScore -= roundEvent.DamageDone / 2;
+                this.Players[roundEvent.AttackerId].PlayerScore.RoundDamageDone += roundEvent.DamageDone;
+                this.Players[roundEvent.ReceiverId].PlayerScore.RoundDamageReceived += roundEvent.DamageDone / 2;
             }
 
             foreach (var player in this.Players.Values)
             {
-                player.Score += player.RoundScore;
+                player.PlayerScore.UpdateRound();
             }
         }
 
@@ -95,6 +87,14 @@ namespace Swollball
             {
                 return g.RoomId == this.RoomId;
             }
+        }
+
+        public enum RoomState
+        {
+            SettingUp,
+            Arena,
+            Leaderboard,
+            TearingDown,
         }
     }
 }
