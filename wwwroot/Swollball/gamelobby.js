@@ -45,9 +45,13 @@ connection.on("UpdateBalls", function (ballData) {
     InitializeBallData(ballData);
 });
 
-connection.on("DisplayLeaderboard", function (leaderboardData) {
+connection.on("UpdateLeaderboard", function (leaderboardData) {
     InitializeLeaderboardData(leaderboardData);
 });
+
+connection.on("DisplayLeaderboard", function () {
+    SceneTransition("BallArena", "Leaderboard");
+})
 
 connection.on("StartGame", function () {
     document.body.innerHTML = "";
@@ -55,7 +59,7 @@ connection.on("StartGame", function () {
 });
 
 connection.on("StartNextRound", function () {
-    StartNextRound();
+    SceneTransition("Leaderboard", "BallArena");
 })
 
 /***

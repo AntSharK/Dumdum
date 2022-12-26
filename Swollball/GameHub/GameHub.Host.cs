@@ -60,7 +60,8 @@ namespace Swollball
             var room = GameLobby.Rooms[roomId];
             room.UpdateRoundEnd(roundEvents);
 
-            await Clients.Caller.SendAsync("DisplayLeaderboard", room.Players.Values.Select(s => s.PlayerScore));
+            await Clients.Caller.SendAsync("UpdateLeaderboard", room.Players.Values.Select(s => s.PlayerScore));
+            await Clients.Caller.SendAsync("DisplayLeaderboard");
         }
 
         public async Task ResumeHostSession(string roomId)
@@ -85,9 +86,9 @@ namespace Swollball
                     await Clients.Caller.SendAsync("StartGame");
                     break;
                 case GameRoom.RoomState.Leaderboard:
-                    // TODO: This isn't properly working yet
+                    // TODO: This isn't properly working yet - have to start the game with the leaderboard scene as active
                     await Clients.Caller.SendAsync("StartGame");
-                    await Clients.Caller.SendAsync("DisplayLeaderboard", room.Players.Values.Select(s => s.PlayerScore));
+                    await Clients.Caller.SendAsync("UpdateLeaderboard", room.Players.Values.Select(s => s.PlayerScore));
                     break;
 
             }
