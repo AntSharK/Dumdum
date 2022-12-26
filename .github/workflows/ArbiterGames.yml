@@ -2,7 +2,7 @@ name: Build and deploy .NET Core app to Windows WebApp ArbiterGames
 on:
   push:
     branches:
-    - Player-App
+    - main
 env:
   AZURE_WEBAPP_NAME: ArbiterGames
   AZURE_WEBAPP_PACKAGE_PATH: ./publish
