@@ -57,6 +57,7 @@ namespace Swollball
         {
             this.RoundNumber++;
             this.State = RoomState.Arena;
+            this.UpdatedTime = DateTime.UtcNow;
         }
 
         public void UpdateRoundEnd(RoundEvent[] roundEvents)

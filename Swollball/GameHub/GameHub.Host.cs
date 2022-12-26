@@ -7,7 +7,7 @@ namespace Swollball
     {
         public async Task CreateRoom()
         {
-            var newRoom = GameLobby.CreateRoom(Context.ConnectionId);
+            var newRoom = this.GameLobby.CreateRoom(Context.ConnectionId);
             if (newRoom != null)
             {
                 await Clients.Caller.SendAsync("CreateRoom_GetId", newRoom.RoomId);
@@ -20,13 +20,13 @@ namespace Swollball
 
         public async Task StartRoom(string roomId)
         {
-            if (!GameLobby.Rooms.ContainsKey(roomId))
+            if (!this.GameLobby.Rooms.ContainsKey(roomId))
             {
                 await Clients.Caller.SendAsync("ShowError", "ERROR STARTING ROOM - Cannot find Room ID.");
                 return;
             }
 
-            var roomToStart = GameLobby.Rooms[roomId];
+            var roomToStart = this.GameLobby.Rooms[roomId];
             roomToStart.StartGame();
             await Clients.Caller.SendAsync("UpdateBalls", roomToStart.Players.Values.Select(p => p.Ball));
             await Clients.Caller.SendAsync("StartGame");
@@ -35,13 +35,13 @@ namespace Swollball
 
         public async Task StartNextRound(string roomId)
         {
-            if (!GameLobby.Rooms.ContainsKey(roomId))
+            if (!this.GameLobby.Rooms.ContainsKey(roomId))
             {
                 await Clients.Caller.SendAsync("ShowError", "ERROR STARTING ROOM - Cannot find Room ID.");
                 return;
             }
 
-            var roomToStart = GameLobby.Rooms[roomId];
+            var roomToStart = this.GameLobby.Rooms[roomId];
             roomToStart.StartNextRound();
             await Clients.Caller.SendAsync("UpdateBalls", roomToStart.Players.Values.Select(p => p.Ball));
             await Clients.Caller.SendAsync("SceneTransition", "Leaderboard", "BallArena");
@@ -50,14 +50,14 @@ namespace Swollball
 
         public async Task FinishRound(RoundEvent[] roundEvents, string roomId)
         {
-            if (!GameLobby.Rooms.ContainsKey(roomId))
+            if (!this.GameLobby.Rooms.ContainsKey(roomId))
             {
                 await Clients.Caller.SendAsync("ShowError", "Room not found.");
                 await Clients.Caller.SendAsync("ClearState");
                 return;
             }
 
-            var room = GameLobby.Rooms[roomId];
+            var room = this.GameLobby.Rooms[roomId];
             room.UpdateRoundEnd(roundEvents);
 
             await Clients.Caller.SendAsync("UpdateLeaderboard", room.Players.Values.Select(s => s.PlayerScore));
@@ -66,14 +66,14 @@ namespace Swollball
 
         public async Task ResumeHostSession(string roomId)
         {
-            if (!GameLobby.Rooms.ContainsKey(roomId))
+            if (!this.GameLobby.Rooms.ContainsKey(roomId))
             {
                 await Clients.Caller.SendAsync("ShowError", "ERROR RESUMING ROOM.");
                 await Clients.Caller.SendAsync("ClearState");
                 return;
             }
 
-            var room = GameLobby.Rooms[roomId];
+            var room = this.GameLobby.Rooms[roomId];
             room.ConnectionId = Context.ConnectionId;
 
             switch(room.State)
