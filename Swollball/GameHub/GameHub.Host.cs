@@ -20,20 +20,16 @@ namespace Swollball
 
         public async Task StartRoom(string roomId)
         {
-            if (roomId == null)
+            if (!GameLobby.Rooms.ContainsKey(roomId))
             {
                 await Clients.Caller.SendAsync("ShowError", "ERROR STARTING ROOM - No Room ID sent.");
                 return;
             }
 
-            var roomToStart = GameLobby.Rooms.FirstOrDefault(r => r.RoomId == roomId);
+            var roomToStart = GameLobby.Rooms[roomId];
             if (roomToStart == null)
             {
-                roomToStart = GameLobby.Rooms.FirstOrDefault(r => r.ConnectionId == Context.ConnectionId);
-            }
-            if (roomToStart == null)
-            {
-                await Clients.Caller.SendAsync("ShowError", "ERROR STARTING ROOM - Cannot find connection or Room ID.");
+                await Clients.Caller.SendAsync("ShowError", "ERROR STARTING ROOM - Cannot find Room ID.");
                 return;
             }
 
@@ -43,16 +39,16 @@ namespace Swollball
             await Clients.Group(roomToStart.RoomId).SendAsync("StartGame");
         }
 
-        public async Task FinishRound(RoundEvent[] roundEvents)
+        public async Task FinishRound(RoundEvent[] roundEvents, string roomId)
         {
-            var room = GameLobby.Rooms.FirstOrDefault(r => r.ConnectionId == Context.ConnectionId);
-            if (room == null)
+            if (!GameLobby.Rooms.ContainsKey(roomId))
             {
                 await Clients.Caller.SendAsync("ShowError", "Room not found.");
                 await Clients.Caller.SendAsync("ClearState");
                 return;
             }
 
+            var room = GameLobby.Rooms[roomId];
             room.UpdateRoundEnd(roundEvents);
             
             // TODO: Tell client to switch view
@@ -60,14 +56,14 @@ namespace Swollball
 
         public async Task ResumeHostSession(string roomId)
         {
-            var room = GameLobby.Rooms.FirstOrDefault(r => r.RoomId == roomId);
-            if (room == null)
+            if (!GameLobby.Rooms.ContainsKey(roomId))
             {
                 await Clients.Caller.SendAsync("ShowError", "ERROR RESUMING ROOM.");
                 await Clients.Caller.SendAsync("ClearState");
                 return;
             }
 
+            var room = GameLobby.Rooms[roomId];
             room.ConnectionId = Context.ConnectionId;
 
             switch(room.State)

@@ -12,7 +12,7 @@ namespace Swollball
         private const int CLEANUPINTERVAL = 120000;
         private Timer cleanupTimer;
 
-        public HashSet<GameRoom> Rooms { get; private set; } = new HashSet<GameRoom>();
+        public Dictionary<string, GameRoom> Rooms { get; private set; } = new Dictionary<string, GameRoom>();
 
         public Lobby()
         {
@@ -22,7 +22,7 @@ namespace Swollball
         public GameRoom? CreateRoom(string connectionId)
         {
             const int ROOMIDLENGTH = 5;
-            var allKeys = this.Rooms.Select(g => g.RoomId);
+            var allKeys = this.Rooms.Keys;
             var roomId = Utils.GenerateId(ROOMIDLENGTH, allKeys);
 
             if (roomId == null)
@@ -31,7 +31,7 @@ namespace Swollball
             }
 
             var newRoom = new GameRoom(roomId, connectionId);
-            this.Rooms.Add(newRoom);
+            this.Rooms[roomId] = newRoom;
             return newRoom;
         }
 
@@ -41,12 +41,12 @@ namespace Swollball
         /// <param name="state">The state object passed in by the timer</param>
         private void Cleanup(object state)
         {
-            HashSet<GameRoom> roomsToDestroy = new HashSet<GameRoom>();
-            foreach (var room in Rooms)
+            HashSet<string> roomsToDestroy = new HashSet<string>();
+            foreach (var room in Rooms.Values)
             {
                 if ((DateTime.UtcNow - room.UpdatedTime).TotalMinutes > MAXROOMIDLEMINUTES)
                 {
-                    roomsToDestroy.Add(room);
+                    roomsToDestroy.Add(room.RoomId);
                 }
             }
 

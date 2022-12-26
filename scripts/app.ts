@@ -119,7 +119,8 @@ class BallArena extends Phaser.Scene {
         this.scene.switch("Leaderboard");
 
         // Invokes the call to the server
-        connection.invoke("FinishRound", RoundLog).catch(function (err) {
+        var sessionRoomId = sessionStorage.getItem("roomid");
+        connection.invoke("FinishRound", RoundLog, sessionRoomId).catch(function (err) {
             return console.error(err.toString());
         });
     }

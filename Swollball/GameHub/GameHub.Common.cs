@@ -27,14 +27,14 @@ namespace Swollball
 
         private async Task<(Player?, GameRoom?)> FindPlayerAndRoom(string userName, string roomId)
         {
-            var room = GameLobby.Rooms.FirstOrDefault(r => r.RoomId == roomId);
-            if (room == null)
+            if (!GameLobby.Rooms.ContainsKey(roomId))
             {
                 await Clients.Caller.SendAsync("ShowError", "Room not found.");
                 await Clients.Caller.SendAsync("ClearState");
                 return (null, null);
             }
 
+            var room = GameLobby.Rooms[roomId];
             if (userName == null)
             {
                 return (null, room);

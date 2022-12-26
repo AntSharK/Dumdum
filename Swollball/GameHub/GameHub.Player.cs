@@ -6,13 +6,13 @@ namespace Swollball
     {
         public async Task JoinRoom(string userName, string roomId, string colorIn)
         {
-            var room = GameLobby.Rooms.FirstOrDefault(r => r.RoomId == roomId);
-            if (room == null)
+            if (!GameLobby.Rooms.ContainsKey(roomId))
             {
                 await Clients.Caller.SendAsync("ShowError", "Room not found.");
                 return;
             }
 
+            var room = GameLobby.Rooms[roomId];
             var player = room.CreatePlayer(userName, Context.ConnectionId);
             if (player == null)
             {
