@@ -1,13 +1,13 @@
 ﻿declare var BallData: ServerBallData[];
 declare var RoundScoreData: ServerRoundScoreData[];
 declare var RoundLog: RoundEvent[];
-declare var Game: SimpleGame;
+declare var Game: Swollball_Lobby_Game;
 declare var connection;
 
 /* 
 GAME SCENES
  * */
-class SimpleGame {
+class Swollball_Lobby_Game {
     game: Phaser.Game;
     constructor(sceneToStartOn: string) {
         var scenesToUse = [BallArena, Leaderboard];
@@ -33,7 +33,7 @@ class SimpleGame {
                 },
 
                 scene: scenesToUse,
-                backgroundColor: '#d5d5d5',
+                backgroundColor: '#000000',
 
                 scale: {
                     autoCenter: Phaser.Scale.Center.CENTER_BOTH,

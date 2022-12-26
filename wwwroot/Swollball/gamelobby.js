@@ -51,7 +51,7 @@ connection.on("UpdateLeaderboard", function (leaderboardData) {
 
 connection.on("StartGame", function (sceneToStartOn = "BallArena") {
     document.body.innerHTML = "";
-    Game = new SimpleGame(sceneToStartOn);
+    Game = new Swollball_Lobby_Game(sceneToStartOn);
 });
 
 connection.on("StartNextRound", function () {
