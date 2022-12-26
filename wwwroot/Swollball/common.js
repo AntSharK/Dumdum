@@ -17,3 +17,7 @@ connection.on("ShowError", function (errorMessage, shouldReload = false) {
         window.location.reload();
     }
 });
+
+connection.on("SceneTransition", function (sceneFrom, sceneTo) {
+    SceneTransition(sceneFrom, sceneTo);
+})

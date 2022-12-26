@@ -49,10 +49,6 @@ connection.on("UpdateLeaderboard", function (leaderboardData) {
     InitializeLeaderboardData(leaderboardData);
 });
 
-connection.on("DisplayLeaderboard", function () {
-    SceneTransition("BallArena", "Leaderboard");
-})
-
 connection.on("StartGame", function () {
     document.body.innerHTML = "";
     Game = new SimpleGame();

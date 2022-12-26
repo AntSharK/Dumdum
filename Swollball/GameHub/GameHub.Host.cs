@@ -44,7 +44,7 @@ namespace Swollball
             var roomToStart = GameLobby.Rooms[roomId];
             roomToStart.StartNextRound();
             await Clients.Caller.SendAsync("UpdateBalls", roomToStart.Players.Values.Select(p => p.Ball));
-            await Clients.Caller.SendAsync("StartNextRound");
+            await Clients.Caller.SendAsync("SceneTransition", "Leaderboard", "BallArena");
             await Clients.Group(roomToStart.RoomId).SendAsync("StartNextRound");
         }
 
@@ -61,7 +61,7 @@ namespace Swollball
             room.UpdateRoundEnd(roundEvents);
 
             await Clients.Caller.SendAsync("UpdateLeaderboard", room.Players.Values.Select(s => s.PlayerScore));
-            await Clients.Caller.SendAsync("DisplayLeaderboard");
+            await Clients.Caller.SendAsync("SceneTransition", "BallArena", "Leaderboard");
         }
 
         public async Task ResumeHostSession(string roomId)
@@ -86,9 +86,8 @@ namespace Swollball
                     await Clients.Caller.SendAsync("StartGame");
                     break;
                 case GameRoom.RoomState.Leaderboard:
-                    // TODO: This isn't properly working yet - have to start the game with the leaderboard scene as active
-                    await Clients.Caller.SendAsync("StartGame");
                     await Clients.Caller.SendAsync("UpdateLeaderboard", room.Players.Values.Select(s => s.PlayerScore));
+                    await Clients.Caller.SendAsync("StartGame");
                     break;
 
             }

@@ -210,13 +210,14 @@ function InitializeLeaderboardData(dataIn: any[]) {
 }
 
 function SceneTransition(sceneFrom: string, sceneTo: string) {
+    var activeScene = Game.game.scene.getScene(sceneFrom);
+    activeScene.scene.restart();
+    var nextScene = Game.game.scene.getScene(sceneTo);
+    if (nextScene.scene.isActive) {
+        nextScene.scene.restart();
+    }
 
-    // Assume the game isn't restarting - this only works if there is a transition
-    var scene = Game.game.scene.getScene(sceneFrom);
-    scene.scene.restart();
-
-    // Note that this runs into issues where the wrong scene is initialized - we want scenes to be initialized after data is populated
-    scene.scene.switch(sceneTo);
+    activeScene.scene.switch(sceneTo);
 }
 
 class ServerBallData {
