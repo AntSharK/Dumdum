@@ -10,6 +10,7 @@ namespace Swollball
     {
         public string RoomId { get; private set; }
         public string ConnectionId { get; set; }
+        public int RoundNumber { get; private set; } = 1;
         public Dictionary<string, Player> Players { get; private set; } = new Dictionary<string, Player>();
         public DateTime UpdatedTime { get; private set; } = DateTime.UtcNow;
         public RoomState State { get; private set; } = RoomState.SettingUp;
@@ -49,6 +50,12 @@ namespace Swollball
 
         public void StartGame()
         {
+            this.State = RoomState.Arena;
+        }
+
+        public void StartNextRound()
+        {
+            this.RoundNumber++;
             this.State = RoomState.Arena;
         }
 

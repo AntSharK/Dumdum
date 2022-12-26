@@ -35,20 +35,28 @@ connection.on("CreateRoom_GetId", function (roomId) {
 connection.on("Reconnect_ResumeRoomSetup", function (room) {
     SwitchToHostView(room.roomId);
     UpdatePlayerList(room.players);
-})
+});
 
 connection.on("HostUpdateRoom", function (room) {
     UpdatePlayerList(room.players);
-})
+});
 
 connection.on("UpdateBalls", function (ballData) {
     InitializeBallData(ballData);
-})
+});
+
+connection.on("DisplayLeaderboard", function (leaderboardData) {
+    InitializeLeaderboardData(leaderboardData);
+});
 
 connection.on("StartGame", function () {
     document.body.innerHTML = "";
     Game = new SimpleGame();
 });
+
+connection.on("StartNextRound", function () {
+    StartNextRound();
+})
 
 /***
 VIEW CHANGES

@@ -47,6 +47,11 @@ connection.on("StartGame", function (playersConcat, userJoined) {
     var game = new Swollball_Player_Game();
 });
 
+connection.on("StartNextRound", function () {
+    // TODO: Begin next round of watching stuff
+    console.log("Starting next round");
+});
+
 
 /***
 VIEW CHANGES

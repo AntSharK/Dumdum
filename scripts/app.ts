@@ -1,8 +1,12 @@
-﻿declare var BallData: ServerData[];
+﻿declare var BallData: ServerBallData[];
+declare var RoundScoreData: ServerRoundScoreData[];
 declare var RoundLog: RoundEvent[];
 declare var Game: SimpleGame;
 declare var connection;
 
+/* 
+GAME SCENES
+ * */
 class SimpleGame {
     game: Phaser.Game;
     constructor() {
@@ -30,15 +34,18 @@ class SimpleGame {
     }
 }
 
+/* 
+GAME SCENES - BALL ARENA
+ * */
 class BallArena extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
     balls: Phaser.Physics.Arcade.Group;
     playerBalls: PlayerBall[] = [];
     arena: Arena;
 
+    // Timer things
     roundTimer: Phaser.Time.TimerEvent;
     timeLeftDisplay: Phaser.GameObjects.Text;
-
 
     constructor() {
         super({ key: 'BallArena', active: false });
@@ -51,6 +58,7 @@ class BallArena extends Phaser.Scene {
     create() {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
 
+        // Initialize timer
         const ROUNDDURATIONSECONDS = 10;
         this.roundTimer = new Phaser.Time.TimerEvent({ delay: ROUNDDURATIONSECONDS * 1000, callback: this.finishScene, callbackScope: this });
         this.time.addEvent(this.roundTimer);
@@ -115,10 +123,6 @@ class BallArena extends Phaser.Scene {
     }
 
     finishScene() {
-        this.scene.restart();
-        this.scene.switch("Leaderboard");
-
-        // Invokes the call to the server
         var sessionRoomId = sessionStorage.getItem("roomid");
         connection.invoke("FinishRound", RoundLog, sessionRoomId).catch(function (err) {
             return console.error(err.toString());
@@ -126,39 +130,59 @@ class BallArena extends Phaser.Scene {
     }
 }
 
+/* 
+GAME SCENES - LEADERBOARD
+ * */
 class Leaderboard extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
-    timer: Phaser.Time.TimerEvent;
+
+    // Timer things
+    roundTimer: Phaser.Time.TimerEvent;
+    timeLeftDisplay: Phaser.GameObjects.Text;
 
     constructor() {
         super({ key: 'Leaderboard', active: false, visible: false });
     }
     create() {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
-        this.add.text(0, 0, "TEST SCREEN TRANSITION", { color: 'White' });
 
-        this.timer = new Phaser.Time.TimerEvent({ delay: 2000, callback: this.sceneTransition, callbackScope: this });
-        this.time.addEvent(this.timer);
+        // Initialize timer
+        const ROUNDDURATIONSECONDS = 5;
+        this.roundTimer = new Phaser.Time.TimerEvent({ delay: ROUNDDURATIONSECONDS * 1000, callback: this.finishScene, callbackScope: this });
+        this.time.addEvent(this.roundTimer);
+        this.timeLeftDisplay = this.add.text(0, 0, ROUNDDURATIONSECONDS.toString(), { color: 'White' });
+        var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
+        this.timeLeftDisplay.scale = boundingDimension * 0.005;
+
+        var i = 0;
+        for (let scoreData of RoundScoreData) {
+            this.add.text(100, 100*i, scoreData.PlayerName + " - " + scoreData.TotalScore + " - " + scoreData.RoundScore,
+                { color: 'White' });
+            i++;
+        }
     }
 
     update() {
-        this.graphics.lineStyle(50, 0xFF00FF);
-        this.graphics.fillStyle(0xFF0000);
-        this.graphics.fillCircle(400 + this.timer.elapsed % 400, 400 + this.timer.elapsed % 400, 150);
+        this.timeLeftDisplay.text = Math.ceil(this.roundTimer.getRemainingSeconds()).toString();
     }
 
-    sceneTransition() {
-        this.scene.restart();
-        this.scene.switch("BallArena");
+    finishScene() {
+        var sessionRoomId = sessionStorage.getItem("roomid");
+        connection.invoke("StartNextRound", sessionRoomId).catch(function (err) {
+            return console.error(err.toString());
+        });
     }
 }
 
+/* 
+RECEIVE DATA FROM SERVER AND SEND STUFF BACK TO SERVER
+ * */
 function InitializeBallData(dataIn: any[]) {
     BallData = [];
     RoundLog = [];
 
     for (let data of dataIn) {
-        var serverData = new ServerData();
+        var serverData = new ServerBallData();
         serverData.Armor = data.armor;
         serverData.Color = data.color;
         serverData.Damage = data.dmg;
@@ -171,6 +195,63 @@ function InitializeBallData(dataIn: any[]) {
     }
 }
 
+function StartNextRound() {
+    var scene = Game.game.scene.getScene("Leaderboard");
+    scene.scene.restart();
+    scene.scene.switch("BallArena");
+}
+
+function InitializeLeaderboardData(dataIn: any[]) {
+    var scene = Game.game.scene.getScene("BallArena");
+    scene.scene.restart();
+    scene.scene.switch("Leaderboard");
+
+    RoundScoreData = [];
+    for (let data of dataIn) {
+        var serverData = new ServerRoundScoreData();
+        serverData.PlayerName = data.playerName;
+        serverData.TotalScore = data.totalScore;
+        serverData.RoundScore = data.roundScore;
+        serverData.RoundDamageDone = data.roundDamageDone;
+        serverData.RoundDamageReceived = data.roundDamageReceived;
+
+        RoundScoreData.push(serverData);
+    }
+}
+
+class ServerBallData {
+    SizeMultiplier: number;
+    VelocityMultiplier: number;
+    Damage: integer;
+    Armor: integer;
+    Color: number;
+    Hp: integer;
+    Name: string;
+}
+
+class ServerRoundScoreData {
+    TotalScore: integer;
+    RoundScore: integer;
+    RoundDamageDone: integer;
+    RoundDamageReceived: integer;
+    PlayerName: string;
+}
+
+class RoundEvent {
+    AttackerId: string;
+    ReceiverId: string;
+    DamageDone: integer;
+
+    constructor(attacker: string, receiver: string, damage: number) {
+        this.AttackerId = attacker;
+        this.ReceiverId = receiver;
+        this.DamageDone = damage;
+    }
+}
+
+/*
+HELPERS FOR GAME LOGIC
+ * */
 class PlayerBall extends Phaser.Physics.Arcade.Sprite {
     Size: number;
     Color: number;
@@ -179,16 +260,6 @@ class PlayerBall extends Phaser.Physics.Arcade.Sprite {
     Hp: integer;
     MaxHp: integer;
     Text: Phaser.GameObjects.Text;
-}
-
-class ServerData {
-    SizeMultiplier: number;
-    VelocityMultiplier: number;
-    Damage: integer;
-    Armor: integer;
-    Color: number;
-    Hp: integer;
-    Name: string;
 }
 
 function DisableBall(ball: PlayerBall) {
@@ -296,16 +367,4 @@ function DrawArena(graphics: Phaser.GameObjects.Graphics, arena: Arena) {
     graphics.fillStyle(0xFFFFFF);
     graphics.strokeCircle(arena.XPos, arena.YPos, arena.Radius)
     graphics.fillCircle(arena.XPos, arena.YPos, arena.Radius);
-}
-
-class RoundEvent {
-    AttackerId: string;
-    ReceiverId: string;
-    DamageDone: integer;
-
-    constructor(attacker: string, receiver: string, damage: number) {
-        this.AttackerId = attacker;
-        this.ReceiverId = receiver;
-        this.DamageDone = damage;
-    }
 }

@@ -12,13 +12,14 @@ namespace Swollball
         public string Name { get; private set; }
         public string ConnectionId { get; set; }
         public string RoomId { get; private set; }
-        public Score PlayerScore { get; private set; } = new Score();
+        public Score PlayerScore { get; private set; }
 
         public Player(string name, string connectionId, string roomName)
         {
             this.Name = name;
             this.ConnectionId = connectionId;
             this.RoomId = roomName;
+            this.PlayerScore = new Score(this.Name);
             this.Ball = new Ball(this.Name);
         }
 
@@ -46,6 +47,12 @@ namespace Swollball
             public int RoundScore { get; set; } = 0;
             public int RoundDamageDone { get; set; } = 0;
             public int RoundDamageReceived { get; set; } = 0;
+            public string PlayerName { get; private set; }
+
+            public Score(string name)
+            {
+                this.PlayerName = name;
+            }
 
             public void ResetRound()
             {
