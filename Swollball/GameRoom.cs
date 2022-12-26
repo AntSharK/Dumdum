@@ -11,13 +11,14 @@ namespace Swollball
         public enum RoomState
         {
             SettingUp,
-            Playing,
-            TearingDown
+            Arena,
+            Leaderboard,
+            TearingDown,
         }
 
         public string RoomId { get; private set; }
         public string ConnectionId { get; set; }
-        public HashSet<Player> Players { get; private set; } = new HashSet<Player>();
+        public Dictionary<string, Player> Players { get; private set; } = new Dictionary<string, Player>();
         public DateTime UpdatedTime { get; private set; } = DateTime.UtcNow;
         public RoomState State { get; private set; } = RoomState.SettingUp;
 
@@ -31,7 +32,7 @@ namespace Swollball
             tp.Ball.Color = 11745079;
             var tp2 = this.CreatePlayer("RANDARA", "YAYA");
             tp2.Ball.Color = 11045079;
-            tp2.Ball.Dmg = 4;
+            tp2.Ball.Dmg = 2;
             tp2.Ball.SpeedMultiplier = 1.5f;
             tp2.Ball.SizeMultiplier = 1.1f;
             var tp3 = this.CreatePlayer("LCBATA", "BARA");
@@ -45,18 +46,38 @@ namespace Swollball
         public Player? CreatePlayer(string playerName, string connectionId)
         {
             var newPlayer = new Player(playerName, connectionId, this.RoomId);
-            if (Players.Contains(newPlayer))
+            if (this.Players.ContainsKey(playerName))
             {
                 return null;
             }
 
-            Players.Add(newPlayer);
+            this.Players[playerName] = newPlayer;
             return newPlayer;
         }
 
         public void StartGame()
         {
-            this.State = RoomState.Playing;
+            this.State = RoomState.Arena;
+        }
+
+        public void UpdateRoundEnd(RoundEvent[] roundEvents)
+        {
+            this.State = RoomState.Leaderboard;
+            foreach (var player in this.Players.Values)
+            {
+                player.RoundScore = 0;
+            }
+
+            foreach (var roundEvent in roundEvents)
+            {
+                this.Players[roundEvent.AttackerId].RoundScore += roundEvent.DamageDone;
+                this.Players[roundEvent.ReceiverId].RoundScore -= roundEvent.DamageDone / 2;
+            }
+
+            foreach (var player in this.Players.Values)
+            {
+                player.Score += player.RoundScore;
+            }
         }
 
         public override int GetHashCode()

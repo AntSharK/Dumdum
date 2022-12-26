@@ -68,18 +68,21 @@ var SwitchToHostView = function (sessionRoomId) {
 }
 
 var UpdatePlayerList = function (players) {
+    var playerCount = 0;
     var playerList = document.getElementById("lobbyList");
     playerList.innerHTML = "";
-    for (let i = 0; i < players.length; i++) {
+    for (var key in players) {
+        playerCount++;
+        var player = players[key];
         var li = document.createElement("li");
-        li.textContent = players[i].name + "\t";
+        li.textContent = player.name + "\t";
         
         var kickbutton = document.createElement("input");
         kickbutton.type = "button";
         kickbutton.value = "BOOT";
         kickbutton.addEventListener("click", function (event) {
             var sessionRoomId = sessionStorage.getItem(RoomIdSessionStorageKey);
-            connection.invoke("KickPlayer", sessionRoomId, players[i].name).catch(function (err) {
+            connection.invoke("KickPlayer", sessionRoomId, player.name).catch(function (err) {
                 return console.error(err.toString());
             });
             event.preventDefault()
@@ -89,5 +92,5 @@ var UpdatePlayerList = function (players) {
         playerList.appendChild(li);
     }
 
-    document.getElementById("lobbyplayercount").textContent = players.length + " PLAYERS JOINED";
+    document.getElementById("lobbyplayercount").textContent = playerCount + " PLAYERS JOINED";
 }

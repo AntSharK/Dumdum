@@ -30,7 +30,7 @@ namespace Swollball
 
         public async Task ResumePlayerSession(string userName, string roomId)
         {
-            (var player, var room) = await this.FindPlayer(userName, roomId);
+            (var player, var room) = await this.FindPlayerAndRoom(userName, roomId);
             if (player == null) return;
 
             await Groups.RemoveFromGroupAsync(player.ConnectionId, roomId);

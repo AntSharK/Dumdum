@@ -12,6 +12,8 @@ namespace Swollball
         public string Name { get; private set; }
         public string ConnectionId { get; set; }
         public string RoomId { get; private set; }
+        public int Score { get; set; } = 0;
+        public int RoundScore { get; set; } = 0;
 
         public Player(string name, string connectionId, string roomName)
         {

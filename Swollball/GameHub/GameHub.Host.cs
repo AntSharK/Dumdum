@@ -38,14 +38,24 @@ namespace Swollball
             }
 
             roomToStart.StartGame();
-            await Clients.Caller.SendAsync("UpdateBalls", roomToStart.Players.Select(p => p.Ball));
+            await Clients.Caller.SendAsync("UpdateBalls", roomToStart.Players.Values.Select(p => p.Ball));
             await Clients.Caller.SendAsync("StartGame");
             await Clients.Group(roomToStart.RoomId).SendAsync("StartGame");
         }
 
         public async Task FinishRound(RoundEvent[] roundEvents)
         {
-            // Do nothing for now
+            var room = GameLobby.Rooms.FirstOrDefault(r => r.ConnectionId == Context.ConnectionId);
+            if (room == null)
+            {
+                await Clients.Caller.SendAsync("ShowError", "Room not found.");
+                await Clients.Caller.SendAsync("ClearState");
+                return;
+            }
+
+            room.UpdateRoundEnd(roundEvents);
+            
+            // TODO: Tell client to switch view
         }
 
         public async Task ResumeHostSession(string roomId)
