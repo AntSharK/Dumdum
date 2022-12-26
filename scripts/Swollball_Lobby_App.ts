@@ -9,7 +9,16 @@ GAME SCENES
  * */
 class SimpleGame {
     game: Phaser.Game;
-    constructor() {
+    constructor(sceneToStartOn: string) {
+        var scenesToUse = [BallArena, Leaderboard];
+        switch (sceneToStartOn) {
+            case "BallArena":
+                break;
+            case "Leaderboard":
+                scenesToUse = [Leaderboard, BallArena];
+                break;
+        }
+
         this.game = new Phaser.Game(
             {
                 width: "95%",
@@ -23,8 +32,8 @@ class SimpleGame {
                     }
                 },
 
-                scene: [BallArena,
-                    Leaderboard],
+                scene: scenesToUse,
+                backgroundColor: '#d5d5d5',
 
                 scale: {
                     autoCenter: Phaser.Scale.Center.CENTER_BOTH,
@@ -141,7 +150,7 @@ class Leaderboard extends Phaser.Scene {
     timeLeftDisplay: Phaser.GameObjects.Text;
 
     constructor() {
-        super({ key: 'Leaderboard', active: false, visible: false });
+        super({ key: 'Leaderboard', active: false });
     }
     create() {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
@@ -211,7 +220,6 @@ function InitializeLeaderboardData(dataIn: any[]) {
 
 function SceneTransition(sceneFrom: string, sceneTo: string) {
     var activeScene = Game.game.scene.getScene(sceneFrom);
-    activeScene.scene.restart();
     var nextScene = Game.game.scene.getScene(sceneTo);
     if (nextScene.scene.isActive) {
         nextScene.scene.restart();
