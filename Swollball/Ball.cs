@@ -1,4 +1,6 @@
-﻿namespace Swollball
+﻿using Swollball.Upgrades;
+
+namespace Swollball
 {
     /// <summary>
     /// A self-contained class with all the data for a ball
@@ -12,6 +14,8 @@
         public float SpeedMultiplier { get; set; } = 1;
         public int Dmg { get; set; } = 10;
         public int Armor { get; set; } = 0;
+
+        public List<IUpgrade> Upgrades { get; set; } = new List<IUpgrade>();
 
         public Ball(string playerName)
         {

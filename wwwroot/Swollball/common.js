@@ -29,3 +29,7 @@ connection.on("UpdateBalls", function (ballData) {
 connection.on("UpdateLeaderboard", function (leaderboardData) {
     InitializeLeaderboardData(leaderboardData);
 });
+
+connection.on("UpdateUpgrades", function (upgradeData) {
+    InitializeUpgradeData(upgradeData);
+});

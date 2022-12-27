@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Swollball.Upgrades;
 
 namespace Swollball
 {
@@ -11,6 +12,9 @@ namespace Swollball
             var roomId = this.GameLobby.Rooms.Keys.First();
             await this.ResumePlayerSession(userName, roomId);
             await this.StartRoom(roomId);
+
+            var player = this.GameLobby.Rooms[roomId].Players[userName];
+           // await Clients.Caller.SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values);
         }
 
         public async Task JoinRoom(string userName, string roomId, string colorIn)
@@ -61,6 +65,18 @@ namespace Swollball
                     await Clients.Caller.SendAsync("ClearState");
                     break;
             }
+        }
+
+        public async Task ChooseUpgrade(string upgradeId, string userName, string roomId)
+        {
+            (var player, var room) = await this.FindPlayerAndRoom(userName, roomId);
+            if (player == null || room == null) return;
+
+            var upgradeApplied = player.ApplyUpgrade(upgradeId);
+
+            // TODO: Actual logic - apply upgrades server-side and send more upgrades to be chosen
+            // If sending upgrades, run following line
+            await Clients.Caller.SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values);
         }
     }
 }

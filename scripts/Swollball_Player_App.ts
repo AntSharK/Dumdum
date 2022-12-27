@@ -1,6 +1,4 @@
-﻿declare var UpgradeData : ServerUpgradeData
-
-class Swollball_Player_Game {
+﻿class Swollball_Player_Game {
     game: Phaser.Game;
     constructor() {
         this.game = new Phaser.Game(
@@ -41,7 +39,7 @@ class BallUpgrades extends Phaser.Scene {
     create() {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
 
-        // Test something
+        // TODO: Actual drawing of things
         var playerBalls = InitializeBalls(this.physics.add.group({
             defaultKey: 'dummyimage',
             bounceX: 1,
@@ -52,8 +50,17 @@ class BallUpgrades extends Phaser.Scene {
     }
 
     update() {
+        // TODO: Actual drawing of upgrade cards
         this.graphics.clear();
         DrawBalls(this.graphics, [this.playerBall]);
+    }
+
+    chooseUpgrade(upgrade: ServerUpgradeData) {
+        var sessionRoomId = sessionStorage.getItem("roomid");
+        var sessionUserId = sessionStorage.getItem("userid");
+        connection.invoke("ChooseUpgrade", upgrade.ServerId, sessionUserId, sessionRoomId).catch(function (err) {
+            return console.error(err.toString());
+        });
     }
 }
 
@@ -110,7 +117,6 @@ class BallStats extends Phaser.Scene {
     update() {
         this.updateText();
         this.graphics.clear();
-        this.graphics.alpha = 0.3;
     }
 
     updateText() {

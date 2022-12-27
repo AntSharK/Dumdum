@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Swollball.Upgrades;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,7 @@ namespace Swollball
         public string ConnectionId { get; set; }
         public string RoomId { get; private set; }
         public Score PlayerScore { get; private set; }
+        public Dictionary<string, IUpgrade> CurrentUpgrades { get; private set; } = new Dictionary<string, IUpgrade>();
 
         public Player(string name, string connectionId, string roomName)
         {
@@ -21,6 +23,28 @@ namespace Swollball
             this.RoomId = roomName;
             this.PlayerScore = new Score(this.Name);
             this.Ball = new Ball(this.Name);
+
+            var up1 = new DamageUpgrade(3);
+            var up2 = new DamageUpgrade(4);
+            var up3 = new DamageUpgrade(5);
+            CurrentUpgrades[up1.ServerId] = up1;
+            CurrentUpgrades[up2.ServerId] = up2;
+            CurrentUpgrades[up3.ServerId] = up3;
+        }
+
+        public bool ApplyUpgrade(string upgradeId)
+        {
+            if (this.CurrentUpgrades.ContainsKey(upgradeId))
+            {
+                var upgradeToApply = this.CurrentUpgrades[upgradeId];
+                upgradeToApply.PerformUpgrade(this.Ball);
+                this.Ball.Upgrades.Add(upgradeToApply);
+
+                CurrentUpgrades.Remove(upgradeId);
+                return true;
+            }
+
+            return false;
         }
 
         public override int GetHashCode()
