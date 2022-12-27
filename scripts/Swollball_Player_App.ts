@@ -59,11 +59,12 @@ class BallStats extends Phaser.Scene {
 
         var playerBall = this.playerBalls[0];
 
-        this.statsDisplay["hp"] = this.add.text(0, 0, "HP:" + playerBall.MaxHp.toString(), { color: 'Black' });
-        this.statsDisplay["dmg"] = this.add.text(0, 0, "DMG:" + playerBall.Damage.toString(), { color: 'Black' });
-        this.statsDisplay["armor"] = this.add.text(0, 0, "ARMOR:" + playerBall.Armor.toString(), { color: 'Black' });
-        this.statsDisplay["velocity"] = this.add.text(0, 0, "SPEED:" + playerBall.VelocityMultiplier.toString(), { color: 'Black' });
-        this.statsDisplay["size"] = this.add.text(0, 0, "SIZE:" + playerBall.SizeMultiplier.toString(), { color: 'Black' });
+        this.statsDisplay["hp"] = this.add.text(0, 0, "", { color: 'Black' });
+        this.statsDisplay["dmg"] = this.add.text(0, 0, "", { color: 'Black' });
+        this.statsDisplay["armor"] = this.add.text(0, 0, "", { color: 'Black' });
+        this.statsDisplay["velocity"] = this.add.text(0, 0, "", { color: 'Black' });
+        this.statsDisplay["size"] = this.add.text(0, 0, "", { color: 'Black' });
+        this.updateText();
 
         var textArray = [];
         for (let key in this.statsDisplay) {
@@ -76,12 +77,19 @@ class BallStats extends Phaser.Scene {
     }
 
     update() {
-        // TODO: Update text stats
-        this.draw();
-    }
-
-    draw() {
+        if (this.playerBalls != null) {
+            this.updateText;
+        }
         this.graphics.clear();
         DrawBalls(this.graphics, this.playerBalls);
+    }
+
+    updateText() {
+        var playerBall = this.playerBalls[0];
+        this.statsDisplay["hp"].text = "HP:" + playerBall.MaxHp.toString();
+        this.statsDisplay["dmg"].text = "DMG:" + playerBall.Damage.toString();
+        this.statsDisplay["armor"].text = "ARMOR:" + playerBall.Armor.toString();
+        this.statsDisplay["velocity"].text = "SPEED:" + playerBall.VelocityMultiplier.toString();
+        this.statsDisplay["size"].text = "SIZE:" + playerBall.SizeMultiplier.toString();
     }
 }
