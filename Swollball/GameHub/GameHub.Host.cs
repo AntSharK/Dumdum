@@ -32,6 +32,8 @@ namespace Swollball
             //await Clients.Caller.SendAsync("UpdateBalls", roomToStart.Players.Values.Select(p => p.Ball));
             await Clients.Caller.SendAsync("UpdateLeaderboard", roomToStart.Players.Values.Select(s => s.PlayerScore));
             await Clients.Caller.SendAsync("StartGame", "Leaderboard");
+
+            await Clients.Group(roomToStart.RoomId).SendAsync("UpdateBalls", roomToStart.Players.Values.Select(p => p.Ball));
             await Clients.Group(roomToStart.RoomId).SendAsync("StartGame");
         }
 

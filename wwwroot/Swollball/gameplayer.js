@@ -44,7 +44,7 @@ connection.on("Reconnect_ResumeWaiting", function (userName, roomId) {
 
 connection.on("StartGame", function (playersConcat, userJoined) {
     document.body.innerHTML = "";
-    var game = new Swollball_Player_Game();
+    Game = new Swollball_Player_Game();
 });
 
 connection.on("StartNextRound", function () {

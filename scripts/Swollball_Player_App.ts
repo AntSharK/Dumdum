@@ -24,28 +24,35 @@
 }
 class BallStats extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
-    ticks: number;
+    playerBalls: PlayerBall[];
+    playerScore: ServerRoundScoreData;
 
     constructor() {
         super({ key: 'TestScene', active: false, visible: false });
     }
-    create() {
-        this.ticks = 0;
-        this.graphics = this.add.graphics({ x: 0, y: 0 });
-        this.add.text(0, 0, "TEST SCREEN TRANSITION", { color: 'White' });
 
-        this.time.addEvent({ delay: 2000, callback: this.sceneTransition, callbackScope: this })
+    preload() {
+        this.load.image('dummyimage', '/content/dummyimage.png');
+    }
+
+    create() {
+        this.graphics = this.add.graphics({ x: 0, y: 0 });
+
+        this.playerBalls = InitializeBalls(this.physics.add.group({
+            defaultKey: 'dummyimage',
+            bounceX: 1,
+            bounceY: 1,
+        }), this);
+
+        for (let playerBall of this.playerBalls) {
+            playerBall.setVelocity(0, 0); // Stop the balls from moving
+        }
     }
 
     update() {
-        this.graphics.lineStyle(50, 0xFF00FF);
-        this.graphics.fillStyle(0xFF0000);
-        this.graphics.fillCircle(400 + this.ticks % 400, 400 + this.ticks % 400, 150);
-        this.ticks++;
-    }
+        // TODO: Update stats if needed
 
-    sceneTransition() {
-        this.scene.restart();
-        this.scene.switch("Main");
+        this.graphics.clear();
+        DrawBalls(this.graphics, this.playerBalls);
     }
 }

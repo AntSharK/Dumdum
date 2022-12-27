@@ -41,14 +41,6 @@ connection.on("HostUpdateRoom", function (room) {
     UpdatePlayerList(room.players);
 });
 
-connection.on("UpdateBalls", function (ballData) {
-    InitializeBallData(ballData);
-});
-
-connection.on("UpdateLeaderboard", function (leaderboardData) {
-    InitializeLeaderboardData(leaderboardData);
-});
-
 connection.on("StartGame", function (sceneToStartOn = "BallArena") {
     document.body.innerHTML = "";
     Game = new Swollball_Lobby_Game(sceneToStartOn);
