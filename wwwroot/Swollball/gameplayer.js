@@ -21,6 +21,16 @@ document.getElementById("leaveroombutton").addEventListener("click", function (e
     });
     event.preventDefault();
 });
+
+// TODO (TEST): TEST FUNCTION
+window.onkeydown = function (k) {
+    if (k.keyCode == 39) {
+        connection.invoke("TESTSTART").catch(function (err) {
+            return console.error(err.toString());
+        });
+    }
+}
+
 /***
 MESSAGES FROM HUB
 ***/

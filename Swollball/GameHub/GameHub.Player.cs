@@ -4,6 +4,15 @@ namespace Swollball
 {
     public partial class GameHub : Hub
     {
+        public async Task TESTSTART()
+        {
+            // TODO (TEST): THIS IS A TEST METHOD
+            var userName = "TESTPLAYER";
+            var roomId = this.GameLobby.Rooms.Keys.First();
+            await this.ResumePlayerSession(userName, roomId);
+            await this.StartRoom(roomId);
+        }
+
         public async Task JoinRoom(string userName, string roomId, string colorIn)
         {
             if (!this.GameLobby.Rooms.ContainsKey(roomId))
