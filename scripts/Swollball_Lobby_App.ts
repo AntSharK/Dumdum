@@ -161,7 +161,7 @@ class Leaderboard extends Phaser.Scene {
         switch (RoundNumber) {
             case 0:
                 this.add.text(200, 100, "FIRST ROUND STARTING SOON...");
-                roundDurationSeconds = 30;
+                roundDurationSeconds = 5;
                 break;
             case -1:
                 this.add.text(200, 100, "END OF GAME");
@@ -249,11 +249,12 @@ function InitializeLeaderboardData(dataIn: any[]) {
 function SceneTransition(sceneFrom: string, sceneTo: string) {
     var activeScene = Game.game.scene.getScene(sceneFrom);
     var nextScene = Game.game.scene.getScene(sceneTo);
-    if (nextScene.scene.isActive) {
+    activeScene.scene.switch(sceneTo);
+
+    // Only restart scenes if they have run before
+    if (nextScene.time.now > 0) {
         nextScene.scene.restart();
     }
-
-    activeScene.scene.switch(sceneTo);
 }
 
 class ServerBallData {
