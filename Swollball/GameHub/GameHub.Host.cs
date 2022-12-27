@@ -35,7 +35,7 @@ namespace Swollball
             // TOOD: Bulk dispatch instead of sequential dispatch
             foreach (var player in roomToStart.Players.Values)
             {
-                var playerBall = roomToStart.Players.Values.Select(p => p.Ball);
+                var playerBall = new Ball[] { player.Ball };
                 await Clients.Client(player.ConnectionId).SendAsync("UpdateBalls", playerBall);
             }
 
