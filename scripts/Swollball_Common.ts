@@ -96,6 +96,8 @@ class PlayerBall extends Phaser.Physics.Arcade.Sprite {
     Hp: integer;
     MaxHp: integer;
     Text: Phaser.GameObjects.Text;
+    SizeMultiplier: number;
+    VelocityMultiplier: number;
 }
 
 function DisableBall(ball: PlayerBall) {
@@ -109,6 +111,8 @@ function CopyBallData(newBall: PlayerBall, data: ServerBallData) {
     newBall.MaxHp = data.Hp;
     newBall.Damage = data.Damage;
     newBall.Armor = data.Armor;
+    newBall.SizeMultiplier = data.SizeMultiplier;
+    newBall.VelocityMultiplier = data.VelocityMultiplier;
 }
 
 function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.Scene): PlayerBall[] {
