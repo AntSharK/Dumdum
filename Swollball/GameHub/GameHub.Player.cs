@@ -44,8 +44,7 @@ namespace Swollball
                     break;
                 case GameRoom.RoomState.Arena:
                 case GameRoom.RoomState.Leaderboard:
-                    await Clients.Caller.SendAsync("UpdateLeaderboard", room.Players.Values.Select(s => s.PlayerScore));
-                    await Clients.Caller.SendAsync("UpdateBalls", room.Players.Values.Select(p => p.Ball));
+                    await Clients.Caller.SendAsync("UpdateBalls", new Ball[] { player.Ball });
                     await Clients.Caller.SendAsync("StartGame");
                     break;
                 case GameRoom.RoomState.TearingDown:

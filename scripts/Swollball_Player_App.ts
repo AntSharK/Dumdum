@@ -14,10 +14,12 @@
                     }
                 },
 
+                backgroundColor: '#FFFFFF',
                 scene: [BallStats],
 
                 scale: {
-                    autoCenter: Phaser.Scale.Center.CENTER_BOTH
+                    autoCenter: Phaser.Scale.Center.CENTER_BOTH,
+                    mode: Phaser.Scale.FIT,
                 },
             });
     }
