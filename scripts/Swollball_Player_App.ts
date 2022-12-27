@@ -117,6 +117,7 @@ class BallStats extends Phaser.Scene {
     update() {
         this.updateText();
         this.graphics.clear();
+        DrawBalls(this.graphics, [this.playerBall]);
     }
 
     updateText() {

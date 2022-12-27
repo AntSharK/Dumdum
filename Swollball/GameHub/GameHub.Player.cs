@@ -14,7 +14,7 @@ namespace Swollball
             await this.StartRoom(roomId);
 
             var player = this.GameLobby.Rooms[roomId].Players[userName];
-           // await Clients.Caller.SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values);
+            await Clients.Caller.SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values);
         }
 
         public async Task JoinRoom(string userName, string roomId, string colorIn)
