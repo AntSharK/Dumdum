@@ -85,6 +85,10 @@ class RoundEvent {
     }
 }
 
+class ServerUpgradeData {
+
+}
+
 /*
 HELPERS FOR GAME LOGIC
  * */

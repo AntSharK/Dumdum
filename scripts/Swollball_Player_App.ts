@@ -1,4 +1,6 @@
-﻿class Swollball_Player_Game {
+﻿declare var UpgradeData : ServerUpgradeData
+
+class Swollball_Player_Game {
     game: Phaser.Game;
     constructor() {
         this.game = new Phaser.Game(
@@ -38,9 +40,20 @@ class BallUpgrades extends Phaser.Scene {
 
     create() {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
+
+        // Test something
+        var playerBalls = InitializeBalls(this.physics.add.group({
+            defaultKey: 'dummyimage',
+            bounceX: 1,
+            bounceY: 1,
+        }), this);
+
+        this.playerBall = playerBalls[0];
     }
 
     update() {
+        this.graphics.clear();
+        DrawBalls(this.graphics, [this.playerBall]);
     }
 }
 
@@ -97,14 +110,14 @@ class BallStats extends Phaser.Scene {
     update() {
         this.updateText();
         this.graphics.clear();
-        DrawBalls(this.graphics, [this.playerBall]);
+        this.graphics.alpha = 0.3;
     }
 
     updateText() {
         this.statsDisplay["hp"].text = "HP:" + this.playerBall.MaxHp.toString();
         this.statsDisplay["dmg"].text = "DMG:" + this.playerBall.Damage.toString();
         this.statsDisplay["armor"].text = "ARMOR:" + this.playerBall.Armor.toString();
-        this.statsDisplay["velocity"].text = "SPEED:" + this.playerBall.VelocityMultiplier.toString();
-        this.statsDisplay["size"].text = "SIZE:" + this.playerBall.SizeMultiplier.toString();
+        this.statsDisplay["velocity"].text = "SPEED:" + (this.playerBall.VelocityMultiplier * 100).toString();
+        this.statsDisplay["size"].text = "SIZE:" + (this.playerBall.SizeMultiplier * 100).toString();
     }
 }
