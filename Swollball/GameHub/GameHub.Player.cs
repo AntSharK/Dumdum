@@ -4,6 +4,15 @@ namespace Swollball
 {
     public partial class GameHub : Hub
     {
+        public async Task TESTSTART()
+        {
+            // TODO (TEST): THIS IS A TEST METHOD
+            var userName = "TESTPLAYER";
+            var roomId = this.GameLobby.Rooms.Keys.First();
+            await this.ResumePlayerSession(userName, roomId);
+            await this.StartRoom(roomId);
+        }
+
         public async Task JoinRoom(string userName, string roomId, string colorIn)
         {
             if (!this.GameLobby.Rooms.ContainsKey(roomId))
@@ -41,6 +50,15 @@ namespace Swollball
             {
                 case GameRoom.RoomState.SettingUp:
                     await Clients.Caller.SendAsync("Reconnect_ResumeWaiting", player.Name, room.RoomId);
+                    break;
+                case GameRoom.RoomState.Arena:
+                case GameRoom.RoomState.Leaderboard:
+                    await Clients.Caller.SendAsync("UpdateBalls", new Ball[] { player.Ball });
+                    await Clients.Caller.SendAsync("StartGame");
+                    break;
+                case GameRoom.RoomState.TearingDown:
+                    await Clients.Caller.SendAsync("ShowError", "ROOM HAS FINISHED.");
+                    await Clients.Caller.SendAsync("ClearState");
                     break;
             }
         }

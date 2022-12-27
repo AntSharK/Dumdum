@@ -21,6 +21,16 @@ document.getElementById("leaveroombutton").addEventListener("click", function (e
     });
     event.preventDefault();
 });
+
+// TODO (TEST): TEST FUNCTION
+window.onkeydown = function (k) {
+    if (k.keyCode == 39) {
+        connection.invoke("TESTSTART").catch(function (err) {
+            return console.error(err.toString());
+        });
+    }
+}
+
 /***
 MESSAGES FROM HUB
 ***/
@@ -44,12 +54,20 @@ connection.on("Reconnect_ResumeWaiting", function (userName, roomId) {
 
 connection.on("StartGame", function (playersConcat, userJoined) {
     document.body.innerHTML = "";
-    var game = new Swollball_Player_Game();
+    Game = new Swollball_Player_Game();
 });
 
 connection.on("StartNextRound", function () {
     // TODO: Begin next round of watching stuff
     console.log("Starting next round");
+});
+
+connection.on("EndGame", function () {
+    // TODO: Display game ended screen
+    console.log("GAME ENDED");
+
+    sessionStorage.removeItem(RoomIdSessionStorageKey);
+    sessionStorage.removeItem(UserIdSessionStorageKey);
 });
 
 

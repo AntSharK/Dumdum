@@ -21,3 +21,11 @@ connection.on("ShowError", function (errorMessage, shouldReload = false) {
 connection.on("SceneTransition", function (sceneFrom, sceneTo) {
     SceneTransition(sceneFrom, sceneTo);
 })
+
+connection.on("UpdateBalls", function (ballData) {
+    InitializeBallData(ballData);
+});
+
+connection.on("UpdateLeaderboard", function (leaderboardData) {
+    InitializeLeaderboardData(leaderboardData);
+});

@@ -17,6 +17,7 @@ namespace Swollball
         public Lobby()
         {
             this.cleanupTimer = new Timer(this.Cleanup, null /*State*/, CLEANUPINTERVAL, CLEANUPINTERVAL);
+            var rm = this.CreateRoom("TEST");
         }
 
         public GameRoom? CreateRoom(string connectionId)
