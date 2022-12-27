@@ -52,17 +52,14 @@ class BallStats extends Phaser.Scene {
         var scaleMultiplier = boundingDimension / ASSUMEDSCALE;
 
         for (let playerBall of this.playerBalls) {
-            playerBall.setVelocity(0, 0); // Stop the balls from moving
-            playerBall.body.position.set(this.scale.canvas.width / 2 - playerBall.Size,
-                this.scale.canvas.height / 2 - playerBall.Size - (200 * scaleMultiplier));
+            playerBall.setVelocity(0, 0); // Balls in this display do not move
+            playerBall.setPosition(this.scale.canvas.width / 2, this.scale.canvas.height / 2 - 200 * scaleMultiplier);
         }
-
-        this.draw();
     }
 
     update() {
-        // TODO: Update stats if needed
-
+        // TODO: Update text stats
+        this.draw();
     }
 
     draw() {
