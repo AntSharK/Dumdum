@@ -28,12 +28,17 @@ namespace Swollball
 
             var roomToStart = this.GameLobby.Rooms[roomId];
             roomToStart.StartGame();
-            
-            //await Clients.Caller.SendAsync("UpdateBalls", roomToStart.Players.Values.Select(p => p.Ball));
+
             await Clients.Caller.SendAsync("UpdateLeaderboard", roomToStart.Players.Values.Select(s => s.PlayerScore));
             await Clients.Caller.SendAsync("StartGame", "Leaderboard");
 
-            await Clients.Group(roomToStart.RoomId).SendAsync("UpdateBalls", roomToStart.Players.Values.Select(p => p.Ball));
+            // TOOD: Bulk dispatch instead of sequential dispatch
+            foreach (var player in roomToStart.Players.Values)
+            {
+                var playerBall = roomToStart.Players.Values.Select(p => p.Ball);
+                await Clients.Client(player.ConnectionId).SendAsync("UpdateBalls", playerBall);
+            }
+
             await Clients.Group(roomToStart.RoomId).SendAsync("StartGame");
         }
 
@@ -69,7 +74,8 @@ namespace Swollball
 
             // Termination condition - for when round hits max rounds
             if (room.RoundNumber < 0) {
-                await Clients.Caller.SendAsync("ClearState");
+                await Clients.Caller.SendAsync("ClearState"); // For host machine, display last scoreboard and clear state
+                await Clients.Group(room.RoomId).SendAsync("EndGame");
             }
         }
 

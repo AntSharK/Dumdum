@@ -38,6 +38,8 @@ class BallStats extends Phaser.Scene {
     create() {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
 
+        var sessionRoomId = sessionStorage.getItem("userid");
+
         this.playerBalls = InitializeBalls(this.physics.add.group({
             defaultKey: 'dummyimage',
             bounceX: 1,

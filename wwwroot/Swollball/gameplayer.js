@@ -52,6 +52,14 @@ connection.on("StartNextRound", function () {
     console.log("Starting next round");
 });
 
+connection.on("EndGame", function () {
+    // TODO: Display game ended screen
+    console.log("GAME ENDED");
+
+    sessionStorage.removeItem(RoomIdSessionStorageKey);
+    sessionStorage.removeItem(UserIdSessionStorageKey);
+});
+
 
 /***
 VIEW CHANGES
