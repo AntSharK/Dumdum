@@ -48,6 +48,7 @@ namespace Swollball
             public int RoundDamageDone { get; set; } = 0;
             public int RoundDamageReceived { get; set; } = 0;
             public string PlayerName { get; private set; }
+            public int RoundNumber { get; set; } = 0;
 
             public Score(string name)
             {
