@@ -2,6 +2,7 @@
 declare var RoundScoreData: ServerRoundScoreData[];
 declare var RoundLog: RoundEvent[];
 declare var Game: Swollball_Lobby_Game;
+declare var RoundNumber: integer;
 declare var connection;
 
 /* 
@@ -68,7 +69,7 @@ class BallArena extends Phaser.Scene {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
 
         // Initialize timer
-        const ROUNDDURATIONSECONDS = 10;
+        const ROUNDDURATIONSECONDS = 5;
         this.roundTimer = new Phaser.Time.TimerEvent({ delay: ROUNDDURATIONSECONDS * 1000, callback: this.finishScene, callbackScope: this });
         this.time.addEvent(this.roundTimer);
         this.timeLeftDisplay = this.add.text(0, 0, ROUNDDURATIONSECONDS.toString(), { color: 'White' });
@@ -155,17 +156,36 @@ class Leaderboard extends Phaser.Scene {
     create() {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
 
+        var timerEndFunction = this.StartNextRound;
+        var roundDurationSeconds = 3;
+        switch (RoundNumber) {
+            case 0:
+                this.add.text(200, 100, "FIRST ROUND STARTING SOON...");
+                roundDurationSeconds = 30;
+                break;
+            case -1:
+                this.add.text(200, 100, "END OF GAME");
+                roundDurationSeconds = 60;
+                timerEndFunction = this.EndGame;
+                break;
+            default:
+                this.add.text(200, 100, "ROUND: " + RoundNumber);
+                break;
+        }
+
         // Initialize timer
-        const ROUNDDURATIONSECONDS = 5;
-        this.roundTimer = new Phaser.Time.TimerEvent({ delay: ROUNDDURATIONSECONDS * 1000, callback: this.finishScene, callbackScope: this });
+        this.roundTimer = new Phaser.Time.TimerEvent({ delay: roundDurationSeconds * 1000, callback: timerEndFunction, callbackScope: this });
         this.time.addEvent(this.roundTimer);
-        this.timeLeftDisplay = this.add.text(0, 0, ROUNDDURATIONSECONDS.toString(), { color: 'White' });
+        this.timeLeftDisplay = this.add.text(0, 0, roundDurationSeconds.toString(), { color: 'White' });
         var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
         this.timeLeftDisplay.scale = boundingDimension * 0.005;
 
+        // Totally temporary leaderboard drawing
         var i = 0;
-        for (let scoreData of RoundScoreData) {
-            this.add.text(100, 100*i, scoreData.PlayerName + " - " + scoreData.TotalScore + " - " + scoreData.RoundScore,
+        for (let scoreData of RoundScoreData.sort((a: ServerRoundScoreData, b: ServerRoundScoreData) => {
+            return b.TotalScore - a.TotalScore; // Sort in descending order
+        })) {
+            this.add.text(200, 200+50*i, scoreData.PlayerName + " - Total:" + scoreData.TotalScore + " - This Round:" + scoreData.RoundScore,
                 { color: 'White' });
             i++;
         }
@@ -175,11 +195,15 @@ class Leaderboard extends Phaser.Scene {
         this.timeLeftDisplay.text = Math.ceil(this.roundTimer.getRemainingSeconds()).toString();
     }
 
-    finishScene() {
+    StartNextRound() {
         var sessionRoomId = sessionStorage.getItem("roomid");
         connection.invoke("StartNextRound", sessionRoomId).catch(function (err) {
             return console.error(err.toString());
         });
+    }
+
+    EndGame() {
+        window.location.reload();
     }
 }
 
@@ -215,6 +239,10 @@ function InitializeLeaderboardData(dataIn: any[]) {
         serverData.RoundDamageReceived = data.roundDamageReceived;
 
         RoundScoreData.push(serverData);
+    }
+
+    if (dataIn.length > 0) {
+        RoundNumber = dataIn[0].roundNumber;
     }
 }
 

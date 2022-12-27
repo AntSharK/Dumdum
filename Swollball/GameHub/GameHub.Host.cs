@@ -28,8 +28,10 @@ namespace Swollball
 
             var roomToStart = this.GameLobby.Rooms[roomId];
             roomToStart.StartGame();
-            await Clients.Caller.SendAsync("UpdateBalls", roomToStart.Players.Values.Select(p => p.Ball));
-            await Clients.Caller.SendAsync("StartGame");
+            
+            //await Clients.Caller.SendAsync("UpdateBalls", roomToStart.Players.Values.Select(p => p.Ball));
+            await Clients.Caller.SendAsync("UpdateLeaderboard", roomToStart.Players.Values.Select(s => s.PlayerScore));
+            await Clients.Caller.SendAsync("StartGame", "Leaderboard");
             await Clients.Group(roomToStart.RoomId).SendAsync("StartGame");
         }
 
@@ -62,6 +64,11 @@ namespace Swollball
 
             await Clients.Caller.SendAsync("UpdateLeaderboard", room.Players.Values.Select(s => s.PlayerScore));
             await Clients.Caller.SendAsync("SceneTransition", "BallArena", "Leaderboard");
+
+            // Termination condition - for when round hits max rounds
+            if (room.RoundNumber < 0) {
+                await Clients.Caller.SendAsync("ClearState");
+            }
         }
 
         public async Task ResumeHostSession(string roomId)
@@ -89,6 +96,10 @@ namespace Swollball
                 case GameRoom.RoomState.Leaderboard:
                     await Clients.Caller.SendAsync("UpdateLeaderboard", room.Players.Values.Select(s => s.PlayerScore));
                     await Clients.Caller.SendAsync("StartGame", "Leaderboard");
+                    break;
+                case GameRoom.RoomState.TearingDown:
+                    await Clients.Caller.SendAsync("ShowError", "ROOM HAS FINISHED.");
+                    await Clients.Caller.SendAsync("ClearState");
                     break;
 
             }

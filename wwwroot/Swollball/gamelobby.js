@@ -54,10 +54,6 @@ connection.on("StartGame", function (sceneToStartOn = "BallArena") {
     Game = new Swollball_Lobby_Game(sceneToStartOn);
 });
 
-connection.on("StartNextRound", function () {
-    SceneTransition("Leaderboard", "BallArena");
-})
-
 /***
 VIEW CHANGES
 ***/

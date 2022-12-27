@@ -14,6 +14,7 @@ namespace Swollball
         public Dictionary<string, Player> Players { get; private set; } = new Dictionary<string, Player>();
         public DateTime UpdatedTime { get; private set; } = DateTime.UtcNow;
         public RoomState State { get; private set; } = RoomState.SettingUp;
+        public int MaxRounds { get; private set; } = 5;
 
         public GameRoom(string roomId, string connectionId)
         {
@@ -50,18 +51,23 @@ namespace Swollball
 
         public void StartGame()
         {
-            this.State = RoomState.Arena;
+            this.State = RoomState.Leaderboard;
         }
 
         public void StartNextRound()
         {
-            this.RoundNumber++;
             this.State = RoomState.Arena;
             this.UpdatedTime = DateTime.UtcNow;
         }
 
         public void UpdateRoundEnd(RoundEvent[] roundEvents)
         {
+            this.RoundNumber++;
+            if (this.RoundNumber > this.MaxRounds) {
+                this.RoundNumber = -1;
+                this.State = RoomState.TearingDown;
+            }
+
             this.State = RoomState.Leaderboard;
             foreach (var player in this.Players.Values)
             {
@@ -76,6 +82,7 @@ namespace Swollball
 
             foreach (var player in this.Players.Values)
             {
+                player.PlayerScore.RoundNumber = this.RoundNumber;
                 player.PlayerScore.UpdateRound();
             }
         }
