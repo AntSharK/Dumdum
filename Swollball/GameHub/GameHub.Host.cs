@@ -32,12 +32,11 @@ namespace Swollball
             await Clients.Caller.SendAsync("UpdateLeaderboard", roomToStart.Players.Values.Select(s => s.PlayerScore));
             await Clients.Caller.SendAsync("StartGame", "Leaderboard");
 
-            // TOOD: Bulk dispatch instead of sequential dispatch
-            foreach (var player in roomToStart.Players.Values)
+            // Bulk dispatch
+            await Task.WhenAll(roomToStart.Players.Values.Select(player =>
             {
-                var playerBall = new Ball[] { player.Ball };
-                await Clients.Client(player.ConnectionId).SendAsync("UpdateBalls", playerBall);
-            }
+                return Clients.Client(player.ConnectionId).SendAsync("UpdateBalls", new Ball[] { player.Ball });
+            }));
 
             await Clients.Group(roomToStart.RoomId).SendAsync("StartGame");
         }
