@@ -363,14 +363,17 @@ function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.S
 }
 
 function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBall[]) {
-    graphics.lineStyle(10, 0x000000);                        
     for (let pb of playerBalls) {
         if (pb.active) {
-            graphics.fillStyle(pb.Color, pb.Hp / pb.MaxHp);
+            var hp = Math.min(pb.Hp, pb.MaxHp);
+            var colorAlpha = Phaser.Math.Interpolation.Linear([0.3, 1.0], hp / pb.MaxHp);
+            graphics.fillStyle(pb.Color, colorAlpha);
             graphics.fillCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size);
+            graphics.lineStyle(10, 0x000000, colorAlpha);                        
             graphics.strokeCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size - 5)
             pb.Text.x = pb.body.position.x + pb.Size * 0.25;
             pb.Text.y = pb.body.position.y + pb.Size * 0.95;
+            pb.Text.alpha = colorAlpha;
         }
     };
 }
