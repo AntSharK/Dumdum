@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Swollball.Upgrades;
 
 namespace Swollball
 {
@@ -11,6 +12,9 @@ namespace Swollball
             var roomId = this.GameLobby.Rooms.Keys.First();
             await this.ResumePlayerSession(userName, roomId);
             await this.StartRoom(roomId);
+
+            var player = this.GameLobby.Rooms[roomId].Players[userName];
+            await Clients.Caller.SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values);
         }
 
         public async Task JoinRoom(string userName, string roomId, string colorIn)
@@ -53,6 +57,7 @@ namespace Swollball
                     break;
                 case GameRoom.RoomState.Arena:
                 case GameRoom.RoomState.Leaderboard:
+                    await Clients.Caller.SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values);
                     await Clients.Caller.SendAsync("UpdateBalls", new Ball[] { player.Ball });
                     await Clients.Caller.SendAsync("StartGame");
                     break;
@@ -60,6 +65,28 @@ namespace Swollball
                     await Clients.Caller.SendAsync("ShowError", "ROOM HAS FINISHED.");
                     await Clients.Caller.SendAsync("ClearState");
                     break;
+            }
+        }
+
+        public async Task ChooseUpgrade(string upgradeId, string userName, string roomId)
+        {
+            (var player, var room) = await this.FindPlayerAndRoom(userName, roomId);
+            if (player == null || room == null) return;
+
+            var upgradeApplied = player.ApplyUpgrade(upgradeId);
+            if (upgradeApplied)
+            {
+                await Clients.Caller.SendAsync("UpdateBalls", new Ball[] { player.Ball });
+            }
+
+            var currentUpgrades = player.CurrentUpgrades.Values;
+            if (currentUpgrades.Count == 0)
+            {
+                await Clients.Caller.SendAsync("UpdateUpgrades", BlankUpgrade.Instance);
+            }
+            else
+            {
+                await Clients.Caller.SendAsync("UpdateUpgrades", currentUpgrades);
             }
         }
     }

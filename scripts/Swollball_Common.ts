@@ -3,6 +3,7 @@ declare var RoundScoreData: ServerRoundScoreData[];
 declare var RoundLog: RoundEvent[];
 declare var Game: Swollball_Lobby_Game;
 declare var RoundNumber: integer;
+declare var UpgradeData: ServerUpgradeData[];
 declare var connection;
 
 /* 
@@ -41,6 +42,19 @@ function InitializeLeaderboardData(dataIn: any[]) {
 
     if (dataIn.length > 0) {
         RoundNumber = dataIn[0].roundNumber;
+    }
+}
+
+function InitializeUpgradeData(dataIn: any[]) {
+    UpgradeData = [];
+    for (let data of dataIn) {
+        var serverData = new ServerUpgradeData();
+        serverData.UpgradeName = data.upgradeName;
+        serverData.Description = data.description;
+        serverData.ServerId = data.serverId;
+        serverData.BorderColor = data.borderColor
+
+        UpgradeData.push(serverData);
     }
 }
 
@@ -83,6 +97,13 @@ class RoundEvent {
         this.ReceiverId = receiver;
         this.DamageDone = damage;
     }
+}
+
+class ServerUpgradeData {
+    UpgradeName: string;
+    Description: string;
+    ServerId: string;
+    BorderColor: number;
 }
 
 /*
