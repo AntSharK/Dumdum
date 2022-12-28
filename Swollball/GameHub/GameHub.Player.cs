@@ -74,22 +74,19 @@ namespace Swollball
             if (player == null || room == null) return;
 
             var upgradeApplied = player.ApplyUpgrade(upgradeId);
-
-            // TODO: Actual logic - apply upgrades server-side and send more upgrades to be chosen
-            // If sending upgrades, run following line
             if (upgradeApplied)
             {
                 await Clients.Caller.SendAsync("UpdateBalls", new Ball[] { player.Ball });
+            }
 
-                var currentUpgrades = player.CurrentUpgrades.Values;
-                if (currentUpgrades.Count == 0)
-                {
-                    await Clients.Caller.SendAsync("UpdateUpgrades", BlankUpgrade.Instance);
-                }
-                else
-                {
-                    await Clients.Caller.SendAsync("UpdateUpgrades", currentUpgrades);
-                }
+            var currentUpgrades = player.CurrentUpgrades.Values;
+            if (currentUpgrades.Count == 0)
+            {
+                await Clients.Caller.SendAsync("UpdateUpgrades", BlankUpgrade.Instance);
+            }
+            else
+            {
+                await Clients.Caller.SendAsync("UpdateUpgrades", currentUpgrades);
             }
         }
     }

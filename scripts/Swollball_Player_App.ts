@@ -38,6 +38,7 @@ class BallUpgrades extends Phaser.Scene {
 
     create() {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
+        this.input.on('gameobjectdown', this.onObjectClicked);
     }
 
     update() {
@@ -53,6 +54,7 @@ class BallUpgrades extends Phaser.Scene {
             for (let upgradeCard of this.upgradeCards) {
                 upgradeCard.Title.destroy(true);
                 upgradeCard.Description.destroy(true);
+                upgradeCard.destroy(true);
             }
             
             this.upgradeCards = [];
@@ -64,7 +66,7 @@ class BallUpgrades extends Phaser.Scene {
                 unitWidth = (this.scale.canvas.width / (2 * 9 + 2 + 1));
             }
             for (var i = 0; i < UpgradeData.length; i++) {
-                var upgradeCard = new UpgradeCard(this,
+                let upgradeCard = new UpgradeCard(this,
                     (10 * i * unitWidth) + unitWidth,
                     this.scale.canvas.height / 2,
                     null,
@@ -75,11 +77,6 @@ class BallUpgrades extends Phaser.Scene {
                 // Don't set interactive unless the card isn't blank. Blank cards are just for filling space
                 if (upgradeCard.Title.text.length > 0) {
                     upgradeCard.setInteractive();
-                    upgradeCard.on('pointerdown', function (pointer) {
-                        console.log(this.Upgrade.ServerId);
-                        this.BallUpgradeScene.chooseUpgrade(this.Upgrade);
-                    });
-
                     hasActionableCards = true;
                 }
 
@@ -102,15 +99,21 @@ class BallUpgrades extends Phaser.Scene {
         }
     }
 
-    chooseUpgrade(upgrade: ServerUpgradeData) {
+    onObjectClicked(pointer, gameObject: Phaser.GameObjects.GameObject) {
+        var upgrade = gameObject as UpgradeCard;
+        var ballScene = gameObject.scene as BallUpgrades;
+        if (upgrade.Upgrade == null || ballScene.readyToUpdateUpgrades == null) {
+            return;
+        }
+
         var sessionRoomId = sessionStorage.getItem("roomid");
         var sessionUserId = sessionStorage.getItem("userid");
 
         // Prepare for the next update of upgrades - clear the update list
         UpgradeData = [];
-        this.readyToUpdateUpgrades = true;
+        ballScene.readyToUpdateUpgrades = true;
 
-        connection.invoke("ChooseUpgrade", upgrade.ServerId, sessionUserId, sessionRoomId).catch(function (err) {
+        connection.invoke("ChooseUpgrade", upgrade.Upgrade.ServerId, sessionUserId, sessionRoomId).catch(function (err) {
             return console.error(err.toString());
         });
     }
@@ -120,11 +123,9 @@ class UpgradeCard extends Phaser.Physics.Arcade.Sprite {
     Upgrade: ServerUpgradeData;
     Title: Phaser.GameObjects.Text;
     Description: Phaser.GameObjects.Text;
-    BallUpgradeScene: BallUpgrades;
 
-    constructor(scene: BallUpgrades, x: number, y: number, texture: string, upgradeData: ServerUpgradeData, height: number, width: number) {
+    constructor(scene: Phaser.Scene, x: number, y: number, texture: string, upgradeData: ServerUpgradeData, height: number, width: number) {
         super(scene, x, y, texture);
-        this.BallUpgradeScene = scene;
         this.Upgrade = upgradeData;
 
         this.height = height;

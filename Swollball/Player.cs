@@ -40,6 +40,7 @@ namespace Swollball
                 upgradeToApply.PerformUpgrade(this.Ball);
                 this.Ball.Upgrades.Add(upgradeToApply);
 
+                // TODO: Additional logic to generate new upgrades
                 CurrentUpgrades.Remove(upgradeId);
                 return true;
             }
