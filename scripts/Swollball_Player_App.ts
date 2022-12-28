@@ -36,10 +36,6 @@ class BallUpgrades extends Phaser.Scene {
         this.upgradeCards = [];
     }
 
-    preload() {
-        this.load.image('dummyimage', '/content/dummyimage.png');
-    }
-
     create() {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
     }
@@ -52,7 +48,7 @@ class BallUpgrades extends Phaser.Scene {
 
     updateUpgrades() {
         if (this.readyToUpdateUpgrades == true
-            && UpgradeData.length > 0) {
+                && UpgradeData.length > 0) {
             this.readyToUpdateUpgrades = false;
             for (let upgradeCard of this.upgradeCards) {
                 upgradeCard.Title.destroy(true);
@@ -67,10 +63,19 @@ class BallUpgrades extends Phaser.Scene {
                 var upgradeCard = new UpgradeCard(this,
                     (10 * i * unitWidth) + unitWidth,
                     this.scale.canvas.height / 2,
-                    'dummyImage',
+                    null,
                     UpgradeData[i],
                     this.scale.canvas.height * 0.4,
                     unitWidth * 9);
+
+                // Don't set interactive unless the card isn't blank. Blank cards are just for filling space
+                if (upgradeCard.Title.text.length > 0) {
+                    upgradeCard.setInteractive();
+                    upgradeCard.on('pointerdown', function (pointer) {
+                        this.BallUpgradeScene.chooseUpgrade(this.Upgrade);
+                    });
+                }
+
                 this.upgradeCards[i] = upgradeCard;
             }
         }
@@ -88,6 +93,11 @@ class BallUpgrades extends Phaser.Scene {
     chooseUpgrade(upgrade: ServerUpgradeData) {
         var sessionRoomId = sessionStorage.getItem("roomid");
         var sessionUserId = sessionStorage.getItem("userid");
+
+        // Prepare for the next update of upgrades - clear the update list
+        UpgradeData = [];
+        this.readyToUpdateUpgrades = true;
+
         connection.invoke("ChooseUpgrade", upgrade.ServerId, sessionUserId, sessionRoomId).catch(function (err) {
             return console.error(err.toString());
         });
@@ -98,9 +108,11 @@ class UpgradeCard extends Phaser.Physics.Arcade.Sprite {
     Upgrade: ServerUpgradeData;
     Title: Phaser.GameObjects.Text;
     Description: Phaser.GameObjects.Text;
+    BallUpgradeScene: BallUpgrades;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, texture: string, upgradeData: ServerUpgradeData, height: number, width: number) {
+    constructor(scene: BallUpgrades, x: number, y: number, texture: string, upgradeData: ServerUpgradeData, height: number, width: number) {
         super(scene, x, y, texture);
+        this.BallUpgradeScene = scene;
         this.Upgrade = upgradeData;
 
         this.height = height;
@@ -171,6 +183,10 @@ class BallStats extends Phaser.Scene {
     }
 
     updateText() {
+        for (let data of BallData) {
+            CopyBallData(this.playerBall, data);
+        }
+
         this.statsDisplay["hp"].text = "HP:" + this.playerBall.MaxHp.toString();
         this.statsDisplay["dmg"].text = "DMG:" + this.playerBall.Damage.toString();
         this.statsDisplay["armor"].text = "ARMOR:" + this.playerBall.Armor.toString();

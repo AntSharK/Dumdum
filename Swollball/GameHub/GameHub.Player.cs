@@ -77,7 +77,11 @@ namespace Swollball
 
             // TODO: Actual logic - apply upgrades server-side and send more upgrades to be chosen
             // If sending upgrades, run following line
-            await Clients.Caller.SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values);
+            if (upgradeApplied)
+            {
+                await Clients.Caller.SendAsync("UpdateBalls", new Ball[] { player.Ball });
+                await Clients.Caller.SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values);
+            }
         }
     }
 }
