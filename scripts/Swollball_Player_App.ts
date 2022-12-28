@@ -56,9 +56,13 @@ class BallUpgrades extends Phaser.Scene {
             }
             
             this.upgradeCards = [];
+            var hasActionableCards = false;
 
             // Partition the width into N units of 9 and N+1 units of 1
             var unitWidth = (this.scale.canvas.width / (UpgradeData.length * 9 + UpgradeData.length + 1));
+            if (UpgradeData.length <= 1) {
+                unitWidth = (this.scale.canvas.width / (2 * 9 + 2 + 1));
+            }
             for (var i = 0; i < UpgradeData.length; i++) {
                 var upgradeCard = new UpgradeCard(this,
                     (10 * i * unitWidth) + unitWidth,
@@ -74,9 +78,16 @@ class BallUpgrades extends Phaser.Scene {
                     upgradeCard.on('pointerdown', function (pointer) {
                         this.BallUpgradeScene.chooseUpgrade(this.Upgrade);
                     });
+
+                    hasActionableCards = true;
                 }
 
                 this.upgradeCards[i] = upgradeCard;
+            }
+
+            // If there are no actionable cards, clear the card list
+            if (!hasActionableCards) {
+                this.upgradeCards = [];
             }
         }
     }
@@ -192,18 +203,5 @@ class BallStats extends Phaser.Scene {
         this.statsDisplay["armor"].text = "ARMOR:" + this.playerBall.Armor.toString();
         this.statsDisplay["velocity"].text = "SPEED:" + (this.playerBall.VelocityMultiplier * 100).toString();
         this.statsDisplay["size"].text = "SIZE:" + (this.playerBall.SizeMultiplier * 100).toString();
-
-        if (UpgradeData.length > 0) {
-            this.graphics.alpha = 0.5;
-            for (let key in this.statsDisplay) {
-                this.statsDisplay[key].alpha = 0.5;
-            }
-        }
-        else {
-            this.graphics.alpha = 1.0;
-            for (let key in this.statsDisplay) {
-                this.statsDisplay[key].alpha = 1.0;
-            }
-        }
     }
 }
