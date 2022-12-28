@@ -52,6 +52,7 @@ function InitializeUpgradeData(dataIn: any[]) {
         serverData.UpgradeName = data.upgradeName;
         serverData.Description = data.description;
         serverData.ServerId = data.serverId;
+        serverData.BorderColor = data.borderColor
 
         UpgradeData.push(serverData);
     }
@@ -102,6 +103,7 @@ class ServerUpgradeData {
     UpgradeName: string;
     Description: string;
     ServerId: string;
+    BorderColor: number;
 }
 
 /*

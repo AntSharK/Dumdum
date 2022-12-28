@@ -27,9 +27,13 @@
 
 class BallUpgrades extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
-    playerBall: PlayerBall;
+    readyToUpdateUpgrades: boolean;
+    upgradeCards: UpgradeCard[];
+
     constructor() {
         super({ key: 'BallUpgrades', active: true, visible: true });
+        this.readyToUpdateUpgrades = true;
+        this.upgradeCards = [];
     }
 
     preload() {
@@ -38,21 +42,47 @@ class BallUpgrades extends Phaser.Scene {
 
     create() {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
-
-        // TODO: Actual drawing of things
-        var playerBalls = InitializeBalls(this.physics.add.group({
-            defaultKey: 'dummyimage',
-            bounceX: 1,
-            bounceY: 1,
-        }), this);
-
-        this.playerBall = playerBalls[0];
     }
 
     update() {
-        // TODO: Actual drawing of upgrade cards
         this.graphics.clear();
-        DrawBalls(this.graphics, [this.playerBall]);
+        this.updateUpgrades();
+        this.drawUpgradeCards();
+    }
+
+    updateUpgrades() {
+        if (this.readyToUpdateUpgrades == true
+            && UpgradeData.length > 0) {
+            this.readyToUpdateUpgrades = false;
+            for (let upgradeCard of this.upgradeCards) {
+                upgradeCard.Title.destroy(true);
+                upgradeCard.Description.destroy(true);
+            }
+            
+            this.upgradeCards = [];
+
+            // Partition the width into N units of 9 and N+1 units of 1
+            var unitWidth = (this.scale.canvas.width / (UpgradeData.length * 9 + UpgradeData.length + 1));
+            for (var i = 0; i < UpgradeData.length; i++) {
+                var upgradeCard = new UpgradeCard(this,
+                    (10 * i * unitWidth) + unitWidth,
+                    this.scale.canvas.height / 2,
+                    'dummyImage',
+                    UpgradeData[i],
+                    this.scale.canvas.height * 0.4,
+                    unitWidth * 9);
+                this.upgradeCards[i] = upgradeCard;
+            }
+        }
+    }
+
+    drawUpgradeCards() {
+        for (let card of this.upgradeCards) {
+            this.graphics.fillStyle(0xCCCCCC);
+            this.graphics.fillRoundedRect(card.x, card.y, card.width, card.height);
+            this.graphics.lineStyle(10, card.Upgrade.BorderColor);
+            this.graphics.strokeRoundedRect(card.x, card.y, card.width, card.height);
+        }
     }
 
     chooseUpgrade(upgrade: ServerUpgradeData) {
@@ -61,6 +91,26 @@ class BallUpgrades extends Phaser.Scene {
         connection.invoke("ChooseUpgrade", upgrade.ServerId, sessionUserId, sessionRoomId).catch(function (err) {
             return console.error(err.toString());
         });
+    }
+}
+
+class UpgradeCard extends Phaser.Physics.Arcade.Sprite {
+    Upgrade: ServerUpgradeData;
+    Title: Phaser.GameObjects.Text;
+    Description: Phaser.GameObjects.Text;
+
+    constructor(scene: Phaser.Scene, x: number, y: number, texture: string, upgradeData: ServerUpgradeData, height: number, width: number) {
+        super(scene, x, y, texture);
+        this.Upgrade = upgradeData;
+
+        this.height = height;
+        this.width = width;
+
+        this.Title = scene.add.text(x + this.width * 0.15, y + this.height * 0.1, upgradeData.UpgradeName, { color: 'Black' });
+        this.Title.scale = width * 0.009;
+        this.Description = scene.add.text(x + this.width * 0.1, y + this.height * 0.3, upgradeData.Description, { color: 'Black' });
+        this.Description.setWordWrapWidth(this.width * 0.8);
+        this.Description.scale = width * 0.005;
     }
 }
 
@@ -115,8 +165,8 @@ class BallStats extends Phaser.Scene {
     }
 
     update() {
-        this.updateText();
         this.graphics.clear();
+        this.updateText();
         DrawBalls(this.graphics, [this.playerBall]);
     }
 
@@ -126,5 +176,18 @@ class BallStats extends Phaser.Scene {
         this.statsDisplay["armor"].text = "ARMOR:" + this.playerBall.Armor.toString();
         this.statsDisplay["velocity"].text = "SPEED:" + (this.playerBall.VelocityMultiplier * 100).toString();
         this.statsDisplay["size"].text = "SIZE:" + (this.playerBall.SizeMultiplier * 100).toString();
+
+        if (UpgradeData.length > 0) {
+            this.graphics.alpha = 0.5;
+            for (let key in this.statsDisplay) {
+                this.statsDisplay[key].alpha = 0.5;
+            }
+        }
+        else {
+            this.graphics.alpha = 1.0;
+            for (let key in this.statsDisplay) {
+                this.statsDisplay[key].alpha = 1.0;
+            }
+        }
     }
 }

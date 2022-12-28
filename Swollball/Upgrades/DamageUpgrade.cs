@@ -10,9 +10,11 @@ namespace Swollball.Upgrades
     {
         public string UpgradeName => $"Damage+{this.amount}";
 
-        public string Description => $"Increases damage by {this.amount}";
+        public string Description => $"Increases damage by {this.amount} and also this is just more text to fill up space";
 
         public string ServerId { get; private set; } = Guid.NewGuid().ToString();
+
+        public int BorderColor { get; private set; } = 11045079;
 
         private int amount;
 
