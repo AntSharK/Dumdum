@@ -80,7 +80,16 @@ namespace Swollball
             if (upgradeApplied)
             {
                 await Clients.Caller.SendAsync("UpdateBalls", new Ball[] { player.Ball });
-                await Clients.Caller.SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values);
+
+                var currentUpgrades = player.CurrentUpgrades.Values;
+                if (currentUpgrades.Count == 0)
+                {
+                    await Clients.Caller.SendAsync("UpdateUpgrades", BlankUpgrade.Instance);
+                }
+                else
+                {
+                    await Clients.Caller.SendAsync("UpdateUpgrades", currentUpgrades);
+                }
             }
         }
     }

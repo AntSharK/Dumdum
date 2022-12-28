@@ -76,6 +76,7 @@ class BallUpgrades extends Phaser.Scene {
                 if (upgradeCard.Title.text.length > 0) {
                     upgradeCard.setInteractive();
                     upgradeCard.on('pointerdown', function (pointer) {
+                        console.log(this.Upgrade.ServerId);
                         this.BallUpgradeScene.chooseUpgrade(this.Upgrade);
                     });
 

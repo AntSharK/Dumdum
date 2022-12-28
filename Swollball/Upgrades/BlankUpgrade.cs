@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Swollball.Upgrades
 {
-    internal class BlankUpgrade : IUpgrade
+    public class BlankUpgrade : IUpgrade
     {
+        public static IEnumerable<IUpgrade> Instance = new List<IUpgrade>() { new BlankUpgrade() };
+
         public string UpgradeName => $"";
 
         public string Description => $"";
