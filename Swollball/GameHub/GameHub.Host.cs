@@ -37,6 +37,10 @@ namespace Swollball
             {
                 return Clients.Client(player.ConnectionId).SendAsync("UpdateBalls", new Ball[] { player.Ball });
             }));
+            await Task.WhenAll(roomToStart.Players.Values.Select(player =>
+            {
+                return Clients.Client(player.ConnectionId).SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values);
+            }));
 
             await Clients.Group(roomToStart.RoomId).SendAsync("StartGame");
         }
