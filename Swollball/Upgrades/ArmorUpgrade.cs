@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Swollball.Upgrades
 {
-    public class DamageUpgrade : IUpgrade
+    public class ArmorUpgrade : IUpgrade
     {
-        public string UpgradeName => $"DMG+{this.amount}";
+        public string UpgradeName => $"ARMOR+{this.amount}";
 
-        public string Description => $"Increases damage by {this.amount}";
+        public string Description => $"Increases armor by {this.amount}";
 
         public string ServerId { get; private set; } = Guid.NewGuid().ToString();
 
@@ -18,14 +18,14 @@ namespace Swollball.Upgrades
 
         private int amount;
 
-        public DamageUpgrade(int amount)
+        public ArmorUpgrade(int amount)
         {
             this.amount = amount;
         }
 
         public void PerformUpgrade(Ball ball)
         {
-            ball.Dmg += this.amount;
+            ball.Armor += this.amount;
         }
     }
 }
