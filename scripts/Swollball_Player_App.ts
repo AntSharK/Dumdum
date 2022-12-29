@@ -43,6 +43,14 @@ class BallUpgrades extends Phaser.Scene {
 
     update() {
         this.graphics.clear();
+
+        // Draw the fade screen
+        if (this.upgradeCards.length > 0) {
+
+            this.graphics.fillStyle(0xFFFFFF, 0.6);
+            this.graphics.fillRect(0, 0, this.scale.canvas.width, this.scale.canvas.height);
+        }
+
         this.updateUpgrades();
         this.drawUpgradeCards();
     }
