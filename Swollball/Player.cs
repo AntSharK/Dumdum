@@ -51,6 +51,13 @@ namespace Swollball
             return false;
         }
 
+        public void StartNextRound()
+        {
+            // TODO: Return credits correctly and fill shop correctly
+            this.CreditsLeft = 1;
+            UpgradeFactory.FillShop_Tier1(this.CurrentUpgrades);
+        }
+
         public override int GetHashCode()
         {
             return this.Name.GetHashCode();

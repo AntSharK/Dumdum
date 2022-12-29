@@ -194,7 +194,7 @@ class Leaderboard extends Phaser.Scene {
 
     StartNextRound() {
         var sessionRoomId = sessionStorage.getItem("roomid");
-        connection.invoke("StartNextRound", sessionRoomId).catch(function (err) {
+        connection.invoke("StartNextLobbyRound", sessionRoomId).catch(function (err) {
             return console.error(err.toString());
         });
     }

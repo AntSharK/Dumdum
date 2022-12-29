@@ -45,7 +45,7 @@ namespace Swollball
             await Clients.Group(roomToStart.RoomId).SendAsync("StartGame");
         }
 
-        public async Task StartNextRound(string roomId)
+        public async Task StartNextLobbyRound(string roomId)
         {
             if (!this.GameLobby.Rooms.ContainsKey(roomId))
             {
@@ -57,6 +57,7 @@ namespace Swollball
             roomToStart.StartNextRound();
             await Clients.Caller.SendAsync("UpdateBalls", roomToStart.Players.Values.Select(p => p.Ball));
             await Clients.Caller.SendAsync("SceneTransition", "Leaderboard", "BallArena");
+
             await Clients.Group(roomToStart.RoomId).SendAsync("StartNextRound");
         }
 
