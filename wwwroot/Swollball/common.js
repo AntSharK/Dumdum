@@ -30,6 +30,6 @@ connection.on("UpdateLeaderboard", function (leaderboardData) {
     InitializeLeaderboardData(leaderboardData);
 });
 
-connection.on("UpdateUpgrades", function (upgradeData) {
-    InitializeUpgradeData(upgradeData);
+connection.on("UpdateUpgrades", function (upgradeData, creditsLeft) {
+    InitializeUpgradeData(upgradeData, creditsLeft);
 });

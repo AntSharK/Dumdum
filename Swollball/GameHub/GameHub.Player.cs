@@ -14,7 +14,7 @@ namespace Swollball
             await this.StartRoom(roomId);
 
             var player = this.GameLobby.Rooms[roomId].Players[userName];
-            await Clients.Caller.SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values);
+            await Clients.Caller.SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values, player.CreditsLeft);
         }
 
         public async Task JoinRoom(string userName, string roomId, string colorIn)
@@ -57,7 +57,7 @@ namespace Swollball
                     break;
                 case GameRoom.RoomState.Arena:
                 case GameRoom.RoomState.Leaderboard:
-                    await Clients.Caller.SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values);
+                    await Clients.Caller.SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values, player.CreditsLeft);
                     await Clients.Caller.SendAsync("UpdateBalls", new Ball[] { player.Ball });
                     await Clients.Caller.SendAsync("StartGame");
                     break;
@@ -82,12 +82,22 @@ namespace Swollball
             var currentUpgrades = player.CurrentUpgrades.Values;
             if (currentUpgrades.Count == 0)
             {
-                await Clients.Caller.SendAsync("UpdateUpgrades", BlankUpgrade.Instance);
+                await Clients.Caller.SendAsync("UpdateUpgrades", BlankUpgrade.Instance, player.CreditsLeft);
             }
             else
             {
-                await Clients.Caller.SendAsync("UpdateUpgrades", currentUpgrades);
+                await Clients.Caller.SendAsync("UpdateUpgrades", currentUpgrades, player.CreditsLeft);
             }
+        }
+
+        public async Task StartNextPlayerRound(string userName, string roomId)
+        {
+            (var player, var room) = await this.FindPlayerAndRoom(userName, roomId);
+            if (player == null || room == null) return;
+
+            player.StartNextRound();
+            await Clients.Caller.SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values, player.CreditsLeft);
+            await Clients.Caller.SendAsync("UpdateBalls", new Ball[] { player.Ball });
         }
     }
 }

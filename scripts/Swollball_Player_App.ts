@@ -29,6 +29,7 @@ class BallUpgrades extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
     readyToUpdateUpgrades: boolean;
     upgradeCards: UpgradeCard[];
+    creditsLeft: Phaser.GameObjects.Text;
 
     constructor() {
         super({ key: 'BallUpgrades', active: true, visible: true });
@@ -39,10 +40,28 @@ class BallUpgrades extends Phaser.Scene {
     create() {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
         this.input.on('gameobjectdown', this.onObjectClicked);
+        this.creditsLeft = this.add.text(this.scale.canvas.width * 0.7, this.scale.canvas.height * 0.25, "0", { color: 'Black' });
+        this.creditsLeft.scale = Math.min(this.scale.canvas.width, this.scale.canvas.height) * 0.0052;
     }
 
     update() {
         this.graphics.clear();
+
+        // Draw the fade screen
+        if (this.upgradeCards.length > 0) {
+            this.graphics.fillStyle(0xFFFFFF, 0.6);
+            this.graphics.fillRect(0, 0, this.scale.canvas.width, this.scale.canvas.height);
+            this.creditsLeft.setVisible(true);
+
+            this.graphics.fillStyle(0xFFC90E);
+            this.graphics.fillCircle(this.creditsLeft.x + this.creditsLeft.scale*5, this.creditsLeft.y + this.creditsLeft.scale*8, this.creditsLeft.scale * 20);
+            this.graphics.lineStyle(10, 0x222222);
+            this.graphics.strokeCircle(this.creditsLeft.x + this.creditsLeft.scale*5, this.creditsLeft.y + this.creditsLeft.scale*8, this.creditsLeft.scale * 20);
+        }
+        else {
+            this.creditsLeft.setVisible(false);
+        }
+
         this.updateUpgrades();
         this.drawUpgradeCards();
     }
@@ -58,6 +77,7 @@ class BallUpgrades extends Phaser.Scene {
             }
             
             this.upgradeCards = [];
+            this.creditsLeft.text = CreditsLeft.toString();
             var hasActionableCards = false;
 
             // Partition the width into N units of 9 and N+1 units of 1
@@ -86,6 +106,7 @@ class BallUpgrades extends Phaser.Scene {
             // If there are no actionable cards, clear the card list
             if (!hasActionableCards) {
                 this.upgradeCards = [];
+                this.readyToUpdateUpgrades = true;
             }
         }
     }

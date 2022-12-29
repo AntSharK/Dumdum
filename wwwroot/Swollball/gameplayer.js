@@ -58,8 +58,13 @@ connection.on("StartGame", function (playersConcat, userJoined) {
 });
 
 connection.on("StartNextRound", function () {
-    // TODO: Begin next round of watching stuff
-    console.log("Starting next round");
+    var sessionRoomId = sessionStorage.getItem(RoomIdSessionStorageKey);
+    var sessionUserName = sessionStorage.getItem(UserIdSessionStorageKey)
+    if (sessionRoomId != null && sessionUserName != null) {
+        connection.invoke("StartNextPlayerRound", sessionUserName, sessionRoomId).catch(function (err) {
+            return console.error(err.toString());
+        });
+    }
 });
 
 connection.on("EndGame", function () {

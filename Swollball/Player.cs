@@ -15,6 +15,7 @@ namespace Swollball
         public string RoomId { get; private set; }
         public Score PlayerScore { get; private set; }
         public Dictionary<string, IUpgrade> CurrentUpgrades { get; private set; } = new Dictionary<string, IUpgrade>();
+        public int CreditsLeft { get; set; } = 3;
 
         public Player(string name, string connectionId, string roomName)
         {
@@ -24,12 +25,7 @@ namespace Swollball
             this.PlayerScore = new Score(this.Name);
             this.Ball = new Ball(this.Name);
 
-            var up1 = new DamageUpgrade(3);
-            var up2 = new DamageUpgrade(4);
-            var up3 = new DamageUpgrade(5);
-            CurrentUpgrades[up1.ServerId] = up1;
-            CurrentUpgrades[up2.ServerId] = up2;
-            CurrentUpgrades[up3.ServerId] = up3;
+            UpgradeFactory.FillShop_Tier1(this.CurrentUpgrades);
         }
 
         public bool ApplyUpgrade(string upgradeId)
@@ -40,12 +36,26 @@ namespace Swollball
                 upgradeToApply.PerformUpgrade(this.Ball);
                 this.Ball.Upgrades.Add(upgradeToApply);
 
-                // TODO: Additional logic to generate new upgrades
-                CurrentUpgrades.Remove(upgradeId);
+                // Current logic - clear the upgrade list, re-generate new ones
+                this.CreditsLeft--;
+                CurrentUpgrades.Clear();
+                if (this.CreditsLeft > 0)
+                {
+                    // TODO: Fill shop correctly
+                    UpgradeFactory.FillShop_Tier1(this.CurrentUpgrades);
+                }
+
                 return true;
             }
 
             return false;
+        }
+
+        public void StartNextRound()
+        {
+            // TODO: Return credits correctly and fill shop correctly
+            this.CreditsLeft = 1;
+            UpgradeFactory.FillShop_Tier1(this.CurrentUpgrades);
         }
 
         public override int GetHashCode()

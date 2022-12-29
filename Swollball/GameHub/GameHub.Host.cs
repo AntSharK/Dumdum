@@ -39,13 +39,13 @@ namespace Swollball
             }));
             await Task.WhenAll(roomToStart.Players.Values.Select(player =>
             {
-                return Clients.Client(player.ConnectionId).SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values);
+                return Clients.Client(player.ConnectionId).SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values, player.CreditsLeft);
             }));
 
             await Clients.Group(roomToStart.RoomId).SendAsync("StartGame");
         }
 
-        public async Task StartNextRound(string roomId)
+        public async Task StartNextLobbyRound(string roomId)
         {
             if (!this.GameLobby.Rooms.ContainsKey(roomId))
             {
@@ -57,7 +57,6 @@ namespace Swollball
             roomToStart.StartNextRound();
             await Clients.Caller.SendAsync("UpdateBalls", roomToStart.Players.Values.Select(p => p.Ball));
             await Clients.Caller.SendAsync("SceneTransition", "Leaderboard", "BallArena");
-            await Clients.Group(roomToStart.RoomId).SendAsync("StartNextRound");
         }
 
         public async Task FinishRound(RoundEvent[] roundEvents, string roomId)
@@ -79,6 +78,10 @@ namespace Swollball
             if (room.RoundNumber < 0) {
                 await Clients.Caller.SendAsync("ClearState"); // For host machine, display last scoreboard and clear state
                 await Clients.Group(room.RoomId).SendAsync("EndGame");
+            }
+            else
+            {
+                await Clients.Group(room.RoomId).SendAsync("StartNextRound");
             }
         }
 
