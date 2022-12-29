@@ -69,6 +69,7 @@ class BallArena extends Phaser.Scene {
         // Initialize timer
         this.roundTimer = new Phaser.Time.TimerEvent({ delay: REGULARROUNDDURATION * 1000, callback: this.finishScene, callbackScope: this });
         this.time.addEvent(this.roundTimer);
+        this.time.addEvent(new Phaser.Time.TimerEvent({ delay: 1000, callback: this.setBallVelocity, callbackScope: this }));
         this.timeLeftDisplay = this.add.text(0, 0, REGULARROUNDDURATION.toString(), { color: 'White' });
         var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
         this.timeLeftDisplay.scale = boundingDimension * 0.005;
@@ -120,6 +121,10 @@ class BallArena extends Phaser.Scene {
                 }
             }
         });
+    }
+
+    setBallVelocity() {
+        SetBallVelocity(this.playerBalls, this);
     }
 
     update() {

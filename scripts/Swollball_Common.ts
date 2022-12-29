@@ -146,8 +146,6 @@ function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.S
     const ASSUMEDSCALE = 1000;
     const PLACERADIUS = 300;
     const FONTSIZEMULTIPLIER = 0.022;
-    const BASEVELOCITY = 200;
-    const MAXDEFLECTIONANGLE = 0.6;
     const AREATAKENBYBALLS = 0.25;
 
     var boundingDimension = Math.min(scene.scale.canvas.width, scene.scale.canvas.height);
@@ -173,19 +171,28 @@ function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.S
     // Place balls in a circle
     Phaser.Actions.PlaceOnCircle(retVal, new Phaser.Geom.Circle(scene.scale.canvas.width / 2, scene.scale.canvas.height / 2, PLACERADIUS * scaleMultiplier));
     for (let pb of retVal) {
-        // Set the velocity
-        var direction = new Phaser.Math.Vector2(scene.scale.canvas.width / 2 - pb.x, scene.scale.canvas.height / 2 - pb.y);
-        var normalizedDirection = direction.normalize();
-        normalizedDirection.setAngle(normalizedDirection.angle() + (Math.random() * MAXDEFLECTIONANGLE * 2) - MAXDEFLECTIONANGLE);
-        pb.setVelocityX(normalizedDirection.x * BASEVELOCITY * scaleMultiplier);
-        pb.setVelocityY(normalizedDirection.y * BASEVELOCITY * scaleMultiplier);
-
-        // Offset the object
         pb.setCircle(pb.Size);
         pb.body.setOffset(-pb.Size, -pb.Size);
     };
 
     return retVal;
+}
+
+function SetBallVelocity(playerBalls: PlayerBall[], scene: Phaser.Scene) {
+    const BASEVELOCITY = 200;
+    const MAXDEFLECTIONANGLE = 0.6;
+    const ASSUMEDSCALE = 1000;
+
+    var boundingDimension = Math.min(scene.scale.canvas.width, scene.scale.canvas.height);
+    var scaleMultiplier = boundingDimension / ASSUMEDSCALE;
+    for (let pb of playerBalls) {
+        var direction = new Phaser.Math.Vector2(scene.scale.canvas.width / 2 - pb.x, scene.scale.canvas.height / 2 - pb.y);
+        var normalizedDirection = direction.normalize();
+        normalizedDirection.setAngle(normalizedDirection.angle() + (Math.random() * MAXDEFLECTIONANGLE * 2) - MAXDEFLECTIONANGLE);
+        pb.setVelocityX(normalizedDirection.x * BASEVELOCITY * scaleMultiplier);
+        pb.setVelocityY(normalizedDirection.y * BASEVELOCITY * scaleMultiplier);
+    };
+
 }
 
 function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBall[]) {
