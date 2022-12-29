@@ -57,8 +57,6 @@ namespace Swollball
             roomToStart.StartNextRound();
             await Clients.Caller.SendAsync("UpdateBalls", roomToStart.Players.Values.Select(p => p.Ball));
             await Clients.Caller.SendAsync("SceneTransition", "Leaderboard", "BallArena");
-
-            await Clients.Group(roomToStart.RoomId).SendAsync("StartNextRound");
         }
 
         public async Task FinishRound(RoundEvent[] roundEvents, string roomId)
@@ -80,6 +78,10 @@ namespace Swollball
             if (room.RoundNumber < 0) {
                 await Clients.Caller.SendAsync("ClearState"); // For host machine, display last scoreboard and clear state
                 await Clients.Group(room.RoomId).SendAsync("EndGame");
+            }
+            else
+            {
+                await Clients.Group(room.RoomId).SendAsync("StartNextRound");
             }
         }
 

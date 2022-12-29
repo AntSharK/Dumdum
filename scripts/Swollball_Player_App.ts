@@ -94,6 +94,7 @@ class BallUpgrades extends Phaser.Scene {
             // If there are no actionable cards, clear the card list
             if (!hasActionableCards) {
                 this.upgradeCards = [];
+                this.readyToUpdateUpgrades = true;
             }
         }
     }
