@@ -3,6 +3,7 @@ declare var RoundScoreData: ServerRoundScoreData[];
 declare var RoundLog: RoundEvent[];
 declare var Game: Swollball_Lobby_Game;
 declare var RoundNumber: integer;
+declare var CreditsLeft: integer;
 declare var UpgradeData: ServerUpgradeData[];
 declare var connection;
 
@@ -45,8 +46,9 @@ function InitializeLeaderboardData(dataIn: any[]) {
     }
 }
 
-function InitializeUpgradeData(dataIn: any[]) {
+function InitializeUpgradeData(dataIn: any[], creditsLeft: integer) {
     UpgradeData = [];
+    CreditsLeft = creditsLeft;
     for (let data of dataIn) {
         var serverData = new ServerUpgradeData();
         serverData.UpgradeName = data.upgradeName;

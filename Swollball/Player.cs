@@ -15,7 +15,7 @@ namespace Swollball
         public string RoomId { get; private set; }
         public Score PlayerScore { get; private set; }
         public Dictionary<string, IUpgrade> CurrentUpgrades { get; private set; } = new Dictionary<string, IUpgrade>();
-        public int CreditsLeft { get; set; } = 20;
+        public int CreditsLeft { get; set; } = 3;
 
         public Player(string name, string connectionId, string roomName)
         {
@@ -41,6 +41,7 @@ namespace Swollball
                 CurrentUpgrades.Clear();
                 if (this.CreditsLeft > 0)
                 {
+                    // TODO: Fill shop correctly
                     UpgradeFactory.FillShop_Tier1(this.CurrentUpgrades);
                 }
 
