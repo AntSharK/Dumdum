@@ -29,5 +29,11 @@ namespace Swollball.Upgrades.Keystones
         {
             this.preUpgradeStat = ball.Hp;
         }
+
+        public override void PerformUpgrade(Ball ball)
+        {
+            this.preUpgradeStat = ball.Hp;
+            base.PerformUpgrade(ball);
+        }
     }
 }
