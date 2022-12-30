@@ -1,4 +1,5 @@
 ﻿using Swollball.Upgrades;
+using Swollball.Upgrades.Keystones;
 
 namespace Swollball
 {
@@ -16,6 +17,8 @@ namespace Swollball
         public int Armor { get; set; } = 0;
 
         public List<IUpgrade> Upgrades { get; set; } = new List<IUpgrade>();
+
+        public List<IKeystone> Keystones { get; set; } = new List<IKeystone>();
 
         public Ball(string playerName)
         {

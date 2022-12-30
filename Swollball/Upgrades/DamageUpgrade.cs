@@ -26,6 +26,7 @@ namespace Swollball.Upgrades
         public void PerformUpgrade(Ball ball)
         {
             ball.Dmg += this.amount;
+            ball.Upgrades.Add(this);
         }
     }
 }
