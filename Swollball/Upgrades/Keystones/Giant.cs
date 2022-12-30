@@ -13,15 +13,15 @@ namespace Swollball.Upgrades.Keystones
         {
         }
 
-        public override string UpgradeName => $"Giant+{this.value}";
+        public override string UpgradeName => $"Giant+{this.amount}";
 
-        public override string Description => $"Increase your size by {this.value} for every 10 hp gained.";
+        public override string Description => $"Increase your size by {this.amount} for every 10 hp gained.";
 
         public override void AfterUpgrade(Ball ball)
         {
             if (ball.Hp > this.preUpgradeStat)
             {
-                ball.SizeMultiplier = ball.SizeMultiplier + 0.001f * this.value * (ball.Hp - this.preUpgradeStat);
+                ball.SizeMultiplier = ball.SizeMultiplier + 0.001f * this.amount * (ball.Hp - this.preUpgradeStat);
             }
         }
 

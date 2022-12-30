@@ -12,13 +12,15 @@ namespace Swollball.Upgrades
 
         private static IUpgrade GetUpgrade_Tier1()
         {
-            var rng = Rng.Next(2);
+            var rng = Rng.Next(3);
             switch (rng)
             {
                 case 0:
                     return new DamageUpgrade(3);
                 case 1:
                     return new ArmorUpgrade(1);
+                case 2:
+                    return new HpUpgrade(5);
                 default:
                     return BlankUpgrade.Instance.First();
             }
