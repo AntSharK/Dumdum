@@ -1,7 +1,4 @@
-﻿const REGULARROUNDDURATION = 5;
-const FIRSTROUNDDURATION = 5;
-const LEADERBOARDDURATION = 3;
-const FINALSCOREDISPLAYDURATION = 30;
+﻿const FINALSCOREDISPLAYDURATION = 30;
 
 /* 
 GAME SCENES
@@ -67,9 +64,10 @@ class BallArena extends Phaser.Scene {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
 
         // Initialize timer
-        this.roundTimer = new Phaser.Time.TimerEvent({ delay: REGULARROUNDDURATION * 1000, callback: this.finishScene, callbackScope: this });
+        var roundDuration = sessionStorage.getItem("roundduration");
+        this.roundTimer = new Phaser.Time.TimerEvent({ delay: parseInt(roundDuration) * 1000, callback: this.finishScene, callbackScope: this });
         this.time.addEvent(this.roundTimer);
-        this.timeLeftDisplay = this.add.text(0, 0, REGULARROUNDDURATION.toString(), { color: 'White' });
+        this.timeLeftDisplay = this.add.text(0, 0, roundDuration, { color: 'White' });
         var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
         this.timeLeftDisplay.scale = boundingDimension * 0.005;
 
@@ -154,11 +152,11 @@ class Leaderboard extends Phaser.Scene {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
 
         var timerEndFunction = this.StartNextRound;
-        var roundDurationSeconds = LEADERBOARDDURATION;
+        var roundDurationSeconds = parseInt(sessionStorage.getItem("leaderboardduration"));
         switch (RoundNumber) {
             case 0:
                 this.add.text(200, 100, "FIRST ROUND STARTING SOON...");
-                roundDurationSeconds = FIRSTROUNDDURATION;
+                roundDurationSeconds = roundDurationSeconds * 3;
                 break;
             case -1:
                 this.add.text(200, 100, "END OF GAME");

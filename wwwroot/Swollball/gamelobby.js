@@ -13,6 +13,10 @@ document.getElementById("startbutton").addEventListener("click", function (event
     var maxRounds = document.getElementById("gamerounds").value;
     var roundTime = document.getElementById("roundtime").value;
     var restTime = document.getElementById("resttime").value;
+
+    sessionStorage.setItem(RoundDurationStorageKey, roundTime);
+    sessionStorage.setItem(LeaderBoardDurationStorageKey, restTime);
+
     connection.invoke("StartRoom", sessionRoomId, maxRounds).catch(function (err) {
         return console.error(err.toString());
     });
