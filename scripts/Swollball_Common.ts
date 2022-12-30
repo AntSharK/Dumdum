@@ -168,6 +168,9 @@ function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.S
         retVal.push(newBall);
     }
 
+    // Randomize the ball order
+    retVal.sort(() => Math.random() - 0.5);
+
     // Place balls in a circle
     Phaser.Actions.PlaceOnCircle(retVal, new Phaser.Geom.Circle(scene.scale.canvas.width / 2, scene.scale.canvas.height / 2, PLACERADIUS * scaleMultiplier));
     for (let pb of retVal) {
