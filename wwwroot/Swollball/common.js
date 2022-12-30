@@ -1,5 +1,7 @@
 ﻿const RoomIdSessionStorageKey = "roomid";
 const UserIdSessionStorageKey = "userid";
+const LeaderBoardDurationStorageKey = "leaderboardduration";
+const RoundDurationStorageKey = "roundduration";
 var connection = new signalR.HubConnectionBuilder().withUrl("/swollBallHub").build();
 
 connection.start().catch(function (err) {
@@ -9,6 +11,8 @@ connection.start().catch(function (err) {
 connection.on("ClearState", function () {
     sessionStorage.removeItem(RoomIdSessionStorageKey);
     sessionStorage.removeItem(UserIdSessionStorageKey);
+    sessionStorage.removeItem(LeaderBoardDurationStorageKey);
+    sessionStorage.removeItem(RoundDurationStorageKey);
 });
 
 connection.on("ShowError", function (errorMessage, shouldReload = false) {

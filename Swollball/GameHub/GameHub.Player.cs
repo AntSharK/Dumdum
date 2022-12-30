@@ -11,7 +11,7 @@ namespace Swollball
             var userName = "TESTPLAYER";
             var roomId = this.GameLobby.Rooms.Keys.First();
             await this.ResumePlayerSession(userName, roomId);
-            await this.StartRoom(roomId);
+            await this.StartRoom(roomId, "5" /*MaxRounds*/);
 
             var player = this.GameLobby.Rooms[roomId].Players[userName];
             await Clients.Caller.SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values, player.CreditsLeft);
