@@ -49,8 +49,9 @@ namespace Swollball
             return newPlayer;
         }
 
-        public void StartGame()
+        public void StartGame(int maxRounds)
         {
+            this.MaxRounds = maxRounds;
             this.State = RoomState.Leaderboard;
         }
 

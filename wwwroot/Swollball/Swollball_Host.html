@@ -12,9 +12,16 @@
     <div id="pageName" class="display-4" style="text-decoration:underline; text-align:center">CREATE GAME</div>
 
     <div class="state" id="startLobby" style="display:none">
+        <div class="display-4">
+            <u>GAME PARAMETERS</u><br />
+            ROUNDS: <input type="number" step="1" min="1" max="30" value="5" id="gamerounds" /><br />
+            ROUND TIME: <input type="number" step="1" min="1" max="999" value="10" id="roundtime" /><br />
+            REST TIME: <input type="number" step="1" min="1" max="999" value="5" id="resttime" /><br />
+        </div>
+        <hr />
         <div id="lobbyplayercount" class="h3"><u>0 PLAYERS IN GAME</u></div>
         <ul id="lobbyList" class="h4"></ul>
-        <div style="text-align:center" class="display-2"><input type="button" id="startbutton"  value="BEGIN GAME"/><br /><br /></div>
+        <div style="text-align:center" class="display-2"><input type="button" id="startbutton" value="BEGIN GAME" /><br /><br /></div>
     </div>
     <div class="row">&nbsp;</div>
 

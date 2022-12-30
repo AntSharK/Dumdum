@@ -10,7 +10,10 @@ document.getElementById("createroombutton").addEventListener("click", function (
 
 document.getElementById("startbutton").addEventListener("click", function (event) {
     var sessionRoomId = sessionStorage.getItem(RoomIdSessionStorageKey);
-    connection.invoke("StartRoom", sessionRoomId).catch(function (err) {
+    var maxRounds = document.getElementById("gamerounds").value;
+    var roundTime = document.getElementById("roundtime").value;
+    var restTime = document.getElementById("resttime").value;
+    connection.invoke("StartRoom", sessionRoomId, maxRounds).catch(function (err) {
         return console.error(err.toString());
     });
     event.preventDefault();

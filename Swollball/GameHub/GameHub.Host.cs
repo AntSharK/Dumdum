@@ -18,7 +18,7 @@ namespace Swollball
             }
         }
 
-        public async Task StartRoom(string roomId)
+        public async Task StartRoom(string roomId, string maxRounds /*Serialization: This version of SignalR passes in everything as strings*/)
         {
             if (!this.GameLobby.Rooms.ContainsKey(roomId))
             {
@@ -27,7 +27,13 @@ namespace Swollball
             }
 
             var roomToStart = this.GameLobby.Rooms[roomId];
-            roomToStart.StartGame();
+
+            if (!int.TryParse(maxRounds, out int rounds))
+            {
+                rounds = 5;
+            }
+
+            roomToStart.StartGame(rounds);
 
             await Clients.Caller.SendAsync("UpdateLeaderboard", roomToStart.Players.Values.Select(s => s.PlayerScore));
             await Clients.Caller.SendAsync("StartGame", "Leaderboard");
