@@ -1,5 +1,5 @@
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddSignalR().AddJsonProtocol();
+builder.Services.AddSignalR();
 builder.Services.AddSingleton<Swollball.Lobby>();
 builder.Services.AddRazorPages();
 
