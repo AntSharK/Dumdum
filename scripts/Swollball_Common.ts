@@ -123,6 +123,22 @@ class PlayerBall extends Phaser.Physics.Arcade.Sprite {
     Text: Phaser.GameObjects.Text;
     SizeMultiplier: number;
     VelocityMultiplier: number;
+
+    HitTime: number = 0;
+}
+
+function HitBalls(ball1: PlayerBall, ball2: PlayerBall, timeNow: number){
+    ball1.HitTime = timeNow;
+    ball2.HitTime = timeNow;
+
+    var damageDoneTo1 = ball2.Damage - ball1.Armor;
+    var damageDoneTo2 = ball1.Damage - ball2.Armor;
+
+    ball1.Hp = ball1.Hp - damageDoneTo1;
+    ball2.Hp = ball2.Hp - damageDoneTo2;
+
+    RoundLog.push(new RoundEvent(ball2.Text.text, ball1.Text.text, damageDoneTo1));
+    RoundLog.push(new RoundEvent(ball1.Text.text, ball2.Text.text, damageDoneTo2));
 }
 
 function DisableBall(ball: PlayerBall) {
@@ -198,14 +214,29 @@ function SetBallVelocity(playerBalls: PlayerBall[], scene: Phaser.Scene) {
 }
 
 function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBall[]) {
+    const FLASHTIME = 300;
+    const FLASHINTERVAL = 70;
+    const FLASHCHECK = 150;
     for (let pb of playerBalls) {
         if (pb.active) {
             var hp = Math.min(pb.Hp, pb.MaxHp);
-            var colorAlpha = Phaser.Math.Interpolation.Linear([0.3, 1.0], hp / pb.MaxHp);
-            graphics.fillStyle(pb.Color, colorAlpha);
+            //var colorAlpha = Phaser.Math.Interpolation.Linear([0.15, 1.0], hp / pb.MaxHp);
+            var colorAlpha = Phaser.Math.Interpolation.QuadraticBezier(hp / pb.MaxHp, 0.10, 0.35, 1.0);
+
+            if (pb.HitTime > 0
+                && (graphics.scene.time.now - pb.HitTime) < FLASHTIME
+                && (graphics.scene.time.now - pb.HitTime) % FLASHCHECK <= FLASHINTERVAL) {
+                graphics.fillStyle(0xFFFFFF, 1);
+            }
+            else {
+                graphics.fillStyle(pb.Color, colorAlpha);
+            }
+
             graphics.fillCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size);
+
             graphics.lineStyle(10, 0x000000, colorAlpha);
             graphics.strokeCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size - 5)
+
             pb.Text.x = pb.body.position.x + pb.Size * 0.25;
             pb.Text.y = pb.body.position.y + pb.Size * 0.95;
             pb.Text.alpha = colorAlpha;
