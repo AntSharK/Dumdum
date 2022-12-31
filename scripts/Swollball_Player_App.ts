@@ -35,7 +35,14 @@ class EndScreen extends Phaser.Scene {
 
     create() {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
-        this.add.text(this.scale.canvas.width * 0.7, this.scale.canvas.height * 0.25, "GAME OVER", { color: 'Black' });
+
+        var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
+
+        this.graphics.fillStyle(0xDDDDDD, 0.7);
+        this.graphics.fillRect(this.scale.canvas.width * 0.1, this.scale.canvas.height * 0.25, this.scale.canvas.width * 0.8, this.scale.canvas.height * 0.5);
+        this.add.text(this.scale.canvas.width * 0.25, this.scale.canvas.height * 0.25, "GAME OVER", { color: 'Black' }).setScale(boundingDimension * 0.01);
+        this.add.text(this.scale.canvas.width * 0.1, this.scale.canvas.height * 0.5, "YOU GOT LAST", { color: 'Black' }).setScale(boundingDimension * 0.0075);
+
         this.time.addEvent(new Phaser.Time.TimerEvent({ delay: FINALSCOREDISPLAYDURATION * 1000, callback: this.EndGame, callbackScope: this }));
     }
 
@@ -66,12 +73,13 @@ class BallUpgrades extends Phaser.Scene {
     update() {
         this.graphics.clear();
 
-        // Draw the fade screen
         if (this.upgradeCards.length > 0) {
+            // Draw the fade screen
             this.graphics.fillStyle(0xFFFFFF, 0.6);
             this.graphics.fillRect(0, 0, this.scale.canvas.width, this.scale.canvas.height);
             this.creditsLeft.setVisible(true);
 
+            // Draw the number of credits left
             this.graphics.fillStyle(0xFFC90E);
             this.graphics.fillCircle(this.creditsLeft.x + this.creditsLeft.scale*5, this.creditsLeft.y + this.creditsLeft.scale*8, this.creditsLeft.scale * 20);
             this.graphics.lineStyle(10, 0x222222);
@@ -205,9 +213,8 @@ class BallStats extends Phaser.Scene {
         this.playerBall = playerBalls[0];
 
         // Get the scale multiplier, so we know where to put things
-        const ASSUMEDSCALE = 1000;
         var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
-        var scaleMultiplier = boundingDimension / ASSUMEDSCALE;
+        var scaleMultiplier = GetScale(this);
 
         this.playerBall.setVelocity(0, 0); // Balls in this display do not move
         this.playerBall.setPosition(300 * scaleMultiplier, 300 * scaleMultiplier); // Set the ball to the top-left of the screen
