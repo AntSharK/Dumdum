@@ -182,8 +182,8 @@ function HitBalls(ball1: PlayerBall, ball2: PlayerBall, timeNow: number) {
     ball1.HitTime = timeNow;
     ball2.HitTime = timeNow;
 
-    var damageDoneTo1 = Math.min(1, ball2.Damage - ball1.Armor);
-    var damageDoneTo2 = Math.min(1, ball1.Damage - ball2.Armor);
+    var damageDoneTo1 = Math.max(1, ball2.Damage - ball1.Armor);
+    var damageDoneTo2 = Math.max(1, ball1.Damage - ball2.Armor);
 
     ball1.Hp = ball1.Hp - damageDoneTo1;
     ball2.Hp = ball2.Hp - damageDoneTo2;
@@ -283,7 +283,7 @@ function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBal
     for (let pb of playerBalls) {
         if (pb.active) {
             var hp = Math.min(pb.Hp, pb.MaxHp);
-            //var colorAlpha = Phaser.Math.Interpolation.Linear([0.15, 1.0], hp / pb.MaxHp);
+            // Transparency is according to the bezier curve - 50% hp is 35% transparency
             var colorAlpha = Phaser.Math.Interpolation.QuadraticBezier(hp / pb.MaxHp, 0.10, 0.35, 1.0);
 
             if (pb.HitTime > 0
@@ -297,8 +297,10 @@ function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBal
 
             graphics.fillCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size);
 
-            graphics.lineStyle(10, 0x000000, colorAlpha);
-            graphics.strokeCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size - 5)
+            // Line thickness is also modified by armor
+            var lineThickness = Math.min(3 + pb.Armor/3, pb.Size/4);
+            graphics.lineStyle(lineThickness, 0x000000, colorAlpha);
+            graphics.strokeCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size - lineThickness / 2)
 
             pb.Text.x = pb.body.position.x + pb.Size * 0.25;
             pb.Text.y = pb.body.position.y + pb.Size * 0.95;
