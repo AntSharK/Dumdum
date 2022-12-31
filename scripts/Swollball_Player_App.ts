@@ -40,8 +40,25 @@ class EndScreen extends Phaser.Scene {
 
         this.graphics.fillStyle(0xDDDDDD, 0.7);
         this.graphics.fillRect(this.scale.canvas.width * 0.1, this.scale.canvas.height * 0.25, this.scale.canvas.width * 0.8, this.scale.canvas.height * 0.5);
+
+        // Totally temporary leaderboard drawing
+        var totalPlayers = 0;
+        var yourPlacing = 0;
+        var playerName = (this.scene.get("BallStats") as BallStats).playerBall.Text.text;
+        for (let scoreData of RoundScoreData.sort((a: ServerRoundScoreData, b: ServerRoundScoreData) => {
+            return b.TotalScore - a.TotalScore; // Sort in descending order
+        })) {
+            totalPlayers++;
+            if (playerName != null
+                    && scoreData.PlayerName == playerName) {
+                yourPlacing = totalPlayers;
+            }
+        }
+
         this.add.text(this.scale.canvas.width * 0.25, this.scale.canvas.height * 0.25, "GAME OVER", { color: 'Black' }).setScale(boundingDimension * 0.01);
-        this.add.text(this.scale.canvas.width * 0.1, this.scale.canvas.height * 0.5, "YOU GOT LAST", { color: 'Black' }).setScale(boundingDimension * 0.0075);
+        if (yourPlacing > 0) {
+            this.add.text(this.scale.canvas.width * 0.1, this.scale.canvas.height * 0.5, "RESULT:" + yourPlacing + "/" + totalPlayers, { color: 'Black' }).setScale(boundingDimension * 0.0075);
+        }
 
         this.time.addEvent(new Phaser.Time.TimerEvent({ delay: FINALSCOREDISPLAYDURATION * 1000, callback: this.EndGame, callbackScope: this }));
     }

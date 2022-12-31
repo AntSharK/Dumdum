@@ -82,7 +82,7 @@ namespace Swollball
 
             // Termination condition - for when round hits max rounds
             if (room.RoundNumber < 0) {
-                this.EndGame(room);
+                await this.EndGame(room);
             }
             else
             {
