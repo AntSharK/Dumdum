@@ -118,6 +118,40 @@ class ServerUpgradeData {
     BorderColor: number;
 }
 
+/* 
+ HELPERS FOR KEYSTONE ACTIONS
+ */
+function InitializeKeystoneUpgrades(ball: PlayerBall) {
+    // Initialize upgrades which the client needs to know about
+    ball.KeystoneActions = [];
+    for (let key in ball.KeystoneData) {
+        console.log(key + " " + ball.KeystoneData[key]);
+        switch (ball.KeystoneData[key][0]) {
+            case 'Lifesteal':
+                var amount = ball.KeystoneData[key][1];
+                ball.KeystoneActions.push(new LifestealAction(amount));
+                break;
+        }
+    }
+}
+
+interface KeystoneAction {
+    Apply(owner: PlayerBall, target: PlayerBall): void;
+}
+
+class LifestealAction implements KeystoneAction {
+    lifestealAmount: number;
+
+    constructor(amount: number) {
+        this.lifestealAmount = amount;
+    }
+
+    Apply(owner: PlayerBall, target: PlayerBall): void {
+        var stolen = owner.Damage * 0.1 * this.lifestealAmount;
+        owner.Hp = Math.min(owner.MaxHp, owner.Hp + stolen);
+    }
+}
+
 /*
 HELPERS FOR GAME LOGIC
  * */
@@ -134,9 +168,10 @@ class PlayerBall extends Phaser.Physics.Arcade.Sprite {
 
     HitTime: number = 0;
     KeystoneData: [string, integer][];
+    KeystoneActions: KeystoneAction[];
 }
 
-function HitBalls(ball1: PlayerBall, ball2: PlayerBall, timeNow: number){
+function HitBalls(ball1: PlayerBall, ball2: PlayerBall, timeNow: number) {
     ball1.HitTime = timeNow;
     ball2.HitTime = timeNow;
 
@@ -145,6 +180,14 @@ function HitBalls(ball1: PlayerBall, ball2: PlayerBall, timeNow: number){
 
     ball1.Hp = ball1.Hp - damageDoneTo1;
     ball2.Hp = ball2.Hp - damageDoneTo2;
+
+    for (let action of ball1.KeystoneActions) {
+        action.Apply(ball1, ball2);
+    }
+
+    for (let action of ball2.KeystoneActions) {
+        action.Apply(ball2, ball1);
+    }
 
     RoundLog.push(new RoundEvent(ball2.Text.text, ball1.Text.text, damageDoneTo1));
     RoundLog.push(new RoundEvent(ball1.Text.text, ball2.Text.text, damageDoneTo2));
@@ -192,6 +235,9 @@ function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.S
 
         newBall.Text = scene.add.text(newBall.body.position.x, newBall.body.position.y, data.Name, { color: 'Black', font: 'Comic-Sans' });
         newBall.Text.scale = newBall.Size * FONTSIZEMULTIPLIER;
+
+        InitializeKeystoneUpgrades(newBall);
+
         retVal.push(newBall);
     }
 
@@ -254,7 +300,7 @@ function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBal
     };
 }
 
-function GetScale(scene: Phaser.Scene) : number {
+function GetScale(scene: Phaser.Scene): number {
     const ASSUMEDSCALE = 1000;
     var boundingDimension = Math.min(scene.scale.canvas.width, scene.scale.canvas.height);
     return (boundingDimension / ASSUMEDSCALE);

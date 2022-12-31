@@ -12,13 +12,15 @@ namespace Swollball.Upgrades.Keystones
 
         private static IUpgrade GetKeystone_Tier1()
         {
-            var rng = Rng.Next(2);
+            var rng = Rng.Next(3);
             switch (rng)
             {
                 case 0:
                     return new Giant(1);
                 case 1:
                     return new Bulwark(1);
+                case 2:
+                    return new Lifesteal(1);
                 default:
                     return BlankUpgrade.Instance.First();
             }
