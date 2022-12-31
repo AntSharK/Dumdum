@@ -125,6 +125,20 @@ class PlayerBall extends Phaser.Physics.Arcade.Sprite {
     HitTime: number = 0;
 }
 
+function HitBalls(ball1: PlayerBall, ball2: PlayerBall, timeNow: number){
+    ball1.HitTime = timeNow;
+    ball2.HitTime = timeNow;
+
+    var damageDoneTo1 = ball2.Damage - ball1.Armor;
+    var damageDoneTo2 = ball1.Damage - ball2.Armor;
+
+    ball1.Hp = ball1.Hp - damageDoneTo1;
+    ball2.Hp = ball2.Hp - damageDoneTo2;
+
+    RoundLog.push(new RoundEvent(ball2.Text.text, ball1.Text.text, damageDoneTo1));
+    RoundLog.push(new RoundEvent(ball1.Text.text, ball2.Text.text, damageDoneTo2));
+}
+
 function DisableBall(ball: PlayerBall) {
     ball.active = false;
     ball.Text.setVisible(false);
