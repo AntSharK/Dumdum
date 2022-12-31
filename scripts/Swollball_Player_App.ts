@@ -284,13 +284,12 @@ class BallStats extends Phaser.Scene {
         this.statsDisplay["size"].text = "SIZE:" + Math.floor(this.playerBall.SizeMultiplier * 100).toString();
 
         // Update keystone display info - reinitialize only if needed
-        if (this.keystoneDisplay.length < this.playerBall.KeystoneData.length + 1) {
+        if (this.keystoneDisplay.length < this.playerBall.KeystoneData.length) {
             for (let keystoneDisplay of this.keystoneDisplay) {
                 keystoneDisplay.destroy();
             }
 
             this.keystoneDisplay = [];
-            this.keystoneDisplay.push(this.add.text(0, 0, "Keystones:", { color: 'Black' }));
             for (let keystoneData of this.playerBall.KeystoneData) {
                 this.keystoneDisplay.push(this.add.text(0, 0, keystoneData[0] + keystoneData[1], { color: 'Black' }));
             }
@@ -306,7 +305,8 @@ class BallStats extends Phaser.Scene {
                 }
             }
 
-            Phaser.Actions.PlaceOnCircle(this.keystoneDisplay, new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y - 35 * scaleMultiplier, this.playerBall.Size + 15 * scaleMultiplier), -0.8, 1.1);
+            var maxRadians = Math.min(0.25 * this.keystoneDisplay.length - 0.9, 1.2);
+            Phaser.Actions.PlaceOnCircle(this.keystoneDisplay, new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y - 35 * scaleMultiplier, this.playerBall.Size + 15 * scaleMultiplier), -0.9, maxRadians);
         }
     }
 
