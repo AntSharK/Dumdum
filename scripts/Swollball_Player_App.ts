@@ -15,13 +15,56 @@
                 },
 
                 backgroundColor: '#EEEEEE',
-                scene: [BallStats, BallUpgrades],
+                scene: [BallStats, BallUpgrades, EndScreen],
 
                 scale: {
                     autoCenter: Phaser.Scale.Center.CENTER_BOTH,
                     mode: Phaser.Scale.FIT,
                 },
             });
+    }
+}
+
+class EndScreen extends Phaser.Scene {
+
+    graphics: Phaser.GameObjects.Graphics;
+
+    constructor() {
+        super({ key: 'EndScreen', active: false, visible: true });
+    }
+
+    create() {
+        this.graphics = this.add.graphics({ x: 0, y: 0 });
+
+        var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
+
+        this.graphics.fillStyle(0xDDDDDD, 0.7);
+        this.graphics.fillRect(this.scale.canvas.width * 0.1, this.scale.canvas.height * 0.25, this.scale.canvas.width * 0.8, this.scale.canvas.height * 0.5);
+
+        // Totally temporary leaderboard drawing
+        var totalPlayers = 0;
+        var yourPlacing = 0;
+        var playerName = (this.scene.get("BallStats") as BallStats).playerBall.Text.text;
+        for (let scoreData of RoundScoreData.sort((a: ServerRoundScoreData, b: ServerRoundScoreData) => {
+            return b.TotalScore - a.TotalScore; // Sort in descending order
+        })) {
+            totalPlayers++;
+            if (playerName != null
+                    && scoreData.PlayerName == playerName) {
+                yourPlacing = totalPlayers;
+            }
+        }
+
+        this.add.text(this.scale.canvas.width * 0.25, this.scale.canvas.height * 0.25, "GAME OVER", { color: 'Black' }).setScale(boundingDimension * 0.01);
+        if (yourPlacing > 0) {
+            this.add.text(this.scale.canvas.width * 0.1, this.scale.canvas.height * 0.5, "RESULT:" + yourPlacing + "/" + totalPlayers, { color: 'Black' }).setScale(boundingDimension * 0.0075);
+        }
+
+        this.time.addEvent(new Phaser.Time.TimerEvent({ delay: FINALSCOREDISPLAYDURATION * 1000, callback: this.EndGame, callbackScope: this }));
+    }
+
+    EndGame() {
+        window.location.reload();
     }
 }
 
@@ -47,12 +90,13 @@ class BallUpgrades extends Phaser.Scene {
     update() {
         this.graphics.clear();
 
-        // Draw the fade screen
         if (this.upgradeCards.length > 0) {
+            // Draw the fade screen
             this.graphics.fillStyle(0xFFFFFF, 0.6);
             this.graphics.fillRect(0, 0, this.scale.canvas.width, this.scale.canvas.height);
             this.creditsLeft.setVisible(true);
 
+            // Draw the number of credits left
             this.graphics.fillStyle(0xFFC90E);
             this.graphics.fillCircle(this.creditsLeft.x + this.creditsLeft.scale*5, this.creditsLeft.y + this.creditsLeft.scale*8, this.creditsLeft.scale * 20);
             this.graphics.lineStyle(10, 0x222222);
@@ -186,9 +230,8 @@ class BallStats extends Phaser.Scene {
         this.playerBall = playerBalls[0];
 
         // Get the scale multiplier, so we know where to put things
-        const ASSUMEDSCALE = 1000;
         var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
-        var scaleMultiplier = boundingDimension / ASSUMEDSCALE;
+        var scaleMultiplier = GetScale(this);
 
         this.playerBall.setVelocity(0, 0); // Balls in this display do not move
         this.playerBall.setPosition(300 * scaleMultiplier, 300 * scaleMultiplier); // Set the ball to the top-left of the screen

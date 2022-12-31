@@ -82,13 +82,21 @@ namespace Swollball
 
             // Termination condition - for when round hits max rounds
             if (room.RoundNumber < 0) {
-                await Clients.Caller.SendAsync("ClearState"); // For host machine, display last scoreboard and clear state
-                await Clients.Group(room.RoomId).SendAsync("EndGame");
+                await this.EndGame(room);
             }
             else
             {
                 await Clients.Group(room.RoomId).SendAsync("StartNextRound");
             }
+        }
+
+        private async Task EndGame(GameRoom room)
+        {
+            await Clients.Caller.SendAsync("ClearState"); // For host machine, display last scoreboard and clear state
+
+            // For all players, update score information and display their position
+            await Clients.Group(room.RoomId).SendAsync("UpdateLeaderboard", room.Players.Values.Select(s => s.PlayerScore));
+            await Clients.Group(room.RoomId).SendAsync("EndGame");
         }
 
         public async Task ResumeHostSession(string roomId)

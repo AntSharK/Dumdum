@@ -8,12 +8,7 @@ connection.start().catch(function (err) {
     return console.error(err.toString());
 });
 
-connection.on("ClearState", function () {
-    sessionStorage.removeItem(RoomIdSessionStorageKey);
-    sessionStorage.removeItem(UserIdSessionStorageKey);
-    sessionStorage.removeItem(LeaderBoardDurationStorageKey);
-    sessionStorage.removeItem(RoundDurationStorageKey);
-});
+connection.on("ClearState", ClearState());
 
 connection.on("ShowError", function (errorMessage, shouldReload = false) {
     window.alert(errorMessage);
@@ -37,3 +32,10 @@ connection.on("UpdateLeaderboard", function (leaderboardData) {
 connection.on("UpdateUpgrades", function (upgradeData, creditsLeft) {
     InitializeUpgradeData(upgradeData, creditsLeft);
 });
+
+function ClearState() {
+    sessionStorage.removeItem(RoomIdSessionStorageKey);
+    sessionStorage.removeItem(UserIdSessionStorageKey);
+    sessionStorage.removeItem(LeaderBoardDurationStorageKey);
+    sessionStorage.removeItem(RoundDurationStorageKey);
+}

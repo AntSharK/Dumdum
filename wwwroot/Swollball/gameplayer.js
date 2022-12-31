@@ -68,11 +68,8 @@ connection.on("StartNextRound", function () {
 });
 
 connection.on("EndGame", function () {
-    // TODO: Display game ended screen
-    console.log("GAME ENDED");
-
-    sessionStorage.removeItem(RoomIdSessionStorageKey);
-    sessionStorage.removeItem(UserIdSessionStorageKey);
+    SceneTransition("BallUpgrades", "EndScreen");
+    ClearState();
 });
 
 

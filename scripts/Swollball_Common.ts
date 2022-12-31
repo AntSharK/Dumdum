@@ -7,6 +7,8 @@ declare var CreditsLeft: integer;
 declare var UpgradeData: ServerUpgradeData[];
 declare var connection;
 
+const FINALSCOREDISPLAYDURATION = 30;
+
 /* 
 RECEIVE DATA FROM SERVER AND SEND STUFF BACK TO SERVER
  * */
@@ -143,13 +145,12 @@ function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.S
 
     // Set the scale multiplier for initial drawing - we assume a scale of 1000, and scale according to current canvas size
     // Autoscaling will take care of the rest
-    const ASSUMEDSCALE = 1000;
     const PLACERADIUS = 300;
     const FONTSIZEMULTIPLIER = 0.022;
     const AREATAKENBYBALLS = 0.25;
 
     var boundingDimension = Math.min(scene.scale.canvas.width, scene.scale.canvas.height);
-    var scaleMultiplier = boundingDimension / ASSUMEDSCALE;
+    var scaleMultiplier = GetScale(scene);
 
     var totalBallSize = 0;
     for (let data of BallData) {
@@ -184,10 +185,8 @@ function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.S
 function SetBallVelocity(playerBalls: PlayerBall[], scene: Phaser.Scene) {
     const BASEVELOCITY = 200;
     const MAXDEFLECTIONANGLE = 0.6;
-    const ASSUMEDSCALE = 1000;
 
-    var boundingDimension = Math.min(scene.scale.canvas.width, scene.scale.canvas.height);
-    var scaleMultiplier = boundingDimension / ASSUMEDSCALE;
+    var scaleMultiplier = GetScale(scene);
     for (let pb of playerBalls) {
         var direction = new Phaser.Math.Vector2(scene.scale.canvas.width / 2 - pb.x, scene.scale.canvas.height / 2 - pb.y);
         var normalizedDirection = direction.normalize();
@@ -212,4 +211,10 @@ function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBal
             pb.Text.alpha = colorAlpha;
         }
     };
+}
+
+function GetScale(scene: Phaser.Scene) : number {
+    const ASSUMEDSCALE = 1000;
+    var boundingDimension = Math.min(scene.scale.canvas.width, scene.scale.canvas.height);
+    return (boundingDimension / ASSUMEDSCALE);
 }
