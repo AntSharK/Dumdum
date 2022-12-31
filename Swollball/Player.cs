@@ -1,4 +1,5 @@
 ﻿using Swollball.Upgrades;
+using Swollball.Upgrades.Keystones;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,8 @@ namespace Swollball
         public string RoomId { get; private set; }
         public Score PlayerScore { get; private set; }
         public Dictionary<string, IUpgrade> CurrentUpgrades { get; private set; } = new Dictionary<string, IUpgrade>();
-        public int CreditsLeft { get; set; } = 3;
+        public int CreditsLeft { get; set; } = 5; // Give more credits for keystones at the start
+        public int MaxCredits { get; set; } = 3;
 
         public Player(string name, string connectionId, string roomName)
         {
@@ -25,24 +27,30 @@ namespace Swollball
             this.PlayerScore = new Score(this.Name);
             this.Ball = new Ball(this.Name);
 
-            UpgradeFactory.FillShop_Tier1(this.CurrentUpgrades);
+            this.FillShop();
         }
 
         public bool ApplyUpgrade(string upgradeId)
         {
             if (this.CurrentUpgrades.ContainsKey(upgradeId))
             {
+                foreach (var keystone in this.Ball.Keystones)
+                {
+                    keystone.BeforeUpgrade(this.Ball);
+                }
                 var upgradeToApply = this.CurrentUpgrades[upgradeId];
                 upgradeToApply.PerformUpgrade(this.Ball);
-                this.Ball.Upgrades.Add(upgradeToApply);
+                foreach (var keystone in this.Ball.Keystones)
+                {
+                    keystone.AfterUpgrade(this.Ball);
+                }
 
                 // Current logic - clear the upgrade list, re-generate new ones
                 this.CreditsLeft--;
                 CurrentUpgrades.Clear();
                 if (this.CreditsLeft > 0)
                 {
-                    // TODO: Fill shop correctly
-                    UpgradeFactory.FillShop_Tier1(this.CurrentUpgrades);
+                    this.FillShop();
                 }
 
                 return true;
@@ -51,11 +59,25 @@ namespace Swollball
             return false;
         }
 
+        private void FillShop()
+        {
+            // TODO: Fill shop correctly
+            if (this.PlayerScore.RoundNumber == 0
+                && this.CreditsLeft > this.MaxCredits)
+            {
+                KeystoneFactory.FillShop_Tier1(this.CurrentUpgrades);
+            }
+            else
+            {
+                UpgradeFactory.FillShop_Tier1(this.CurrentUpgrades);
+            }
+        }
+
         public void StartNextRound()
         {
-            // TODO: Return credits correctly and fill shop correctly
-            this.CreditsLeft = 1;
-            UpgradeFactory.FillShop_Tier1(this.CurrentUpgrades);
+            // TODO: Set the credits left correctly
+            this.CreditsLeft = this.MaxCredits;
+            this.FillShop();
         }
 
         public override int GetHashCode()

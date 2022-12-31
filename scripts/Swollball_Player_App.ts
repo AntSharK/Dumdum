@@ -224,7 +224,7 @@ class BallStats extends Phaser.Scene {
         this.statsDisplay["hp"].text = "HP:" + this.playerBall.MaxHp.toString();
         this.statsDisplay["dmg"].text = "DMG:" + this.playerBall.Damage.toString();
         this.statsDisplay["armor"].text = "ARMOR:" + this.playerBall.Armor.toString();
-        this.statsDisplay["velocity"].text = "SPEED:" + (this.playerBall.VelocityMultiplier * 100).toString();
-        this.statsDisplay["size"].text = "SIZE:" + (this.playerBall.SizeMultiplier * 100).toString();
+        this.statsDisplay["velocity"].text = "SPEED:" + Math.floor(this.playerBall.VelocityMultiplier * 100).toString();
+        this.statsDisplay["size"].text = "SIZE:" + Math.floor(this.playerBall.SizeMultiplier * 100).toString();
     }
 }

@@ -4,23 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Swollball.Upgrades
+namespace Swollball.Upgrades.Keystones
 {
-    public static class UpgradeFactory
+    public static class KeystoneFactory
     {
         private static Random Rng = new Random();
 
-        private static IUpgrade GetUpgrade_Tier1()
+        private static IUpgrade GetKeystone_Tier1()
         {
-            var rng = Rng.Next(3);
+            var rng = Rng.Next(2);
             switch (rng)
             {
                 case 0:
-                    return new DamageUpgrade(3);
+                    return new Giant(1);
                 case 1:
-                    return new ArmorUpgrade(1);
-                case 2:
-                    return new HpUpgrade(5);
+                    return new Bulwark(1);
                 default:
                     return BlankUpgrade.Instance.First();
             }
@@ -28,10 +26,11 @@ namespace Swollball.Upgrades
 
         public static void FillShop_Tier1(Dictionary<string, IUpgrade> currentUpgrades)
         {
+            // Keystones always replace the entire shop
             const int SHOPSIZE = 3;
             while (currentUpgrades.Count < SHOPSIZE)
-            { 
-                var generatedUpgrade = UpgradeFactory.GetUpgrade_Tier1();
+            {
+                var generatedUpgrade = KeystoneFactory.GetKeystone_Tier1();
                 currentUpgrades[generatedUpgrade.ServerId] = generatedUpgrade;
             }
         }
