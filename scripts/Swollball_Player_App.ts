@@ -246,8 +246,18 @@ class BallStats extends Phaser.Scene {
 
         // TODO: This collision is somehow wrong. Figure it out
         this.playerBall.setInteractive(
-            new Phaser.Geom.Circle(this.playerBall.x - this.playerBall.Size, this.playerBall.y - this.playerBall.Size, this.playerBall.Size),
-            Phaser.Geom.Circle.Contains);
+            new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y, this.playerBall.Size),
+            CircleDetection);
+            //Phaser.Geom.Circle.Contains);
+
+        // THINGS TO TEST
+        this.playerBall.on('pointerover', function () {
+            BallData[0].Color = 0x000000;
+        });
+
+        this.playerBall.on('pointerout', function () {
+            BallData[0].Color = 0xFFFFFF;
+        });
 
         this.statsDisplay["hp"] = this.add.text(0, 0, "", { color: 'Black' });
         this.statsDisplay["dmg"] = this.add.text(0, 0, "", { color: 'Black' });
@@ -267,7 +277,8 @@ class BallStats extends Phaser.Scene {
     }
 
     update() {
-        //this.graphics.clear();
+        // No actual to clear graphics - just update text - but we do so anyway
+        this.graphics.clear();
         this.updateText();
         DrawBalls(this.graphics, [this.playerBall]);
     }

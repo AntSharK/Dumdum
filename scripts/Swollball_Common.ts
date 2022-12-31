@@ -261,11 +261,15 @@ function GetScale(scene: Phaser.Scene) : number {
 }
 
 function RectDetection(rect: Phaser.Geom.Rectangle, x: number, y: number, gameObject: Phaser.GameObjects.GameObject): boolean {
-    var retVal = (gameObject.scene.input.x >= rect.x
+    return (gameObject.scene.input.x >= rect.x
         && gameObject.scene.input.y >= rect.y
         && gameObject.scene.input.x <= rect.x + rect.width
         && gameObject.scene.input.y <= rect.y + rect.height);
+}
 
-    console.log(gameObject.scene.input.x + " " + gameObject.scene.input.y);
-    return retVal;
+function CircleDetection(circle: Phaser.Geom.Circle, x: number, y: number, gameObject: Phaser.GameObjects.GameObject): boolean {
+    var dx = (circle.x - gameObject.scene.input.x) * (circle.x - gameObject.scene.input.x);
+    var dy = (circle.y - gameObject.scene.input.y) * (circle.y - gameObject.scene.input.y);
+
+    return (dx + dy) <= (circle.radius * circle.radius);
 }
