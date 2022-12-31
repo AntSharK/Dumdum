@@ -112,6 +112,7 @@ class BallUpgrades extends Phaser.Scene {
 
     updateUpgrades() {
         if (this.readyToUpdateUpgrades == true
+                && UpgradeData != null
                 && UpgradeData.length > 0) {
             this.readyToUpdateUpgrades = false;
             for (let upgradeCard of this.upgradeCards) {
@@ -297,16 +298,17 @@ class BallStats extends Phaser.Scene {
             var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
             var scaleMultiplier = GetScale(this);
 
-            // TODO: Set font size of keystone display according to number of elements
             for (let textElement of this.keystoneDisplay) {
-                textElement.scale = boundingDimension * 0.003;
+                // Start shrinking font at 8 keystones
+                var fontScale = Math.min(0.0035, 0.028 / this.keystoneDisplay.length);
+                textElement.scale = boundingDimension * fontScale;
                 if (this.displayStats) {
                     textElement.setVisible(false);
                 }
             }
 
-            var maxRadians = Math.min(0.25 * this.keystoneDisplay.length - 0.9, 1.2);
-            Phaser.Actions.PlaceOnCircle(this.keystoneDisplay, new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y - 35 * scaleMultiplier, this.playerBall.Size + 15 * scaleMultiplier), -0.9, maxRadians);
+            var maxRadians = Math.min(0.25 * this.keystoneDisplay.length - 0.8, 1.1);
+            Phaser.Actions.PlaceOnCircle(this.keystoneDisplay, new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y - 15 * scaleMultiplier, this.playerBall.Size + 15 * scaleMultiplier), -0.9, maxRadians);
         }
     }
 
