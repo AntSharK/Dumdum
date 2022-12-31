@@ -24,17 +24,14 @@ namespace Swollball
             // Insert test players
             var tp = this.CreatePlayer("TESTPLAYER", "ASDF");
             tp.Ball.Color = 11745079;
+            tp.Ball.Upgrades.Add(new Upgrades.HpUpgrade(5));
             var tp2 = this.CreatePlayer("RANDARA", "YAYA");
             tp2.Ball.Color = 11045079;
-            tp2.Ball.Dmg = 2;
+            tp2.Ball.Dmg = 20;
             tp2.Ball.SpeedMultiplier = 1.5f;
             tp2.Ball.SizeMultiplier = 1.1f;
             var tp3 = this.CreatePlayer("LCBATA", "BARA");
             tp3.Ball.Color = 01745079;
-            var tp4 = this.CreatePlayer("ANOTHER", "PPAR");
-            tp4.Ball.Color = 00745079;
-            var tp5 = this.CreatePlayer("MORETHINGS", "RARW");
-            tp5.Ball.Color = 10000079;
 #endif
         }
 
