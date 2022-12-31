@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace Swollball.Upgrades.Keystones
 {
-    public class Lifesteal : BaseKeystone
+    public class Harden : BaseKeystone
     {
 
-        public Lifesteal(int value) : base(value)
+        public Harden(int value) : base(value)
         {
         }
 
-        public override string UpgradeName => $"Lifesteal";
+        public override string UpgradeName => $"Harden";
 
-        public override string Description => $"Regain {this.UpgradeAmount} HP for every 10 damage dealt";
+        public override string Description => $"Gain {this.UpgradeAmount} armor for the round everytime you are hit";
 
         public override void AfterUpgrade(Ball ball)
         {

@@ -126,29 +126,36 @@ function InitializeKeystoneUpgrades(ball: PlayerBall) {
     ball.KeystoneActions = [];
     for (let key in ball.KeystoneData) {
         console.log(key + " " + ball.KeystoneData[key]);
+        var amount = ball.KeystoneData[key][1];
         switch (ball.KeystoneData[key][0]) {
             case 'Lifesteal':
-                var amount = ball.KeystoneData[key][1];
                 ball.KeystoneActions.push(new LifestealAction(amount));
+                break;
+            case 'Harden':
+                ball.KeystoneActions.push(new HardenAction(amount));
                 break;
         }
     }
 }
 
 interface KeystoneAction {
-    Apply(owner: PlayerBall, target: PlayerBall): void;
+    Apply(owner: PlayerBall, target: PlayerBall, damageDone: number, damageTaken: number): void;
 }
 
 class LifestealAction implements KeystoneAction {
-    lifestealAmount: number;
-
-    constructor(amount: number) {
-        this.lifestealAmount = amount;
-    }
-
-    Apply(owner: PlayerBall, target: PlayerBall): void {
-        var stolen = owner.Damage * 0.1 * this.lifestealAmount;
+    amount: number;
+    constructor(amount: number) { this.amount = amount; }
+    Apply(owner: PlayerBall, target: PlayerBall, damageDone: number, damageTaken: number): void {
+        var stolen = damageDone * 0.1 * this.amount;
         owner.Hp = Math.min(owner.MaxHp, owner.Hp + stolen);
+    }
+}
+
+class HardenAction implements KeystoneAction {
+    amount: number;
+    constructor(amount: number) { this.amount = amount; }
+    Apply(owner: PlayerBall, target: PlayerBall, damageDone: number, damageTaken: number): void {
+        owner.Armor += this.amount;
     }
 }
 
@@ -175,18 +182,18 @@ function HitBalls(ball1: PlayerBall, ball2: PlayerBall, timeNow: number) {
     ball1.HitTime = timeNow;
     ball2.HitTime = timeNow;
 
-    var damageDoneTo1 = ball2.Damage - ball1.Armor;
-    var damageDoneTo2 = ball1.Damage - ball2.Armor;
+    var damageDoneTo1 = Math.min(1, ball2.Damage - ball1.Armor);
+    var damageDoneTo2 = Math.min(1, ball1.Damage - ball2.Armor);
 
     ball1.Hp = ball1.Hp - damageDoneTo1;
     ball2.Hp = ball2.Hp - damageDoneTo2;
 
     for (let action of ball1.KeystoneActions) {
-        action.Apply(ball1, ball2);
+        action.Apply(ball1, ball2, damageDoneTo2, damageDoneTo1);
     }
 
     for (let action of ball2.KeystoneActions) {
-        action.Apply(ball2, ball1);
+        action.Apply(ball2, ball1, damageDoneTo1, damageDoneTo2);
     }
 
     RoundLog.push(new RoundEvent(ball2.Text.text, ball1.Text.text, damageDoneTo1));
