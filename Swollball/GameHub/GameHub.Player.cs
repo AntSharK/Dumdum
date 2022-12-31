@@ -7,6 +7,7 @@ namespace Swollball
     {
         public async Task TESTSTART()
         {
+#if DEBUG
             // TODO (TEST): THIS IS A TEST METHOD
             var userName = "TESTPLAYER";
             var roomId = this.GameLobby.Rooms.Keys.First();
@@ -15,6 +16,7 @@ namespace Swollball
 
             var player = this.GameLobby.Rooms[roomId].Players[userName];
             await Clients.Caller.SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values, player.CreditsLeft);
+#endif
         }
 
         public async Task JoinRoom(string userName, string roomId, string colorIn)
