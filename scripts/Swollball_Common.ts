@@ -18,6 +18,7 @@ function InitializeBallData(dataIn: any[]) {
 
     for (let data of dataIn) {
         var serverData = new ServerBallData();
+        serverData.KeystoneData = [];
         serverData.Armor = data.armor;
         serverData.Color = data.color;
         serverData.Damage = data.dmg;
@@ -25,6 +26,10 @@ function InitializeBallData(dataIn: any[]) {
         serverData.Name = data.playerName;
         serverData.SizeMultiplier = data.sizeMultiplier;
         serverData.VelocityMultiplier = data.speedMultiplier;
+
+        for (let keystoneData of data.keystoneData) {
+            serverData.KeystoneData.push([keystoneData.item1, keystoneData.item2]);
+        }
 
         BallData.push(serverData);
     }
@@ -53,6 +58,7 @@ function InitializeUpgradeData(dataIn: any[], creditsLeft: integer) {
     CreditsLeft = creditsLeft;
     for (let data of dataIn) {
         var serverData = new ServerUpgradeData();
+        serverData.UpgradeAmount = data.upgradeAmount;
         serverData.UpgradeName = data.upgradeName;
         serverData.Description = data.description;
         serverData.ServerId = data.serverId;
@@ -81,6 +87,7 @@ class ServerBallData {
     Color: number;
     Hp: integer;
     Name: string;
+    KeystoneData: [string, integer][];
 }
 
 class ServerRoundScoreData {
@@ -104,6 +111,7 @@ class RoundEvent {
 }
 
 class ServerUpgradeData {
+    UpgradeAmount: integer;
     UpgradeName: string;
     Description: string;
     ServerId: string;

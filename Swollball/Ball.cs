@@ -17,6 +17,17 @@ namespace Swollball
         public int Dmg { get; set; } = 10;
         public int Armor { get; set; } = 0;
 
+        /// <summary>
+        /// Gets the keystone data to pass down to the client
+        /// </summary>
+        public IEnumerable<Tuple<string, int>> KeystoneData
+        {
+            get
+            {
+                return this.Keystones.Select(s => Tuple.Create(s.UpgradeName, s.UpgradeAmount));
+            }
+        }
+
         [System.Text.Json.Serialization.JsonIgnore]
         public List<IUpgrade> Upgrades { get; set; } = new List<IUpgrade>();
 
