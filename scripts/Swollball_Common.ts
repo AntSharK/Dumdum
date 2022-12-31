@@ -259,3 +259,13 @@ function GetScale(scene: Phaser.Scene) : number {
     var boundingDimension = Math.min(scene.scale.canvas.width, scene.scale.canvas.height);
     return (boundingDimension / ASSUMEDSCALE);
 }
+
+function RectDetection(rect: Phaser.Geom.Rectangle, x: number, y: number, gameObject: Phaser.GameObjects.GameObject): boolean {
+    var retVal = (gameObject.scene.input.x >= rect.x
+        && gameObject.scene.input.y >= rect.y
+        && gameObject.scene.input.x <= rect.x + rect.width
+        && gameObject.scene.input.y <= rect.y + rect.height);
+
+    console.log(gameObject.scene.input.x + " " + gameObject.scene.input.y);
+    return retVal;
+}

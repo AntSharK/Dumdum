@@ -140,7 +140,7 @@ class BallUpgrades extends Phaser.Scene {
 
                 // Don't set interactive unless the card isn't blank. Blank cards are just for filling space
                 if (upgradeCard.Title.text.length > 0) {
-                    upgradeCard.setInteractive();
+                    upgradeCard.setInteractive(new Phaser.Geom.Rectangle(upgradeCard.x, upgradeCard.y, upgradeCard.width, upgradeCard.height), RectDetection);
                     hasActionableCards = true;
                 }
 
@@ -152,9 +152,9 @@ class BallUpgrades extends Phaser.Scene {
                 this.upgradeCards = [];
                 this.readyToUpdateUpgrades = true;
             }
+
         }
     }
-
     drawUpgradeCards() {
         for (let card of this.upgradeCards) {
             this.graphics.fillStyle(0xCCCCCC);
@@ -317,7 +317,7 @@ class BallStats extends Phaser.Scene {
             return;
         }
 
-        // Invert stat display
+        // Change what is displayed
         scene.displayStats = !scene.displayStats;
         for (let key in scene.statsDisplay) {
             scene.statsDisplay[key].setVisible(scene.displayStats);
