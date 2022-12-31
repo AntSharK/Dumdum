@@ -15,13 +15,32 @@
                 },
 
                 backgroundColor: '#EEEEEE',
-                scene: [BallStats, BallUpgrades],
+                scene: [BallStats, BallUpgrades, EndScreen],
 
                 scale: {
                     autoCenter: Phaser.Scale.Center.CENTER_BOTH,
                     mode: Phaser.Scale.FIT,
                 },
             });
+    }
+}
+
+class EndScreen extends Phaser.Scene {
+
+    graphics: Phaser.GameObjects.Graphics;
+
+    constructor() {
+        super({ key: 'EndScreen', active: false, visible: true });
+    }
+
+    create() {
+        this.graphics = this.add.graphics({ x: 0, y: 0 });
+        this.add.text(this.scale.canvas.width * 0.7, this.scale.canvas.height * 0.25, "GAME OVER", { color: 'Black' });
+        this.time.addEvent(new Phaser.Time.TimerEvent({ delay: FINALSCOREDISPLAYDURATION * 1000, callback: this.EndGame, callbackScope: this }));
+    }
+
+    EndGame() {
+        window.location.reload();
     }
 }
 

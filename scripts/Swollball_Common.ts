@@ -7,6 +7,8 @@ declare var CreditsLeft: integer;
 declare var UpgradeData: ServerUpgradeData[];
 declare var connection;
 
+const FINALSCOREDISPLAYDURATION = 30;
+
 /* 
 RECEIVE DATA FROM SERVER AND SEND STUFF BACK TO SERVER
  * */

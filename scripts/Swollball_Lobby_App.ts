@@ -1,6 +1,4 @@
-﻿const FINALSCOREDISPLAYDURATION = 30;
-
-/* 
+﻿/* 
 GAME SCENES
  * */
 class Swollball_Lobby_Game {
