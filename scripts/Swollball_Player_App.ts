@@ -39,7 +39,7 @@ class EndScreen extends Phaser.Scene {
         var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
 
         this.graphics.fillStyle(0xDDDDDD, 0.7);
-        this.graphics.fillRect(this.scale.canvas.width * 0.1, this.scale.canvas.height * 0.25, this.scale.canvas.width * 0.8, this.scale.canvas.height * 0.5);
+        this.graphics.fillRect(this.scale.canvas.width * 0.1, this.scale.canvas.height * 0.1, this.scale.canvas.width * 0.8, this.scale.canvas.height * 0.65);
 
         // Totally temporary leaderboard drawing
         var totalPlayers = 0;
@@ -55,7 +55,7 @@ class EndScreen extends Phaser.Scene {
             }
         }
 
-        this.add.text(this.scale.canvas.width * 0.25, this.scale.canvas.height * 0.25, "GAME OVER", { color: 'Black' }).setScale(boundingDimension * 0.01);
+        this.add.text(this.scale.canvas.width * 0.25, this.scale.canvas.height * 0.15, "GAME\nOVER", { color: 'Black' }).setScale(boundingDimension * 0.01);
         if (yourPlacing > 0) {
             this.add.text(this.scale.canvas.width * 0.1, this.scale.canvas.height * 0.5, "RESULT:" + yourPlacing + "/" + totalPlayers, { color: 'Black' }).setScale(boundingDimension * 0.0075);
         }
@@ -244,6 +244,11 @@ class BallStats extends Phaser.Scene {
         this.playerBall.setVelocity(0, 0); // Balls in this display do not move
         this.playerBall.setPosition(300 * scaleMultiplier, 300 * scaleMultiplier); // Set the ball to the top-left of the screen
 
+        // TODO: This collision is somehow wrong. Figure it out
+        this.playerBall.setInteractive(
+            new Phaser.Geom.Circle(this.playerBall.x - this.playerBall.Size, this.playerBall.y - this.playerBall.Size, this.playerBall.Size),
+            Phaser.Geom.Circle.Contains);
+
         this.statsDisplay["hp"] = this.add.text(0, 0, "", { color: 'Black' });
         this.statsDisplay["dmg"] = this.add.text(0, 0, "", { color: 'Black' });
         this.statsDisplay["armor"] = this.add.text(0, 0, "", { color: 'Black' });
@@ -262,7 +267,7 @@ class BallStats extends Phaser.Scene {
     }
 
     update() {
-        this.graphics.clear();
+        //this.graphics.clear();
         this.updateText();
         DrawBalls(this.graphics, [this.playerBall]);
     }
@@ -292,8 +297,8 @@ class BallStats extends Phaser.Scene {
 
             var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
             var scaleMultiplier = GetScale(this);
-            // TODO: Set font size according to number of elements
 
+            // TODO: Set font size of keystone display according to number of elements
             for (let textElement of this.keystoneDisplay) {
                 textElement.scale = boundingDimension * 0.003;
                 if (this.displayStats) {
@@ -306,24 +311,20 @@ class BallStats extends Phaser.Scene {
     }
 
     onObjectClicked(pointer, gameObject: Phaser.GameObjects.GameObject) {
-        // Invert stat display
-        this.displayStats = !this.displayStats;
-        for (let key in this.statsDisplay) {
-            this.statsDisplay[key].setVisible(this.displayStats);
-        }
-
-        for (let display of this.keystoneDisplay) {
-            display.setVisible(!this.displayStats);
-        }
-
-        // TODO: Button to click on
         var scene = gameObject.scene as BallStats;
         var ball = gameObject as PlayerBall;
         if (ball.KeystoneData == null || scene.playerBall == null) {
             return;
         }
 
-        console.log("CLICKITY");
-        // TODO: Switch views between keystone view and stats view
+        // Invert stat display
+        scene.displayStats = !scene.displayStats;
+        for (let key in scene.statsDisplay) {
+            scene.statsDisplay[key].setVisible(scene.displayStats);
+        }
+
+        for (let display of scene.keystoneDisplay) {
+            display.setVisible(!scene.displayStats);
+        }
     }
 }
