@@ -133,6 +133,7 @@ class PlayerBall extends Phaser.Physics.Arcade.Sprite {
     VelocityMultiplier: number;
 
     HitTime: number = 0;
+    KeystoneData: [string, integer][];
 }
 
 function HitBalls(ball1: PlayerBall, ball2: PlayerBall, timeNow: number){
@@ -162,6 +163,7 @@ function CopyBallData(newBall: PlayerBall, data: ServerBallData) {
     newBall.Armor = data.Armor;
     newBall.SizeMultiplier = data.SizeMultiplier;
     newBall.VelocityMultiplier = data.VelocityMultiplier;
+    newBall.KeystoneData = data.KeystoneData;
 }
 
 function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.Scene): PlayerBall[] {

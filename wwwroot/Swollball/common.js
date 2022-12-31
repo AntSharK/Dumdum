@@ -8,7 +8,7 @@ connection.start().catch(function (err) {
     return console.error(err.toString());
 });
 
-connection.on("ClearState", ClearState());
+connection.on("ClearState", () => ClearState());
 
 connection.on("ShowError", function (errorMessage, shouldReload = false) {
     window.alert(errorMessage);
