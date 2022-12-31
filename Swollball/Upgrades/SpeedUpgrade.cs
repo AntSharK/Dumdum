@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Swollball.Upgrades
+{
+    public class SpeedUpgrade: BaseUpgrade
+    {
+        public SpeedUpgrade(int amount) : base(amount)
+        {
+        }
+
+        public override string UpgradeName => $"SPEED+";
+
+        public override string Description => $"Increases speed by {this.UpgradeAmount}";
+
+        public override void PerformUpgrade(Ball ball)
+        {
+            ball.SpeedMultiplier += this.UpgradeAmount * 0.01f;
+            base.PerformUpgrade(ball);
+        }
+    }
+}

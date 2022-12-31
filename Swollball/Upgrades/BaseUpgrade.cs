@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Swollball.Upgrades.Keystones
+namespace Swollball.Upgrades
 {
-    public abstract class BaseKeystone : IKeystone
+    public abstract class BaseUpgrade : IUpgrade
     {
         public abstract string UpgradeName { get; }
 
@@ -18,20 +18,14 @@ namespace Swollball.Upgrades.Keystones
 
         public int UpgradeAmount { get; }
 
-        internal int preUpgradeStat;
-
-        public BaseKeystone(int amount)
+        public BaseUpgrade(int amount)
         {
             this.UpgradeAmount = amount;
         }
 
-        public abstract void AfterUpgrade(Ball ball);
-
-        public abstract void BeforeUpgrade(Ball ball);
-
         public virtual void PerformUpgrade(Ball ball)
         {
-            ball.Keystones.Add(this);
+            ball.Upgrades.Add(this);
         }
     }
 }

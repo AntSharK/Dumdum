@@ -24,6 +24,8 @@ namespace Swollball
             // Insert test players
             var tp = this.CreatePlayer("TESTPLAYER", "ASDF");
             tp.Ball.Color = 11745079;
+            tp.Ball.Keystones.Add(new Upgrades.Keystones.Giant(2));
+            tp.Ball.Keystones.Add(new Upgrades.Keystones.Bulwark(2));
             tp.Ball.Upgrades.Add(new Upgrades.HpUpgrade(5));
             var tp2 = this.CreatePlayer("RANDARA", "YAYA");
             tp2.Ball.Color = 11045079;

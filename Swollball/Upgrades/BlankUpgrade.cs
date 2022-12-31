@@ -18,6 +18,8 @@ namespace Swollball.Upgrades
 
         public int BorderColor { get; private set; } = 16777215;
 
+        public int UpgradeAmount => 0;
+
         public void PerformUpgrade(Ball ball)
         {
             // Do nothing

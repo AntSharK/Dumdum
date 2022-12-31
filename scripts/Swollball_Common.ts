@@ -18,6 +18,7 @@ function InitializeBallData(dataIn: any[]) {
 
     for (let data of dataIn) {
         var serverData = new ServerBallData();
+        serverData.KeystoneData = [];
         serverData.Armor = data.armor;
         serverData.Color = data.color;
         serverData.Damage = data.dmg;
@@ -25,6 +26,10 @@ function InitializeBallData(dataIn: any[]) {
         serverData.Name = data.playerName;
         serverData.SizeMultiplier = data.sizeMultiplier;
         serverData.VelocityMultiplier = data.speedMultiplier;
+
+        for (let keystoneData of data.keystoneData) {
+            serverData.KeystoneData.push([keystoneData.item1, keystoneData.item2]);
+        }
 
         BallData.push(serverData);
     }
@@ -53,6 +58,7 @@ function InitializeUpgradeData(dataIn: any[], creditsLeft: integer) {
     CreditsLeft = creditsLeft;
     for (let data of dataIn) {
         var serverData = new ServerUpgradeData();
+        serverData.UpgradeAmount = data.upgradeAmount;
         serverData.UpgradeName = data.upgradeName;
         serverData.Description = data.description;
         serverData.ServerId = data.serverId;
@@ -81,6 +87,7 @@ class ServerBallData {
     Color: number;
     Hp: integer;
     Name: string;
+    KeystoneData: [string, integer][];
 }
 
 class ServerRoundScoreData {
@@ -104,6 +111,7 @@ class RoundEvent {
 }
 
 class ServerUpgradeData {
+    UpgradeAmount: integer;
     UpgradeName: string;
     Description: string;
     ServerId: string;
@@ -125,6 +133,7 @@ class PlayerBall extends Phaser.Physics.Arcade.Sprite {
     VelocityMultiplier: number;
 
     HitTime: number = 0;
+    KeystoneData: [string, integer][];
 }
 
 function HitBalls(ball1: PlayerBall, ball2: PlayerBall, timeNow: number){
@@ -154,6 +163,7 @@ function CopyBallData(newBall: PlayerBall, data: ServerBallData) {
     newBall.Armor = data.Armor;
     newBall.SizeMultiplier = data.SizeMultiplier;
     newBall.VelocityMultiplier = data.VelocityMultiplier;
+    newBall.KeystoneData = data.KeystoneData;
 }
 
 function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.Scene): PlayerBall[] {

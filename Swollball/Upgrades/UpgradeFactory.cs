@@ -12,7 +12,7 @@ namespace Swollball.Upgrades
 
         private static IUpgrade GetUpgrade_Tier1()
         {
-            var rng = Rng.Next(3);
+            var rng = Rng.Next(5);
             switch (rng)
             {
                 case 0:
@@ -21,6 +21,10 @@ namespace Swollball.Upgrades
                     return new ArmorUpgrade(1);
                 case 2:
                     return new HpUpgrade(5);
+                case 3:
+                    return new SizeUpgrade(11);
+                case 4:
+                    return new SpeedUpgrade(30);
                 default:
                     return BlankUpgrade.Instance.First();
             }

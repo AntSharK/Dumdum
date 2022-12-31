@@ -12,6 +12,7 @@ namespace Swollball.Upgrades
     public interface IUpgrade
     {
         public string UpgradeName { get; }
+        public int UpgradeAmount { get; }
         public string Description { get; }
         public string ServerId { get; }
         public int BorderColor { get; }

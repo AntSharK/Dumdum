@@ -12,15 +12,15 @@ namespace Swollball.Upgrades.Keystones
         {
         }
 
-        public override string UpgradeName => $"Bulwark+{this.amount}";
+        public override string UpgradeName => $"Bulwark+";
 
-        public override string Description => $"Increase your damage by {this.amount} for every armor you gain.";
+        public override string Description => $"Increase your damage by {this.UpgradeAmount} for every armor you gain.";
 
         public override void AfterUpgrade(Ball ball)
         {
             if (ball.Armor > this.preUpgradeStat)
             {
-                ball.Dmg = ball.Dmg + (ball.Armor - this.preUpgradeStat) * this.amount;
+                ball.Dmg = ball.Dmg + (ball.Armor - this.preUpgradeStat) * this.UpgradeAmount;
             }
         }
 
