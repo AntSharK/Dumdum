@@ -1,5 +1,6 @@
 ﻿using Swollball.Upgrades;
 using Swollball.Upgrades.Keystones;
+using System.Runtime.Serialization;
 
 namespace Swollball
 {
@@ -16,8 +17,10 @@ namespace Swollball
         public int Dmg { get; set; } = 10;
         public int Armor { get; set; } = 0;
 
+        [System.Text.Json.Serialization.JsonIgnore]
         public List<IUpgrade> Upgrades { get; set; } = new List<IUpgrade>();
 
+        [System.Text.Json.Serialization.JsonIgnore]
         public List<IKeystone> Keystones { get; set; } = new List<IKeystone>();
 
         public Ball(string playerName)
