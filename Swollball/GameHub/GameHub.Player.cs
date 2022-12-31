@@ -9,6 +9,7 @@ namespace Swollball
         {
 #if DEBUG
             // TODO (TEST): THIS IS A TEST METHOD
+            // Note that the upgradedata "variable is undefined" error in the client only shows up from this test method
             var userName = "TESTPLAYER";
             var roomId = this.GameLobby.Rooms.Keys.First();
             await this.ResumePlayerSession(userName, roomId);

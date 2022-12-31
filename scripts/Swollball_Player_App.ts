@@ -112,6 +112,7 @@ class BallUpgrades extends Phaser.Scene {
 
     updateUpgrades() {
         if (this.readyToUpdateUpgrades == true
+                && UpgradeData != null
                 && UpgradeData.length > 0) {
             this.readyToUpdateUpgrades = false;
             for (let upgradeCard of this.upgradeCards) {
@@ -140,7 +141,7 @@ class BallUpgrades extends Phaser.Scene {
 
                 // Don't set interactive unless the card isn't blank. Blank cards are just for filling space
                 if (upgradeCard.Title.text.length > 0) {
-                    upgradeCard.setInteractive();
+                    upgradeCard.setInteractive(new Phaser.Geom.Rectangle(upgradeCard.x, upgradeCard.y, upgradeCard.width, upgradeCard.height), RectDetection);
                     hasActionableCards = true;
                 }
 
@@ -152,9 +153,9 @@ class BallUpgrades extends Phaser.Scene {
                 this.upgradeCards = [];
                 this.readyToUpdateUpgrades = true;
             }
+
         }
     }
-
     drawUpgradeCards() {
         for (let card of this.upgradeCards) {
             this.graphics.fillStyle(0xCCCCCC);
@@ -244,10 +245,9 @@ class BallStats extends Phaser.Scene {
         this.playerBall.setVelocity(0, 0); // Balls in this display do not move
         this.playerBall.setPosition(300 * scaleMultiplier, 300 * scaleMultiplier); // Set the ball to the top-left of the screen
 
-        // TODO: This collision is somehow wrong. Figure it out
         this.playerBall.setInteractive(
-            new Phaser.Geom.Circle(this.playerBall.x - this.playerBall.Size, this.playerBall.y - this.playerBall.Size, this.playerBall.Size),
-            Phaser.Geom.Circle.Contains);
+            new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y, this.playerBall.Size),
+            CircleDetection);
 
         this.statsDisplay["hp"] = this.add.text(0, 0, "", { color: 'Black' });
         this.statsDisplay["dmg"] = this.add.text(0, 0, "", { color: 'Black' });
@@ -267,7 +267,8 @@ class BallStats extends Phaser.Scene {
     }
 
     update() {
-        //this.graphics.clear();
+        // No actual to clear graphics - just update text - but we do so anyway
+        this.graphics.clear();
         this.updateText();
         DrawBalls(this.graphics, [this.playerBall]);
     }
@@ -284,13 +285,12 @@ class BallStats extends Phaser.Scene {
         this.statsDisplay["size"].text = "SIZE:" + Math.floor(this.playerBall.SizeMultiplier * 100).toString();
 
         // Update keystone display info - reinitialize only if needed
-        if (this.keystoneDisplay.length < this.playerBall.KeystoneData.length + 1) {
+        if (this.keystoneDisplay.length < this.playerBall.KeystoneData.length) {
             for (let keystoneDisplay of this.keystoneDisplay) {
                 keystoneDisplay.destroy();
             }
 
             this.keystoneDisplay = [];
-            this.keystoneDisplay.push(this.add.text(0, 0, "Keystones:", { color: 'Black' }));
             for (let keystoneData of this.playerBall.KeystoneData) {
                 this.keystoneDisplay.push(this.add.text(0, 0, keystoneData[0] + keystoneData[1], { color: 'Black' }));
             }
@@ -298,15 +298,17 @@ class BallStats extends Phaser.Scene {
             var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
             var scaleMultiplier = GetScale(this);
 
-            // TODO: Set font size of keystone display according to number of elements
             for (let textElement of this.keystoneDisplay) {
-                textElement.scale = boundingDimension * 0.003;
+                // Start shrinking font at 8 keystones
+                var fontScale = Math.min(0.0035, 0.028 / this.keystoneDisplay.length);
+                textElement.scale = boundingDimension * fontScale;
                 if (this.displayStats) {
                     textElement.setVisible(false);
                 }
             }
 
-            Phaser.Actions.PlaceOnCircle(this.keystoneDisplay, new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y - 35 * scaleMultiplier, this.playerBall.Size + 15 * scaleMultiplier), -0.8, 1.1);
+            var maxRadians = Math.min(0.25 * this.keystoneDisplay.length - 0.8, 1.1);
+            Phaser.Actions.PlaceOnCircle(this.keystoneDisplay, new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y - 15 * scaleMultiplier, this.playerBall.Size + 15 * scaleMultiplier), -0.9, maxRadians);
         }
     }
 
@@ -317,7 +319,7 @@ class BallStats extends Phaser.Scene {
             return;
         }
 
-        // Invert stat display
+        // Change what is displayed
         scene.displayStats = !scene.displayStats;
         for (let key in scene.statsDisplay) {
             scene.statsDisplay[key].setVisible(scene.displayStats);
