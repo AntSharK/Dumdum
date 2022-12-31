@@ -97,6 +97,9 @@ class BallArena extends Phaser.Scene {
             var ball1 = body1 as PlayerBall;
             var ball2 = body2 as PlayerBall;
             if (ball1 != null && ball2 != null) {
+                ball1.HitTime = this.time.now;
+                ball2.HitTime = this.time.now;
+
                 var damageDoneTo1 = ball2.Damage - ball1.Armor;
                 var damageDoneTo2 = ball1.Damage - ball2.Armor;
                 ball1.Hp = ball1.Hp - damageDoneTo1;
