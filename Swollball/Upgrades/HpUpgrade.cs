@@ -12,13 +12,13 @@ namespace Swollball.Upgrades
         {
         }
 
-        public override string UpgradeName => $"HP+{this.amount}";
+        public override string UpgradeName => $"HP+";
 
-        public override string Description => $"Increases HP by {this.amount}";
+        public override string Description => $"Increases HP by {this.UpgradeAmount}";
 
         public override void PerformUpgrade(Ball ball)
         {
-            ball.Hp += this.amount;
+            ball.Hp += this.UpgradeAmount;
             base.PerformUpgrade(ball);
         }
     }

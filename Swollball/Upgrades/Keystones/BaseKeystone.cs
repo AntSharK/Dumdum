@@ -16,13 +16,13 @@ namespace Swollball.Upgrades.Keystones
 
         public virtual int BorderColor => 11045079;
 
-        internal int amount = 1;
+        public int UpgradeAmount { get; }
 
         internal int preUpgradeStat;
 
         public BaseKeystone(int amount)
         {
-            this.amount = amount;
+            this.UpgradeAmount = amount;
         }
 
         public abstract void AfterUpgrade(Ball ball);

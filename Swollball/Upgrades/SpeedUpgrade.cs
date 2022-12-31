@@ -12,13 +12,13 @@ namespace Swollball.Upgrades
         {
         }
 
-        public override string UpgradeName => $"SPEED+{this.amount}";
+        public override string UpgradeName => $"SPEED+";
 
-        public override string Description => $"Increases speed by {this.amount}";
+        public override string Description => $"Increases speed by {this.UpgradeAmount}";
 
         public override void PerformUpgrade(Ball ball)
         {
-            ball.SpeedMultiplier += this.amount * 0.01f;
+            ball.SpeedMultiplier += this.UpgradeAmount * 0.01f;
             base.PerformUpgrade(ball);
         }
     }
