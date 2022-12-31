@@ -244,20 +244,9 @@ class BallStats extends Phaser.Scene {
         this.playerBall.setVelocity(0, 0); // Balls in this display do not move
         this.playerBall.setPosition(300 * scaleMultiplier, 300 * scaleMultiplier); // Set the ball to the top-left of the screen
 
-        // TODO: This collision is somehow wrong. Figure it out
         this.playerBall.setInteractive(
             new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y, this.playerBall.Size),
             CircleDetection);
-            //Phaser.Geom.Circle.Contains);
-
-        // THINGS TO TEST
-        this.playerBall.on('pointerover', function () {
-            BallData[0].Color = 0x000000;
-        });
-
-        this.playerBall.on('pointerout', function () {
-            BallData[0].Color = 0xFFFFFF;
-        });
 
         this.statsDisplay["hp"] = this.add.text(0, 0, "", { color: 'Black' });
         this.statsDisplay["dmg"] = this.add.text(0, 0, "", { color: 'Black' });
