@@ -15,7 +15,7 @@ namespace Swollball.Upgrades.Keystones
 
         public override string UpgradeName => $"Harden";
 
-        public override string Description => $"Gain {this.UpgradeAmount} armor for the round everytime you are hit";
+        public override string Description => $"Gain {this.UpgradeAmount} armor for the round when you get hit";
 
         public override void AfterUpgrade(Ball ball)
         {
