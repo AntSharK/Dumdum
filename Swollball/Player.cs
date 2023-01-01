@@ -28,6 +28,10 @@ namespace Swollball
             this.PlayerScore = new Score(this.Name);
             this.Ball = new Ball(this.Name);
 
+#if DEBUG
+            this.CreditsLeft = 30;
+#endif
+
             this.FillShop();
         }
 

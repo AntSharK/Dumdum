@@ -13,36 +13,31 @@ namespace Swollball.Upgrades
 
         private static IUpgrade GetUpgrade_Tier1()
         {
-            var rng = Rng.Next(5);
+            var rng = Rng.Next(14);
             switch (rng)
             {
                 case 0:
+                case 1:
                     return new DamageUpgrade(3, 3);
-                case 1:
+                case 2:
+                case 3:
                     return new ArmorUpgrade(1, 3);
-                case 2:
-                    return new HpUpgrade(5, 3);
-                case 3:
-                    return new SizeUpgrade(11, 2);
                 case 4:
+                case 5:
+                    return new HpUpgrade(5, 3);
+                case 6:
+                case 7:
+                    return new SizeUpgrade(11, 2);
+                case 8:
+                case 9:
                     return new SpeedUpgrade(30, 2);
-                default:
-                    return BlankUpgrade.Instance.First();
-            }
-        }
-
-        public static IUpgrade GetKeystone_Tier1()
-        {
-            var rng = Rng.Next(4);
-            switch (rng)
-            {
-                case 0:
+                case 10:
                     return new Giant(1, 3);
-                case 1:
+                case 11:
                     return new Bulwark(1, 4);
-                case 2:
+                case 12:
                     return new Lifesteal(2, 4);
-                case 3:
+                case 13:
                     return new Harden(1, 5);
                 default:
                     return BlankUpgrade.Instance.First();
@@ -53,18 +48,7 @@ namespace Swollball.Upgrades
         {
             while (currentUpgrades.Count < shopSize)
             {
-                var random = Rng.Next(10);
-                IUpgrade generatedUpgrade;
-                if (random < 7)
-                {
-                    generatedUpgrade = UpgradeFactory.GetUpgrade_Tier1();
-                }
-                else
-                {
-                    generatedUpgrade = UpgradeFactory.GetKeystone_Tier1();
-                }
-
-                
+                var generatedUpgrade = GetUpgrade_Tier1();
                 currentUpgrades[generatedUpgrade.ServerId] = generatedUpgrade;
             }
         }
