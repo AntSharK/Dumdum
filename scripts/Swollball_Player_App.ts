@@ -92,9 +92,17 @@ class BallUpgrades extends Phaser.Scene {
         this.creditsLeft.scale = Math.min(this.scale.canvas.width, this.scale.canvas.height) * 0.0052;
         this.refreshButton = this.add.sprite(this.scale.canvas.width * 0.9, this.scale.canvas.height * 0.4, 'refreshimage');
         this.refreshButton.scale = this.creditsLeft.scale * 0.3;
+
         this.refreshButton.setInteractive(
-            new Phaser.Geom.Circle(this.refreshButton.x, this.refreshButton.y, this.refreshButton.width/2),
+            new Phaser.Geom.Circle(this.refreshButton.x, this.refreshButton.y, this.refreshButton.width * 0.88),
             CircleDetection);
+        /* Stuff for debugging hit area
+        this.refreshButton.on('pointerover', function (pointer) {
+            this.setTint(0xff0000);
+        })
+        this.refreshButton.on('pointerout', function (pointer) {
+            this.clearTint();
+        })*/
     }
 
     update() {
