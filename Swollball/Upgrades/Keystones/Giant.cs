@@ -13,7 +13,7 @@ namespace Swollball.Upgrades.Keystones
         {
         }
 
-        public override string UpgradeName => $"Giant+";
+        public override string UpgradeName => $"Giant";
 
         public override string Description => $"Increase your size by {this.UpgradeAmount} for every 10 hp gained.";
 
