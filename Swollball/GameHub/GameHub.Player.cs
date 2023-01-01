@@ -82,6 +82,23 @@ namespace Swollball
                 await Clients.Caller.SendAsync("UpdateBalls", new Ball[] { player.Ball });
             }
 
+            await this.UpdateUpgrades(player);
+        }
+
+        public async Task RefreshShop(string userName, string roomId)
+        {
+            const int REFRESHCOST = 1;
+            (var player, var room) = await this.FindPlayerAndRoom(userName, roomId);
+            if (player == null || room == null) return;
+
+            player.CreditsLeft -= REFRESHCOST;
+            player.FillShop();
+
+            await this.UpdateUpgrades(player);
+        }
+
+        private async Task UpdateUpgrades(Player player)
+        {
             var currentUpgrades = player.CurrentUpgrades.Values;
             if (currentUpgrades.Count == 0)
             {

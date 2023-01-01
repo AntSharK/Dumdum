@@ -73,6 +73,11 @@ class BallUpgrades extends Phaser.Scene {
     readyToUpdateUpgrades: boolean;
     upgradeCards: UpgradeCard[];
     creditsLeft: Phaser.GameObjects.Text;
+    refreshButton: Phaser.GameObjects.Sprite;
+
+    preload() {
+        this.load.image('refreshimage', '/content/refreshimage.png');
+    }
 
     constructor() {
         super({ key: 'BallUpgrades', active: true, visible: true });
@@ -85,6 +90,9 @@ class BallUpgrades extends Phaser.Scene {
         this.input.on('gameobjectdown', this.onObjectClicked);
         this.creditsLeft = this.add.text(this.scale.canvas.width * 0.9, this.scale.canvas.height * 0.05, "0", { color: 'Black' });
         this.creditsLeft.scale = Math.min(this.scale.canvas.width, this.scale.canvas.height) * 0.0052;
+        this.refreshButton = this.add.sprite(this.scale.canvas.width * 0.9, this.scale.canvas.height * 0.4, 'refreshimage');
+        this.refreshButton.scale = this.creditsLeft.scale * 0.3;
+        this.refreshButton.setInteractive();
     }
 
     update() {
@@ -175,14 +183,21 @@ class BallUpgrades extends Phaser.Scene {
     onObjectClicked(pointer, gameObject: Phaser.GameObjects.GameObject) {
         var upgrade = gameObject as UpgradeCard;
         var ballScene = gameObject.scene as BallUpgrades;
-        if (upgrade.Upgrade == null || ballScene.readyToUpdateUpgrades == null) {
+
+        // Check for clicking upgrade cards
+        if (upgrade.Upgrade != null || ballScene.readyToUpdateUpgrades != null) {
+            this.onUpgradeClicked(upgrade, ballScene);
             return;
         }
 
-        // Only continue if you can afford the upgrade
+        // Check for clicking refresh button
+    }
+
+    onUpgradeClicked(upgrade: UpgradeCard, ballScene: BallUpgrades) {
+        /* Currently, allow for buying of the last upgrade regardless of cost
         if (upgrade.Upgrade.Cost > CreditsLeft) {
-            return; // TODO: Some indication of not enough money
-        }
+            return;
+        } */
 
         var sessionRoomId = sessionStorage.getItem("roomid");
         var sessionUserId = sessionStorage.getItem("userid");

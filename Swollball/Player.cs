@@ -16,7 +16,7 @@ namespace Swollball
         public string RoomId { get; private set; }
         public Score PlayerScore { get; private set; }
         public Dictionary<string, IUpgrade> CurrentUpgrades { get; private set; } = new Dictionary<string, IUpgrade>();
-        public int CreditsLeft { get; set; } = 11; // Give more credits for keystones at the start
+        public int CreditsLeft { get; set; } = 10; // Give more credits for keystones at the start
         public int MaxCredits { get; set; } = 8;
 
         public Player(string name, string connectionId, string roomName)
@@ -59,7 +59,7 @@ namespace Swollball
             return false;
         }
 
-        private void FillShop()
+        public void FillShop()
         {
             // TODO: Fill shop correctly
             if (this.PlayerScore.RoundNumber == 0
@@ -76,7 +76,7 @@ namespace Swollball
         public void StartNextRound()
         {
             this.MaxCredits += 1;
-            this.CreditsLeft = this.MaxCredits;
+            this.CreditsLeft += this.MaxCredits;
             this.FillShop();
         }
 
