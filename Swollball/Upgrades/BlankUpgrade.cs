@@ -20,6 +20,8 @@ namespace Swollball.Upgrades
 
         public int UpgradeAmount => 0;
 
+        public int Cost => 0;
+
         public void PerformUpgrade(Ball ball)
         {
             // Do nothing

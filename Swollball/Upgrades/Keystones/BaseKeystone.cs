@@ -16,6 +16,8 @@ namespace Swollball.Upgrades.Keystones
 
         public virtual int BorderColor => 11045079;
 
+        public virtual int Cost => 5;
+
         public int UpgradeAmount { get; }
 
         internal int preUpgradeStat;

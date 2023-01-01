@@ -162,6 +162,8 @@ class BallUpgrades extends Phaser.Scene {
             this.graphics.fillRoundedRect(card.x, card.y, card.width, card.height);
             this.graphics.lineStyle(10, card.Upgrade.BorderColor);
             this.graphics.strokeRoundedRect(card.x, card.y, card.width, card.height);
+
+            // TODO: Draw the cost of the card
         }
     }
 
@@ -170,6 +172,11 @@ class BallUpgrades extends Phaser.Scene {
         var ballScene = gameObject.scene as BallUpgrades;
         if (upgrade.Upgrade == null || ballScene.readyToUpdateUpgrades == null) {
             return;
+        }
+
+        // Only continue if you can afford the upgrade
+        if (upgrade.Upgrade.Cost > CreditsLeft) {
+            return; // TODO: Some indication of not enough money
         }
 
         var sessionRoomId = sessionStorage.getItem("roomid");

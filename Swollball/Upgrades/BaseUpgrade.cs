@@ -16,6 +16,8 @@ namespace Swollball.Upgrades
 
         public virtual int BorderColor => 11045079;
 
+        public virtual int Cost => 3;
+
         public int UpgradeAmount { get; }
 
         public BaseUpgrade(int amount)

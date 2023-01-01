@@ -46,7 +46,7 @@ namespace Swollball
                 }
 
                 // Current logic - clear the upgrade list, re-generate new ones
-                this.CreditsLeft--;
+                this.CreditsLeft -= upgradeToApply.Cost;
                 CurrentUpgrades.Clear();
                 if (this.CreditsLeft > 0)
                 {
@@ -75,7 +75,7 @@ namespace Swollball
 
         public void StartNextRound()
         {
-            // TODO: Set the credits left correctly
+            this.MaxCredits += 1;
             this.CreditsLeft = this.MaxCredits;
             this.FillShop();
         }
