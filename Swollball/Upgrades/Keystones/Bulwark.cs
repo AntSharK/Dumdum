@@ -8,7 +8,7 @@ namespace Swollball.Upgrades.Keystones
 {
     public class Bulwark : BaseKeystone
     {
-        public Bulwark(int value) : base(value)
+        public Bulwark(int value, int cost) : base(value, cost)
         {
         }
 

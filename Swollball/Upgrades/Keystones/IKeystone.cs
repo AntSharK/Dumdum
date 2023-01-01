@@ -11,6 +11,7 @@ namespace Swollball.Upgrades.Keystones
     /// </summary>
     public interface IKeystone: IUpgrade
     {
+        public new int UpgradeAmount { get; set; }
         void BeforeUpgrade(Ball ball);
         void AfterUpgrade(Ball ball);
     }

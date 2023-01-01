@@ -8,7 +8,7 @@ namespace Swollball.Upgrades
 {
     public class SizeUpgrade : BaseUpgrade
     {
-        public SizeUpgrade(int amount) : base(amount)
+        public SizeUpgrade(int value, int cost) : base(value, cost)
         {
         }
 

@@ -8,8 +8,7 @@ namespace Swollball.Upgrades.Keystones
 {
     public class Harden : BaseKeystone
     {
-
-        public Harden(int value) : base(value)
+        public Harden(int value, int cost) : base(value, cost)
         {
         }
 

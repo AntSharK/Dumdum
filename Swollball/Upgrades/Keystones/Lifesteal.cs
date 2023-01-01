@@ -8,8 +8,7 @@ namespace Swollball.Upgrades.Keystones
 {
     public class Lifesteal : BaseKeystone
     {
-
-        public Lifesteal(int value) : base(value)
+        public Lifesteal(int value, int cost) : base(value, cost)
         {
         }
 
