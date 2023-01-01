@@ -59,6 +59,17 @@ namespace Swollball
             return false;
         }
 
+        public void RefreshShop()
+        {
+            const int REFRESHCOST = 1;
+            this.CreditsLeft -= REFRESHCOST;
+            CurrentUpgrades.Clear();
+            if (this.CreditsLeft > 0)
+            {
+                this.FillShop();
+            }
+        }
+
         public void FillShop()
         {
             // TODO: Fill shop correctly

@@ -190,16 +190,32 @@ class BallUpgrades extends Phaser.Scene {
 
         // Check for clicking upgrade cards
         if (upgrade.Upgrade != undefined && ballScene.readyToUpdateUpgrades != undefined) {
-            ballScene.onUpgradeClicked(upgrade, ballScene);
+            ballScene.onUpgradeClicked(upgrade);
             return;
         }
 
         // Check for clicking refresh button
         var sprite = gameObject as Phaser.GameObjects.Sprite;
-        sprite.alpha = sprite.alpha - 0.5;
+        if (sprite.texture.key == 'refreshimage') {
+            ballScene.onRefreshClicked(sprite)
+            return;
+        }
     }
 
-    onUpgradeClicked(upgrade: UpgradeCard, ballScene: BallUpgrades) {
+    onRefreshClicked(sprite: Phaser.GameObjects.Sprite) {
+        var sessionRoomId = sessionStorage.getItem("roomid");
+        var sessionUserId = sessionStorage.getItem("userid");
+
+        // Prepare for the next update of upgrades - clear the update list
+        UpgradeData = [];
+        this.readyToUpdateUpgrades = true;
+
+        connection.invoke("RefreshShop", sessionUserId, sessionRoomId).catch(function (err) {
+            return console.error(err.toString());
+        });
+    }
+
+    onUpgradeClicked(upgrade: UpgradeCard) {
         /* Currently, allow for buying of the last upgrade regardless of cost
         if (upgrade.Upgrade.Cost > CreditsLeft) {
             return;
@@ -210,7 +226,7 @@ class BallUpgrades extends Phaser.Scene {
 
         // Prepare for the next update of upgrades - clear the update list
         UpgradeData = [];
-        ballScene.readyToUpdateUpgrades = true;
+        this.readyToUpdateUpgrades = true;
 
         connection.invoke("ChooseUpgrade", upgrade.Upgrade.ServerId, sessionUserId, sessionRoomId).catch(function (err) {
             return console.error(err.toString());

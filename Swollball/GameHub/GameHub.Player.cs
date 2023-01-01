@@ -87,13 +87,10 @@ namespace Swollball
 
         public async Task RefreshShop(string userName, string roomId)
         {
-            const int REFRESHCOST = 1;
             (var player, var room) = await this.FindPlayerAndRoom(userName, roomId);
             if (player == null || room == null) return;
 
-            player.CreditsLeft -= REFRESHCOST;
-            player.FillShop();
-
+            player.RefreshShop();
             await this.UpdateUpgrades(player);
         }
 
