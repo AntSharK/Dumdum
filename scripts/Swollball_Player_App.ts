@@ -83,7 +83,7 @@ class BallUpgrades extends Phaser.Scene {
     create() {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
         this.input.on('gameobjectdown', this.onObjectClicked);
-        this.creditsLeft = this.add.text(this.scale.canvas.width * 0.15, this.scale.canvas.height * 0.25, "0", { color: 'Black' });
+        this.creditsLeft = this.add.text(this.scale.canvas.width * 0.9, this.scale.canvas.height * 0.05, "0", { color: 'Black' });
         this.creditsLeft.scale = Math.min(this.scale.canvas.width, this.scale.canvas.height) * 0.0052;
     }
 
@@ -118,6 +118,7 @@ class BallUpgrades extends Phaser.Scene {
             for (let upgradeCard of this.upgradeCards) {
                 upgradeCard.Title.destroy(true);
                 upgradeCard.Description.destroy(true);
+                upgradeCard.Cost.destroy(true);
                 upgradeCard.destroy(true);
             }
             
@@ -163,7 +164,11 @@ class BallUpgrades extends Phaser.Scene {
             this.graphics.lineStyle(10, card.Upgrade.BorderColor);
             this.graphics.strokeRoundedRect(card.x, card.y, card.width, card.height);
 
-            // TODO: Draw the cost of the card
+            // Draw the cost of the card
+            this.graphics.fillStyle(0xFFC90E);
+            this.graphics.fillCircle(card.Cost.x + card.Cost.scale * 5, card.Cost.y + card.Cost.scale * 8, card.Cost.scale * 12);
+            this.graphics.lineStyle(3, 0x222222);
+            this.graphics.strokeCircle(card.Cost.x + card.Cost.scale * 5, card.Cost.y + card.Cost.scale * 8, card.Cost.scale * 12);
         }
     }
 
@@ -196,6 +201,7 @@ class UpgradeCard extends Phaser.Physics.Arcade.Sprite {
     Upgrade: ServerUpgradeData;
     Title: Phaser.GameObjects.Text;
     Description: Phaser.GameObjects.Text;
+    Cost: Phaser.GameObjects.Text;
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, upgradeData: ServerUpgradeData, height: number, width: number) {
         super(scene, x, y, texture);
@@ -212,6 +218,11 @@ class UpgradeCard extends Phaser.Physics.Arcade.Sprite {
         this.Description = scene.add.text(x + this.width * 0.05, y + this.height * 0.3, upgradeData.Description, { color: 'Black' });
         this.Description.scale = width * 0.005;
         this.Description.setWordWrapWidth(this.width * 0.92 / this.Description.scale);
+
+        if (upgradeData.Cost > 0) {
+            this.Cost = scene.add.text(x + this.width * 0.9, y + this.height * 0.01, upgradeData.Cost.toString(), { color: 'Black' });
+            this.Cost.scale = width * 0.0065;
+        }
     }
 }
 

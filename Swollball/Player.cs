@@ -16,8 +16,8 @@ namespace Swollball
         public string RoomId { get; private set; }
         public Score PlayerScore { get; private set; }
         public Dictionary<string, IUpgrade> CurrentUpgrades { get; private set; } = new Dictionary<string, IUpgrade>();
-        public int CreditsLeft { get; set; } = 5; // Give more credits for keystones at the start
-        public int MaxCredits { get; set; } = 3;
+        public int CreditsLeft { get; set; } = 11; // Give more credits for keystones at the start
+        public int MaxCredits { get; set; } = 8;
 
         public Player(string name, string connectionId, string roomName)
         {
