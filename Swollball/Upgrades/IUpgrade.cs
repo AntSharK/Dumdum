@@ -16,6 +16,7 @@ namespace Swollball.Upgrades
         public string Description { get; }
         public string ServerId { get; }
         public int BorderColor { get; }
+        public int Cost { get; }
         public void PerformUpgrade(Ball ball);
     }
 }

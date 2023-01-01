@@ -16,8 +16,8 @@ namespace Swollball
         public string RoomId { get; private set; }
         public Score PlayerScore { get; private set; }
         public Dictionary<string, IUpgrade> CurrentUpgrades { get; private set; } = new Dictionary<string, IUpgrade>();
-        public int CreditsLeft { get; set; } = 5; // Give more credits for keystones at the start
-        public int MaxCredits { get; set; } = 3;
+        public int CreditsLeft { get; set; } = 10; // Give more credits for keystones at the start
+        public int MaxCredits { get; set; } = 8;
 
         public Player(string name, string connectionId, string roomName)
         {
@@ -46,7 +46,7 @@ namespace Swollball
                 }
 
                 // Current logic - clear the upgrade list, re-generate new ones
-                this.CreditsLeft--;
+                this.CreditsLeft -= upgradeToApply.Cost;
                 CurrentUpgrades.Clear();
                 if (this.CreditsLeft > 0)
                 {
@@ -59,7 +59,18 @@ namespace Swollball
             return false;
         }
 
-        private void FillShop()
+        public void RefreshShop()
+        {
+            const int REFRESHCOST = 1;
+            this.CreditsLeft -= REFRESHCOST;
+            CurrentUpgrades.Clear();
+            if (this.CreditsLeft > 0)
+            {
+                this.FillShop();
+            }
+        }
+
+        public void FillShop()
         {
             // TODO: Fill shop correctly
             if (this.PlayerScore.RoundNumber == 0
@@ -75,8 +86,8 @@ namespace Swollball
 
         public void StartNextRound()
         {
-            // TODO: Set the credits left correctly
-            this.CreditsLeft = this.MaxCredits;
+            this.MaxCredits += 1;
+            this.CreditsLeft += this.MaxCredits;
             this.FillShop();
         }
 

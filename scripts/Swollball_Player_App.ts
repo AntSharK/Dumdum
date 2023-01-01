@@ -73,6 +73,11 @@ class BallUpgrades extends Phaser.Scene {
     readyToUpdateUpgrades: boolean;
     upgradeCards: UpgradeCard[];
     creditsLeft: Phaser.GameObjects.Text;
+    refreshButton: Phaser.GameObjects.Sprite;
+
+    preload() {
+        this.load.image('refreshimage', '/content/refreshimage.png');
+    }
 
     constructor() {
         super({ key: 'BallUpgrades', active: true, visible: true });
@@ -83,8 +88,21 @@ class BallUpgrades extends Phaser.Scene {
     create() {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
         this.input.on('gameobjectdown', this.onObjectClicked);
-        this.creditsLeft = this.add.text(this.scale.canvas.width * 0.15, this.scale.canvas.height * 0.25, "0", { color: 'Black' });
+        this.creditsLeft = this.add.text(this.scale.canvas.width * 0.9, this.scale.canvas.height * 0.05, "0", { color: 'Black' });
         this.creditsLeft.scale = Math.min(this.scale.canvas.width, this.scale.canvas.height) * 0.0052;
+        this.refreshButton = this.add.sprite(this.scale.canvas.width * 0.9, this.scale.canvas.height * 0.4, 'refreshimage');
+        this.refreshButton.scale = this.creditsLeft.scale * 0.3;
+
+        this.refreshButton.setInteractive(
+            new Phaser.Geom.Circle(this.refreshButton.x, this.refreshButton.y, this.refreshButton.width * 0.88),
+            CircleDetection);
+        /* Stuff for debugging hit area
+        this.refreshButton.on('pointerover', function (pointer) {
+            this.setTint(0xff0000);
+        })
+        this.refreshButton.on('pointerout', function (pointer) {
+            this.clearTint();
+        })*/
     }
 
     update() {
@@ -95,6 +113,7 @@ class BallUpgrades extends Phaser.Scene {
             this.graphics.fillStyle(0xFFFFFF, 0.6);
             this.graphics.fillRect(0, 0, this.scale.canvas.width, this.scale.canvas.height);
             this.creditsLeft.setVisible(true);
+            this.refreshButton.setVisible(true);
 
             // Draw the number of credits left
             this.graphics.fillStyle(0xFFC90E);
@@ -104,6 +123,7 @@ class BallUpgrades extends Phaser.Scene {
         }
         else {
             this.creditsLeft.setVisible(false);
+            this.refreshButton.setVisible(false);
         }
 
         this.updateUpgrades();
@@ -112,12 +132,12 @@ class BallUpgrades extends Phaser.Scene {
 
     updateUpgrades() {
         if (this.readyToUpdateUpgrades == true
-                && UpgradeData != null
                 && UpgradeData.length > 0) {
             this.readyToUpdateUpgrades = false;
             for (let upgradeCard of this.upgradeCards) {
                 upgradeCard.Title.destroy(true);
                 upgradeCard.Description.destroy(true);
+                upgradeCard.Cost.destroy(true);
                 upgradeCard.destroy(true);
             }
             
@@ -141,7 +161,8 @@ class BallUpgrades extends Phaser.Scene {
 
                 // Don't set interactive unless the card isn't blank. Blank cards are just for filling space
                 if (upgradeCard.Title.text.length > 0) {
-                    upgradeCard.setInteractive(new Phaser.Geom.Rectangle(upgradeCard.x, upgradeCard.y, upgradeCard.width, upgradeCard.height), RectDetection);
+                    upgradeCard.setInteractive(new Phaser.Geom.Rectangle(upgradeCard.x, upgradeCard.y, upgradeCard.width, upgradeCard.height),
+                        RectDetection);
                     hasActionableCards = true;
                 }
 
@@ -162,22 +183,58 @@ class BallUpgrades extends Phaser.Scene {
             this.graphics.fillRoundedRect(card.x, card.y, card.width, card.height);
             this.graphics.lineStyle(10, card.Upgrade.BorderColor);
             this.graphics.strokeRoundedRect(card.x, card.y, card.width, card.height);
+
+            // Draw the cost of the card
+            this.graphics.fillStyle(0xFFC90E);
+            this.graphics.fillCircle(card.Cost.x + card.Cost.scale * 5, card.Cost.y + card.Cost.scale * 8, card.Cost.scale * 12);
+            this.graphics.lineStyle(3, 0x222222);
+            this.graphics.strokeCircle(card.Cost.x + card.Cost.scale * 5, card.Cost.y + card.Cost.scale * 8, card.Cost.scale * 12);
         }
     }
 
     onObjectClicked(pointer, gameObject: Phaser.GameObjects.GameObject) {
         var upgrade = gameObject as UpgradeCard;
         var ballScene = gameObject.scene as BallUpgrades;
-        if (upgrade.Upgrade == null || ballScene.readyToUpdateUpgrades == null) {
+
+        // Check for clicking upgrade cards
+        if (upgrade.Upgrade != undefined && ballScene.readyToUpdateUpgrades != undefined) {
+            ballScene.onUpgradeClicked(upgrade);
             return;
         }
+
+        // Check for clicking refresh button
+        var sprite = gameObject as Phaser.GameObjects.Sprite;
+        if (sprite.texture.key == 'refreshimage') {
+            ballScene.onRefreshClicked(sprite)
+            return;
+        }
+    }
+
+    onRefreshClicked(sprite: Phaser.GameObjects.Sprite) {
+        var sessionRoomId = sessionStorage.getItem("roomid");
+        var sessionUserId = sessionStorage.getItem("userid");
+
+        // Prepare for the next update of upgrades - clear the update list
+        UpgradeData = [];
+        this.readyToUpdateUpgrades = true;
+
+        connection.invoke("RefreshShop", sessionUserId, sessionRoomId).catch(function (err) {
+            return console.error(err.toString());
+        });
+    }
+
+    onUpgradeClicked(upgrade: UpgradeCard) {
+        /* Currently, allow for buying of the last upgrade regardless of cost
+        if (upgrade.Upgrade.Cost > CreditsLeft) {
+            return;
+        } */
 
         var sessionRoomId = sessionStorage.getItem("roomid");
         var sessionUserId = sessionStorage.getItem("userid");
 
         // Prepare for the next update of upgrades - clear the update list
         UpgradeData = [];
-        ballScene.readyToUpdateUpgrades = true;
+        this.readyToUpdateUpgrades = true;
 
         connection.invoke("ChooseUpgrade", upgrade.Upgrade.ServerId, sessionUserId, sessionRoomId).catch(function (err) {
             return console.error(err.toString());
@@ -189,6 +246,7 @@ class UpgradeCard extends Phaser.Physics.Arcade.Sprite {
     Upgrade: ServerUpgradeData;
     Title: Phaser.GameObjects.Text;
     Description: Phaser.GameObjects.Text;
+    Cost: Phaser.GameObjects.Text;
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, upgradeData: ServerUpgradeData, height: number, width: number) {
         super(scene, x, y, texture);
@@ -205,6 +263,11 @@ class UpgradeCard extends Phaser.Physics.Arcade.Sprite {
         this.Description = scene.add.text(x + this.width * 0.05, y + this.height * 0.3, upgradeData.Description, { color: 'Black' });
         this.Description.scale = width * 0.005;
         this.Description.setWordWrapWidth(this.width * 0.92 / this.Description.scale);
+
+        if (upgradeData.Cost > 0) {
+            this.Cost = scene.add.text(x + this.width * 0.9, y + this.height * 0.01, upgradeData.Cost.toString(), { color: 'Black' });
+            this.Cost.scale = width * 0.0065;
+        }
     }
 }
 
