@@ -92,7 +92,9 @@ class BallUpgrades extends Phaser.Scene {
         this.creditsLeft.scale = Math.min(this.scale.canvas.width, this.scale.canvas.height) * 0.0052;
         this.refreshButton = this.add.sprite(this.scale.canvas.width * 0.9, this.scale.canvas.height * 0.4, 'refreshimage');
         this.refreshButton.scale = this.creditsLeft.scale * 0.3;
-        this.refreshButton.setInteractive();
+        this.refreshButton.setInteractive(
+            new Phaser.Geom.Circle(this.refreshButton.x, this.refreshButton.y, this.refreshButton.width/2),
+            CircleDetection);
     }
 
     update() {
@@ -103,6 +105,7 @@ class BallUpgrades extends Phaser.Scene {
             this.graphics.fillStyle(0xFFFFFF, 0.6);
             this.graphics.fillRect(0, 0, this.scale.canvas.width, this.scale.canvas.height);
             this.creditsLeft.setVisible(true);
+            this.refreshButton.setVisible(true);
 
             // Draw the number of credits left
             this.graphics.fillStyle(0xFFC90E);
@@ -112,6 +115,7 @@ class BallUpgrades extends Phaser.Scene {
         }
         else {
             this.creditsLeft.setVisible(false);
+            this.refreshButton.setVisible(false);
         }
 
         this.updateUpgrades();
@@ -120,7 +124,6 @@ class BallUpgrades extends Phaser.Scene {
 
     updateUpgrades() {
         if (this.readyToUpdateUpgrades == true
-                && UpgradeData != null
                 && UpgradeData.length > 0) {
             this.readyToUpdateUpgrades = false;
             for (let upgradeCard of this.upgradeCards) {
@@ -150,7 +153,8 @@ class BallUpgrades extends Phaser.Scene {
 
                 // Don't set interactive unless the card isn't blank. Blank cards are just for filling space
                 if (upgradeCard.Title.text.length > 0) {
-                    upgradeCard.setInteractive(new Phaser.Geom.Rectangle(upgradeCard.x, upgradeCard.y, upgradeCard.width, upgradeCard.height), RectDetection);
+                    upgradeCard.setInteractive(new Phaser.Geom.Rectangle(upgradeCard.x, upgradeCard.y, upgradeCard.width, upgradeCard.height),
+                        RectDetection);
                     hasActionableCards = true;
                 }
 
@@ -185,12 +189,14 @@ class BallUpgrades extends Phaser.Scene {
         var ballScene = gameObject.scene as BallUpgrades;
 
         // Check for clicking upgrade cards
-        if (upgrade.Upgrade != null || ballScene.readyToUpdateUpgrades != null) {
-            this.onUpgradeClicked(upgrade, ballScene);
+        if (upgrade.Upgrade != undefined && ballScene.readyToUpdateUpgrades != undefined) {
+            ballScene.onUpgradeClicked(upgrade, ballScene);
             return;
         }
 
         // Check for clicking refresh button
+        var sprite = gameObject as Phaser.GameObjects.Sprite;
+        sprite.alpha = sprite.alpha - 0.5;
     }
 
     onUpgradeClicked(upgrade: UpgradeCard, ballScene: BallUpgrades) {

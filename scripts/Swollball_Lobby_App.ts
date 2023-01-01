@@ -94,7 +94,7 @@ class BallArena extends Phaser.Scene {
         this.physics.add.collider(this.balls, this.balls, (body1, body2) => {
             var ball1 = body1 as PlayerBall;
             var ball2 = body2 as PlayerBall;
-            if (ball1.Hp != null && ball2.Hp != null) {
+            if (ball1.Hp != undefined && ball2.Hp != undefined) {
                 HitBalls(ball1, ball2, this.time.now /*Pass in the time the ball was hit*/);
                 if (ball1.Hp <= 0) {
                     DisableBall(ball1);
