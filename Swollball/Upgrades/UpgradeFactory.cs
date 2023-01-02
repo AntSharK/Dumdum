@@ -36,7 +36,7 @@ namespace Swollball.Upgrades
                 case 11:
                     return new Bulwark(1, 4);
                 case 12:
-                    return new Lifesteal(2, 4);
+                    return new Feast(2, 4);
                 case 13:
                     return new Harden(1, 5);
                 default:

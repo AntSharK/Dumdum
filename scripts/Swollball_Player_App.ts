@@ -112,6 +112,8 @@ class BallUpgrades extends Phaser.Scene {
             // Draw the fade screen
             this.graphics.fillStyle(0xFFFFFF, 0.3);
             this.graphics.fillRect(0, 0, this.scale.canvas.width, this.scale.canvas.height);
+
+            // Set all graphics to visible
             this.creditsLeft.setVisible(true);
             this.refreshButton.setVisible(true);
 
@@ -122,6 +124,7 @@ class BallUpgrades extends Phaser.Scene {
             this.graphics.strokeCircle(this.creditsLeft.x + this.creditsLeft.scale*5, this.creditsLeft.y + this.creditsLeft.scale*8, this.creditsLeft.scale * 20);
         }
         else {
+            // Set all graphics to invisible
             this.creditsLeft.setVisible(false);
             this.refreshButton.setVisible(false);
         }
@@ -344,8 +347,8 @@ class BallStats extends Phaser.Scene {
         this.statsDisplay["hp"].text = "HP:" + this.playerBall.MaxHp.toString();
         this.statsDisplay["dmg"].text = "DMG:" + this.playerBall.Damage.toString();
         this.statsDisplay["armor"].text = "ARMOR:" + this.playerBall.Armor.toString();
-        this.statsDisplay["velocity"].text = "SPEED:" + Math.floor(this.playerBall.VelocityMultiplier * 100).toString();
-        this.statsDisplay["size"].text = "SIZE:" + Math.floor(this.playerBall.SizeMultiplier * 100).toString();
+        this.statsDisplay["velocity"].text = "SPEED:" + this.playerBall.VelocityMultiplier.toString();
+        this.statsDisplay["size"].text = "SIZE:" + this.playerBall.SizeMultiplier.toString();
 
         // Update keystone display info - reinitialize only if needed
         var keystonesUpdated = false;

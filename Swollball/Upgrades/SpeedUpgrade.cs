@@ -18,7 +18,7 @@ namespace Swollball.Upgrades
 
         public override void PerformUpgrade(Player player)
         {
-            player.Ball.SpeedMultiplier += this.UpgradeAmount * 0.01f;
+            player.Ball.SpeedMultiplier += this.UpgradeAmount;
             base.PerformUpgrade(player);
         }
     }

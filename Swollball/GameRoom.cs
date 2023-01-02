@@ -26,14 +26,14 @@ namespace Swollball
             tp.Ball.Color = 11745079;
             tp.Ball.Keystones["Giant"] = new Upgrades.Keystones.Giant(2, 0);
             tp.Ball.Keystones["Bulwark"] = new Upgrades.Keystones.Bulwark(2, 0);
-            tp.Ball.Keystones["Lifesteal"] = new Upgrades.Keystones.Lifesteal(5, 0);
+            tp.Ball.Keystones["Feast"] = new Upgrades.Keystones.Feast(5, 0);
             tp.Ball.Keystones["Harden"] = new Upgrades.Keystones.Harden(4, 0);
             tp.Ball.Upgrades.Add(new Upgrades.HpUpgrade(25, 0));
             var tp2 = this.CreatePlayer("RANDARA", "YAYA");
             tp2.Ball.Color = 11045079;
             tp2.Ball.Dmg = 20;
-            tp2.Ball.SpeedMultiplier = 1.5f;
-            tp2.Ball.SizeMultiplier = 1.1f;
+            tp2.Ball.SpeedMultiplier = 150;
+            tp2.Ball.SizeMultiplier = 110;
             var tp3 = this.CreatePlayer("LCBATA", "BARA");
             tp3.Ball.Color = 01745079;
 #endif

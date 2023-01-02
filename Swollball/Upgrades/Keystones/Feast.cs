@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Swollball.Upgrades.Keystones
 {
-    public class Lifesteal : BaseKeystone
+    public class Feast : BaseKeystone
     {
-        public Lifesteal(int value, int cost) : base(value, cost)
+        public Feast(int value, int cost) : base(value, cost)
         {
         }
 
-        public override string UpgradeName => $"Lifesteal";
+        public override string UpgradeName => $"Feast";
 
         public override string Description => $"Regain {this.UpgradeAmount} HP for every 10 damage dealt";
 
