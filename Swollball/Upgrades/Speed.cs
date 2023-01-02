@@ -15,6 +15,7 @@ namespace Swollball.Upgrades
         public override string UpgradeName => $"SPEED+";
 
         public override string Description => $"Increases speed by {this.UpgradeAmount}";
+        public override int BorderColor => 2293504;
 
         public override void PerformUpgrade(Player player)
         {

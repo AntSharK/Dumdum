@@ -16,6 +16,8 @@ namespace Swollball.Upgrades.Keystones
 
         public override string Description => $"Regain {this.UpgradeAmount} HP for every 10 damage dealt";
 
+        public override int BorderColor => 16711748;
+
         public override void AfterUpgrade(Player player)
         {
             // Does nothing - all client-side

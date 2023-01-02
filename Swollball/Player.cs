@@ -30,7 +30,7 @@ namespace Swollball
 
             this.Ball.Keystones["Payday"] = new Payday(1, 0); // Start with a free payday upgrade
 #if DEBUG
-            this.Economy.CreditsLeft = 99;
+            this.Economy.CreditsLeft = 30;
             this.Economy.ShopTier = 1;
 #endif
 

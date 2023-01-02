@@ -15,6 +15,7 @@ namespace Swollball.Upgrades
         public override string UpgradeName => $"DMG+";
 
         public override string Description => $"Increases damage by {this.UpgradeAmount}";
+        public override int BorderColor => 16716066;
 
         public override void PerformUpgrade(Player player)
         {

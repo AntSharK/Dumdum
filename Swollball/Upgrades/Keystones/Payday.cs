@@ -16,6 +16,8 @@ namespace Swollball.Upgrades.Keystones
 
         public override string Description => $"At the start of every round, gain {this.UpgradeAmount} credit for every 100 points from the previous round.";
 
+        public override int BorderColor => 15662848;
+
         public override void StartNextRound(Player player)
         {
             var creditsGained = player.PlayerScore.RoundScore * 0.1 * this.UpgradeAmount;

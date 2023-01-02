@@ -16,6 +16,8 @@ namespace Swollball.Upgrades.Keystones
 
         public override string Description => $"Increase your damage by {this.UpgradeAmount} for every armor you gain.";
 
+        public override int BorderColor => 16759756;
+
         public override void AfterUpgrade(Player player)
         {
             var ball = player.Ball;
