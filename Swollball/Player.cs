@@ -33,6 +33,7 @@ namespace Swollball
 
 #if DEBUG
             this.CreditsLeft = 30;
+            this.ShopTier = -1;
 #endif
 
             this.FillShop();

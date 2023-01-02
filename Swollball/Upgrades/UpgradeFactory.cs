@@ -16,13 +16,12 @@ namespace Swollball.Upgrades
         {
             Tuple.Create(10, () => new DamageUpgrade(3, 3) as IUpgrade),
             Tuple.Create(10, () => new ArmorUpgrade(1, 3) as IUpgrade),
-            Tuple.Create(10, () => new HpUpgrade(5, 3) as IUpgrade),
-            Tuple.Create(10, () => new SizeUpgrade(11, 2) as IUpgrade),
+            Tuple.Create(10, () => new HpUpgrade(5, 2) as IUpgrade),
+            Tuple.Create(10, () => new SizeUpgrade(15, 2) as IUpgrade),
             Tuple.Create(10, () => new SpeedUpgrade(30, 2) as IUpgrade),
             Tuple.Create(7, () => new Giant(1, 3) as IUpgrade),
             Tuple.Create(7, () => new Bulwark(1, 4) as IUpgrade),
             Tuple.Create(7, () => new Feast(2, 4) as IUpgrade),
-            Tuple.Create(7, () => new Harden(1, 5) as IUpgrade),
         };
 
         // Maps from a number to a function generating an upgrade
@@ -39,41 +38,6 @@ namespace Swollball.Upgrades
             foreach (var upg in Tier1UpgradeOdds)
             {
                 for(var i = 0; i < upg.Item1; i++)
-                {
-                    array[idx] = upg.Item2;
-                    idx++;
-                }
-            }
-
-            return array;
-        });
-
-        // Test stuff
-        private static List<Tuple<int, Func<IUpgrade>>> TestUpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
-        {
-            Tuple.Create(10, () => new DamageUpgrade(3, 3) as IUpgrade),
-            Tuple.Create(10, () => new ArmorUpgrade(1, 3) as IUpgrade),
-            Tuple.Create(10, () => new HpUpgrade(5, 3) as IUpgrade),
-            Tuple.Create(10, () => new SizeUpgrade(11, 2) as IUpgrade),
-            Tuple.Create(10, () => new SpeedUpgrade(30, 2) as IUpgrade),
-            Tuple.Create(7, () => new Giant(1, 3) as IUpgrade),
-            Tuple.Create(7, () => new Bulwark(1, 4) as IUpgrade),
-            Tuple.Create(7, () => new Feast(2, 4) as IUpgrade),
-            Tuple.Create(7, () => new Harden(1, 5) as IUpgrade),
-        };
-        private static Lazy<Func<IUpgrade>[]> TestUpgrades = new Lazy<Func<IUpgrade>[]>(() =>
-        {
-            var totalSize = 0;
-            foreach (var upg in TestUpgradeOdds)
-            {
-                totalSize += upg.Item1;
-            }
-
-            var array = new Func<IUpgrade>[totalSize];
-            var idx = 0;
-            foreach (var upg in TestUpgradeOdds)
-            {
-                for (var i = 0; i < upg.Item1; i++)
                 {
                     array[idx] = upg.Item2;
                     idx++;
@@ -103,5 +67,34 @@ namespace Swollball.Upgrades
                 currentUpgrades[generatedUpgrade.ServerId] = generatedUpgrade;
             }
         }
+
+        // Test stuff
+        private static List<Tuple<int, Func<IUpgrade>>> TestUpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
+        {
+            Tuple.Create(1, () => new Impulse(1, 1) as IUpgrade),
+            Tuple.Create(1, () => new SpeedUpgrade(30, 1) as IUpgrade),
+            Tuple.Create(1, () => new Harden(1, 5) as IUpgrade),
+        };
+        private static Lazy<Func<IUpgrade>[]> TestUpgrades = new Lazy<Func<IUpgrade>[]>(() =>
+        {
+            var totalSize = 0;
+            foreach (var upg in TestUpgradeOdds)
+            {
+                totalSize += upg.Item1;
+            }
+
+            var array = new Func<IUpgrade>[totalSize];
+            var idx = 0;
+            foreach (var upg in TestUpgradeOdds)
+            {
+                for (var i = 0; i < upg.Item1; i++)
+                {
+                    array[idx] = upg.Item2;
+                    idx++;
+                }
+            }
+
+            return array;
+        });
     }
 }
