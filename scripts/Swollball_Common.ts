@@ -127,7 +127,6 @@ function InitializeKeystoneUpgrades(ball: PlayerBall) {
     // Initialize upgrades which the client needs to know about
     ball.KeystoneActions = [];
     for (let key in ball.KeystoneData) {
-        console.log(key + " " + ball.KeystoneData[key]);
         var amount = ball.KeystoneData[key][1];
         switch (ball.KeystoneData[key][0]) {
             case 'Feast':
@@ -218,14 +217,13 @@ function CopyBallData(newBall: PlayerBall, data: ServerBallData) {
     newBall.KeystoneData = data.KeystoneData;
 }
 
-function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.Scene): PlayerBall[] {
+function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.Scene, screenAreaTakenByBalls: number = 0.25): PlayerBall[] {
     var retVal: PlayerBall[] = [];
 
     // Set the scale multiplier for initial drawing - we assume a scale of 1000, and scale according to current canvas size
     // Autoscaling will take care of the rest
     const PLACERADIUS = 300;
     const FONTSIZEMULTIPLIER = 0.022;
-    const AREATAKENBYBALLS = 0.25;
 
     var boundingDimension = Math.min(scene.scale.canvas.width, scene.scale.canvas.height);
     var scaleMultiplier = GetScale(scene);
@@ -235,7 +233,7 @@ function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.S
         totalBallSize += data.SizeMultiplier * data.SizeMultiplier;
     }
 
-    var ballSizeBase = boundingDimension / Math.sqrt(totalBallSize) * AREATAKENBYBALLS;
+    var ballSizeBase = boundingDimension / Math.sqrt(totalBallSize) * screenAreaTakenByBalls;
 
     for (let data of BallData) {
         var newBall = ballGroup.create(0, 0, ballGroup.defaultKey) as PlayerBall;

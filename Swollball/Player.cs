@@ -21,6 +21,8 @@ namespace Swollball
         public int ShopSize { get; set; } = 3;
         public int ShopTier { get; set; } = 1;
 
+        private const int CREDITINCREMENTPERROUND = 1;
+
         public Player(string name, string connectionId, string roomName)
         {
             this.Name = name;
@@ -31,6 +33,7 @@ namespace Swollball
 
 #if DEBUG
             this.CreditsLeft = 30;
+            this.ShopTier = -1;
 #endif
 
             this.FillShop();
@@ -76,9 +79,9 @@ namespace Swollball
             }
         }
 
-        public void FillShop()
+        private void FillShop()
         {
-            UpgradeFactory.FillShop_Tier1(this.CurrentUpgrades, this.ShopSize, this.ShopTier);
+            UpgradeFactory.FillShop(this.CurrentUpgrades, this.ShopSize, this.ShopTier);
         }
 
         public void StartNextRound()
@@ -88,7 +91,12 @@ namespace Swollball
                 this.CreditsLeft = 0;
             }
 
-            this.MaxCredits += 1;
+            foreach (var keystone in this.Ball.Keystones.Values)
+            {
+                keystone.StartNextRound(this);
+            }
+
+            this.MaxCredits += CREDITINCREMENTPERROUND;
             this.CreditsLeft += this.MaxCredits;
             this.FillShop();
         }

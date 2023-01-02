@@ -84,7 +84,7 @@ class BallArena extends Phaser.Scene {
             bounceY: 1,            
         });
 
-        this.playerBalls = InitializeBalls(this.balls, this);
+        this.playerBalls = InitializeBalls(this.balls, this, 0.25 /*Area taken by all the balls */);
 
         this.physics.add.collider(this.balls, this.arena.PhysicsGroup, (body1, body2) => {
             // This makes the balls collide with the arena

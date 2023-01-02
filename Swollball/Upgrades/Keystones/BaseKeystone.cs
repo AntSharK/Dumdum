@@ -28,9 +28,20 @@ namespace Swollball.Upgrades.Keystones
             this.Cost = cost;
         }
 
-        public abstract void AfterUpgrade(Player player);
+        public virtual void AfterUpgrade(Player player)
+        {
+            // Does nothing
+        }
 
-        public abstract void BeforeUpgrade(Player player);
+        public virtual void BeforeUpgrade(Player player)
+        {
+            // Does nothing
+        }
+
+        public virtual void StartNextRound(Player player)
+        {
+            // Does nothing
+        }
 
         public virtual void PerformUpgrade(Player player)
         {

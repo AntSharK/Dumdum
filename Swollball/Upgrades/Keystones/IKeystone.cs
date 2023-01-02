@@ -14,5 +14,6 @@ namespace Swollball.Upgrades.Keystones
         public new int UpgradeAmount { get; set; }
         void BeforeUpgrade(Player player);
         void AfterUpgrade(Player player);
+        void StartNextRound(Player player);
     }
 }
