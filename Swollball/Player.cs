@@ -19,6 +19,7 @@ namespace Swollball
         public int CreditsLeft { get; set; } = 10; // Give more credits at the start
         public int MaxCredits { get; set; } = 8;
         public int ShopSize { get; set; } = 3;
+        public int ShopTier { get; set; } = 1;
 
         public Player(string name, string connectionId, string roomName)
         {
@@ -41,13 +42,13 @@ namespace Swollball
             {
                 foreach (var keystone in this.Ball.Keystones.Values)
                 {
-                    keystone.BeforeUpgrade(this.Ball);
+                    keystone.BeforeUpgrade(this);
                 }
                 var upgradeToApply = this.CurrentUpgrades[upgradeId];
-                upgradeToApply.PerformUpgrade(this.Ball);
+                upgradeToApply.PerformUpgrade(this);
                 foreach (var keystone in this.Ball.Keystones.Values)
                 {
-                    keystone.AfterUpgrade(this.Ball);
+                    keystone.AfterUpgrade(this);
                 }
 
                 // Current logic - clear the upgrade list, re-generate new ones
@@ -77,8 +78,7 @@ namespace Swollball
 
         public void FillShop()
         {
-            // TODO: Determine player tier
-            UpgradeFactory.FillShop_Tier1(this.CurrentUpgrades, this.ShopSize);
+            UpgradeFactory.FillShop_Tier1(this.CurrentUpgrades, this.ShopSize, this.ShopTier);
         }
 
         public void StartNextRound()

@@ -22,7 +22,7 @@ namespace Swollball.Upgrades
 
         public int Cost => 0;
 
-        public void PerformUpgrade(Ball ball)
+        public void PerformUpgrade(Player player)
         {
             // Do nothing
         }

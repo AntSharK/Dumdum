@@ -36,7 +36,7 @@ namespace Swollball.Upgrades
                 case 11:
                     return new Bulwark(1, 4);
                 case 12:
-                    return new Lifesteal(2, 4);
+                    return new Feast(2, 4);
                 case 13:
                     return new Harden(1, 5);
                 default:
@@ -44,12 +44,17 @@ namespace Swollball.Upgrades
             }
         }
 
-        public static void FillShop_Tier1(Dictionary<string, IUpgrade> currentUpgrades, int shopSize)
+        public static void FillShop_Tier1(Dictionary<string, IUpgrade> currentUpgrades, int shopSize, int shopTier)
         {
-            while (currentUpgrades.Count < shopSize)
+            switch (shopTier)
             {
-                var generatedUpgrade = GetUpgrade_Tier1();
-                currentUpgrades[generatedUpgrade.ServerId] = generatedUpgrade;
+                case 1:
+                    while (currentUpgrades.Count < shopSize)
+                    {
+                        var generatedUpgrade = GetUpgrade_Tier1();
+                        currentUpgrades[generatedUpgrade.ServerId] = generatedUpgrade;
+                    }
+                    break;
             }
         }
     }

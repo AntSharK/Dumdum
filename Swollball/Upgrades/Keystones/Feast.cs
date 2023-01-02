@@ -6,22 +6,22 @@ using System.Threading.Tasks;
 
 namespace Swollball.Upgrades.Keystones
 {
-    public class Lifesteal : BaseKeystone
+    public class Feast : BaseKeystone
     {
-        public Lifesteal(int value, int cost) : base(value, cost)
+        public Feast(int value, int cost) : base(value, cost)
         {
         }
 
-        public override string UpgradeName => $"Lifesteal";
+        public override string UpgradeName => $"Feast";
 
         public override string Description => $"Regain {this.UpgradeAmount} HP for every 10 damage dealt";
 
-        public override void AfterUpgrade(Ball ball)
+        public override void AfterUpgrade(Player player)
         {
             // Does nothing - all client-side
         }
 
-        public override void BeforeUpgrade(Ball ball)
+        public override void BeforeUpgrade(Player player)
         {
             // Does nothing - all client-side
         }

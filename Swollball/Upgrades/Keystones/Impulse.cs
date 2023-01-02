@@ -6,28 +6,28 @@ using System.Threading.Tasks;
 
 namespace Swollball.Upgrades.Keystones
 {
-    public class Giant : BaseKeystone
+    public class Impulse : BaseKeystone
     {
-        public Giant(int value, int cost) : base(value, cost)
+        public Impulse(int value, int cost) : base(value, cost)
         {
         }
 
-        public override string UpgradeName => $"Giant";
+        public override string UpgradeName => $"Impulse";
 
-        public override string Description => $"Increase your size by {this.UpgradeAmount} for every 10 hp gained.";
+        public override string Description => $"Increase your damage by {this.UpgradeAmount} for every 10 speed gained.";
 
         public override void AfterUpgrade(Player player)
         {
             var ball = player.Ball;
-            if (ball.Hp > this.preUpgradeStat)
+            if (ball.SpeedMultiplier > this.preUpgradeStat)
             {
-                ball.SizeMultiplier = ball.SizeMultiplier + (this.UpgradeAmount * (ball.Hp - this.preUpgradeStat))/10;
+                ball.Dmg = ball.Dmg + (this.UpgradeAmount * (ball.SpeedMultiplier - this.preUpgradeStat)) / 10;
             }
         }
 
         public override void BeforeUpgrade(Player player)
         {
-            this.preUpgradeStat = player.Ball.Hp;
+            this.preUpgradeStat = player.Ball.SpeedMultiplier;
         }
 
         public override void PerformUpgrade(Player player)

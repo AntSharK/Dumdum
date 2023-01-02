@@ -81,8 +81,8 @@ function SceneTransition(sceneFrom: string, sceneTo: string) {
 }
 
 class ServerBallData {
-    SizeMultiplier: number;
-    VelocityMultiplier: number;
+    SizeMultiplier: integer;
+    VelocityMultiplier: integer;
     Damage: integer;
     Armor: integer;
     Color: number;
@@ -130,8 +130,8 @@ function InitializeKeystoneUpgrades(ball: PlayerBall) {
         console.log(key + " " + ball.KeystoneData[key]);
         var amount = ball.KeystoneData[key][1];
         switch (ball.KeystoneData[key][0]) {
-            case 'Lifesteal':
-                ball.KeystoneActions.push(new LifestealAction(amount));
+            case 'Feast':
+                ball.KeystoneActions.push(new FeastAction(amount));
                 break;
             case 'Harden':
                 ball.KeystoneActions.push(new HardenAction(amount));
@@ -144,7 +144,7 @@ interface KeystoneAction {
     Apply(owner: PlayerBall, target: PlayerBall, damageDone: number, damageTaken: number): void;
 }
 
-class LifestealAction implements KeystoneAction {
+class FeastAction implements KeystoneAction {
     amount: number;
     constructor(amount: number) { this.amount = amount; }
     Apply(owner: PlayerBall, target: PlayerBall, damageDone: number, damageTaken: number): void {
@@ -172,8 +172,8 @@ class PlayerBall extends Phaser.Physics.Arcade.Sprite {
     Hp: integer;
     MaxHp: integer;
     Text: Phaser.GameObjects.Text;
-    SizeMultiplier: number;
-    VelocityMultiplier: number;
+    SizeMultiplier: integer;
+    VelocityMultiplier: integer;
 
     HitTime: number = 0;
     KeystoneData: [string, integer][];
@@ -272,8 +272,8 @@ function SetBallVelocity(playerBalls: PlayerBall[], scene: Phaser.Scene) {
         var direction = new Phaser.Math.Vector2(scene.scale.canvas.width / 2 - pb.x, scene.scale.canvas.height / 2 - pb.y);
         var normalizedDirection = direction.normalize();
         normalizedDirection.setAngle(normalizedDirection.angle() + (Math.random() * MAXDEFLECTIONANGLE * 2) - MAXDEFLECTIONANGLE);
-        pb.setVelocityX(normalizedDirection.x * BASEVELOCITY * scaleMultiplier);
-        pb.setVelocityY(normalizedDirection.y * BASEVELOCITY * scaleMultiplier);
+        pb.setVelocityX(normalizedDirection.x * BASEVELOCITY * scaleMultiplier * pb.VelocityMultiplier * 0.01);
+        pb.setVelocityY(normalizedDirection.y * BASEVELOCITY * scaleMultiplier * pb.VelocityMultiplier * 0.01);
     };
 
 }
