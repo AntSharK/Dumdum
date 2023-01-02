@@ -16,12 +16,12 @@ namespace Swollball.Upgrades.Keystones
 
         public override string Description => $"Regain {this.UpgradeAmount} HP for every 10 damage dealt";
 
-        public override void AfterUpgrade(Ball ball)
+        public override void AfterUpgrade(Player player)
         {
             // Does nothing - all client-side
         }
 
-        public override void BeforeUpgrade(Ball ball)
+        public override void BeforeUpgrade(Player player)
         {
             // Does nothing - all client-side
         }

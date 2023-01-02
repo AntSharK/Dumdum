@@ -26,9 +26,9 @@ namespace Swollball.Upgrades
             this.Cost = cost;
         }
 
-        public virtual void PerformUpgrade(Ball ball)
+        public virtual void PerformUpgrade(Player player)
         {
-            ball.Upgrades.Add(this);
+            player.Ball.Upgrades.Add(this);
         }
     }
 }

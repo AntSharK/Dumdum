@@ -16,10 +16,10 @@ namespace Swollball.Upgrades
 
         public override string Description => $"Increases size by {this.UpgradeAmount}";
 
-        public override void PerformUpgrade(Ball ball)
+        public override void PerformUpgrade(Player player)
         {
-            ball.SizeMultiplier += this.UpgradeAmount * 0.01f;
-            ball.Upgrades.Add(this);
+            player.Ball.SizeMultiplier += this.UpgradeAmount * 0.01f;
+            base.PerformUpgrade(player);
         }
 
     }

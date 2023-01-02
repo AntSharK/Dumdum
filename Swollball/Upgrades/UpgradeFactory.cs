@@ -44,12 +44,17 @@ namespace Swollball.Upgrades
             }
         }
 
-        public static void FillShop_Tier1(Dictionary<string, IUpgrade> currentUpgrades, int shopSize)
+        public static void FillShop_Tier1(Dictionary<string, IUpgrade> currentUpgrades, int shopSize, int shopTier)
         {
-            while (currentUpgrades.Count < shopSize)
+            switch (shopTier)
             {
-                var generatedUpgrade = GetUpgrade_Tier1();
-                currentUpgrades[generatedUpgrade.ServerId] = generatedUpgrade;
+                case 1:
+                    while (currentUpgrades.Count < shopSize)
+                    {
+                        var generatedUpgrade = GetUpgrade_Tier1();
+                        currentUpgrades[generatedUpgrade.ServerId] = generatedUpgrade;
+                    }
+                    break;
             }
         }
     }

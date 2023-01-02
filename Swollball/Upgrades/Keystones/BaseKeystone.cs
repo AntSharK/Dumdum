@@ -28,19 +28,19 @@ namespace Swollball.Upgrades.Keystones
             this.Cost = cost;
         }
 
-        public abstract void AfterUpgrade(Ball ball);
+        public abstract void AfterUpgrade(Player player);
 
-        public abstract void BeforeUpgrade(Ball ball);
+        public abstract void BeforeUpgrade(Player player);
 
-        public virtual void PerformUpgrade(Ball ball)
+        public virtual void PerformUpgrade(Player player)
         {
-            if (ball.Keystones.ContainsKey(this.UpgradeName))
+            if (player.Ball.Keystones.ContainsKey(this.UpgradeName))
             {
-                ball.Keystones[this.UpgradeName].UpgradeAmount += this.UpgradeAmount;
+                player.Ball.Keystones[this.UpgradeName].UpgradeAmount += this.UpgradeAmount;
             }
             else
             {
-                ball.Keystones[this.UpgradeName] = this;
+                player.Ball.Keystones[this.UpgradeName] = this;
             }
         }
     }
