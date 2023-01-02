@@ -176,6 +176,7 @@ class PlayerBall extends Phaser.Physics.Arcade.Sprite {
     VelocityMultiplier: integer;
 
     HitTime: number = 0;
+    HitAmount: integer = 0;
     KeystoneData: [string, integer][];
     KeystoneActions: KeystoneAction[];
 }
@@ -189,6 +190,9 @@ function HitBalls(ball1: PlayerBall, ball2: PlayerBall, timeNow: number) {
 
     ball1.Hp = ball1.Hp - damageDoneTo1;
     ball2.Hp = ball2.Hp - damageDoneTo2;
+
+    ball1.HitAmount = damageDoneTo1;
+    ball2.HitAmount = damageDoneTo2;
 
     for (let action of ball1.KeystoneActions) {
         action.Apply(ball1, ball2, damageDoneTo2, damageDoneTo1);
@@ -291,7 +295,9 @@ function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBal
             if (pb.HitTime > 0
                 && (graphics.scene.time.now - pb.HitTime) < FLASHTIME
                 && (graphics.scene.time.now - pb.HitTime) % FLASHCHECK <= FLASHINTERVAL) {
-                graphics.fillStyle(0xFFFFFF, 1);
+                var interpolationAmount = Math.min(pb.HitAmount / pb.MaxHp * 5, 1); // 20% of HP is the max interpolation
+                var colorInterpolated = Phaser.Math.Interpolation.Linear([pb.Color, 0xFFFFFF], interpolationAmount);
+                graphics.fillStyle(colorInterpolated, colorAlpha);
             }
             else {
                 graphics.fillStyle(pb.Color, colorAlpha);
