@@ -78,9 +78,9 @@ namespace Swollball
             }
         }
 
-        public void FillShop()
+        private void FillShop()
         {
-            UpgradeFactory.FillShop_Tier1(this.CurrentUpgrades, this.ShopSize, this.ShopTier);
+            UpgradeFactory.FillShop(this.CurrentUpgrades, this.ShopSize, this.ShopTier);
         }
 
         public void StartNextRound()
