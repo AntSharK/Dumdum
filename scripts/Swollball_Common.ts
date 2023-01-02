@@ -127,7 +127,6 @@ function InitializeKeystoneUpgrades(ball: PlayerBall) {
     // Initialize upgrades which the client needs to know about
     ball.KeystoneActions = [];
     for (let key in ball.KeystoneData) {
-        console.log(key + " " + ball.KeystoneData[key]);
         var amount = ball.KeystoneData[key][1];
         switch (ball.KeystoneData[key][0]) {
             case 'Feast':

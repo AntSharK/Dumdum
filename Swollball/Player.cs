@@ -21,6 +21,8 @@ namespace Swollball
         public int ShopSize { get; set; } = 3;
         public int ShopTier { get; set; } = 1;
 
+        private const int CREDITINCREMENTPERROUND = 1;
+
         public Player(string name, string connectionId, string roomName)
         {
             this.Name = name;
@@ -88,7 +90,7 @@ namespace Swollball
                 this.CreditsLeft = 0;
             }
 
-            this.MaxCredits += 1;
+            this.MaxCredits += CREDITINCREMENTPERROUND;
             this.CreditsLeft += this.MaxCredits;
             this.FillShop();
         }
