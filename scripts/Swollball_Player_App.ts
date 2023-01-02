@@ -77,6 +77,7 @@ class BallUpgrades extends Phaser.Scene {
 
     preload() {
         this.load.image('refreshimage', '/content/refreshimage.png');
+        this.load.image('uparrow', '/content/uparrow.png');
     }
 
     constructor() {
@@ -88,8 +89,10 @@ class BallUpgrades extends Phaser.Scene {
     create() {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
         this.input.on('gameobjectdown', this.onObjectClicked);
-        this.creditsLeft = this.add.text(this.scale.canvas.width * 0.9, this.scale.canvas.height * 0.05, "0", { color: 'Black' });
-        this.creditsLeft.scale = Math.min(this.scale.canvas.width, this.scale.canvas.height) * 0.0052;
+
+        this.creditsLeft = this.add.text(this.scale.canvas.width * 0.86, this.scale.canvas.height * 0.08, "0", { color: 'Black' });
+        this.creditsLeft.scale = Math.min(this.scale.canvas.width, this.scale.canvas.height) * 0.004;
+
         this.refreshButton = this.add.sprite(this.scale.canvas.width * 0.9, this.scale.canvas.height * 0.4, 'refreshimage');
         this.refreshButton.scale = this.creditsLeft.scale * 0.3;
 
@@ -119,9 +122,9 @@ class BallUpgrades extends Phaser.Scene {
 
             // Draw the number of credits left
             this.graphics.fillStyle(0xFFC90E);
-            this.graphics.fillCircle(this.creditsLeft.x + this.creditsLeft.scale*5, this.creditsLeft.y + this.creditsLeft.scale*8, this.creditsLeft.scale * 20);
+            this.graphics.fillCircle(this.creditsLeft.x + this.creditsLeft.scale*7, this.creditsLeft.y + this.creditsLeft.scale*8, this.creditsLeft.scale * 15);
             this.graphics.lineStyle(10, 0x222222);
-            this.graphics.strokeCircle(this.creditsLeft.x + this.creditsLeft.scale*5, this.creditsLeft.y + this.creditsLeft.scale*8, this.creditsLeft.scale * 20);
+            this.graphics.strokeCircle(this.creditsLeft.x + this.creditsLeft.scale*7, this.creditsLeft.y + this.creditsLeft.scale*8, this.creditsLeft.scale * 15);
         }
         else {
             // Set all graphics to invisible
@@ -300,7 +303,7 @@ class BallStats extends Phaser.Scene {
             defaultKey: 'dummyimage',
             bounceX: 1,
             bounceY: 1,
-        }), this);
+        }), this, 0.15 /*Area taken by the  balls*/);
 
         this.playerBall = playerBalls[0];
 
@@ -309,7 +312,7 @@ class BallStats extends Phaser.Scene {
         var scaleMultiplier = GetScale(this);
 
         this.playerBall.setVelocity(0, 0); // Balls in this display do not move
-        this.playerBall.setPosition(300 * scaleMultiplier, 300 * scaleMultiplier); // Set the ball to the top-left of the screen
+        this.playerBall.setPosition(150 * scaleMultiplier, 150 * scaleMultiplier); // Set the ball to the top-left of the screen
 
         this.playerBall.setInteractive(
             new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y, this.playerBall.Size),
@@ -322,14 +325,15 @@ class BallStats extends Phaser.Scene {
         this.statsDisplay["size"] = this.add.text(0, 0, "", { color: 'Black' });
         this.updateText();
 
+        const STATFONTSCALE = 0.002;
         var textArray = [];
         for (let key in this.statsDisplay) {
             var stat = this.statsDisplay[key];
-            stat.scale = boundingDimension * 0.004;
+            stat.scale = boundingDimension * STATFONTSCALE;
             textArray.push(stat);
         }
 
-        Phaser.Actions.PlaceOnCircle(textArray, new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y - 35 * scaleMultiplier, this.playerBall.Size + 15 * scaleMultiplier), -0.8, 1.1);
+        Phaser.Actions.PlaceOnCircle(textArray, new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y - 15 * scaleMultiplier, this.playerBall.Size + 5 * scaleMultiplier), -0.6, 1.3);
     }
 
     update() {
@@ -382,15 +386,15 @@ class BallStats extends Phaser.Scene {
 
             for (let textElement of this.keystoneDisplay) {
                 // Start shrinking font at 8 keystones
-                var fontScale = Math.min(0.0035, 0.028 / this.keystoneDisplay.length);
+                var fontScale = Math.min(0.0020, 0.016 / this.keystoneDisplay.length);
                 textElement.scale = boundingDimension * fontScale;
                 if (this.displayStats) {
                     textElement.setVisible(false);
                 }
             }
 
-            var maxRadians = Math.min(0.25 * this.keystoneDisplay.length - 0.8, 1.1);
-            Phaser.Actions.PlaceOnCircle(this.keystoneDisplay, new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y - 15 * scaleMultiplier, this.playerBall.Size + 15 * scaleMultiplier), -0.9, maxRadians);
+            var maxRadians = Math.min(0.3 * this.keystoneDisplay.length - 0.8, 1.3);
+            Phaser.Actions.PlaceOnCircle(this.keystoneDisplay, new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y - 10 * scaleMultiplier, this.playerBall.Size + 5 * scaleMultiplier), -0.7, maxRadians);
         }
     }
 
