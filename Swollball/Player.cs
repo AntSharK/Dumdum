@@ -91,6 +91,11 @@ namespace Swollball
                 this.CreditsLeft = 0;
             }
 
+            foreach (var keystone in this.Ball.Keystones.Values)
+            {
+                keystone.StartNextRound(this);
+            }
+
             this.MaxCredits += CREDITINCREMENTPERROUND;
             this.CreditsLeft += this.MaxCredits;
             this.FillShop();

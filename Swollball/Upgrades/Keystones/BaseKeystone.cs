@@ -32,6 +32,11 @@ namespace Swollball.Upgrades.Keystones
 
         public abstract void BeforeUpgrade(Player player);
 
+        public virtual void StartNextRound(Player player)
+        {
+            // Does nothing
+        }
+
         public virtual void PerformUpgrade(Player player)
         {
             if (player.Ball.Keystones.ContainsKey(this.UpgradeName))
