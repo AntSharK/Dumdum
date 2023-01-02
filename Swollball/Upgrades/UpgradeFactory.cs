@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Swollball.Upgrades.Keystones;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,30 +13,42 @@ namespace Swollball.Upgrades
 
         private static IUpgrade GetUpgrade_Tier1()
         {
-            var rng = Rng.Next(5);
+            var rng = Rng.Next(14);
             switch (rng)
             {
                 case 0:
-                    return new DamageUpgrade(3);
                 case 1:
-                    return new ArmorUpgrade(1);
+                    return new DamageUpgrade(3, 3);
                 case 2:
-                    return new HpUpgrade(5);
                 case 3:
-                    return new SizeUpgrade(11);
+                    return new ArmorUpgrade(1, 3);
                 case 4:
-                    return new SpeedUpgrade(30);
+                case 5:
+                    return new HpUpgrade(5, 3);
+                case 6:
+                case 7:
+                    return new SizeUpgrade(11, 2);
+                case 8:
+                case 9:
+                    return new SpeedUpgrade(30, 2);
+                case 10:
+                    return new Giant(1, 3);
+                case 11:
+                    return new Bulwark(1, 4);
+                case 12:
+                    return new Lifesteal(2, 4);
+                case 13:
+                    return new Harden(1, 5);
                 default:
                     return BlankUpgrade.Instance.First();
             }
         }
 
-        public static void FillShop_Tier1(Dictionary<string, IUpgrade> currentUpgrades)
+        public static void FillShop_Tier1(Dictionary<string, IUpgrade> currentUpgrades, int shopSize)
         {
-            const int SHOPSIZE = 3;
-            while (currentUpgrades.Count < SHOPSIZE)
-            { 
-                var generatedUpgrade = UpgradeFactory.GetUpgrade_Tier1();
+            while (currentUpgrades.Count < shopSize)
+            {
+                var generatedUpgrade = GetUpgrade_Tier1();
                 currentUpgrades[generatedUpgrade.ServerId] = generatedUpgrade;
             }
         }

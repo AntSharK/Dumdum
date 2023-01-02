@@ -110,7 +110,7 @@ class BallUpgrades extends Phaser.Scene {
 
         if (this.upgradeCards.length > 0) {
             // Draw the fade screen
-            this.graphics.fillStyle(0xFFFFFF, 0.6);
+            this.graphics.fillStyle(0xFFFFFF, 0.3);
             this.graphics.fillRect(0, 0, this.scale.canvas.width, this.scale.canvas.height);
             this.creditsLeft.setVisible(true);
             this.refreshButton.setVisible(true);
@@ -348,7 +348,23 @@ class BallStats extends Phaser.Scene {
         this.statsDisplay["size"].text = "SIZE:" + Math.floor(this.playerBall.SizeMultiplier * 100).toString();
 
         // Update keystone display info - reinitialize only if needed
-        if (this.keystoneDisplay.length < this.playerBall.KeystoneData.length) {
+        var keystonesUpdated = false;
+        if (this.playerBall.KeystoneData.length > this.keystoneDisplay.length) {
+            keystonesUpdated = true;
+        }
+        else if (this.playerBall.KeystoneData.length == this.keystoneDisplay.length) {
+            for (var i = 0; i < this.keystoneDisplay.length; i++) {
+                if (this.keystoneDisplay[i].text != this.playerBall.KeystoneData[i][0] + this.playerBall.KeystoneData[i][1]) {
+                    keystonesUpdated = true;
+                    break;
+                }
+            }
+        }
+        else {
+            keystonesUpdated = true;
+        }
+
+        if (keystonesUpdated) {
             for (let keystoneDisplay of this.keystoneDisplay) {
                 keystoneDisplay.destroy();
             }

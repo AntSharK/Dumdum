@@ -16,15 +16,16 @@ namespace Swollball.Upgrades.Keystones
 
         public virtual int BorderColor => 11045079;
 
-        public virtual int Cost => 5;
+        public virtual int Cost { get; set; }
 
-        public int UpgradeAmount { get; }
+        public int UpgradeAmount { get; set;  }
 
         internal int preUpgradeStat;
 
-        public BaseKeystone(int amount)
+        public BaseKeystone(int amount, int cost)
         {
             this.UpgradeAmount = amount;
+            this.Cost = cost;
         }
 
         public abstract void AfterUpgrade(Ball ball);
@@ -33,7 +34,14 @@ namespace Swollball.Upgrades.Keystones
 
         public virtual void PerformUpgrade(Ball ball)
         {
-            ball.Keystones.Add(this);
+            if (ball.Keystones.ContainsKey(this.UpgradeName))
+            {
+                ball.Keystones[this.UpgradeName].UpgradeAmount += this.UpgradeAmount;
+            }
+            else
+            {
+                ball.Keystones[this.UpgradeName] = this;
+            }
         }
     }
 }

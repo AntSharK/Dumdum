@@ -16,13 +16,14 @@ namespace Swollball.Upgrades
 
         public virtual int BorderColor => 11045079;
 
-        public virtual int Cost => 3;
+        public virtual int Cost { get; set; }
 
         public int UpgradeAmount { get; }
 
-        public BaseUpgrade(int amount)
+        public BaseUpgrade(int amount, int cost)
         {
             this.UpgradeAmount = amount;
+            this.Cost = cost;
         }
 
         public virtual void PerformUpgrade(Ball ball)

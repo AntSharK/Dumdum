@@ -8,8 +8,7 @@ namespace Swollball.Upgrades.Keystones
 {
     public class Giant : BaseKeystone
     {
-
-        public Giant(int value) : base(value)
+        public Giant(int value, int cost) : base(value, cost)
         {
         }
 

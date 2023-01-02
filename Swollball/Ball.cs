@@ -24,7 +24,7 @@ namespace Swollball
         {
             get
             {
-                return this.Keystones.Select(s => Tuple.Create(s.UpgradeName, s.UpgradeAmount));
+                return this.Keystones.Values.Select(s => Tuple.Create(s.UpgradeName, s.UpgradeAmount));
             }
         }
 
@@ -32,7 +32,7 @@ namespace Swollball
         public List<IUpgrade> Upgrades { get; set; } = new List<IUpgrade>();
 
         [System.Text.Json.Serialization.JsonIgnore]
-        public List<IKeystone> Keystones { get; set; } = new List<IKeystone>();
+        public Dictionary<string, IKeystone> Keystones { get; set; } = new Dictionary<string, IKeystone>();
 
         public Ball(string playerName)
         {

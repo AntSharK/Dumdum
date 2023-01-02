@@ -16,8 +16,9 @@ namespace Swollball
         public string RoomId { get; private set; }
         public Score PlayerScore { get; private set; }
         public Dictionary<string, IUpgrade> CurrentUpgrades { get; private set; } = new Dictionary<string, IUpgrade>();
-        public int CreditsLeft { get; set; } = 10; // Give more credits for keystones at the start
+        public int CreditsLeft { get; set; } = 10; // Give more credits at the start
         public int MaxCredits { get; set; } = 8;
+        public int ShopSize { get; set; } = 3;
 
         public Player(string name, string connectionId, string roomName)
         {
@@ -27,6 +28,10 @@ namespace Swollball
             this.PlayerScore = new Score(this.Name);
             this.Ball = new Ball(this.Name);
 
+#if DEBUG
+            this.CreditsLeft = 30;
+#endif
+
             this.FillShop();
         }
 
@@ -34,13 +39,13 @@ namespace Swollball
         {
             if (this.CurrentUpgrades.ContainsKey(upgradeId))
             {
-                foreach (var keystone in this.Ball.Keystones)
+                foreach (var keystone in this.Ball.Keystones.Values)
                 {
                     keystone.BeforeUpgrade(this.Ball);
                 }
                 var upgradeToApply = this.CurrentUpgrades[upgradeId];
                 upgradeToApply.PerformUpgrade(this.Ball);
-                foreach (var keystone in this.Ball.Keystones)
+                foreach (var keystone in this.Ball.Keystones.Values)
                 {
                     keystone.AfterUpgrade(this.Ball);
                 }
@@ -72,20 +77,17 @@ namespace Swollball
 
         public void FillShop()
         {
-            // TODO: Fill shop correctly
-            if (this.PlayerScore.RoundNumber == 0
-                && this.CreditsLeft > this.MaxCredits)
-            {
-                KeystoneFactory.FillShop_Tier1(this.CurrentUpgrades);
-            }
-            else
-            {
-                UpgradeFactory.FillShop_Tier1(this.CurrentUpgrades);
-            }
+            // TODO: Determine player tier
+            UpgradeFactory.FillShop_Tier1(this.CurrentUpgrades, this.ShopSize);
         }
 
         public void StartNextRound()
         {
+            if (this.CreditsLeft > 0)
+            {
+                this.CreditsLeft = 0;
+            }
+
             this.MaxCredits += 1;
             this.CreditsLeft += this.MaxCredits;
             this.FillShop();

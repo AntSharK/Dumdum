@@ -8,7 +8,7 @@ namespace Swollball.Upgrades
 {
     public class ArmorUpgrade : BaseUpgrade
     {
-        public ArmorUpgrade(int amount) : base(amount)
+        public ArmorUpgrade(int value, int cost) : base(value, cost)
         {
         }
 
