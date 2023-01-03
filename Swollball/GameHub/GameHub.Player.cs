@@ -16,7 +16,7 @@ namespace Swollball
             await this.StartRoom(roomId, "5" /*MaxRounds*/);
 
             var player = this.GameLobby.Rooms[roomId].Players[userName];
-            await Clients.Caller.SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values, player.CreditsLeft);
+            await Clients.Caller.SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values, player.Economy);
 #endif
         }
 
@@ -60,7 +60,7 @@ namespace Swollball
                     break;
                 case GameRoom.RoomState.Arena:
                 case GameRoom.RoomState.Leaderboard:
-                    await Clients.Caller.SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values, player.CreditsLeft);
+                    await Clients.Caller.SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values, player.Economy);
                     await Clients.Caller.SendAsync("UpdateBalls", new Ball[] { player.Ball });
                     await Clients.Caller.SendAsync("StartGame");
                     break;
@@ -94,16 +94,26 @@ namespace Swollball
             await this.UpdateUpgrades(player);
         }
 
+        public async Task TierUp(string userName, string roomId)
+        {
+            (var player, var room) = await this.FindPlayerAndRoom(userName, roomId);
+            if (player == null || room == null) return;
+
+            if (player.TierUp()) {
+                await this.UpdateUpgrades(player);
+            }
+        }
+
         private async Task UpdateUpgrades(Player player)
         {
             var currentUpgrades = player.CurrentUpgrades.Values;
             if (currentUpgrades.Count == 0)
             {
-                await Clients.Caller.SendAsync("UpdateUpgrades", BlankUpgrade.Instance, player.CreditsLeft);
+                await Clients.Caller.SendAsync("UpdateUpgrades", BlankUpgrade.Instance, player.Economy);
             }
             else
             {
-                await Clients.Caller.SendAsync("UpdateUpgrades", currentUpgrades, player.CreditsLeft);
+                await Clients.Caller.SendAsync("UpdateUpgrades", currentUpgrades, player.Economy);
             }
         }
 
@@ -113,7 +123,7 @@ namespace Swollball
             if (player == null || room == null) return;
 
             player.StartNextRound();
-            await Clients.Caller.SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values, player.CreditsLeft);
+            await Clients.Caller.SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values, player.Economy);
             await Clients.Caller.SendAsync("UpdateBalls", new Ball[] { player.Ball });
         }
     }

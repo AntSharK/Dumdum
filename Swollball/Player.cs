@@ -16,10 +16,7 @@ namespace Swollball
         public string RoomId { get; private set; }
         public Score PlayerScore { get; private set; }
         public Dictionary<string, IUpgrade> CurrentUpgrades { get; private set; } = new Dictionary<string, IUpgrade>();
-        public int CreditsLeft { get; set; } = 10; // Give more credits at the start
-        public int MaxCredits { get; set; } = 8;
-        public int ShopSize { get; set; } = 3;
-        public int ShopTier { get; set; } = 1;
+        public EconomyData Economy { get; private set; } = new EconomyData();
 
         private const int CREDITINCREMENTPERROUND = 1;
 
@@ -32,8 +29,8 @@ namespace Swollball
             this.Ball = new Ball(this.Name);
 
 #if DEBUG
-            this.CreditsLeft = 30;
-            this.ShopTier = -1;
+            this.Economy.CreditsLeft = 99;
+            this.Economy.ShopTier = 1;
 #endif
 
             this.FillShop();
@@ -55,9 +52,9 @@ namespace Swollball
                 }
 
                 // Current logic - clear the upgrade list, re-generate new ones
-                this.CreditsLeft -= upgradeToApply.Cost;
+                this.Economy.CreditsLeft -= upgradeToApply.Cost;
                 CurrentUpgrades.Clear();
-                if (this.CreditsLeft > 0)
+                if (this.Economy.CreditsLeft > 0)
                 {
                     this.FillShop();
                 }
@@ -71,24 +68,61 @@ namespace Swollball
         public void RefreshShop()
         {
             const int REFRESHCOST = 1;
-            this.CreditsLeft -= REFRESHCOST;
+            this.Economy.CreditsLeft -= REFRESHCOST;
             CurrentUpgrades.Clear();
-            if (this.CreditsLeft > 0)
+            if (this.Economy.CreditsLeft > 0)
             {
                 this.FillShop();
             }
         }
 
+        public bool TierUp()
+        {
+            if (this.Economy.CreditsLeft < this.Economy.UpgradeTierCost)
+            {
+                return false;
+            }
+
+            this.Economy.CreditsLeft -= this.Economy.UpgradeTierCost;
+            this.Economy.ShopTier++;
+
+            // Update the shop tier cards and costs
+            switch (this.Economy.ShopTier)
+            {
+                case 0:
+                    return true;
+                case 1:
+                    // Should not happen
+                    this.Economy.UpgradeTierCost = 15;
+                    this.Economy.ShopSize = 3;
+                    break;
+                case 2:
+                    this.Economy.UpgradeTierCost = 17;
+                    this.Economy.ShopSize = 4;
+                    break;
+                case 3:
+                    this.Economy.UpgradeTierCost = 19;
+                    this.Economy.ShopSize = 4;
+                    break;
+                case 4:
+                    this.Economy.UpgradeTierCost = -1; // No more upgrades
+                    this.Economy.ShopSize = 5;
+                    break;
+            }
+
+            return true;
+        }
+
         private void FillShop()
         {
-            UpgradeFactory.FillShop(this.CurrentUpgrades, this.ShopSize, this.ShopTier);
+            UpgradeFactory.FillShop(this.CurrentUpgrades, this.Economy.ShopSize, this.Economy.ShopTier);
         }
 
         public void StartNextRound()
         {
-            if (this.CreditsLeft > 0)
+            if (this.Economy.CreditsLeft > 0)
             {
-                this.CreditsLeft = 0;
+                this.Economy.CreditsLeft = 0;
             }
 
             foreach (var keystone in this.Ball.Keystones.Values)
@@ -96,8 +130,8 @@ namespace Swollball
                 keystone.StartNextRound(this);
             }
 
-            this.MaxCredits += CREDITINCREMENTPERROUND;
-            this.CreditsLeft += this.MaxCredits;
+            this.Economy.MaxCredits += CREDITINCREMENTPERROUND;
+            this.Economy.CreditsLeft += this.Economy.MaxCredits;
             this.FillShop();
         }
 
@@ -119,6 +153,19 @@ namespace Swollball
                     && p.RoomId == this.RoomId;
             }
         }
+
+        /// <summary>
+        /// For the purpose of serializing costs and credits down to the client
+        /// </summary>
+        public class EconomyData
+        {
+            public int CreditsLeft { get; set; } = 10; // Give more credits at the start
+            public int MaxCredits { get; set; } = 8;
+            public int ShopSize { get; set; } = 3;
+            public int ShopTier { get; set; } = 1;
+            public int UpgradeTierCost { get; set; } = 15;
+        }
+
         public class Score
         {
             public int TotalScore { get; set; } = 0;

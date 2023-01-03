@@ -72,8 +72,12 @@ class BallUpgrades extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
     readyToUpdateUpgrades: boolean;
     upgradeCards: UpgradeCard[];
+
     creditsLeft: Phaser.GameObjects.Text;
     refreshButton: Phaser.GameObjects.Sprite;
+
+    upgradeTierCost: Phaser.GameObjects.Text;
+    upgradeTierButton: Phaser.GameObjects.Sprite;
 
     preload() {
         this.load.image('refreshimage', '/content/refreshimage.png');
@@ -89,17 +93,37 @@ class BallUpgrades extends Phaser.Scene {
     create() {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
         this.input.on('gameobjectdown', this.onObjectClicked);
+        var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
 
+        // Paint the CreditsLeft display
         this.creditsLeft = this.add.text(this.scale.canvas.width * 0.86, this.scale.canvas.height * 0.08, "0", { color: 'Black' });
-        this.creditsLeft.scale = Math.min(this.scale.canvas.width, this.scale.canvas.height) * 0.004;
+        this.creditsLeft.scale = boundingDimension * 0.004;
 
+        // Paint the Refresh Button
         this.refreshButton = this.add.sprite(this.scale.canvas.width * 0.9, this.scale.canvas.height * 0.4, 'refreshimage');
-        this.refreshButton.scale = this.creditsLeft.scale * 0.3;
-
+        this.refreshButton.scale = boundingDimension * 0.0012;
         this.refreshButton.setInteractive(
-            new Phaser.Geom.Circle(this.refreshButton.x, this.refreshButton.y, this.refreshButton.width * 0.88),
+            new Phaser.Geom.Circle(this.refreshButton.x, this.refreshButton.y, this.refreshButton.width * this.refreshButton.scale / 2),
             CircleDetection);
+
+        // Paint the UpgradeShop button - both the text and the button
+        this.upgradeTierButton = this.add.sprite(this.scale.canvas.width * 0.75, this.scale.canvas.height * 0.4, 'uparrow');
+        this.upgradeTierButton.scale = boundingDimension * 0.0012;
+        this.upgradeTierButton.setInteractive(
+            new Phaser.Geom.Circle(this.upgradeTierButton.x, this.upgradeTierButton.y, this.upgradeTierButton.width * this.upgradeTierButton.scale / 2),
+            CircleDetection);
+        this.upgradeTierCost = this.add.text(
+            this.upgradeTierButton.x - this.upgradeTierButton.width * this.upgradeTierButton.scale / 2 + boundingDimension * 0.02,
+            this.upgradeTierButton.y - this.upgradeTierButton.height * this.upgradeTierButton.scale / 2 + boundingDimension * 0.035, "0", { color: 'Black' });
+        this.upgradeTierCost.scale = boundingDimension * 0.004;
+
         /* Stuff for debugging hit area
+        this.upgradeTierButton.on('pointerover', function (pointer) {
+            this.setTint(0xff0000);
+        })
+        this.upgradeTierButton.on('pointerout', function (pointer) {
+            this.clearTint();
+        })
         this.refreshButton.on('pointerover', function (pointer) {
             this.setTint(0xff0000);
         })
@@ -119,6 +143,8 @@ class BallUpgrades extends Phaser.Scene {
             // Set all graphics to visible
             this.creditsLeft.setVisible(true);
             this.refreshButton.setVisible(true);
+            this.upgradeTierButton.setVisible(true);
+            this.upgradeTierCost.setVisible(true);
 
             // Draw the number of credits left
             this.graphics.fillStyle(0xFFC90E);
@@ -130,6 +156,8 @@ class BallUpgrades extends Phaser.Scene {
             // Set all graphics to invisible
             this.creditsLeft.setVisible(false);
             this.refreshButton.setVisible(false);
+            this.upgradeTierButton.setVisible(false);
+            this.upgradeTierCost.setVisible(false);
         }
 
         this.updateUpgrades();
@@ -148,7 +176,16 @@ class BallUpgrades extends Phaser.Scene {
             }
             
             this.upgradeCards = [];
-            this.creditsLeft.text = CreditsLeft.toString();
+            this.creditsLeft.text = EconomyData.CreditsLeft.toString();
+
+            // Upgrade Tier Cost can be maxed out
+            if (EconomyData.UpgradeTierCost < 0) {
+                this.upgradeTierCost.text = "XX";
+                this.upgradeTierButton.disableInteractive();
+            }
+            else {
+                this.upgradeTierCost.text = EconomyData.UpgradeTierCost.toString();
+            }
             var hasActionableCards = false;
 
             // Partition the width into N units of 9 and N+1 units of 1
@@ -214,6 +251,12 @@ class BallUpgrades extends Phaser.Scene {
             ballScene.onRefreshClicked(sprite)
             return;
         }
+
+        // Check for clicking on upgrading shop tier
+        if (sprite.texture.key == 'uparrow') {
+            ballScene.onTierUpClicked(sprite)
+            return;
+        }
     }
 
     onRefreshClicked(sprite: Phaser.GameObjects.Sprite) {
@@ -221,10 +264,30 @@ class BallUpgrades extends Phaser.Scene {
         var sessionUserId = sessionStorage.getItem("userid");
 
         // Prepare for the next update of upgrades - clear the update list
+        EconomyData.CreditsWereSpent = true;
         UpgradeData = [];
         this.readyToUpdateUpgrades = true;
 
         connection.invoke("RefreshShop", sessionUserId, sessionRoomId).catch(function (err) {
+            return console.error(err.toString());
+        });
+    }
+
+    onTierUpClicked(sprite: Phaser.GameObjects.Sprite) {
+        // Don't allow for upgrades if short of credits
+        if (EconomyData.CreditsLeft < EconomyData.UpgradeTierCost) {
+            return;
+        }
+
+        EconomyData.CreditsWereSpent = true;
+        var sessionRoomId = sessionStorage.getItem("roomid");
+        var sessionUserId = sessionStorage.getItem("userid");
+
+        // Prepare for the next update of upgrades - clear the update list
+        UpgradeData = [];
+        this.readyToUpdateUpgrades = true;
+
+        connection.invoke("TierUp", sessionUserId, sessionRoomId).catch(function (err) {
             return console.error(err.toString());
         });
     }
@@ -235,6 +298,7 @@ class BallUpgrades extends Phaser.Scene {
             return;
         } */
 
+        EconomyData.CreditsWereSpent = true;
         var sessionRoomId = sessionStorage.getItem("roomid");
         var sessionUserId = sessionStorage.getItem("userid");
 
@@ -356,7 +420,10 @@ class BallStats extends Phaser.Scene {
 
         // Update keystone display info - reinitialize only if needed
         var keystonesUpdated = false;
-        if (this.playerBall.KeystoneData.length > this.keystoneDisplay.length) {
+        if (EconomyData.CreditsWereSpent) {
+            keystonesUpdated = true;
+        }
+        else if (this.playerBall.KeystoneData.length > this.keystoneDisplay.length) {
             keystonesUpdated = true;
         }
         else if (this.playerBall.KeystoneData.length == this.keystoneDisplay.length) {
@@ -376,6 +443,7 @@ class BallStats extends Phaser.Scene {
                 keystoneDisplay.destroy();
             }
 
+            EconomyData.CreditsWereSpent = false;
             this.keystoneDisplay = [];
             for (let keystoneData of this.playerBall.KeystoneData) {
                 this.keystoneDisplay.push(this.add.text(0, 0, keystoneData[0] + keystoneData[1], { color: 'Black' }));

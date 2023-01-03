@@ -21,7 +21,7 @@ namespace Swollball.Upgrades.Keystones
             var creditsGained = player.PlayerScore.RoundScore * 0.1 * this.UpgradeAmount;
             if (creditsGained > 0)
             {
-                player.CreditsLeft = player.CreditsLeft + Convert.ToInt32(Math.Floor(creditsGained));
+                player.Economy.CreditsLeft = player.Economy.CreditsLeft + Convert.ToInt32(Math.Floor(creditsGained));
             }
 
             base.StartNextRound(player);
