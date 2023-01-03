@@ -72,8 +72,12 @@ class BallUpgrades extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
     readyToUpdateUpgrades: boolean;
     upgradeCards: UpgradeCard[];
+
     creditsLeft: Phaser.GameObjects.Text;
     refreshButton: Phaser.GameObjects.Sprite;
+
+    upgradeTierCost: Phaser.GameObjects.Text;
+    upgradeTierButton: Phaser.GameObjects.Sprite;
 
     preload() {
         this.load.image('refreshimage', '/content/refreshimage.png');
@@ -89,17 +93,37 @@ class BallUpgrades extends Phaser.Scene {
     create() {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
         this.input.on('gameobjectdown', this.onObjectClicked);
+        var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
 
+        // Paint the CreditsLeft display
         this.creditsLeft = this.add.text(this.scale.canvas.width * 0.86, this.scale.canvas.height * 0.08, "0", { color: 'Black' });
-        this.creditsLeft.scale = Math.min(this.scale.canvas.width, this.scale.canvas.height) * 0.004;
+        this.creditsLeft.scale = boundingDimension * 0.004;
 
+        // Paint the Refresh Button
         this.refreshButton = this.add.sprite(this.scale.canvas.width * 0.9, this.scale.canvas.height * 0.4, 'refreshimage');
-        this.refreshButton.scale = this.creditsLeft.scale * 0.3;
-
+        this.refreshButton.scale = boundingDimension * 0.0012;
         this.refreshButton.setInteractive(
-            new Phaser.Geom.Circle(this.refreshButton.x, this.refreshButton.y, this.refreshButton.width * 0.88),
+            new Phaser.Geom.Circle(this.refreshButton.x, this.refreshButton.y, this.refreshButton.width * this.refreshButton.scale / 2),
             CircleDetection);
+
+        // Paint the UpgradeShop button - both the text and the button
+        this.upgradeTierButton = this.add.sprite(this.scale.canvas.width * 0.75, this.scale.canvas.height * 0.4, 'uparrow');
+        this.upgradeTierButton.scale = boundingDimension * 0.0012;
+        this.upgradeTierButton.setInteractive(
+            new Phaser.Geom.Circle(this.upgradeTierButton.x, this.upgradeTierButton.y, this.upgradeTierButton.width * this.upgradeTierButton.scale / 2),
+            CircleDetection);
+        this.upgradeTierCost = this.add.text(
+            this.upgradeTierButton.x - this.upgradeTierButton.width * this.upgradeTierButton.scale / 2 + boundingDimension * 0.02,
+            this.upgradeTierButton.y - this.upgradeTierButton.height * this.upgradeTierButton.scale / 2 + boundingDimension * 0.035, "0", { color: 'Black' });
+        this.upgradeTierCost.scale = boundingDimension * 0.004;
+
         /* Stuff for debugging hit area
+        this.upgradeTierButton.on('pointerover', function (pointer) {
+            this.setTint(0xff0000);
+        })
+        this.upgradeTierButton.on('pointerout', function (pointer) {
+            this.clearTint();
+        })
         this.refreshButton.on('pointerover', function (pointer) {
             this.setTint(0xff0000);
         })
@@ -119,6 +143,8 @@ class BallUpgrades extends Phaser.Scene {
             // Set all graphics to visible
             this.creditsLeft.setVisible(true);
             this.refreshButton.setVisible(true);
+            this.upgradeTierButton.setVisible(true);
+            this.upgradeTierCost.setVisible(true);
 
             // Draw the number of credits left
             this.graphics.fillStyle(0xFFC90E);
@@ -130,6 +156,8 @@ class BallUpgrades extends Phaser.Scene {
             // Set all graphics to invisible
             this.creditsLeft.setVisible(false);
             this.refreshButton.setVisible(false);
+            this.upgradeTierButton.setVisible(false);
+            this.upgradeTierCost.setVisible(false);
         }
 
         this.updateUpgrades();
@@ -149,6 +177,7 @@ class BallUpgrades extends Phaser.Scene {
             
             this.upgradeCards = [];
             this.creditsLeft.text = EconomyData.CreditsLeft.toString();
+            this.upgradeTierCost.text = EconomyData.UpgradeTierCost.toString();
             var hasActionableCards = false;
 
             // Partition the width into N units of 9 and N+1 units of 1
