@@ -3,8 +3,8 @@ declare var RoundScoreData: ServerRoundScoreData[];
 declare var RoundLog: RoundEvent[];
 declare var Game: Swollball_Lobby_Game;
 declare var RoundNumber: integer;
-declare var CreditsLeft: integer;
 declare var UpgradeData: ServerUpgradeData[];
+declare var EconomyData: ServerEconomyData;
 declare var connection;
 
 const FINALSCOREDISPLAYDURATION = 30;
@@ -53,9 +53,16 @@ function InitializeLeaderboardData(dataIn: any[]) {
     }
 }
 
-function InitializeUpgradeData(dataIn: any[], creditsLeft: integer) {
+function InitializeUpgradeData(dataIn: any[], economyData: any) {
     UpgradeData = [];
-    CreditsLeft = creditsLeft;
+
+    EconomyData = new ServerEconomyData();
+    EconomyData.CreditsLeft = economyData.creditsLeft;
+    EconomyData.MaxCredits = economyData.maxCredits;
+    EconomyData.ShopSize = economyData.shopSize;
+    EconomyData.ShopTier = economyData.shopTier;
+    EconomyData.UpgradeTierCost = economyData.upgradeTierCost;
+
     for (let data of dataIn) {
         var serverData = new ServerUpgradeData();
         serverData.UpgradeAmount = data.upgradeAmount;
@@ -118,6 +125,14 @@ class ServerUpgradeData {
     ServerId: string;
     BorderColor: number;
     Cost: integer;
+}
+
+class ServerEconomyData {
+    CreditsLeft: integer;
+    MaxCredits: integer;
+    ShopSize: integer;
+    ShopTier: integer;
+    UpgradeTierCost: integer;
 }
 
 /* 

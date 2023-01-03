@@ -148,7 +148,7 @@ class BallUpgrades extends Phaser.Scene {
             }
             
             this.upgradeCards = [];
-            this.creditsLeft.text = CreditsLeft.toString();
+            this.creditsLeft.text = EconomyData.CreditsLeft.toString();
             var hasActionableCards = false;
 
             // Partition the width into N units of 9 and N+1 units of 1
