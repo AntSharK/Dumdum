@@ -16,10 +16,7 @@ namespace Swollball
         public string RoomId { get; private set; }
         public Score PlayerScore { get; private set; }
         public Dictionary<string, IUpgrade> CurrentUpgrades { get; private set; } = new Dictionary<string, IUpgrade>();
-        public int CreditsLeft { get; set; } = 10; // Give more credits at the start
-        public int MaxCredits { get; set; } = 8;
-        public int ShopSize { get; set; } = 3;
-        public int ShopTier { get; set; } = 1;
+        public EconomicData Economy { get; private set; } = new EconomicData();
 
         private const int CREDITINCREMENTPERROUND = 1;
 
@@ -32,8 +29,8 @@ namespace Swollball
             this.Ball = new Ball(this.Name);
 
 #if DEBUG
-            this.CreditsLeft = 30;
-            this.ShopTier = -1;
+            this.Economy.CreditsLeft = 30;
+            this.Economy.ShopTier = -1;
 #endif
 
             this.FillShop();
@@ -55,9 +52,9 @@ namespace Swollball
                 }
 
                 // Current logic - clear the upgrade list, re-generate new ones
-                this.CreditsLeft -= upgradeToApply.Cost;
+                this.Economy.CreditsLeft -= upgradeToApply.Cost;
                 CurrentUpgrades.Clear();
-                if (this.CreditsLeft > 0)
+                if (this.Economy.CreditsLeft > 0)
                 {
                     this.FillShop();
                 }
@@ -71,9 +68,9 @@ namespace Swollball
         public void RefreshShop()
         {
             const int REFRESHCOST = 1;
-            this.CreditsLeft -= REFRESHCOST;
+            this.Economy.CreditsLeft -= REFRESHCOST;
             CurrentUpgrades.Clear();
-            if (this.CreditsLeft > 0)
+            if (this.Economy.CreditsLeft > 0)
             {
                 this.FillShop();
             }
@@ -81,14 +78,14 @@ namespace Swollball
 
         private void FillShop()
         {
-            UpgradeFactory.FillShop(this.CurrentUpgrades, this.ShopSize, this.ShopTier);
+            UpgradeFactory.FillShop(this.CurrentUpgrades, this.Economy.ShopSize, this.Economy.ShopTier);
         }
 
         public void StartNextRound()
         {
-            if (this.CreditsLeft > 0)
+            if (this.Economy.CreditsLeft > 0)
             {
-                this.CreditsLeft = 0;
+                this.Economy.CreditsLeft = 0;
             }
 
             foreach (var keystone in this.Ball.Keystones.Values)
@@ -96,8 +93,8 @@ namespace Swollball
                 keystone.StartNextRound(this);
             }
 
-            this.MaxCredits += CREDITINCREMENTPERROUND;
-            this.CreditsLeft += this.MaxCredits;
+            this.Economy.MaxCredits += CREDITINCREMENTPERROUND;
+            this.Economy.CreditsLeft += this.Economy.MaxCredits;
             this.FillShop();
         }
 
@@ -119,6 +116,18 @@ namespace Swollball
                     && p.RoomId == this.RoomId;
             }
         }
+
+        /// <summary>
+        /// For the purpose of serializing costs and credits down to the client
+        /// </summary>
+        public class EconomicData
+        {
+            public int CreditsLeft { get; set; } = 10; // Give more credits at the start
+            public int MaxCredits { get; set; } = 8;
+            public int ShopSize { get; set; } = 3;
+            public int ShopTier { get; set; } = 1;
+        }
+
         public class Score
         {
             public int TotalScore { get; set; } = 0;
