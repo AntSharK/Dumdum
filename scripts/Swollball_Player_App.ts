@@ -177,7 +177,15 @@ class BallUpgrades extends Phaser.Scene {
             
             this.upgradeCards = [];
             this.creditsLeft.text = EconomyData.CreditsLeft.toString();
-            this.upgradeTierCost.text = EconomyData.UpgradeTierCost.toString();
+
+            // Upgrade Tier Cost can be maxed out
+            if (EconomyData.UpgradeTierCost < 0) {
+                this.upgradeTierCost.text = "XX";
+                this.upgradeTierButton.disableInteractive();
+            }
+            else {
+                this.upgradeTierCost.text = EconomyData.UpgradeTierCost.toString();
+            }
             var hasActionableCards = false;
 
             // Partition the width into N units of 9 and N+1 units of 1
@@ -243,6 +251,12 @@ class BallUpgrades extends Phaser.Scene {
             ballScene.onRefreshClicked(sprite)
             return;
         }
+
+        // Check for clicking on upgrading shop tier
+        if (sprite.texture.key == 'uparrow') {
+            ballScene.onTierUpClicked(sprite)
+            return;
+        }
     }
 
     onRefreshClicked(sprite: Phaser.GameObjects.Sprite) {
@@ -250,10 +264,30 @@ class BallUpgrades extends Phaser.Scene {
         var sessionUserId = sessionStorage.getItem("userid");
 
         // Prepare for the next update of upgrades - clear the update list
+        EconomyData.CreditsWereSpent = true;
         UpgradeData = [];
         this.readyToUpdateUpgrades = true;
 
         connection.invoke("RefreshShop", sessionUserId, sessionRoomId).catch(function (err) {
+            return console.error(err.toString());
+        });
+    }
+
+    onTierUpClicked(sprite: Phaser.GameObjects.Sprite) {
+        // Don't allow for upgrades if short of credits
+        if (EconomyData.CreditsLeft < EconomyData.UpgradeTierCost) {
+            return;
+        }
+
+        EconomyData.CreditsWereSpent = true;
+        var sessionRoomId = sessionStorage.getItem("roomid");
+        var sessionUserId = sessionStorage.getItem("userid");
+
+        // Prepare for the next update of upgrades - clear the update list
+        UpgradeData = [];
+        this.readyToUpdateUpgrades = true;
+
+        connection.invoke("TierUp", sessionUserId, sessionRoomId).catch(function (err) {
             return console.error(err.toString());
         });
     }
@@ -264,6 +298,7 @@ class BallUpgrades extends Phaser.Scene {
             return;
         } */
 
+        EconomyData.CreditsWereSpent = true;
         var sessionRoomId = sessionStorage.getItem("roomid");
         var sessionUserId = sessionStorage.getItem("userid");
 
@@ -385,7 +420,10 @@ class BallStats extends Phaser.Scene {
 
         // Update keystone display info - reinitialize only if needed
         var keystonesUpdated = false;
-        if (this.playerBall.KeystoneData.length > this.keystoneDisplay.length) {
+        if (EconomyData.CreditsWereSpent) {
+            keystonesUpdated = true;
+        }
+        else if (this.playerBall.KeystoneData.length > this.keystoneDisplay.length) {
             keystonesUpdated = true;
         }
         else if (this.playerBall.KeystoneData.length == this.keystoneDisplay.length) {
@@ -405,6 +443,7 @@ class BallStats extends Phaser.Scene {
                 keystoneDisplay.destroy();
             }
 
+            EconomyData.CreditsWereSpent = false;
             this.keystoneDisplay = [];
             for (let keystoneData of this.playerBall.KeystoneData) {
                 this.keystoneDisplay.push(this.add.text(0, 0, keystoneData[0] + keystoneData[1], { color: 'Black' }));

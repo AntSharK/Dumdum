@@ -94,6 +94,16 @@ namespace Swollball
             await this.UpdateUpgrades(player);
         }
 
+        public async Task TierUp(string userName, string roomId)
+        {
+            (var player, var room) = await this.FindPlayerAndRoom(userName, roomId);
+            if (player == null || room == null) return;
+
+            if (player.TierUp()) {
+                await this.UpdateUpgrades(player);
+            }
+        }
+
         private async Task UpdateUpgrades(Player player)
         {
             var currentUpgrades = player.CurrentUpgrades.Values;

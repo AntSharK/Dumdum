@@ -29,8 +29,8 @@ namespace Swollball
             this.Ball = new Ball(this.Name);
 
 #if DEBUG
-            this.Economy.CreditsLeft = 30;
-            this.Economy.ShopTier = -1;
+            this.Economy.CreditsLeft = 99;
+            this.Economy.ShopTier = 1;
 #endif
 
             this.FillShop();
@@ -74,6 +74,43 @@ namespace Swollball
             {
                 this.FillShop();
             }
+        }
+
+        public bool TierUp()
+        {
+            if (this.Economy.CreditsLeft < this.Economy.UpgradeTierCost)
+            {
+                return false;
+            }
+
+            this.Economy.CreditsLeft -= this.Economy.UpgradeTierCost;
+            this.Economy.ShopTier++;
+
+            // Update the shop tier cards and costs
+            switch (this.Economy.ShopTier)
+            {
+                case 0:
+                    return true;
+                case 1:
+                    // Should not happen
+                    this.Economy.UpgradeTierCost = 15;
+                    this.Economy.ShopSize = 3;
+                    break;
+                case 2:
+                    this.Economy.UpgradeTierCost = 17;
+                    this.Economy.ShopSize = 4;
+                    break;
+                case 3:
+                    this.Economy.UpgradeTierCost = 19;
+                    this.Economy.ShopSize = 4;
+                    break;
+                case 4:
+                    this.Economy.UpgradeTierCost = -1; // No more upgrades
+                    this.Economy.ShopSize = 5;
+                    break;
+            }
+
+            return true;
         }
 
         private void FillShop()

@@ -57,6 +57,7 @@ function InitializeUpgradeData(dataIn: any[], economyData: any) {
     UpgradeData = [];
 
     EconomyData = new ServerEconomyData();
+    EconomyData.CreditsWereSpent = true;
     EconomyData.CreditsLeft = economyData.creditsLeft;
     EconomyData.MaxCredits = economyData.maxCredits;
     EconomyData.ShopSize = economyData.shopSize;
@@ -128,6 +129,7 @@ class ServerUpgradeData {
 }
 
 class ServerEconomyData {
+    CreditsWereSpent: boolean;
     CreditsLeft: integer;
     MaxCredits: integer;
     ShopSize: integer;
