@@ -53,6 +53,9 @@ namespace Swollball.Upgrades
             switch (shopTier)
             {
                 case 1:
+                case 2:
+                case 3:
+                case 4: // TODO: All the different tier shops need to be generated
                     cardGenerator = Tier1Upgrades.Value;
                     break;
                 default:
