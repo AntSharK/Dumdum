@@ -74,6 +74,7 @@ class BallUpgrades extends Phaser.Scene {
     upgradeCards: UpgradeCard[];
 
     creditsLeft: Phaser.GameObjects.Text;
+    creditNextIncrementTime: number;
     refreshButton: Phaser.GameObjects.Sprite;
 
     upgradeTierCost: Phaser.GameObjects.Text;
@@ -96,6 +97,7 @@ class BallUpgrades extends Phaser.Scene {
         var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
 
         // Paint the CreditsLeft display
+        this.creditNextIncrementTime = this.time.now;
         this.creditsLeft = this.add.text(this.scale.canvas.width * 0.86, this.scale.canvas.height * 0.08, "0", { color: 'Black' });
         this.creditsLeft.scale = boundingDimension * 0.004;
 
@@ -165,6 +167,23 @@ class BallUpgrades extends Phaser.Scene {
     }
 
     updateUpgrades() {
+        const CREDITINCREMENTINTERVAL = 30; // Interval to update credits
+        var creditsDisplayed = parseInt(this.creditsLeft.text);
+        if (creditsDisplayed != EconomyData.CreditsLeft
+            && this.creditNextIncrementTime <= this.time.now) {
+
+            if (creditsDisplayed < EconomyData.CreditsLeft) {
+                creditsDisplayed++;
+                this.creditNextIncrementTime = this.time.now + CREDITINCREMENTINTERVAL * 2;
+            }
+            else if (creditsDisplayed > EconomyData.CreditsLeft) {
+                creditsDisplayed--;
+                this.creditNextIncrementTime = this.time.now + CREDITINCREMENTINTERVAL;
+            }
+
+            this.creditsLeft.text = creditsDisplayed.toString();;
+        }
+
         if (this.readyToUpdateUpgrades == true
                 && UpgradeData.length > 0) {
             this.readyToUpdateUpgrades = false;
@@ -176,7 +195,6 @@ class BallUpgrades extends Phaser.Scene {
             }
             
             this.upgradeCards = [];
-            this.creditsLeft.text = EconomyData.CreditsLeft.toString();
 
             // Upgrade Tier Cost can be maxed out
             if (EconomyData.UpgradeTierCost < 0) {
