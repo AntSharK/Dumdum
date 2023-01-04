@@ -85,7 +85,6 @@ class BallArena extends Phaser.Scene {
         var backgroundImage = this.add.sprite(this.arena.XPos, this.arena.YPos, 'ylow');
         backgroundImage.setDepth(-1);
         backgroundImage.setDisplaySize(this.arena.Radius * 2, this.arena.Radius * 2);
-        //backgroundImage.setScale(this.arena.Radius * 2, this.arena.Radius * 2);
 
         this.balls = this.physics.add.group({
             defaultKey: 'dummyimage',
