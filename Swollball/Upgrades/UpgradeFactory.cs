@@ -11,41 +11,93 @@ namespace Swollball.Upgrades
     {
         private static Random Rng = new Random();
 
-        // List containing the odds of getting a card, and the function to generate the card
+        public static int[] ShopSize = new int[] { 1, 2, 3, 3, 4 };
+        public static int[] UpgradeTierCost = new int[] {1, 15, 17, 19, -1 /*No more upgrades*/};
+
+        // TODO: Balance all the shops!
         private static List<Tuple<int, Func<IUpgrade>>> Tier1UpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
         {
-            Tuple.Create(10, () => new DamageUpgrade(3, 3) as IUpgrade),
-            Tuple.Create(10, () => new ArmorUpgrade(1, 3) as IUpgrade),
-            Tuple.Create(10, () => new HpUpgrade(5, 2) as IUpgrade),
-            Tuple.Create(10, () => new SizeUpgrade(15, 2) as IUpgrade),
-            Tuple.Create(10, () => new SpeedUpgrade(30, 2) as IUpgrade),
-            Tuple.Create(7, () => new Giant(1, 3) as IUpgrade),
-            Tuple.Create(7, () => new Bulwark(1, 4) as IUpgrade),
-            Tuple.Create(7, () => new Feast(2, 4) as IUpgrade),
+            Tuple.Create(18, () => new Damage(3, 3) as IUpgrade),
+            Tuple.Create(18, () => new Armor(1, 3) as IUpgrade),
+            Tuple.Create(18, () => new Hp(5, 2) as IUpgrade),
+            Tuple.Create(18, () => new Size(15, 2) as IUpgrade),
+            Tuple.Create(18, () => new Speed(30, 2) as IUpgrade),
+            Tuple.Create(14, () => new Giant(1, 3) as IUpgrade),
+            Tuple.Create(14, () => new Bulwark(1, 4) as IUpgrade),
+            Tuple.Create(14, () => new Feast(2, 4) as IUpgrade),
         };
 
-        // Maps from a number to a function generating an upgrade
+        private static List<Tuple<int, Func<IUpgrade>>> Tier2UpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
+        {
+            Tuple.Create(12, () => new Damage(5, 4) as IUpgrade),
+            Tuple.Create(12, () => new Armor(4, 5) as IUpgrade),
+            Tuple.Create(10, () => new Giant(2, 4) as IUpgrade),
+            Tuple.Create(10, () => new Impulse(1, 10) as IUpgrade),
+            Tuple.Create(10, () => new Payday(1, 10) as IUpgrade),
+            Tuple.Create(10, () => new Cover(1, 7) as IUpgrade),
+        };
+
+        private static List<Tuple<int, Func<IUpgrade>>> Tier3UpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
+        {
+            Tuple.Create(8, () => new Hp(20, 4) as IUpgrade),
+            Tuple.Create(8, () => new Size(30, 3) as IUpgrade),
+            Tuple.Create(8, () => new Speed(50, 3) as IUpgrade),
+            Tuple.Create(8, () => new Furious(1, 6) as IUpgrade),
+            Tuple.Create(8, () => new Bloat(1, 8) as IUpgrade),
+            Tuple.Create(8, () => new Bulwark(3, 6) as IUpgrade),
+        };
+
+        private static List<Tuple<int, Func<IUpgrade>>> Tier4UpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
+        {
+            Tuple.Create(6, () => new Tech(1, 20) as IUpgrade),
+            Tuple.Create(6, () => new Feast(8, 10) as IUpgrade),
+            Tuple.Create(6, () => new Damage(20, 6) as IUpgrade),
+        };
+        
         private static Lazy<Func<IUpgrade>[]> Tier1Upgrades = new Lazy<Func<IUpgrade>[]>(() =>
         {
+            return GetUpgrades(Tier1UpgradeOdds);
+        });
+        private static Lazy<Func<IUpgrade>[]> Tier2Upgrades = new Lazy<Func<IUpgrade>[]>(() =>
+        {
+            return GetUpgrades(Tier1UpgradeOdds, Tier2UpgradeOdds);
+        });
+        private static Lazy<Func<IUpgrade>[]> Tier3Upgrades = new Lazy<Func<IUpgrade>[]>(() =>
+        {
+            return GetUpgrades(Tier1UpgradeOdds, Tier2UpgradeOdds, Tier3UpgradeOdds);
+        });
+        private static Lazy<Func<IUpgrade>[]> Tier4Upgrades = new Lazy<Func<IUpgrade>[]>(() =>
+        {
+            return GetUpgrades(Tier1UpgradeOdds, Tier2UpgradeOdds, Tier3UpgradeOdds, Tier4UpgradeOdds);
+        });
+
+        private static Func<IUpgrade>[] GetUpgrades(params List<Tuple<int, Func<IUpgrade>>>[] upgradeOddsList)
+        {
             var totalSize = 0;
-            foreach (var upg in Tier1UpgradeOdds)
+            foreach (var upgradeOdds in upgradeOddsList)
             {
-                totalSize += upg.Item1;
+                foreach (var upg in upgradeOdds)
+                {
+                    totalSize += upg.Item1;
+                }
             }
 
             var array = new Func<IUpgrade>[totalSize];
             var idx = 0;
-            foreach (var upg in Tier1UpgradeOdds)
+            foreach (var upgradeOdds in upgradeOddsList)
             {
-                for(var i = 0; i < upg.Item1; i++)
+                foreach (var upg in upgradeOdds)
                 {
-                    array[idx] = upg.Item2;
-                    idx++;
+                    for (var i = 0; i < upg.Item1; i++)
+                    {
+                        array[idx] = upg.Item2;
+                        idx++;
+                    }
                 }
             }
 
             return array;
-        });
+        }
 
         public static void FillShop(Dictionary<string, IUpgrade> currentUpgrades, int shopSize, int shopTier)
         {
@@ -53,10 +105,16 @@ namespace Swollball.Upgrades
             switch (shopTier)
             {
                 case 1:
-                case 2:
-                case 3:
-                case 4: // TODO: All the different tier shops need to be generated
                     cardGenerator = Tier1Upgrades.Value;
+                    break;
+                case 2:
+                    cardGenerator = Tier2Upgrades.Value;
+                    break;
+                case 3:
+                    cardGenerator = Tier3Upgrades.Value;
+                    break;
+                case 4:
+                    cardGenerator = Tier4Upgrades.Value;
                     break;
                 default:
                     cardGenerator = TestUpgrades.Value;
@@ -75,9 +133,10 @@ namespace Swollball.Upgrades
         private static List<Tuple<int, Func<IUpgrade>>> TestUpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
         {
             Tuple.Create(1, () => new Impulse(1, 1) as IUpgrade),
-            Tuple.Create(1, () => new SpeedUpgrade(30, 1) as IUpgrade),
-            Tuple.Create(1, () => new Harden(1, 5) as IUpgrade),
+            Tuple.Create(1, () => new Speed(30, 1) as IUpgrade),
+            Tuple.Create(1, () => new Harden(1, 1) as IUpgrade),
         };
+
         private static Lazy<Func<IUpgrade>[]> TestUpgrades = new Lazy<Func<IUpgrade>[]>(() =>
         {
             var totalSize = 0;

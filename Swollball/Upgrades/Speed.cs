@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Swollball.Upgrades
 {
-    public class SpeedUpgrade: BaseUpgrade
+    public class Speed: BaseUpgrade
     {
-        public SpeedUpgrade(int value, int cost) : base(value, cost)
+        public Speed(int value, int cost) : base(value, cost)
         {
         }
 

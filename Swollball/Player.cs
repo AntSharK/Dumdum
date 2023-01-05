@@ -87,30 +87,13 @@ namespace Swollball
             this.Economy.CreditsLeft -= this.Economy.UpgradeTierCost;
             this.Economy.ShopTier++;
 
-            // Update the shop tier cards and costs
-            switch (this.Economy.ShopTier)
+            if (this.Economy.ShopTier < 0 || this.Economy.ShopTier > UpgradeFactory.UpgradeTierCost.Length)
             {
-                case 0:
-                    return true;
-                case 1:
-                    // Should not happen
-                    this.Economy.UpgradeTierCost = 15;
-                    this.Economy.ShopSize = 3;
-                    break;
-                case 2:
-                    this.Economy.UpgradeTierCost = 17;
-                    this.Economy.ShopSize = 4;
-                    break;
-                case 3:
-                    this.Economy.UpgradeTierCost = 19;
-                    this.Economy.ShopSize = 4;
-                    break;
-                case 4:
-                    this.Economy.UpgradeTierCost = -1; // No more upgrades
-                    this.Economy.ShopSize = 5;
-                    break;
+                return true;
             }
 
+            this.Economy.UpgradeTierCost = UpgradeFactory.UpgradeTierCost[this.Economy.ShopTier];
+            this.Economy.ShopSize = UpgradeFactory.ShopSize[this.Economy.ShopTier];
             return true;
         }
 
@@ -162,7 +145,7 @@ namespace Swollball
         {
             public int CreditsLeft { get; set; } = 10; // Give more credits at the start
             public int MaxCredits { get; set; } = 8;
-            public int ShopSize { get; set; } = 3;
+            public int ShopSize { get; set; } = UpgradeFactory.ShopSize[1];
             public int ShopTier { get; set; } = 1;
             public int UpgradeTierCost { get; set; } = 15;
         }
