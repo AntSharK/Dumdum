@@ -50,7 +50,7 @@ class EndScreen extends Phaser.Scene {
         })) {
             totalPlayers++;
             if (playerName != null
-                    && scoreData.PlayerName == playerName) {
+                && scoreData.PlayerName == playerName) {
                 yourPlacing = totalPlayers;
             }
         }
@@ -74,6 +74,7 @@ class BallUpgrades extends Phaser.Scene {
     upgradeCards: UpgradeCard[];
 
     creditsLeft: Phaser.GameObjects.Text;
+    creditNextIncrementTime: number;
     refreshButton: Phaser.GameObjects.Sprite;
 
     upgradeTierCost: Phaser.GameObjects.Text;
@@ -96,6 +97,7 @@ class BallUpgrades extends Phaser.Scene {
         var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
 
         // Paint the CreditsLeft display
+        this.creditNextIncrementTime = this.time.now;
         this.creditsLeft = this.add.text(this.scale.canvas.width * 0.86, this.scale.canvas.height * 0.08, "0", { color: 'Black' });
         this.creditsLeft.scale = boundingDimension * 0.004;
 
@@ -148,9 +150,9 @@ class BallUpgrades extends Phaser.Scene {
 
             // Draw the number of credits left
             this.graphics.fillStyle(0xFFC90E);
-            this.graphics.fillCircle(this.creditsLeft.x + this.creditsLeft.scale*7, this.creditsLeft.y + this.creditsLeft.scale*8, this.creditsLeft.scale * 15);
+            this.graphics.fillCircle(this.creditsLeft.x + this.creditsLeft.scale * 7, this.creditsLeft.y + this.creditsLeft.scale * 8, this.creditsLeft.scale * 15);
             this.graphics.lineStyle(10, 0x222222);
-            this.graphics.strokeCircle(this.creditsLeft.x + this.creditsLeft.scale*7, this.creditsLeft.y + this.creditsLeft.scale*8, this.creditsLeft.scale * 15);
+            this.graphics.strokeCircle(this.creditsLeft.x + this.creditsLeft.scale * 7, this.creditsLeft.y + this.creditsLeft.scale * 8, this.creditsLeft.scale * 15);
         }
         else {
             // Set all graphics to invisible
@@ -165,8 +167,25 @@ class BallUpgrades extends Phaser.Scene {
     }
 
     updateUpgrades() {
+        const CREDITINCREMENTINTERVAL = 30; // Interval to update credits
+        var creditsDisplayed = parseInt(this.creditsLeft.text);
+        if (creditsDisplayed != EconomyData.CreditsLeft
+            && this.creditNextIncrementTime <= this.time.now) {
+
+            if (creditsDisplayed < EconomyData.CreditsLeft) {
+                creditsDisplayed++;
+                this.creditNextIncrementTime = this.time.now + CREDITINCREMENTINTERVAL * 2;
+            }
+            else if (creditsDisplayed > EconomyData.CreditsLeft) {
+                creditsDisplayed--;
+                this.creditNextIncrementTime = this.time.now + CREDITINCREMENTINTERVAL;
+            }
+
+            this.creditsLeft.text = creditsDisplayed.toString();;
+        }
+
         if (this.readyToUpdateUpgrades == true
-                && UpgradeData.length > 0) {
+            && UpgradeData.length > 0) {
             this.readyToUpdateUpgrades = false;
             for (let upgradeCard of this.upgradeCards) {
                 upgradeCard.Title.destroy(true);
@@ -174,9 +193,8 @@ class BallUpgrades extends Phaser.Scene {
                 upgradeCard.Cost.destroy(true);
                 upgradeCard.destroy(true);
             }
-            
+
             this.upgradeCards = [];
-            this.creditsLeft.text = EconomyData.CreditsLeft.toString();
 
             // Upgrade Tier Cost can be maxed out
             if (EconomyData.UpgradeTierCost < 0) {
@@ -344,10 +362,11 @@ class UpgradeCard extends Phaser.Physics.Arcade.Sprite {
 class BallStats extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
     playerBall: PlayerBall;
-    playerScore: ServerRoundScoreData;
     statsDisplay: Record<string, Phaser.GameObjects.Text>;
+    pointsDisplay: Record<string, Phaser.GameObjects.Text>;
     keystoneDisplay: Phaser.GameObjects.Text[];
-    displayStats: boolean;
+
+    displayToggle: integer;
     constructor() {
         super({ key: 'BallStats', active: true, visible: true });
     }
@@ -357,10 +376,11 @@ class BallStats extends Phaser.Scene {
     }
 
     create() {
-        this.displayStats = true;
+        this.displayToggle = 0;
         this.graphics = this.add.graphics({ x: 0, y: 0 });
         this.input.on('gameobjectdown', this.onObjectClicked);
         this.statsDisplay = {};
+        this.pointsDisplay = {};
         this.keystoneDisplay = [];
 
         var playerBalls = InitializeBalls(this.physics.add.group({
@@ -391,6 +411,12 @@ class BallStats extends Phaser.Scene {
         this.statsDisplay["armor"] = this.add.text(0, 0, "", { color: 'Black' });
         this.statsDisplay["velocity"] = this.add.text(0, 0, "", { color: 'Black' });
         this.statsDisplay["size"] = this.add.text(0, 0, "", { color: 'Black' });
+
+        this.pointsDisplay["dmgdone"] = this.add.text(0, 0, "", { color: 'Black' });
+        this.pointsDisplay["dmgreceived"] = this.add.text(0, 0, "", { color: 'Black' });
+        this.pointsDisplay["roundscore"] = this.add.text(0, 0, "", { color: 'Black' });
+        this.pointsDisplay["totalscore"] = this.add.text(0, 0, "", { color: 'Black' });
+
         this.updateText();
 
         const STATFONTSCALE = 0.002;
@@ -400,8 +426,16 @@ class BallStats extends Phaser.Scene {
             stat.scale = boundingDimension * STATFONTSCALE;
             textArray.push(stat);
         }
-
         Phaser.Actions.PlaceOnCircle(textArray, new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y - 15 * scaleMultiplier, this.playerBall.Size + 5 * scaleMultiplier), -0.6, 1.3);
+
+        var textArray2 = [];
+        for (let key in this.pointsDisplay) {
+            var points = this.pointsDisplay[key];
+            points.scale = boundingDimension * STATFONTSCALE;
+            textArray2.push(points);
+            points.setVisible(false);
+        }
+        Phaser.Actions.PlaceOnCircle(textArray2, new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y - 15 * scaleMultiplier, this.playerBall.Size + 5 * scaleMultiplier), -0.6, 1.3);
     }
 
     update() {
@@ -421,6 +455,12 @@ class BallStats extends Phaser.Scene {
         this.statsDisplay["armor"].text = "ARMOR:" + this.playerBall.Armor.toString();
         this.statsDisplay["velocity"].text = "SPEED:" + this.playerBall.VelocityMultiplier.toString();
         this.statsDisplay["size"].text = "SIZE:" + this.playerBall.SizeMultiplier.toString();
+
+        var playerScore = RoundScoreData[0];
+        this.pointsDisplay["dmgdone"].text = "DMG Taken: " + playerScore.RoundDamageDone.toString();
+        this.pointsDisplay["dmgreceived"].text = "DMG Received: " + playerScore.RoundDamageReceived.toString();
+        this.pointsDisplay["roundscore"].text = "SCORE (Round): " + playerScore.RoundScore.toString();
+        this.pointsDisplay["totalscore"].text = "SCORE (Total): " + playerScore.TotalScore.toString();
 
         // Update keystone display info - reinitialize only if needed
         var keystonesUpdated = false;
@@ -460,7 +500,7 @@ class BallStats extends Phaser.Scene {
                 // Start shrinking font at 8 keystones
                 var fontScale = Math.min(0.0020, 0.016 / this.keystoneDisplay.length);
                 textElement.scale = boundingDimension * fontScale;
-                if (this.displayStats) {
+                if (this.displayToggle != 1) {
                     textElement.setVisible(false);
                 }
             }
@@ -478,13 +518,21 @@ class BallStats extends Phaser.Scene {
         }
 
         // Change what is displayed
-        scene.displayStats = !scene.displayStats;
+        scene.displayToggle = (scene.displayToggle + 1) % 3;
+
+        // 0 for displaying stats
         for (let key in scene.statsDisplay) {
-            scene.statsDisplay[key].setVisible(scene.displayStats);
+            scene.statsDisplay[key].setVisible(scene.displayToggle == 0);
         }
 
+        // 1 for displaying keystones
         for (let display of scene.keystoneDisplay) {
-            display.setVisible(!scene.displayStats);
+            display.setVisible(scene.displayToggle == 1);
+        }
+
+        // 2 for displaying points{
+        for (let key in scene.pointsDisplay) {
+            scene.pointsDisplay[key].setVisible(scene.displayToggle == 2);
         }
     }
 }

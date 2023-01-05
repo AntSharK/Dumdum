@@ -28,6 +28,7 @@ namespace Swollball
             this.PlayerScore = new Score(this.Name);
             this.Ball = new Ball(this.Name);
 
+            this.Ball.Keystones["Payday"] = new Payday(1, 0); // Start with a free payday upgrade
 #if DEBUG
             this.Economy.CreditsLeft = 99;
             this.Economy.ShopTier = 1;
