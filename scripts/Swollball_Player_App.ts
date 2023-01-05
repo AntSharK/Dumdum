@@ -245,11 +245,12 @@ class BallUpgrades extends Phaser.Scene {
             this.graphics.lineStyle(10, card.Upgrade.BorderColor);
             this.graphics.strokeRoundedRect(card.x, card.y, card.width, card.height);
 
-            // Draw the cost of the card
+            // Draw the cost of the card - Draw to the right for more expensive cards
+            var xPos = card.Cost.x + card.Cost.scale * (5 + 2 * card.Cost.text.length);
             this.graphics.fillStyle(0xFFC90E);
-            this.graphics.fillCircle(card.Cost.x + card.Cost.scale * 5, card.Cost.y + card.Cost.scale * 8, card.Cost.scale * 12);
+            this.graphics.fillCircle(xPos, card.Cost.y + card.Cost.scale * 8, card.Cost.scale * 12);
             this.graphics.lineStyle(3, 0x222222);
-            this.graphics.strokeCircle(card.Cost.x + card.Cost.scale * 5, card.Cost.y + card.Cost.scale * 8, card.Cost.scale * 12);
+            this.graphics.strokeCircle(xPos, card.Cost.y + card.Cost.scale * 8, card.Cost.scale * 12);
         }
     }
 
