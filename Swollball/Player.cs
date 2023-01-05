@@ -145,7 +145,7 @@ namespace Swollball
         {
             public int CreditsLeft { get; set; } = 10; // Give more credits at the start
             public int MaxCredits { get; set; } = 8;
-            public int ShopSize { get; set; } = 3;
+            public int ShopSize { get; set; } = UpgradeFactory.ShopSize[1];
             public int ShopTier { get; set; } = 1;
             public int UpgradeTierCost { get; set; } = 15;
         }
