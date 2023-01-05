@@ -408,6 +408,7 @@ class BallStats extends Phaser.Scene {
         this.statsDisplay["velocity"] = this.add.text(0, 0, "", { color: 'Black' });
         this.statsDisplay["size"] = this.add.text(0, 0, "", { color: 'Black' });
 
+        this.pointsDisplay["round"] = this.add.text(0, 0, "", { color: 'Black' });
         this.pointsDisplay["dmgdone"] = this.add.text(0, 0, "", { color: 'Black' });
         this.pointsDisplay["dmgreceived"] = this.add.text(0, 0, "", { color: 'Black' });
         this.pointsDisplay["roundscore"] = this.add.text(0, 0, "", { color: 'Black' });
@@ -453,6 +454,7 @@ class BallStats extends Phaser.Scene {
         this.statsDisplay["size"].text = "SIZE:" + this.playerBall.SizeMultiplier.toString();
 
         var playerScore = RoundScoreData[0];
+        this.pointsDisplay["round"].text = "ROUND: " + RoundNumber.toString();
         this.pointsDisplay["dmgdone"].text = "DMG Taken: " + playerScore.RoundDamageDone.toString();
         this.pointsDisplay["dmgreceived"].text = "DMG Received: " + playerScore.RoundDamageReceived.toString();
         this.pointsDisplay["roundscore"].text = "SCORE (Round): " + playerScore.RoundScore.toString();
