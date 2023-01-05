@@ -139,7 +139,7 @@ class BallUpgrades extends Phaser.Scene {
 
         if (this.upgradeCards.length > 0) {
             // Draw the fade screen
-            this.graphics.fillStyle(0xFFFFFF, 0.2);
+            this.graphics.fillStyle(0xFFFFFF, 0.3);
             this.graphics.fillRect(0, 0, this.scale.canvas.width, this.scale.canvas.height);
 
             // Set all graphics to visible
@@ -401,10 +401,6 @@ class BallStats extends Phaser.Scene {
         this.playerBall.setInteractive(
             new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y, this.playerBall.Size),
             CircleDetection);
-
-        // Add the "TOGGLE VIEW" text
-        var toggleViewText = this.add.text(this.playerBall.x - this.playerBall.Size * 0.9, this.playerBall.y - this.playerBall.Size * 0.3, "[TOGGLE VIEW]", { color: 'Black' });
-        toggleViewText.scale = boundingDimension * 0.0021;
 
         this.statsDisplay["hp"] = this.add.text(0, 0, "", { color: 'Black' });
         this.statsDisplay["dmg"] = this.add.text(0, 0, "", { color: 'Black' });
