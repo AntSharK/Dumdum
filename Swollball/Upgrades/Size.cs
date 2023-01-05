@@ -6,20 +6,21 @@ using System.Threading.Tasks;
 
 namespace Swollball.Upgrades
 {
-    public class HpUpgrade : BaseUpgrade
+    public class Size : BaseUpgrade
     {
-        public HpUpgrade(int value, int cost) : base(value, cost)
+        public Size(int value, int cost) : base(value, cost)
         {
         }
 
-        public override string UpgradeName => $"HP+";
+        public override string UpgradeName => $"Grow+";
 
-        public override string Description => $"Increases HP by {this.UpgradeAmount}";
+        public override string Description => $"Increases size by {this.UpgradeAmount}";
 
         public override void PerformUpgrade(Player player)
         {
-            player.Ball.Hp += this.UpgradeAmount;
+            player.Ball.SizeMultiplier += this.UpgradeAmount;
             base.PerformUpgrade(player);
         }
+
     }
 }

@@ -14,7 +14,7 @@ namespace Swollball.Upgrades.Keystones
 
         public override string UpgradeName => $"Impulse";
 
-        public override string Description => $"Increase your damage by {this.UpgradeAmount} for every 10 speed gained.";
+        public override string Description => $"Increase your damage by {this.UpgradeAmount} for every 10 speed you gain";
 
         public override void AfterUpgrade(Player player)
         {
