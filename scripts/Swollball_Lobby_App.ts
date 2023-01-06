@@ -91,8 +91,9 @@ class BallArena extends Phaser.Scene {
         this.playerBalls = InitializeBalls(this.balls, this, AREATAKENBYBALLS);
 
         // The displayScale is the real displayed size versus the actual size
+        // TODO: Actually displaysize
         var displayScale = this.playerBalls[0].Size / this.playerBalls[0].SizeMultiplier;
-        this.radiusForScale = this.arena.Radius * displayScale * AREATAKENBYBALLS * 1.6;
+        this.radiusForScale = this.arena.Radius * displayScale * Math.sqrt(AREATAKENBYBALLS);
         this.circlesMoving = false;
 
         this.physics.add.collider(this.balls, this.arena.PhysicsGroup, (body1, body2) => {
@@ -135,11 +136,11 @@ class BallArena extends Phaser.Scene {
         if (!this.circlesMoving) { // Draw a circle for scale
             this.timeLeftDisplay.text = "Starting...";
             this.graphics.fillStyle(0x000000);
-            this.graphics.fillStyle(0xFF0000);
-            //this.graphics.fillCircle(this.arena.XPos, this.arena.YPos,
-            this.graphics.fillCircle(this.arena.XPos - this.arena.Radius * 0.35, this.arena.YPos - this.arena.Radius * 0.55,
-                Phaser.Math.Interpolation.QuadraticBezier(this.roundTimer.getElapsed() / this.ROUNDDELAY,
-                    this.radiusForScale, this.radiusForScale * 0.995, 0));
+            this.graphics.fillStyle(0xFF0000); // TODO: This line is not right
+            this.graphics.fillCircle(this.arena.XPos, this.arena.YPos,
+                this.radiusForScale); // TODO: This line is not right
+                //Phaser.Math.Interpolation.QuadraticBezier(this.roundTimer.getElapsed() / this.ROUNDDELAY,
+                //    this.radiusForScale, this.radiusForScale * 0.995, 0));
         } else {
             this.timeLeftDisplay.text = Math.ceil(this.roundTimer.getRemainingSeconds()).toString();
         }
