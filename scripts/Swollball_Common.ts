@@ -342,11 +342,11 @@ function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBal
             graphics.lineStyle(lineThickness, 0x000000, colorAlpha);
             graphics.strokeCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size - lineThickness / 2)
 
-            // TODO: Align text to the center, length-dependent
-            pb.NameText.x = pb.body.position.x + pb.Size * 0.25;
+            // Align text to the center
+            pb.NameText.x = pb.body.position.x + pb.Size * (1 - pb.NameText.text.length * 0.075);
             pb.NameText.y = pb.body.position.y + pb.Size * 0.95;
             pb.NameText.alpha = colorAlpha;
-            pb.HpText.x = pb.body.position.x + pb.Size * 0.25;
+            pb.HpText.x = pb.body.position.x + pb.Size * (1 - pb.HpText.text.length * 0.075);
             pb.HpText.y = pb.body.position.y + pb.Size * 1.15;
             pb.HpText.alpha = colorAlpha;
         }
