@@ -52,7 +52,7 @@ class BallArena extends Phaser.Scene {
     circlesMoving: boolean;
     radiusForScale: number;
 
-    ROUNDDELAY: integer = 8000;
+    ROUNDDELAY: integer = 1500;
     constructor() {
         super({ key: 'BallArena', active: false });
     }
@@ -90,10 +90,9 @@ class BallArena extends Phaser.Scene {
         const AREATAKENBYBALLS = 0.25;
         this.playerBalls = InitializeBalls(this.balls, this, AREATAKENBYBALLS);
 
-        // The displayScale is the real displayed size versus the actual size
-        // TODO: Actually displaysize
-        var displayScale = this.playerBalls[0].Size / this.playerBalls[0].SizeMultiplier;
-        this.radiusForScale = this.arena.Radius * displayScale * Math.sqrt(AREATAKENBYBALLS);
+        // The DUMMYBALL is a ball before the game, rendered to give players a sense of scale
+        const DUMMYBALLSIZE = 100;
+        this.radiusForScale = DUMMYBALLSIZE * this.playerBalls[0].Size / this.playerBalls[0].SizeMultiplier;
         this.circlesMoving = false;
 
         this.physics.add.collider(this.balls, this.arena.PhysicsGroup, (body1, body2) => {
@@ -135,12 +134,11 @@ class BallArena extends Phaser.Scene {
 
         if (!this.circlesMoving) { // Draw a circle for scale
             this.timeLeftDisplay.text = "Starting...";
-            this.graphics.fillStyle(0x000000);
-            this.graphics.fillStyle(0xFF0000); // TODO: This line is not right
+            var interpolationPoint = this.roundTimer.getElapsed() / this.ROUNDDELAY;
+            this.graphics.fillStyle(0x000000); 
             this.graphics.fillCircle(this.arena.XPos, this.arena.YPos,
-                this.radiusForScale); // TODO: This line is not right
-                //Phaser.Math.Interpolation.QuadraticBezier(this.roundTimer.getElapsed() / this.ROUNDDELAY,
-                //    this.radiusForScale, this.radiusForScale * 0.995, 0));
+                Phaser.Math.Interpolation.QuadraticBezier(interpolationPoint,
+                    this.radiusForScale, this.radiusForScale * 0.995, 0));
         } else {
             this.timeLeftDisplay.text = Math.ceil(this.roundTimer.getRemainingSeconds()).toString();
         }
