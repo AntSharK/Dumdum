@@ -388,7 +388,7 @@ class BallStats extends Phaser.Scene {
             defaultKey: 'dummyimage',
             bounceX: 1,
             bounceY: 1,
-        }), this, 0.15 /*Area taken by the  balls*/);
+        }), this, 0.15 /*Area taken by the balls*/);
 
         this.playerBall = playerBalls[0];
 
@@ -396,8 +396,7 @@ class BallStats extends Phaser.Scene {
         var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
         var scaleMultiplier = GetScale(this);
 
-        this.playerBall.setVelocity(0, 0); // Balls in this display do not move
-        this.playerBall.setPosition(150 * scaleMultiplier, 150 * scaleMultiplier); // Set the ball to the top-left of the screen
+        this.playerBall.setPosition(200 * scaleMultiplier, 200 * scaleMultiplier); // Set the ball to the top-left of the screen
 
         this.playerBall.setInteractive(
             new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y, this.playerBall.Size),
