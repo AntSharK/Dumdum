@@ -102,14 +102,14 @@ class BallUpgrades extends Phaser.Scene {
         this.creditsLeft.scale = boundingDimension * 0.004;
 
         // Paint the Refresh Button
-        this.refreshButton = this.add.sprite(this.scale.canvas.width * 0.9, this.scale.canvas.height * 0.4, 'refreshimage');
+        this.refreshButton = this.add.sprite(this.scale.canvas.width * 0.9, this.scale.canvas.height * 0.36, 'refreshimage');
         this.refreshButton.scale = boundingDimension * 0.0012;
         this.refreshButton.setInteractive(
             new Phaser.Geom.Circle(this.refreshButton.x, this.refreshButton.y, this.refreshButton.width * this.refreshButton.scale / 2),
             CircleDetection);
 
         // Paint the UpgradeShop button - both the text and the button
-        this.upgradeTierButton = this.add.sprite(this.scale.canvas.width * 0.75, this.scale.canvas.height * 0.4, 'uparrow');
+        this.upgradeTierButton = this.add.sprite(this.scale.canvas.width * 0.75, this.scale.canvas.height * 0.36, 'uparrow');
         this.upgradeTierButton.scale = boundingDimension * 0.0012;
         this.upgradeTierButton.setInteractive(
             new Phaser.Geom.Circle(this.upgradeTierButton.x, this.upgradeTierButton.y, this.upgradeTierButton.width * this.upgradeTierButton.scale / 2),
@@ -206,6 +206,7 @@ class BallUpgrades extends Phaser.Scene {
             }
             var hasActionableCards = false;
             this.createUpgradeCards();
+
             for (let upgradeCard of this.upgradeCards) {
                 // Don't set interactive unless the card isn't blank. Blank cards are just for filling space
                 if (upgradeCard.Title.text.length > 0) {
@@ -223,8 +224,39 @@ class BallUpgrades extends Phaser.Scene {
 
         }
     }
-
+    // Creates the upgrade cards with a variable arrangement depending on how many cards there are
     createUpgradeCards() {
+        var unitWidth = this.scale.canvas.width / 31;
+        var unitHeight = this.scale.canvas.height / 35;
+        switch (UpgradeData.length) {
+            case 1:
+            case 2:
+            case 3:
+                for (var i = 0; i < UpgradeData.length; i++) {
+                    let upgradeCard = new UpgradeCard(this,
+                        (10 * i * unitWidth) + unitWidth, //XPos
+                        unitHeight * 15, //YPos
+                        null,
+                        UpgradeData[i],
+                        unitHeight * 9, //Height
+                        unitWidth * 9); //Width
+
+                    this.upgradeCards[i] = upgradeCard;
+                }
+                break;
+            case 4:
+            case 5:
+            case 6:
+            default: // This arrangement can't handle anything more than 6 cards
+                this.createUpgradeCardsInLine();
+                break;
+        }
+    }
+
+
+
+    // Creates the upgrade cards in a single line
+    createUpgradeCardsInLine() {
         // Partition the width into N units of 9 and N+1 units of 1
         var unitWidth = (this.scale.canvas.width / (UpgradeData.length * 9 + UpgradeData.length + 1));
         if (UpgradeData.length <= 1) {
