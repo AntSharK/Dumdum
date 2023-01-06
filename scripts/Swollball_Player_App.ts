@@ -205,29 +205,14 @@ class BallUpgrades extends Phaser.Scene {
                 this.upgradeTierCost.text = EconomyData.UpgradeTierCost.toString();
             }
             var hasActionableCards = false;
-
-            // Partition the width into N units of 9 and N+1 units of 1
-            var unitWidth = (this.scale.canvas.width / (UpgradeData.length * 9 + UpgradeData.length + 1));
-            if (UpgradeData.length <= 1) {
-                unitWidth = (this.scale.canvas.width / (2 * 9 + 2 + 1));
-            }
-            for (var i = 0; i < UpgradeData.length; i++) {
-                let upgradeCard = new UpgradeCard(this,
-                    (10 * i * unitWidth) + unitWidth,
-                    this.scale.canvas.height / 2,
-                    null,
-                    UpgradeData[i],
-                    this.scale.canvas.height * 0.4,
-                    unitWidth * 9);
-
+            this.createUpgradeCards();
+            for (let upgradeCard of this.upgradeCards) {
                 // Don't set interactive unless the card isn't blank. Blank cards are just for filling space
                 if (upgradeCard.Title.text.length > 0) {
                     upgradeCard.setInteractive(new Phaser.Geom.Rectangle(upgradeCard.x, upgradeCard.y, upgradeCard.width, upgradeCard.height),
                         RectDetection);
                     hasActionableCards = true;
                 }
-
-                this.upgradeCards[i] = upgradeCard;
             }
 
             // If there are no actionable cards, clear the card list
@@ -238,6 +223,26 @@ class BallUpgrades extends Phaser.Scene {
 
         }
     }
+
+    createUpgradeCards() {
+        // Partition the width into N units of 9 and N+1 units of 1
+        var unitWidth = (this.scale.canvas.width / (UpgradeData.length * 9 + UpgradeData.length + 1));
+        if (UpgradeData.length <= 1) {
+            unitWidth = (this.scale.canvas.width / (2 * 9 + 2 + 1));
+        }
+        for (var i = 0; i < UpgradeData.length; i++) {
+            let upgradeCard = new UpgradeCard(this,
+                (10 * i * unitWidth) + unitWidth, //XPos
+                this.scale.canvas.height / 2, //YPos
+                null,
+                UpgradeData[i],
+                this.scale.canvas.height * 0.4, //Height
+                unitWidth * 9); //Width
+
+            this.upgradeCards[i] = upgradeCard;
+        }
+    }
+
     drawUpgradeCards() {
         for (let card of this.upgradeCards) {
             this.graphics.fillStyle(0xCCCCCC);
