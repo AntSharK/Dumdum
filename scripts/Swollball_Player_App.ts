@@ -173,11 +173,11 @@ class BallUpgrades extends Phaser.Scene {
             && this.creditNextIncrementTime <= this.time.now) {
 
             if (creditsDisplayed < EconomyData.CreditsLeft) {
-                creditsDisplayed = creditsDisplayed + Math.max(1, (EconomyData.CreditsLeft - creditsDisplayed) * 0.3);
+                creditsDisplayed = creditsDisplayed + Math.round(Math.max(1, (EconomyData.CreditsLeft - creditsDisplayed) * 0.3));
                 this.creditNextIncrementTime = this.time.now + CREDITINCREMENTINTERVAL * 2;
             }
             else if (creditsDisplayed > EconomyData.CreditsLeft) {
-                creditsDisplayed = creditsDisplayed - Math.max(1, (creditsDisplayed - EconomyData.CreditsLeft) * 0.4);;
+                creditsDisplayed = creditsDisplayed - Math.round(Math.max(1, (creditsDisplayed - EconomyData.CreditsLeft) * 0.4));
                 this.creditNextIncrementTime = this.time.now + CREDITINCREMENTINTERVAL;
             }
 

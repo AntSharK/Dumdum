@@ -331,6 +331,9 @@ function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBal
                 // TODO: Increment the HP slowly
                 pb.HpText.text = pb.Hp.toString();
             }
+            else {
+                pb.HpText.text = pb.Hp.toString();
+            }
 
             graphics.fillCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size);
 
@@ -344,7 +347,7 @@ function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBal
             pb.NameText.y = pb.body.position.y + pb.Size * 0.95;
             pb.NameText.alpha = colorAlpha;
             pb.HpText.x = pb.body.position.x + pb.Size * 0.25;
-            pb.HpText.y = pb.body.position.y + pb.Size * 0.95;
+            pb.HpText.y = pb.body.position.y + pb.Size * 1.15;
             pb.HpText.alpha = colorAlpha;
         }
     };
