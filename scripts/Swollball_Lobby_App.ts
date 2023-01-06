@@ -49,7 +49,10 @@ class BallArena extends Phaser.Scene {
     // Timer things
     roundTimer: Phaser.Time.TimerEvent;
     timeLeftDisplay: Phaser.GameObjects.Text;
+    circlesMoving: boolean;
+    radiusForScale: number;
 
+    ROUNDDELAY: integer = 1500;
     constructor() {
         super({ key: 'BallArena', active: false });
     }
@@ -63,9 +66,9 @@ class BallArena extends Phaser.Scene {
 
         // Initialize timer
         var roundDuration = sessionStorage.getItem("roundduration");
-        this.roundTimer = new Phaser.Time.TimerEvent({ delay: parseInt(roundDuration) * 1000, callback: this.finishScene, callbackScope: this });
+        this.roundTimer = new Phaser.Time.TimerEvent({ delay: parseInt(roundDuration) * 1000 + this.ROUNDDELAY, callback: this.finishScene, callbackScope: this });
         this.time.addEvent(this.roundTimer);
-        this.time.addEvent(new Phaser.Time.TimerEvent({ delay: 1000, callback: this.setBallVelocity, callbackScope: this }));
+        this.time.addEvent(new Phaser.Time.TimerEvent({ delay: this.ROUNDDELAY, callback: this.startBallsMoving, callbackScope: this }));
         this.timeLeftDisplay = this.add.text(0, 0, roundDuration.toString(), { color: 'White' });
         var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
         this.timeLeftDisplay.scale = boundingDimension * 0.005;
@@ -85,6 +88,10 @@ class BallArena extends Phaser.Scene {
         });
 
         this.playerBalls = InitializeBalls(this.balls, this, 0.25 /*Area taken by all the balls */);
+
+        // TODO: Actually adjust this properly
+        this.radiusForScale = this.arena.Radius / 2;
+        this.circlesMoving = false;
 
         this.physics.add.collider(this.balls, this.arena.PhysicsGroup, (body1, body2) => {
             // This makes the balls collide with the arena
@@ -113,7 +120,8 @@ class BallArena extends Phaser.Scene {
         });
     }
 
-    setBallVelocity() {
+    startBallsMoving() {
+        this.circlesMoving = true;
         SetBallVelocity(this.playerBalls, this);
     }
 
@@ -121,7 +129,15 @@ class BallArena extends Phaser.Scene {
         this.graphics.clear();
         DrawArena(this.graphics, this.arena);
         DrawBalls(this.graphics, this.playerBalls);
-        this.timeLeftDisplay.text = Math.ceil(this.roundTimer.getRemainingSeconds()).toString();
+
+        if (!this.circlesMoving) { // Draw a circle for scale
+            this.timeLeftDisplay.text = "Starting...";
+            this.graphics.fillStyle(0x000000);
+            this.graphics.fillCircle(this.arena.XPos, this.arena.YPos,
+                Phaser.Math.Interpolation.Linear([this.radiusForScale, 0], this.roundTimer.getElapsed() / this.ROUNDDELAY));
+        } else {
+            this.timeLeftDisplay.text = Math.ceil(this.roundTimer.getRemainingSeconds()).toString();
+        }
     }
 
     finishScene() {
@@ -153,7 +169,7 @@ class Leaderboard extends Phaser.Scene {
         switch (RoundNumber) {
             case 0:
                 this.add.text(200, 100, "FIRST ROUND STARTING SOON...");
-                roundDurationSeconds = roundDurationSeconds * 3;
+                roundDurationSeconds = roundDurationSeconds * 2;
                 break;
             case -1:
                 this.add.text(200, 100, "END OF GAME");
