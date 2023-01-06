@@ -460,6 +460,10 @@ class BallStats extends Phaser.Scene {
         this.pointsDisplay["roundscore"].text = "SCORE (Round): " + playerScore.RoundScore.toString();
         this.pointsDisplay["totalscore"].text = "SCORE (Total): " + playerScore.TotalScore.toString();
 
+        if (RoundNumber <= 0) { // Detect when the game has ended
+            this.pointsDisplay["round"].text = "END OF GAME";
+        }
+
         // Update keystone display info - reinitialize only if needed
         var keystonesUpdated = false;
         if (EconomyData.CreditsWereSpent) {
