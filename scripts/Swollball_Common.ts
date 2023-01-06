@@ -194,6 +194,7 @@ class PlayerBall extends Phaser.Physics.Arcade.Sprite {
     VelocityMultiplier: integer;
 
     HitTime: number = 0;
+    LastDisplayedHp: integer = 0;
 
     KeystoneData: [string, integer][];
     KeystoneActions: KeystoneAction[];
@@ -206,6 +207,8 @@ function HitBalls(ball1: PlayerBall, ball2: PlayerBall, timeNow: number) {
     var damageDoneTo1 = Math.max(1, ball2.Damage - ball1.Armor);
     var damageDoneTo2 = Math.max(1, ball1.Damage - ball2.Armor);
 
+    ball1.LastDisplayedHp = ball1.Hp;
+    ball2.LastDisplayedHp = ball2.Hp;
     ball1.Hp = ball1.Hp - damageDoneTo1;
     ball2.Hp = ball2.Hp - damageDoneTo2;
 
@@ -328,8 +331,9 @@ function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBal
             if (pb.HitTime > 0
                 && (graphics.scene.time.now - pb.HitTime) < FLASHTIME
                 && pb.HpText.text != pb.Hp.toString()) {
-                // TODO: Increment the HP slowly
-                pb.HpText.text = pb.Hp.toString();
+                // Change the HP slowly over FLASHTIME time
+                pb.HpText.text = Math.floor(Phaser.Math.Interpolation.Linear([pb.LastDisplayedHp, pb.Hp],
+                    (graphics.scene.time.now - pb.HitTime) / FLASHTIME)).toString();
             }
             else {
                 pb.HpText.text = pb.Hp.toString();
