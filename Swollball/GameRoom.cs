@@ -33,11 +33,12 @@ namespace Swollball
             var tp2 = this.CreatePlayer("S", "YAYA");
             tp2.Ball.Color = 11045079;
             tp2.Ball.Dmg = 20;
-            tp2.Ball.SpeedMultiplier = 200;
+            tp2.Ball.SpeedMultiplier = 400;
             tp2.Ball.SizeMultiplier = 400;
             var tp3 = this.CreatePlayer("LCBAT", "BARA");
             tp3.Ball.Color = 01745079;
             tp3.Ball.SizeMultiplier = 500;
+            tp3.Ball.SpeedMultiplier = 500;
 #endif
         }
 

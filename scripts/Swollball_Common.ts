@@ -296,14 +296,16 @@ function SetBallVelocity(playerBalls: PlayerBall[], scene: Phaser.Scene) {
     const BASEVELOCITY = 200;
     const MAXDEFLECTIONANGLE = 0.6;
 
-    // TODO: Velocity needs to be scaled by the displayed size of the balls
+    var displayScale = playerBalls[0].Size / playerBalls[0].SizeMultiplier;
+
+    // Velocity gets scaled by the displayed size of the balls
     var scaleMultiplier = GetScale(scene);
     for (let pb of playerBalls) {
         var direction = new Phaser.Math.Vector2(scene.scale.canvas.width / 2 - pb.x, scene.scale.canvas.height / 2 - pb.y);
         var normalizedDirection = direction.normalize();
         normalizedDirection.setAngle(normalizedDirection.angle() + (Math.random() * MAXDEFLECTIONANGLE * 2) - MAXDEFLECTIONANGLE);
-        pb.setVelocityX(normalizedDirection.x * BASEVELOCITY * scaleMultiplier * pb.VelocityMultiplier * 0.01);
-        pb.setVelocityY(normalizedDirection.y * BASEVELOCITY * scaleMultiplier * pb.VelocityMultiplier * 0.01);
+        pb.setVelocityX(normalizedDirection.x * BASEVELOCITY * scaleMultiplier * pb.VelocityMultiplier * 0.01 * displayScale);
+        pb.setVelocityY(normalizedDirection.y * BASEVELOCITY * scaleMultiplier * pb.VelocityMultiplier * 0.01 * displayScale);
     };
 
 }
