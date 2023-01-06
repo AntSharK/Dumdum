@@ -188,11 +188,13 @@ class PlayerBall extends Phaser.Physics.Arcade.Sprite {
     Damage: integer;
     Hp: integer;
     MaxHp: integer;
-    Text: Phaser.GameObjects.Text;
+    NameText: Phaser.GameObjects.Text;
+    HpText: Phaser.GameObjects.Text;
     SizeMultiplier: integer;
     VelocityMultiplier: integer;
 
     HitTime: number = 0;
+
     KeystoneData: [string, integer][];
     KeystoneActions: KeystoneAction[];
 }
@@ -215,13 +217,14 @@ function HitBalls(ball1: PlayerBall, ball2: PlayerBall, timeNow: number) {
         action.Apply(ball2, ball1, damageDoneTo1, damageDoneTo2);
     }
 
-    RoundLog.push(new RoundEvent(ball2.Text.text, ball1.Text.text, damageDoneTo1));
-    RoundLog.push(new RoundEvent(ball1.Text.text, ball2.Text.text, damageDoneTo2));
+    RoundLog.push(new RoundEvent(ball2.NameText.text, ball1.NameText.text, damageDoneTo1));
+    RoundLog.push(new RoundEvent(ball1.NameText.text, ball2.NameText.text, damageDoneTo2));
 }
 
 function DisableBall(ball: PlayerBall) {
     ball.active = false;
-    ball.Text.setVisible(false);
+    ball.HpText.setVisible(false);
+    ball.NameText.setVisible(false);
 }
 
 function CopyBallData(newBall: PlayerBall, data: ServerBallData) {
@@ -260,8 +263,13 @@ function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.S
         CopyBallData(newBall, data);
         newBall.Size = ballSizeBase * data.SizeMultiplier;
 
-        newBall.Text = scene.add.text(newBall.body.position.x, newBall.body.position.y, data.Name, { color: 'Black', font: 'Comic-Sans' });
-        newBall.Text.scale = newBall.Size * FONTSIZEMULTIPLIER;
+        newBall.NameText = scene.add.text(newBall.body.position.x, newBall.body.position.y, data.Name,
+            { color: 'Black', font: 'Comic-Sans' });
+        newBall.NameText.scale = newBall.Size * FONTSIZEMULTIPLIER;
+
+        newBall.HpText = scene.add.text(newBall.body.position.x, newBall.body.position.y, data.Hp.toString(),
+            { color: 'Black', font: 'Comic-Sans' });
+        newBall.HpText.scale = newBall.Size * FONTSIZEMULTIPLIER;
 
         InitializeKeystoneUpgrades(newBall);
 
@@ -316,6 +324,14 @@ function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBal
                 graphics.fillStyle(pb.Color, colorAlpha);
             }
 
+            // Update the HP displayed
+            if (pb.HitTime > 0
+                && (graphics.scene.time.now - pb.HitTime) < FLASHTIME
+                && pb.HpText.text != pb.Hp.toString()) {
+                // TODO: Increment the HP slowly
+                pb.HpText.text = pb.Hp.toString();
+            }
+
             graphics.fillCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size);
 
             // Line thickness is also modified by armor
@@ -323,9 +339,13 @@ function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBal
             graphics.lineStyle(lineThickness, 0x000000, colorAlpha);
             graphics.strokeCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size - lineThickness / 2)
 
-            pb.Text.x = pb.body.position.x + pb.Size * 0.25;
-            pb.Text.y = pb.body.position.y + pb.Size * 0.95;
-            pb.Text.alpha = colorAlpha;
+            // TODO: Align text to the center, length-dependent
+            pb.NameText.x = pb.body.position.x + pb.Size * 0.25;
+            pb.NameText.y = pb.body.position.y + pb.Size * 0.95;
+            pb.NameText.alpha = colorAlpha;
+            pb.HpText.x = pb.body.position.x + pb.Size * 0.25;
+            pb.HpText.y = pb.body.position.y + pb.Size * 0.95;
+            pb.HpText.alpha = colorAlpha;
         }
     };
 }

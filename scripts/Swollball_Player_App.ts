@@ -44,7 +44,7 @@ class EndScreen extends Phaser.Scene {
         // Totally temporary leaderboard drawing
         var totalPlayers = 0;
         var yourPlacing = 0;
-        var playerName = (this.scene.get("BallStats") as BallStats).playerBall.Text.text;
+        var playerName = (this.scene.get("BallStats") as BallStats).playerBall.NameText.text;
         for (let scoreData of RoundScoreData.sort((a: ServerRoundScoreData, b: ServerRoundScoreData) => {
             return b.TotalScore - a.TotalScore; // Sort in descending order
         })) {
