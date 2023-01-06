@@ -8,6 +8,7 @@ declare var EconomyData: ServerEconomyData;
 declare var connection;
 
 const FINALSCOREDISPLAYDURATION = 30;
+const LINEARSCALEFACTOR = 0.9;
 
 /* 
 RECEIVE DATA FROM SERVER AND SEND STUFF BACK TO SERVER
@@ -242,15 +243,17 @@ function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.S
     const PLACERADIUS = 300;
     const FONTSIZEMULTIPLIER = 0.022;
 
-    var boundingDimension = Math.min(scene.scale.canvas.width, scene.scale.canvas.height);
+    var boundingDimension = Math.min(scene.scale.canvas.width, scene.scale.canvas.height) * LINEARSCALEFACTOR;
     var scaleMultiplier = GetScale(scene);
 
-    var totalBallSize = 0;
+    var totalBallArea = 0;
     for (let data of BallData) {
-        totalBallSize += data.SizeMultiplier * data.SizeMultiplier;
+        totalBallArea += data.SizeMultiplier * data.SizeMultiplier;
     }
 
-    var ballSizeBase = boundingDimension / Math.sqrt(totalBallSize) * screenAreaTakenByBalls;
+    var totalArenaArea = boundingDimension * boundingDimension;
+    var desiredTotalBallArea = totalArenaArea * screenAreaTakenByBalls;
+    var ballSizeBase = Math.sqrt(desiredTotalBallArea / totalBallArea) / 2;
 
     for (let data of BallData) {
         var newBall = ballGroup.create(0, 0, ballGroup.defaultKey) as PlayerBall;
@@ -282,6 +285,7 @@ function SetBallVelocity(playerBalls: PlayerBall[], scene: Phaser.Scene) {
     const BASEVELOCITY = 200;
     const MAXDEFLECTIONANGLE = 0.6;
 
+    // TODO: Velocity needs to be scaled by the displayed size of the balls
     var scaleMultiplier = GetScale(scene);
     for (let pb of playerBalls) {
         var direction = new Phaser.Math.Vector2(scene.scale.canvas.width / 2 - pb.x, scene.scale.canvas.height / 2 - pb.y);
@@ -328,7 +332,7 @@ function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBal
 
 function GetScale(scene: Phaser.Scene): number {
     const ASSUMEDSCALE = 1000;
-    var boundingDimension = Math.min(scene.scale.canvas.width, scene.scale.canvas.height);
+    var boundingDimension = Math.min(scene.scale.canvas.width, scene.scale.canvas.height) * LINEARSCALEFACTOR;
     return (boundingDimension / ASSUMEDSCALE);
 }
 

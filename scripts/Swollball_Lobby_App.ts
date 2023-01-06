@@ -52,7 +52,7 @@ class BallArena extends Phaser.Scene {
     circlesMoving: boolean;
     radiusForScale: number;
 
-    ROUNDDELAY: integer = 1500;
+    ROUNDDELAY: integer = 8000;
     constructor() {
         super({ key: 'BallArena', active: false });
     }
@@ -90,9 +90,9 @@ class BallArena extends Phaser.Scene {
         const AREATAKENBYBALLS = 0.25;
         this.playerBalls = InitializeBalls(this.balls, this, AREATAKENBYBALLS);
 
-        // The displayScale is the real size versus the size multiplier
+        // The displayScale is the real displayed size versus the actual size
         var displayScale = this.playerBalls[0].Size / this.playerBalls[0].SizeMultiplier;
-        this.radiusForScale = this.arena.Radius * displayScale;// * AREATAKENBYBALLS;
+        this.radiusForScale = this.arena.Radius * displayScale * AREATAKENBYBALLS * 1.6;
         this.circlesMoving = false;
 
         this.physics.add.collider(this.balls, this.arena.PhysicsGroup, (body1, body2) => {
@@ -135,7 +135,9 @@ class BallArena extends Phaser.Scene {
         if (!this.circlesMoving) { // Draw a circle for scale
             this.timeLeftDisplay.text = "Starting...";
             this.graphics.fillStyle(0x000000);
-            this.graphics.fillCircle(this.arena.XPos, this.arena.YPos,
+            this.graphics.fillStyle(0xFF0000);
+            //this.graphics.fillCircle(this.arena.XPos, this.arena.YPos,
+            this.graphics.fillCircle(this.arena.XPos - this.arena.Radius * 0.35, this.arena.YPos - this.arena.Radius * 0.55,
                 Phaser.Math.Interpolation.QuadraticBezier(this.roundTimer.getElapsed() / this.ROUNDDELAY,
                     this.radiusForScale, this.radiusForScale * 0.995, 0));
         } else {
@@ -228,7 +230,7 @@ class Arena {
         this.PhysicsGroup = physicsGroup;
         this.XPos = canvas.width / 2;
         this.YPos = canvas.height / 2;
-        this.Radius = Math.min(this.XPos, this.YPos) * 0.9;
+        this.Radius = Math.min(this.XPos, this.YPos) * LINEARSCALEFACTOR;
     }
 
     public Initialize(): void {
