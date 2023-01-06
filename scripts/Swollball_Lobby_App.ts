@@ -87,10 +87,12 @@ class BallArena extends Phaser.Scene {
             bounceY: 1,            
         });
 
-        this.playerBalls = InitializeBalls(this.balls, this, 0.25 /*Area taken by all the balls */);
+        const AREATAKENBYBALLS = 0.25;
+        this.playerBalls = InitializeBalls(this.balls, this, AREATAKENBYBALLS);
 
-        // TODO: Actually adjust this properly
-        this.radiusForScale = this.arena.Radius / 2;
+        // The displayScale is the real size versus the size multiplier
+        var displayScale = this.playerBalls[0].Size / this.playerBalls[0].SizeMultiplier;
+        this.radiusForScale = this.arena.Radius * displayScale;// * AREATAKENBYBALLS;
         this.circlesMoving = false;
 
         this.physics.add.collider(this.balls, this.arena.PhysicsGroup, (body1, body2) => {
@@ -134,7 +136,8 @@ class BallArena extends Phaser.Scene {
             this.timeLeftDisplay.text = "Starting...";
             this.graphics.fillStyle(0x000000);
             this.graphics.fillCircle(this.arena.XPos, this.arena.YPos,
-                Phaser.Math.Interpolation.Linear([this.radiusForScale, 0], this.roundTimer.getElapsed() / this.ROUNDDELAY));
+                Phaser.Math.Interpolation.QuadraticBezier(this.roundTimer.getElapsed() / this.ROUNDDELAY,
+                    this.radiusForScale, this.radiusForScale * 0.995, 0));
         } else {
             this.timeLeftDisplay.text = Math.ceil(this.roundTimer.getRemainingSeconds()).toString();
         }
