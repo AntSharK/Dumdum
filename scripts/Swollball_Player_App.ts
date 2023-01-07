@@ -226,50 +226,49 @@ class BallUpgrades extends Phaser.Scene {
     }
     // Creates the upgrade cards with a variable arrangement depending on how many cards there are
     createUpgradeCards() {
-        var unitWidth = this.scale.canvas.width / 31;
-        var unitHeight = this.scale.canvas.height / 35;
         switch (UpgradeData.length) {
             case 1:
             case 2:
             case 3:
-                for (var i = 0; i < UpgradeData.length; i++) {
-                    let upgradeCard = new UpgradeCard(this,
-                        (16 - UpgradeData.length * 5 + i * 10) * unitWidth, //XPos
-                        unitHeight * 20, //YPos
-                        null,
-                        UpgradeData[i],
-                        unitHeight * 9, //Height
-                        unitWidth * 9); //Width
-
-                    this.upgradeCards[i] = upgradeCard;
-                }
+                this.createUpgradeCardsInLineWithFixedWidth(UpgradeData, 20, 0);
                 break;
             case 4:
+                this.createUpgradeCardsInLineWithFixedWidth([UpgradeData[0], UpgradeData[1]], 15, 0);
+                this.createUpgradeCardsInLineWithFixedWidth([UpgradeData[2], UpgradeData[3]], 25, 2);
+                break;
             case 5:
+                this.createUpgradeCardsInLineWithFixedWidth([UpgradeData[0], UpgradeData[1], UpgradeData[2]], 15, 0);
+                this.createUpgradeCardsInLineWithFixedWidth([UpgradeData[3], UpgradeData[4]], 25, 3);
+                break;
             case 6:
-                for (var i = 0; i < UpgradeData.length; i++) {
-                    var row = Math.floor(i / 3);
-                    let upgradeCard = new UpgradeCard(this,
-                        (10 * (i % 3) * unitWidth) + unitWidth, //XPos
-                        unitHeight * (15 + row * 10), //YPos
-                        null,
-                        UpgradeData[i],
-                        unitHeight * 9, //Height
-                        unitWidth * 9); //Width
-
-                    this.upgradeCards[i] = upgradeCard;
-                }
+                this.createUpgradeCardsInLineWithFixedWidth([UpgradeData[0], UpgradeData[1], UpgradeData[2]], 15, 0);
+                this.createUpgradeCardsInLineWithFixedWidth([UpgradeData[3], UpgradeData[4], UpgradeData[5]], 25, 3);
                 break;
             default: // This arrangement can't handle anything more than 6 cards
-                this.createUpgradeCardsInLine();
-                break;
+                this.createUpgradeCardsInLineWithDynamicWidth();
+                return;
         }
     }
 
+    // Creates the upgrade cards in a single line with specific width
+    createUpgradeCardsInLineWithFixedWidth(upgradeData: ServerUpgradeData[], yPos: integer, indexOffset: integer) {
+        var unitWidth = this.scale.canvas.width / 31;
+        var unitHeight = this.scale.canvas.height / 35;
+        for (var i = 0; i < upgradeData.length; i++) {
+            let upgradeCard = new UpgradeCard(this,
+                (16 - upgradeData.length * 5 + i * 10) * unitWidth, //XPos
+                yPos * unitHeight, //YPos
+                null,
+                upgradeData[i],
+                unitHeight * 9, //Height
+                unitWidth * 9); //Width
 
+            this.upgradeCards[i + indexOffset] = upgradeCard;
+        }
+    }
 
-    // Creates the upgrade cards in a single line
-    createUpgradeCardsInLine() {
+    // Creates the upgrade cards in a single line, with just enough space for each card
+    createUpgradeCardsInLineWithDynamicWidth() {
         // Partition the width into N units of 9 and N+1 units of 1
         var unitWidth = (this.scale.canvas.width / (UpgradeData.length * 9 + UpgradeData.length + 1));
         if (UpgradeData.length <= 1) {
