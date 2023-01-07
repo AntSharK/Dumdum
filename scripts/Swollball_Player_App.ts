@@ -234,8 +234,8 @@ class BallUpgrades extends Phaser.Scene {
             case 3:
                 for (var i = 0; i < UpgradeData.length; i++) {
                     let upgradeCard = new UpgradeCard(this,
-                        (10 * i * unitWidth) + unitWidth, //XPos
-                        unitHeight * 15, //YPos
+                        (16 - UpgradeData.length * 5 + i * 10) * unitWidth, //XPos
+                        unitHeight * 20, //YPos
                         null,
                         UpgradeData[i],
                         unitHeight * 9, //Height
