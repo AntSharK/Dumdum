@@ -11,8 +11,8 @@ namespace Swollball.Upgrades
     {
         private static Random Rng = new Random();
 
-        public static int[] ShopSize = new int[] { 1, 2, 3, 3, 4 };
-        public static int[] UpgradeTierCost = new int[] {1, 15, 17, 19, -1 /*No more upgrades*/};
+        public static int[] ShopSize = new int[] { 1, 2, 3, 4, 5 };
+        public static int[] UpgradeTierCost = new int[] {1, 15, 18, 21, -1 /*No more upgrades*/};
 
         // TODO: Balance all the shops!
         private static List<Tuple<int, Func<IUpgrade>>> Tier1UpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
