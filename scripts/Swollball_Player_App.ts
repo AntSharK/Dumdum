@@ -44,7 +44,7 @@ class EndScreen extends Phaser.Scene {
         // Totally temporary leaderboard drawing
         var totalPlayers = 0;
         var yourPlacing = 0;
-        var playerName = (this.scene.get("BallStats") as BallStats).playerBall.Text.text;
+        var playerName = (this.scene.get("BallStats") as BallStats).playerBall.NameText.text;
         for (let scoreData of RoundScoreData.sort((a: ServerRoundScoreData, b: ServerRoundScoreData) => {
             return b.TotalScore - a.TotalScore; // Sort in descending order
         })) {
@@ -173,11 +173,11 @@ class BallUpgrades extends Phaser.Scene {
             && this.creditNextIncrementTime <= this.time.now) {
 
             if (creditsDisplayed < EconomyData.CreditsLeft) {
-                creditsDisplayed++;
+                creditsDisplayed = creditsDisplayed + Math.round(Math.max(1, (EconomyData.CreditsLeft - creditsDisplayed) * 0.3));
                 this.creditNextIncrementTime = this.time.now + CREDITINCREMENTINTERVAL * 2;
             }
             else if (creditsDisplayed > EconomyData.CreditsLeft) {
-                creditsDisplayed--;
+                creditsDisplayed = creditsDisplayed - Math.round(Math.max(1, (creditsDisplayed - EconomyData.CreditsLeft) * 0.4));
                 this.creditNextIncrementTime = this.time.now + CREDITINCREMENTINTERVAL;
             }
 
@@ -459,6 +459,10 @@ class BallStats extends Phaser.Scene {
         this.pointsDisplay["dmgreceived"].text = "DMG Received: " + playerScore.RoundDamageReceived.toString();
         this.pointsDisplay["roundscore"].text = "SCORE (Round): " + playerScore.RoundScore.toString();
         this.pointsDisplay["totalscore"].text = "SCORE (Total): " + playerScore.TotalScore.toString();
+
+        if (RoundNumber <= 0) { // Detect when the game has ended
+            this.pointsDisplay["round"].text = "END OF GAME";
+        }
 
         // Update keystone display info - reinitialize only if needed
         var keystonesUpdated = false;

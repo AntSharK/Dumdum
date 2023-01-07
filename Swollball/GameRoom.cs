@@ -29,13 +29,16 @@ namespace Swollball
             tp.Ball.Keystones["Feast"] = new Upgrades.Keystones.Feast(5, 0);
             tp.Ball.Keystones["Harden"] = new Upgrades.Keystones.Harden(4, 0);
             tp.Ball.Upgrades.Add(new Upgrades.Hp(25, 0));
-            var tp2 = this.CreatePlayer("RANDARA", "YAYA");
+            tp.Ball.SizeMultiplier = 600;
+            var tp2 = this.CreatePlayer("S", "YAYA");
             tp2.Ball.Color = 11045079;
             tp2.Ball.Dmg = 20;
-            tp2.Ball.SpeedMultiplier = 150;
-            tp2.Ball.SizeMultiplier = 110;
-            var tp3 = this.CreatePlayer("LCBATA", "BARA");
+            tp2.Ball.SpeedMultiplier = 400;
+            tp2.Ball.SizeMultiplier = 400;
+            var tp3 = this.CreatePlayer("LCBAT", "BARA");
             tp3.Ball.Color = 01745079;
+            tp3.Ball.SizeMultiplier = 500;
+            tp3.Ball.SpeedMultiplier = 500;
 #endif
         }
 

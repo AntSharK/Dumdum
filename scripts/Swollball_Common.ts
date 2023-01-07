@@ -188,11 +188,14 @@ class PlayerBall extends Phaser.Physics.Arcade.Sprite {
     Damage: integer;
     Hp: integer;
     MaxHp: integer;
-    Text: Phaser.GameObjects.Text;
+    NameText: Phaser.GameObjects.Text;
+    HpText: Phaser.GameObjects.Text;
     SizeMultiplier: integer;
     VelocityMultiplier: integer;
 
     HitTime: number = 0;
+    LastDisplayedHp: integer = 0;
+
     KeystoneData: [string, integer][];
     KeystoneActions: KeystoneAction[];
 }
@@ -204,6 +207,8 @@ function HitBalls(ball1: PlayerBall, ball2: PlayerBall, timeNow: number) {
     var damageDoneTo1 = Math.max(1, ball2.Damage - ball1.Armor);
     var damageDoneTo2 = Math.max(1, ball1.Damage - ball2.Armor);
 
+    ball1.LastDisplayedHp = ball1.Hp;
+    ball2.LastDisplayedHp = ball2.Hp;
     ball1.Hp = ball1.Hp - damageDoneTo1;
     ball2.Hp = ball2.Hp - damageDoneTo2;
 
@@ -215,13 +220,14 @@ function HitBalls(ball1: PlayerBall, ball2: PlayerBall, timeNow: number) {
         action.Apply(ball2, ball1, damageDoneTo1, damageDoneTo2);
     }
 
-    RoundLog.push(new RoundEvent(ball2.Text.text, ball1.Text.text, damageDoneTo1));
-    RoundLog.push(new RoundEvent(ball1.Text.text, ball2.Text.text, damageDoneTo2));
+    RoundLog.push(new RoundEvent(ball2.NameText.text, ball1.NameText.text, damageDoneTo1));
+    RoundLog.push(new RoundEvent(ball1.NameText.text, ball2.NameText.text, damageDoneTo2));
 }
 
 function DisableBall(ball: PlayerBall) {
     ball.active = false;
-    ball.Text.setVisible(false);
+    ball.HpText.setVisible(false);
+    ball.NameText.setVisible(false);
 }
 
 function CopyBallData(newBall: PlayerBall, data: ServerBallData) {
@@ -260,8 +266,13 @@ function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.S
         CopyBallData(newBall, data);
         newBall.Size = ballSizeBase * data.SizeMultiplier;
 
-        newBall.Text = scene.add.text(newBall.body.position.x, newBall.body.position.y, data.Name, { color: 'Black', font: 'Comic-Sans' });
-        newBall.Text.scale = newBall.Size * FONTSIZEMULTIPLIER;
+        newBall.NameText = scene.add.text(newBall.body.position.x, newBall.body.position.y, data.Name,
+            { color: 'Black', font: 'Comic-Sans' });
+        newBall.NameText.scale = newBall.Size * FONTSIZEMULTIPLIER;
+
+        newBall.HpText = scene.add.text(newBall.body.position.x, newBall.body.position.y, data.Hp.toString(),
+            { color: 'Black', font: 'Comic-Sans' });
+        newBall.HpText.scale = newBall.Size * FONTSIZEMULTIPLIER;
 
         InitializeKeystoneUpgrades(newBall);
 
@@ -285,14 +296,16 @@ function SetBallVelocity(playerBalls: PlayerBall[], scene: Phaser.Scene) {
     const BASEVELOCITY = 200;
     const MAXDEFLECTIONANGLE = 0.6;
 
-    // TODO: Velocity needs to be scaled by the displayed size of the balls
+    var displayScale = playerBalls[0].Size / playerBalls[0].SizeMultiplier;
+
+    // Velocity gets scaled by the displayed size of the balls
     var scaleMultiplier = GetScale(scene);
     for (let pb of playerBalls) {
         var direction = new Phaser.Math.Vector2(scene.scale.canvas.width / 2 - pb.x, scene.scale.canvas.height / 2 - pb.y);
         var normalizedDirection = direction.normalize();
         normalizedDirection.setAngle(normalizedDirection.angle() + (Math.random() * MAXDEFLECTIONANGLE * 2) - MAXDEFLECTIONANGLE);
-        pb.setVelocityX(normalizedDirection.x * BASEVELOCITY * scaleMultiplier * pb.VelocityMultiplier * 0.01);
-        pb.setVelocityY(normalizedDirection.y * BASEVELOCITY * scaleMultiplier * pb.VelocityMultiplier * 0.01);
+        pb.setVelocityX(normalizedDirection.x * BASEVELOCITY * scaleMultiplier * pb.VelocityMultiplier * 0.01 * displayScale);
+        pb.setVelocityY(normalizedDirection.y * BASEVELOCITY * scaleMultiplier * pb.VelocityMultiplier * 0.01 * displayScale);
     };
 
 }
@@ -316,6 +329,18 @@ function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBal
                 graphics.fillStyle(pb.Color, colorAlpha);
             }
 
+            // Update the HP displayed
+            if (pb.HitTime > 0
+                && (graphics.scene.time.now - pb.HitTime) < FLASHTIME
+                && pb.HpText.text != pb.Hp.toString()) {
+                // Change the HP slowly over FLASHTIME time
+                pb.HpText.text = Math.floor(Phaser.Math.Interpolation.Linear([pb.LastDisplayedHp, pb.Hp],
+                    (graphics.scene.time.now - pb.HitTime) / FLASHTIME)).toString();
+            }
+            else {
+                pb.HpText.text = pb.Hp.toString();
+            }
+
             graphics.fillCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size);
 
             // Line thickness is also modified by armor
@@ -323,9 +348,13 @@ function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBal
             graphics.lineStyle(lineThickness, 0x000000, colorAlpha);
             graphics.strokeCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size - lineThickness / 2)
 
-            pb.Text.x = pb.body.position.x + pb.Size * 0.25;
-            pb.Text.y = pb.body.position.y + pb.Size * 0.95;
-            pb.Text.alpha = colorAlpha;
+            // Align text to the center
+            pb.NameText.x = pb.body.position.x + pb.Size * (1 - pb.NameText.text.length * 0.075);
+            pb.NameText.y = pb.body.position.y + pb.Size * 0.95;
+            pb.NameText.alpha = colorAlpha;
+            pb.HpText.x = pb.body.position.x + pb.Size * (1 - pb.HpText.text.length * 0.075);
+            pb.HpText.y = pb.body.position.y + pb.Size * 1.15;
+            pb.HpText.alpha = colorAlpha;
         }
     };
 }
