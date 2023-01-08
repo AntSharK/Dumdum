@@ -14,18 +14,24 @@ namespace Swollball
             : base(name, "TestConnectionId", roomName)
         {
             this.Economy.ShopTier = 4;
+            this.BuyRandomUpgrades();
         }
 
         public override void StartNextRound()
         {
             base.StartNextRound();
+            BuyRandomUpgrades();
+        }
 
+        private void BuyRandomUpgrades()
+        {
             // DO AI THINGS - Just buy random upgrades
             while (this.CurrentUpgrades.Count > 0)
             {
                 var upgradeId = this.CurrentUpgrades.Keys.First();
                 this.ApplyUpgrade(upgradeId);
             }
+
         }
     }
 }
