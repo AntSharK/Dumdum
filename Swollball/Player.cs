@@ -102,7 +102,7 @@ namespace Swollball
             UpgradeFactory.FillShop(this.CurrentUpgrades, this.Economy.ShopSize, this.Economy.ShopTier);
         }
 
-        public void StartNextRound()
+        public virtual void StartNextRound()
         {
             if (this.Economy.CreditsLeft > 0)
             {
@@ -116,6 +116,11 @@ namespace Swollball
 
             this.Economy.MaxCredits += CREDITINCREMENTPERROUND;
             this.Economy.CreditsLeft += this.Economy.MaxCredits;
+
+            if (this.Economy.CreditsLeft < 0) // Special bonus - can't go below 0 credits on round start
+            {
+                this.Economy.CreditsLeft = 0;
+            }
             this.FillShop();
         }
 

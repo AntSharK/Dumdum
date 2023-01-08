@@ -49,8 +49,8 @@ namespace Swollball.Upgrades
 
         private static List<Tuple<int, Func<IUpgrade>>> Tier4UpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
         {
-            Tuple.Create(6, () => new Tech(1, 20) as IUpgrade),
-            Tuple.Create(6, () => new Feast(8, 10) as IUpgrade),
+            Tuple.Create(6, () => new Tech(1, 11) as IUpgrade),
+            Tuple.Create(6, () => new Feast(8, 9) as IUpgrade),
             Tuple.Create(6, () => new Damage(20, 6) as IUpgrade),
         };
         
