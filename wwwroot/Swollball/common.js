@@ -39,3 +39,24 @@ function ClearState() {
     sessionStorage.removeItem(LeaderBoardDurationStorageKey);
     sessionStorage.removeItem(RoundDurationStorageKey);
 }
+
+var conditionalReload = function () {
+    var sessionRoomId = sessionStorage.getItem("roomid");
+
+    if (sessionRoomId != null) {
+        var elements = document.getElementsByClassName("state");
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].style.display = "none";
+        }
+
+        document.getElementById("pageName").textContent = "RECONNECTING...";
+        setInterval(function () {
+            var sessionRoomId = sessionStorage.getItem("roomid");
+            if (sessionRoomId == null) {
+                window.location.reload()
+            }
+        }, 10000)
+    }
+}
+
+window.onload = conditionalReload;
