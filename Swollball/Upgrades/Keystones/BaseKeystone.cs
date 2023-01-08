@@ -8,6 +8,7 @@ namespace Swollball.Upgrades.Keystones
 {
     public abstract class BaseKeystone : IKeystone
     {
+        // Note that keystone upgrade names have to be mirrored on the client-side for them to be effective
         public abstract string UpgradeName { get; }
 
         public abstract string Description { get; }
