@@ -86,6 +86,13 @@ class BallUpgrades extends Phaser.Scene {
 
         // Note that the key is the same as the upgrade name
         this.load.image('Tofu', '/content/cards/Tofu.png');
+        this.load.image('Apple', '/content/cards/Apple.png');
+        this.load.image('Brocolli', '/content/cards/Brocolli.png');
+        this.load.image('Milk', '/content/cards/Milk.png');
+        this.load.image('Bread', '/content/cards/Bread.png');
+        this.load.image('Bacon', '/content/cards/Bacon.png');
+        this.load.image('Banana', '/content/cards/Banana.png');
+        this.load.image('Buffet', '/content/cards/Buffet.png');
     }
 
     constructor() {
