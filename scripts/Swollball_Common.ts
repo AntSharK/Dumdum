@@ -72,6 +72,7 @@ function InitializeUpgradeData(dataIn: any[], economyData: any) {
         serverData.Description = data.description;
         serverData.ServerId = data.serverId;
         serverData.BorderColor = data.borderColor
+        serverData.FillColor = data.fillColor;
         serverData.Cost = data.cost;
 
         UpgradeData.push(serverData);
@@ -126,6 +127,7 @@ class ServerUpgradeData {
     Description: string;
     ServerId: string;
     BorderColor: number;
+    FillColor: number;
     Cost: integer;
 }
 

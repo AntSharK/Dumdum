@@ -15,6 +15,8 @@ namespace Swollball.Upgrades
         public override string UpgradeName => $"Grow+";
 
         public override string Description => $"Increases size by {this.UpgradeAmount}";
+        public override int BorderColor => 8959; // 0022FF
+        public override int FillColor => 13421772; // CCCCCC
 
         public override void PerformUpgrade(Player player)
         {

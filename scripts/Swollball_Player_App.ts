@@ -240,7 +240,7 @@ class BallUpgrades extends Phaser.Scene {
     }
     drawUpgradeCards() {
         for (let card of this.upgradeCards) {
-            this.graphics.fillStyle(0xCCCCCC);
+            this.graphics.fillStyle(card.Upgrade.FillColor);
             this.graphics.fillRoundedRect(card.x, card.y, card.width, card.height);
             this.graphics.lineStyle(10, card.Upgrade.BorderColor);
             this.graphics.strokeRoundedRect(card.x, card.y, card.width, card.height);

@@ -14,9 +14,11 @@ namespace Swollball.Upgrades
 
         public string ServerId { get; private set; } = Guid.NewGuid().ToString();
 
-        public virtual int BorderColor => 11045079;
+        public abstract int BorderColor { get; }
 
-        public virtual int Cost { get; set; }
+        public abstract int FillColor { get; }
+
+        public int Cost { get; }
 
         public int UpgradeAmount { get; }
 
