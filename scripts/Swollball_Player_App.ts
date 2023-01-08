@@ -81,8 +81,8 @@ class BallUpgrades extends Phaser.Scene {
     upgradeTierButton: Phaser.GameObjects.Sprite;
 
     preload() {
-        this.load.image('refreshimage', '/content/refreshimage.png');
-        this.load.image('uparrow', '/content/uparrow.png');
+        this.load.image('refreshimage', '/content/ui/refreshimage.png');
+        this.load.image('uparrow', '/content/ui/uparrow.png');
     }
 
     constructor() {
