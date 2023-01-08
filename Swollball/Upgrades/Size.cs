@@ -8,13 +8,11 @@ namespace Swollball.Upgrades
 {
     public class Size : BaseUpgrade
     {
-        public Size(int value, int cost) : base(value, cost)
+        public Size(int value, int cost, string name) : base(value, cost, name)
         {
         }
 
-        public override string UpgradeName => $"Grow+";
-
-        public override string Description => $"Increases size by {this.UpgradeAmount}";
+        public override string Description => $"Size+{this.UpgradeAmount}";
         public override int BorderColor => 8959; // 0022FF
         public override int FillColor => 13421772; // CCCCCC
 

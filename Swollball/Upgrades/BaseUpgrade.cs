@@ -8,7 +8,7 @@ namespace Swollball.Upgrades
 {
     public abstract class BaseUpgrade : IUpgrade
     {
-        public abstract string UpgradeName { get; }
+        public string UpgradeName { get; set; }
 
         public abstract string Description { get; }
 
@@ -22,10 +22,11 @@ namespace Swollball.Upgrades
 
         public int UpgradeAmount { get; }
 
-        public BaseUpgrade(int amount, int cost)
+        public BaseUpgrade(int amount, int cost, string name)
         {
             this.UpgradeAmount = amount;
             this.Cost = cost;
+            this.UpgradeName = name;
         }
 
         public virtual void PerformUpgrade(Player player)
