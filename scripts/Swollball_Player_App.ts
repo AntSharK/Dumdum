@@ -505,13 +505,16 @@ class BallStats extends Phaser.Scene {
         this.statsDisplay["size"].text = "SIZE:" + this.playerBall.SizeMultiplier.toString();
 
         var playerScore = RoundScoreData[0];
-        this.pointsDisplay["round"].text = "ROUND: " + RoundNumber.toString();
-        this.pointsDisplay["dmgdone"].text = "DMG Taken: " + playerScore.RoundDamageDone.toString();
+        this.pointsDisplay["round"].text = "ROUND: " + (RoundNumber - 1).toString();
+        this.pointsDisplay["dmgdone"].text = "DMG Dealt: " + playerScore.RoundDamageDone.toString();
         this.pointsDisplay["dmgreceived"].text = "DMG Received: " + playerScore.RoundDamageReceived.toString();
         this.pointsDisplay["roundscore"].text = "SCORE (Round): " + playerScore.RoundScore.toString();
         this.pointsDisplay["totalscore"].text = "SCORE (Total): " + playerScore.TotalScore.toString();
 
-        if (RoundNumber <= 0) { // Detect when the game has ended
+        if (RoundNumber == 0) { // Start of game
+            this.pointsDisplay["round"].text = "ROUND: 0";
+        }
+        else if (RoundNumber < 0) { // Detect when the game has ended
             this.pointsDisplay["round"].text = "END OF GAME";
         }
 

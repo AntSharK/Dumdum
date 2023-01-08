@@ -336,11 +336,11 @@ function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBal
                 && (graphics.scene.time.now - pb.HitTime) < FLASHTIME
                 && pb.HpText.text != pb.Hp.toString()) {
                 // Change the HP slowly over FLASHTIME time
-                pb.HpText.text = Math.floor(Phaser.Math.Interpolation.Linear([pb.LastDisplayedHp, pb.Hp],
+                pb.HpText.text = Math.ceil(Phaser.Math.Interpolation.Linear([pb.LastDisplayedHp, pb.Hp],
                     (graphics.scene.time.now - pb.HitTime) / FLASHTIME)).toString();
             }
             else {
-                pb.HpText.text = Math.floor(pb.Hp).toString();
+                pb.HpText.text = Math.ceil(pb.Hp).toString();
             }
 
             graphics.fillCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size);
