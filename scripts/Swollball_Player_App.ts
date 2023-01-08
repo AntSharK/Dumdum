@@ -83,7 +83,7 @@ class BallUpgrades extends Phaser.Scene {
 
     preload() {
         this.load.image('refreshimage', '/content/ui/refreshimage.png');
-        this.load.image('uparrow', '/content/ui/uparrow.png');
+        this.load.image('uparrow', '/content/ui/uparrow2.png');
         this.load.image('credit', '/content/ui/credit.png');
 
         // Note that the key is the same as the upgrade name
@@ -121,6 +121,7 @@ class BallUpgrades extends Phaser.Scene {
         this.creditsLeftButton.scale = boundingDimension * 0.0012;
         this.creditsLeft = this.add.text(this.scale.canvas.width * 0.86, this.scale.canvas.height * 0.08, "0", { color: 'Black' });
         this.creditsLeft.scale = boundingDimension * 0.004;
+        this.creditsLeft.setDepth(2);
 
         // Paint the Refresh Button
         this.refreshButton = this.add.sprite(this.scale.canvas.width * 0.9, this.scale.canvas.height * 0.36, 'refreshimage');
@@ -139,6 +140,7 @@ class BallUpgrades extends Phaser.Scene {
             this.upgradeTierButton.x - this.upgradeTierButton.width * this.upgradeTierButton.scale / 2 + boundingDimension * 0.02,
             this.upgradeTierButton.y - this.upgradeTierButton.height * this.upgradeTierButton.scale / 2 + boundingDimension * 0.035, "0", { color: 'Black' });
         this.upgradeTierCost.scale = boundingDimension * 0.004;
+        this.upgradeTierCost.setDepth(2);
 
         /* Stuff for debugging hit area
         this.upgradeTierButton.on('pointerover', function (pointer) {
