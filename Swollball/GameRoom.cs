@@ -39,18 +39,33 @@ namespace Swollball
             tp3.Ball.Color = 01745079;
             tp3.Ball.SizeMultiplier = 500;
             tp3.Ball.SpeedMultiplier = 500; */
-#endif
 
             this.CreateAutomatedPlayer();
             this.CreateAutomatedPlayer();
             this.CreateAutomatedPlayer();
+#endif
         }
+
+        private static List<string> BotNames = new List<string>()
+        {
+            "MOOF", "LOW", "YU", "CHENG",
+            "ANT", "SHARK",
+            "MM", "CUI", "MU", "YING",
+            "VJ", "PEM", "MA", "RAJ", "JU",
+        };
+
+        private static Random rng = new Random();
 
         private Player? CreateAutomatedPlayer()
         {
-            var playerName = "BOT" + this.Players.Count();
+            var i = rng.Next(BotNames.Count); 
+            var playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1);
 
             var newPlayer = new AutomatedPlayer(playerName, this.RoomId);
+
+            // Assign the bot a random color
+            newPlayer.Ball.Color = rng.Next(0xFFFFFF);
+
             if (this.Players.ContainsKey(playerName))
             {
                 return null;

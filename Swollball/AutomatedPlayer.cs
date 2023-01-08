@@ -13,7 +13,7 @@ namespace Swollball
         public AutomatedPlayer(string name, string roomName) 
             : base(name, "TestConnectionId", roomName)
         {
-            this.Economy.ShopTier = 4;
+            this.Economy.ShopTier = 4; // Bots cheat and start with a tier 4 shop
             this.BuyRandomUpgrades();
         }
 
