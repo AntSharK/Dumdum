@@ -108,7 +108,8 @@ namespace Swollball
         private async Task UpdateUpgrades(Player player)
         {
             var currentUpgrades = player.CurrentUpgrades.Values;
-            if (currentUpgrades.Count == 0)
+            if (currentUpgrades.Count == 0
+                || player.Economy.CreditsLeft <= 0)
             {
                 await Clients.Caller.SendAsync("UpdateUpgrades", BlankUpgrade.Instance, player.Economy);
             }
