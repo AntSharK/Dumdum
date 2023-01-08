@@ -12,7 +12,7 @@ namespace Swollball.Upgrades
         {
         }
 
-        public override string Description => $"Gain {this.UpgradeAmount} armor for every 10 armor you have.";
+        public override string Description => $"Armor+{this.UpgradeAmount} for every 10 armor you have.";
         public override int BorderColor => 11184827; // AAAABB
         public override int FillColor => 15527916; // ECEFEC
 

@@ -13,8 +13,8 @@ namespace Swollball.Upgrades
         }
 
         public override string Description => $"Gain {this.UpgradeAmount} speed for every 10 size you have.";
-        public override int BorderColor => 1179409; // 11FF11
-        public override int FillColor => 2228258; // 220022;
+        public override int BorderColor => 2228258; // 220022
+        public override int FillColor => 16711935; // FF00FF;
 
         public override void PerformUpgrade(Player player)
         {

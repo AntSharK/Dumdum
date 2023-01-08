@@ -12,7 +12,7 @@ namespace Swollball.Upgrades
         {
         }
 
-        public override string Description => $"Increases size by {this.UpgradeAmount}";
+        public override string Description => $"Size+{this.UpgradeAmount}";
         public override int BorderColor => 8959; // 0022FF
         public override int FillColor => 13421772; // CCCCCC
 

@@ -12,7 +12,7 @@ namespace Swollball.Upgrades
         {
         }
 
-        public override string Description => $"Increases HP by {this.UpgradeAmount} for every 10 damage you took last round.";
+        public override string Description => $"HP+{this.UpgradeAmount} for every 10 damage you took last round.";
         public override int BorderColor => 1157887; // 11AAFF
         public override int FillColor => 11193565; // AACCDD
 
