@@ -60,7 +60,8 @@ class BallArena extends Phaser.Scene {
 
     preload() {
         this.load.image('dummyimage', '/content/dummyimage.png');
-        this.load.image('ylow', '/content/ylow.png');
+        //this.load.image('ylow', '/content/ylow.png');
+        this.load.image('squarena', '/content/squarena.jpg');
     }
 
     create() {
@@ -82,9 +83,11 @@ class BallArena extends Phaser.Scene {
         }), this.game.canvas);
 
         this.arena.Initialize();
-        var backgroundImage = this.add.sprite(this.arena.XPos, this.arena.YPos, 'ylow');
+        var backgroundImage = this.add.sprite(this.arena.XPos, this.arena.YPos, 'squarena');
         backgroundImage.setDepth(-1);
-        backgroundImage.setDisplaySize(this.arena.Radius * 2, this.arena.Radius * 2);
+        var scale = boundingDimension / backgroundImage.height * 1.02;
+        backgroundImage.setScale(scale, scale);
+        //backgroundImage.setDisplaySize(this.arena.Radius * 2, this.arena.Radius * 2);
 
         this.balls = this.physics.add.group({
             defaultKey: 'dummyimage',
@@ -253,8 +256,8 @@ class Arena {
 }
 
 function DrawArena(graphics: Phaser.GameObjects.Graphics, arena: Arena) {
-    graphics.lineStyle(20, 0xFF00FF);                        
-    graphics.strokeCircle(arena.XPos, arena.YPos, arena.Radius + 10)
+    graphics.lineStyle(4, 0xFFCF6C);                        
+    graphics.strokeCircle(arena.XPos, arena.YPos, arena.Radius + 2)
     // No need to fill in the arean with a background image
     //graphics.fillStyle(0xFFFFFF);
     //graphics.fillCircle(arena.XPos, arena.YPos, arena.Radius);
