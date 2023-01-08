@@ -87,7 +87,8 @@ class BallUpgrades extends Phaser.Scene {
         // Note that the key is the same as the upgrade name
         this.load.image('Tofu', '/content/cards/Tofu.png');
         this.load.image('Apple', '/content/cards/Apple.png');
-        this.load.image('Brocolli', '/content/cards/Brocolli.png');
+        this.load.image('Brocolli', '/content/cards/Brocolli2.png');
+        this.load.image('BROcolli', '/content/cards/Brocolli.png');
         this.load.image('Milk', '/content/cards/Milk.png');
         this.load.image('Bread', '/content/cards/Bread.png');
         this.load.image('Bacon', '/content/cards/Bacon.png');
@@ -411,11 +412,11 @@ class UpgradeCard extends Phaser.Physics.Arcade.Sprite {
         if (upgradeData.UpgradeName.length == 0) { displayTitle = "" }; // Represent the blank upgrade card
 
         if (scene.textures.exists(displayTitle)) {
-            this.CardBackground = scene.add.sprite(x + this.width * 0.5, y + this.height * 0.6, displayTitle);
+            this.CardBackground = scene.add.sprite(x + this.width * 0.5, y + this.height * 0.65, displayTitle);
             // Scale to either 0.8 * width or 0.6 * height
             var scaleValue = Math.min(this.width * 0.8 / this.CardBackground.displayWidth, this.height * 0.6 / this.CardBackground.displayHeight);
             this.CardBackground.setDisplaySize(this.CardBackground.displayWidth * scaleValue, this.CardBackground.displayHeight * scaleValue);
-            this.CardBackground.setAlpha(0.5);
+            this.CardBackground.setAlpha(0.4);
         }
 
         this.Title = scene.add.text(x + this.width * (0.5 - displayTitle.length * 0.04), y + this.height * 0.05, displayTitle, { color: 'Black' });
