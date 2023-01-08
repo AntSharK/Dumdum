@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\content\" />
+    <Folder Include="wwwroot\content\cards\" />
   </ItemGroup>
 
   <ItemGroup>
