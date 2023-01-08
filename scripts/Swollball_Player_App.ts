@@ -74,6 +74,7 @@ class BallUpgrades extends Phaser.Scene {
     upgradeCards: UpgradeCard[];
 
     creditsLeft: Phaser.GameObjects.Text;
+    creditsLeftButton: Phaser.GameObjects.Sprite;
     creditNextIncrementTime: number;
     refreshButton: Phaser.GameObjects.Sprite;
 
@@ -83,6 +84,7 @@ class BallUpgrades extends Phaser.Scene {
     preload() {
         this.load.image('refreshimage', '/content/ui/refreshimage.png');
         this.load.image('uparrow', '/content/ui/uparrow.png');
+        this.load.image('credit', '/content/ui/credit.png');
 
         // Note that the key is the same as the upgrade name
         this.load.image('Tofu', '/content/cards/Tofu.png');
@@ -115,6 +117,8 @@ class BallUpgrades extends Phaser.Scene {
 
         // Paint the CreditsLeft display
         this.creditNextIncrementTime = this.time.now;
+        this.creditsLeftButton = this.add.sprite(this.scale.canvas.width * 0.86 + boundingDimension * 0.004 * 7, this.scale.canvas.height * 0.08 + boundingDimension * 0.004 * 8, 'credit');
+        this.creditsLeftButton.scale = boundingDimension * 0.0012;
         this.creditsLeft = this.add.text(this.scale.canvas.width * 0.86, this.scale.canvas.height * 0.08, "0", { color: 'Black' });
         this.creditsLeft.scale = boundingDimension * 0.004;
 
@@ -156,24 +160,20 @@ class BallUpgrades extends Phaser.Scene {
 
         if (this.upgradeCards.length > 0) {
             // Draw the fade screen
-            this.graphics.fillStyle(0xFFFFFF, 0.3);
+            this.graphics.fillStyle(0xFFFFFF, 0.2);
             this.graphics.fillRect(0, 0, this.scale.canvas.width, this.scale.canvas.height);
 
             // Set all graphics to visible
             this.creditsLeft.setVisible(true);
+            this.creditsLeftButton.setVisible(true);
             this.refreshButton.setVisible(true);
             this.upgradeTierButton.setVisible(true);
             this.upgradeTierCost.setVisible(true);
-
-            // Draw the number of credits left
-            this.graphics.fillStyle(0xFFC90E);
-            this.graphics.fillCircle(this.creditsLeft.x + this.creditsLeft.scale * 7, this.creditsLeft.y + this.creditsLeft.scale * 8, this.creditsLeft.scale * 15);
-            this.graphics.lineStyle(10, 0x222222);
-            this.graphics.strokeCircle(this.creditsLeft.x + this.creditsLeft.scale * 7, this.creditsLeft.y + this.creditsLeft.scale * 8, this.creditsLeft.scale * 15);
         }
         else {
             // Set all graphics to invisible
             this.creditsLeft.setVisible(false);
+            this.creditsLeftButton.setVisible(false);
             this.refreshButton.setVisible(false);
             this.upgradeTierButton.setVisible(false);
             this.upgradeTierCost.setVisible(false);
