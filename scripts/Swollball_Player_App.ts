@@ -396,8 +396,9 @@ class UpgradeCard extends Phaser.Physics.Arcade.Sprite {
         var displayTitle = upgradeData.UpgradeName;
         if (upgradeData.UpgradeName.length == 0) { displayTitle = "" }; // Represent the blank upgrade card
 
-        this.Title = scene.add.text(x + this.width * 0.15, y + this.height * 0.05, displayTitle, { color: 'Black' });
+        this.Title = scene.add.text(x + this.width * (0.5 - displayTitle.length * 0.04), y + this.height * 0.05, displayTitle, { color: 'Black' });
         this.Title.scale = width * 0.008;
+        //this.Title.setWordWrapWidth(this.width * 0.75 / this.Description.scale);
         this.Description = scene.add.text(x + this.width * 0.05, y + this.height * 0.3, upgradeData.Description, { color: 'Black' });
         this.Description.scale = width * 0.005;
         this.Description.setWordWrapWidth(this.width * 0.92 / this.Description.scale);
