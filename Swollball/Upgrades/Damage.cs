@@ -8,11 +8,9 @@ namespace Swollball.Upgrades
 {
     public class Damage : BaseUpgrade
     {
-        public Damage(int value, int cost) : base(value, cost)
+        public Damage(int value, int cost, string name) : base(value, cost, name)
         {
         }
-
-        public override string UpgradeName => $"DMG+";
 
         public override string Description => $"Increases damage by {this.UpgradeAmount}";
         public override int BorderColor => 16716066; // FF1122

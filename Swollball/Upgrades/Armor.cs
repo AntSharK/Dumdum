@@ -8,11 +8,9 @@ namespace Swollball.Upgrades
 {
     public class Armor : BaseUpgrade
     {
-        public Armor(int value, int cost) : base(value, cost)
+        public Armor(int value, int cost, string name) : base(value, cost, name)
         {
         }
-
-        public override string UpgradeName => $"ARMOR+";
 
         public override string Description => $"Increases armor by {this.UpgradeAmount}";
         public override int BorderColor => 11184810; // AAAAAA

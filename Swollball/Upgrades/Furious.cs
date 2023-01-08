@@ -8,11 +8,9 @@ namespace Swollball.Upgrades
 {
     public class Furious: BaseUpgrade
     {
-        public Furious(int value, int cost) : base(value, cost)
+        public Furious(int value, int cost, string name) : base(value, cost, name)
         {
         }
-
-        public override string UpgradeName => $"Furious+";
 
         public override string Description => $"Gain {this.UpgradeAmount} speed for every 10 size you have.";
         public override int BorderColor => 1179409; // 11FF11

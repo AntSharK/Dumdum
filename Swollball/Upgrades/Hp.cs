@@ -8,11 +8,9 @@ namespace Swollball.Upgrades
 {
     public class Hp : BaseUpgrade
     {
-        public Hp(int value, int cost) : base(value, cost)
+        public Hp(int value, int cost, string name) : base(value, cost, name)
         {
         }
-
-        public override string UpgradeName => $"HP+";
 
         public override string Description => $"Increases HP by {this.UpgradeAmount}";
         public override int BorderColor => 1179392; // 11FF00

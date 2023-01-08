@@ -8,11 +8,9 @@ namespace Swollball.Upgrades
 {
     public class Bloat : BaseUpgrade
     {
-        public Bloat(int value, int cost) : base(value, cost)
+        public Bloat(int value, int cost, string name) : base(value, cost, name)
         {
         }
-
-        public override string UpgradeName => $"Bloat+";
 
         public override string Description => $"Increases size by {this.UpgradeAmount} for every 10 size you have";
         public override int BorderColor => 48110; // 00BBEE

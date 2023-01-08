@@ -8,11 +8,9 @@ namespace Swollball.Upgrades
 {
     public class Tech : BaseUpgrade
     {
-        public Tech(int value, int cost) : base(value, cost)
+        public Tech(int value, int cost, string name) : base(value, cost, name)
         {
         }
-
-        public override string UpgradeName => $"Tech+";
 
         public override string Description => $"Gain {this.UpgradeAmount} armor for every 10 armor you have.";
         public override int BorderColor => 11184827; // AAAABB

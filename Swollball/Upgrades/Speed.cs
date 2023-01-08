@@ -8,11 +8,9 @@ namespace Swollball.Upgrades
 {
     public class Speed: BaseUpgrade
     {
-        public Speed(int value, int cost) : base(value, cost)
+        public Speed(int value, int cost, string name) : base(value, cost, name)
         {
         }
-
-        public override string UpgradeName => $"SPEED+";
 
         public override string Description => $"Increases speed by {this.UpgradeAmount}";
         public override int BorderColor => 2293504; // 22FF00

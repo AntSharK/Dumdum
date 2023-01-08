@@ -8,11 +8,9 @@ namespace Swollball.Upgrades
 {
     public class Cover : BaseUpgrade
     {
-        public Cover(int value, int cost) : base(value, cost)
+        public Cover(int value, int cost, string name) : base(value, cost, name)
         {
         }
-
-        public override string UpgradeName => $"Cover+";
 
         public override string Description => $"Increases HP by {this.UpgradeAmount} for every 10 damage you took last round.";
         public override int BorderColor => 1157887; // 11AAFF
