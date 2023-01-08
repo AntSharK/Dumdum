@@ -94,6 +94,12 @@ class BallUpgrades extends Phaser.Scene {
         this.load.image('Bacon', '/content/cards/Bacon.png');
         this.load.image('Banana', '/content/cards/Banana.png');
         this.load.image('Buffet', '/content/cards/Buffet.png');
+        this.load.image('Soy Milk', '/content/cards/SoyMilk.png');
+        this.load.image('Rice', '/content/cards/Rice.png');
+        this.load.image('Yoga', '/content/cards/Yoga.png');
+        this.load.image('GET SWOLL', '/content/cards/Swoll.png');
+        this.load.image('Ketones', '/content/cards/Bike.png');
+        this.load.image('Wagyu', '/content/cards/Steak.png');
     }
 
     constructor() {
