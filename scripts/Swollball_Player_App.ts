@@ -408,6 +408,7 @@ class UpgradeCard extends Phaser.Physics.Arcade.Sprite {
             // Scale to either 0.8 * width or 0.6 * height
             var scaleValue = Math.min(this.width * 0.8 / this.CardBackground.displayWidth, this.height * 0.6 / this.CardBackground.displayHeight);
             this.CardBackground.setDisplaySize(this.CardBackground.displayWidth * scaleValue, this.CardBackground.displayHeight * scaleValue);
+            this.CardBackground.setAlpha(0.5);
         }
 
         this.Title = scene.add.text(x + this.width * (0.5 - displayTitle.length * 0.04), y + this.height * 0.05, displayTitle, { color: 'Black' });
