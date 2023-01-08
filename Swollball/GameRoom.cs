@@ -56,7 +56,7 @@ namespace Swollball
 
         private static Random rng = new Random();
 
-        private Player? CreateAutomatedPlayer()
+        internal Player? CreateAutomatedPlayer()
         {
             var i = rng.Next(BotNames.Count); 
             var playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1);

@@ -23,6 +23,14 @@ document.getElementById("startbutton").addEventListener("click", function (event
     event.preventDefault();
 });
 
+document.getElementById("addbotbutton").addEventListener("click", function (event) {
+    var sessionRoomId = sessionStorage.getItem(RoomIdSessionStorageKey);
+    connection.invoke("AddBot", sessionRoomId).catch(function (err) {
+        return console.error(err.toString());
+    });
+    event.preventDefault();
+});
+
 /***
 MESSAGES FROM HUB
 ***/
