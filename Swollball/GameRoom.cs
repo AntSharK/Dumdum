@@ -22,7 +22,7 @@ namespace Swollball
             this.ConnectionId = connectionId;
 #if DEBUG
             // Insert test players
-            var tp = this.CreatePlayer("TESTPLAYER", "ASDF");
+            /* var tp = this.CreatePlayer("TESTPLAYER", "ASDF");
             tp.Ball.Color = 11745079;
             tp.Ball.Keystones["Giant"] = new Upgrades.Keystones.Giant(2, 0);
             tp.Ball.Keystones["Bulwark"] = new Upgrades.Keystones.Bulwark(2, 0);
@@ -38,8 +38,26 @@ namespace Swollball
             var tp3 = this.CreatePlayer("LCBAT", "BARA");
             tp3.Ball.Color = 01745079;
             tp3.Ball.SizeMultiplier = 500;
-            tp3.Ball.SpeedMultiplier = 500;
+            tp3.Ball.SpeedMultiplier = 500; */
 #endif
+
+            this.CreateAutomatedPlayer();
+            this.CreateAutomatedPlayer();
+            this.CreateAutomatedPlayer();
+        }
+
+        private Player? CreateAutomatedPlayer()
+        {
+            var playerName = "BOT" + this.Players.Count();
+
+            var newPlayer = new AutomatedPlayer(playerName, this.RoomId);
+            if (this.Players.ContainsKey(playerName))
+            {
+                return null;
+            }
+
+            this.Players[playerName] = newPlayer;
+            return newPlayer;
         }
 
         public Player? CreatePlayer(string playerName, string connectionId)
@@ -90,6 +108,7 @@ namespace Swollball
             {
                 player.PlayerScore.RoundNumber = this.RoundNumber;
                 player.PlayerScore.UpdateRound();
+                player.StartNextRound();
             }
         }
 

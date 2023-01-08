@@ -102,7 +102,7 @@ namespace Swollball
             UpgradeFactory.FillShop(this.CurrentUpgrades, this.Economy.ShopSize, this.Economy.ShopTier);
         }
 
-        public void StartNextRound()
+        public virtual void StartNextRound()
         {
             if (this.Economy.CreditsLeft > 0)
             {

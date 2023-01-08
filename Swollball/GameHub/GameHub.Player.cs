@@ -123,7 +123,6 @@ namespace Swollball
             (var player, var room) = await this.FindPlayerAndRoom(userName, roomId);
             if (player == null || room == null) return;
 
-            player.StartNextRound();
             await Clients.Caller.SendAsync("UpdateLeaderboard", new Player.Score[] { player.PlayerScore });
             await Clients.Caller.SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values, player.Economy);
             await Clients.Caller.SendAsync("UpdateBalls", new Ball[] { player.Ball });
