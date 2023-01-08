@@ -18,7 +18,7 @@ namespace Swollball
         public Dictionary<string, IUpgrade> CurrentUpgrades { get; private set; } = new Dictionary<string, IUpgrade>();
         public EconomyData Economy { get; private set; } = new EconomyData();
 
-        private const int CREDITINCREMENTPERROUND = 1;
+        private const int CREDITINCREMENTPERROUND = 2;
 
         public Player(string name, string connectionId, string roomName)
         {
@@ -143,8 +143,8 @@ namespace Swollball
         /// </summary>
         public class EconomyData
         {
-            public int CreditsLeft { get; set; } = 10; // Give more credits at the start
-            public int MaxCredits { get; set; } = 8;
+            public int CreditsLeft { get; set; } = 14; // Give more credits at the start
+            public int MaxCredits { get; set; } = 13;
             public int ShopSize { get; set; } = UpgradeFactory.ShopSize[1];
             public int ShopTier { get; set; } = 1;
             public int UpgradeTierCost { get; set; } = 15;

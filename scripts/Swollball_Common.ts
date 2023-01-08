@@ -338,7 +338,7 @@ function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBal
                     (graphics.scene.time.now - pb.HitTime) / FLASHTIME)).toString();
             }
             else {
-                pb.HpText.text = pb.Hp.toString();
+                pb.HpText.text = Math.floor(pb.Hp).toString();
             }
 
             graphics.fillCircle(pb.body.position.x + pb.Size, pb.body.position.y + pb.Size, pb.Size);
