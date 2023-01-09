@@ -82,24 +82,6 @@ class BallUpgrades extends Phaser.Scene {
     upgradeTierButton: Phaser.GameObjects.Sprite;
 
     preload() {
-        // Region for loading bar
-        var progressBar = this.add.graphics();
-        var progressBox = this.add.graphics();
-        progressBox.fillStyle(0x222222, 0.8);
-        progressBox.fillRect(240, 270, 320, 50);
-        var loadingText = this.make.text({ x: 250, y: 280, text: 'Loading...' });
-        this.load.on('progress', function (value) {
-            console.log(value);
-            progressBar.clear();
-            progressBar.fillStyle(0xffffff, 1);
-            progressBar.fillRect(250, 280, 300 * value, 30);
-        });
-        this.load.on('complete', function () {
-            progressBar.destroy();
-            progressBox.destroy();
-            loadingText.destroy();
-        });
-
         this.load.image('refreshimage', '/content/ui/refreshimage.png');
         this.load.image('uparrow', '/content/ui/uparrowoverlay.png');
         this.load.image('credit', '/content/ui/creditoverlay.png');
