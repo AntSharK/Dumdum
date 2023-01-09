@@ -317,8 +317,8 @@ class BallUpgrades extends Phaser.Scene {
             this.graphics.lineStyle(10, card.Upgrade.BorderColor);
             this.graphics.strokeRoundedRect(card.x, card.y, card.width, card.height);
 
-            // Draw the cost of the card - Draw to the right for more expensive cards
-            var xPos = card.Cost.x + card.Cost.scale * (1 + 4 * card.Cost.text.length);
+            // Draw the cost of the card - Draw to the right for more expensive cards to offset the text being on the left
+            var xPos = card.Cost.x + card.Cost.scale * 4 + (card.width * 0.015 * card.Cost.text.length);
             this.graphics.fillStyle(0xFFC90E);
             this.graphics.fillCircle(xPos, card.Cost.y + card.Cost.scale * 8, card.Cost.scale * 12);
             this.graphics.lineStyle(3, 0x222222);
@@ -437,7 +437,9 @@ class UpgradeCard extends Phaser.Physics.Arcade.Sprite {
         this.Description.setWordWrapWidth(this.width * 0.92 / this.Description.scale);
 
         if (upgradeData.Cost > 0) {
-            this.Cost = scene.add.text(x + this.width * 0.9, y + this.height * 0.01, upgradeData.Cost.toString(), { color: 'Black' });
+            // Shift text to the left when it's longer - and move the box to the right
+            var upgradeCost = upgradeData.Cost.toString();
+            this.Cost = scene.add.text(x + this.width * (0.915 - 0.015 * upgradeCost.length), y + this.height * 0.01, upgradeCost, { color: 'Black' });
             this.Cost.scale = width * 0.0065;
         }
     }
