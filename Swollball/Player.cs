@@ -18,7 +18,7 @@ namespace Swollball
         public Dictionary<string, IUpgrade> CurrentUpgrades { get; private set; } = new Dictionary<string, IUpgrade>();
         public EconomyData Economy { get; private set; } = new EconomyData();
 
-        private const int CREDITINCREMENTPERROUND = 2;
+        private const int CREDITINCREMENTPERROUND = 3;
 
         public Player(string name, string connectionId, string roomName)
         {
