@@ -83,8 +83,8 @@ class BallUpgrades extends Phaser.Scene {
 
     preload() {
         this.load.image('refreshimage', '/content/ui/refreshimage.png');
-        this.load.image('uparrow', '/content/ui/uparrow.png');
-        this.load.image('credit', '/content/ui/credit.png');
+        this.load.image('uparrow', '/content/ui/uparrowoverlay.png');
+        this.load.image('credit', '/content/ui/creditoverlay.png');
 
         // Note that the key is the same as the upgrade name
         this.load.image('Tofu', '/content/cards/Tofu.png');
@@ -200,7 +200,8 @@ class BallUpgrades extends Phaser.Scene {
                 this.creditNextIncrementTime = this.time.now + CREDITINCREMENTINTERVAL;
             }
 
-            this.creditsLeft.text = creditsDisplayed.toString();;
+            this.creditsLeft.text = creditsDisplayed.toString();
+            this.creditsLeft.setX(this.scale.canvas.width * (0.89 - 0.0175 * this.creditsLeft.text.length)) // Adjust the x-position based on how long the string is
         }
 
         if (this.readyToUpdateUpgrades == true
