@@ -83,7 +83,7 @@ class BallUpgrades extends Phaser.Scene {
 
     preload() {
         this.load.image('refreshimage', '/content/ui/refreshimage.png');
-        this.load.image('uparrow', '/content/ui/uparrow2.png');
+        this.load.image('uparrow', '/content/ui/uparrow.png');
         this.load.image('credit', '/content/ui/credit.png');
 
         // Note that the key is the same as the upgrade name
