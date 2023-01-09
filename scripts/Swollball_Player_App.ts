@@ -4,7 +4,7 @@
         this.game = new Phaser.Game(
             {
                 width: "100%",
-                height: "97%",
+                height: "100%",
                 type: Phaser.AUTO,
 
                 physics: {
@@ -58,7 +58,22 @@ class EndScreen extends Phaser.Scene {
 
         this.add.text(this.scale.canvas.width * 0.25, this.scale.canvas.height * 0.15, "GAME\nOVER", { color: 'Black' }).setScale(boundingDimension * 0.01);
         if (yourPlacing > 0) {
-            this.add.text(this.scale.canvas.width * 0.1, this.scale.canvas.height * 0.5, "RESULT:" + yourPlacing + "/" + totalPlayers, { color: 'Black' }).setScale(boundingDimension * 0.0075);
+            var placingText = "LAST";
+            switch (yourPlacing) {
+                case 1:
+                    placingText = "1st";
+                    break;
+                case 2:
+                    placingText = "2nd";
+                    break;
+                case 3:
+                    placingText = "3rd";
+                    break;
+                default:
+                    placingText = yourPlacing + "th";
+                    break;
+            }
+            this.add.text(this.scale.canvas.width * 0.1, this.scale.canvas.height * 0.5, placingText + "/" + totalPlayers, { color: 'Black' }).setScale(boundingDimension * 0.0075);
         }
 
         this.time.addEvent(new Phaser.Time.TimerEvent({ delay: FINALSCOREDISPLAYDURATION * 1000, callback: this.EndGame, callbackScope: this }));

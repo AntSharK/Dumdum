@@ -6,6 +6,10 @@ document.getElementById("joinroombutton").addEventListener("click", function (ev
     var roomIdIn = document.getElementById("roomid").value;
     var colorIn = document.getElementById("colorpicker").value;
 
+    if (userNameIn.length <= 0) {
+        return;
+    }
+
     connection.invoke("JoinRoom", userNameIn, roomIdIn, colorIn).catch(function (err) {
         return console.error(err.toString());
     });
@@ -52,8 +56,10 @@ connection.on("Reconnect_ResumeWaiting", function (userName, roomId) {
     SwitchToWaitingView(userName, roomId);
 });
 
-connection.on("StartGame", function (playersConcat, userJoined) {
-    document.body.innerHTML = "<div id='phaserapp' style=\"height:'100%' width:'100%'\"></div>";
+connection.on("StartGame", function (sceneToStartOn) {
+    document.body.innerHTML = "<div id='controlbar' style=\"min-height:20px; height:2vh\"></div><div id='phaserapp' style=\"height:93vh\"></div>";
+    var sessionRoomId = sessionStorage.getItem(RoomIdSessionStorageKey);
+    document.getElementById("controlbar").innerHTML = "ROOMID:" + sessionRoomId + "<a href = 'javascript:window.location.reload()' style = 'float:right' > REFRESH</a> ";
     Game = new Swollball_Player_Game();
 });
 
