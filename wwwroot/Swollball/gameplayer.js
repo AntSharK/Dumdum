@@ -53,7 +53,7 @@ connection.on("Reconnect_ResumeWaiting", function (userName, roomId) {
 });
 
 connection.on("StartGame", function (playersConcat, userJoined) {
-    document.body.innerHTML = "";
+    document.body.innerHTML = "<div id='phaserapp' style=\"height:'100%' width:'100%'\"></div>";
     Game = new Swollball_Player_Game();
 });
 
