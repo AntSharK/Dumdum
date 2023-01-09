@@ -57,7 +57,7 @@ connection.on("HostUpdateRoom", function (room) {
 });
 
 connection.on("StartGame", function (sceneToStartOn = "BallArena") {
-    document.body.innerHTML = "";
+    document.body.innerHTML = "<div id='phaserapp' style=\"height:'100%' width:'100%'\"></div>";
     Game = new Swollball_Lobby_Game(sceneToStartOn);
 });
 
@@ -105,3 +105,18 @@ var UpdatePlayerList = function (players) {
 
     document.getElementById("lobbyplayercount").textContent = playerCount + " PLAYERS JOINED";
 }
+
+var conditionalReload = function () {
+    var sessionRoomId = sessionStorage.getItem("roomid");
+
+    if (sessionRoomId != null) {
+        var elements = document.getElementsByClassName("state");
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].style.display = "none";
+        }
+
+        document.getElementById("pageName").textContent = "RECONNECTING...";
+    }
+}
+
+window.onload = conditionalReload;

@@ -15,8 +15,8 @@ class Swollball_Lobby_Game {
 
         this.game = new Phaser.Game(
             {
-                width: "95%",
-                height: "95%",
+                width: "100%",
+                height: "97%",
                 type: Phaser.AUTO,                
 
                 physics: {
@@ -30,8 +30,9 @@ class Swollball_Lobby_Game {
                 backgroundColor: '#000000',
 
                 scale: {
+                    parent: "phaserapp",
                     autoCenter: Phaser.Scale.Center.CENTER_BOTH,
-                    mode: Phaser.Scale.FIT,
+                    //mode: Phaser.Scale.FIT,
                 },
             });
     }

@@ -3,8 +3,8 @@
     constructor() {
         this.game = new Phaser.Game(
             {
-                width: "95%",
-                height: "95%",
+                width: "100%",
+                height: "97%",
                 type: Phaser.AUTO,
 
                 physics: {
@@ -18,8 +18,9 @@
                 scene: [BallStats, BallUpgrades, EndScreen],
 
                 scale: {
+                    parent: "phaserapp",
                     autoCenter: Phaser.Scale.Center.CENTER_BOTH,
-                    mode: Phaser.Scale.FIT,
+                    //mode: Phaser.Scale.FIT,
                 },
             });
     }
