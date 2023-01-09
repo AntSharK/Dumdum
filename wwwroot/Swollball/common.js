@@ -50,12 +50,13 @@ var conditionalReload = function () {
         }
 
         document.getElementById("pageName").textContent = "RECONNECTING...";
+        /* Refreshing will cause refreshes on game end, leaving the score screen pre-maturely
         setInterval(function () {
             var sessionRoomId = sessionStorage.getItem("roomid");
             if (sessionRoomId == null) {
                 window.location.reload()
             }
-        }, 10000)
+        }, 10000)*/
     }
 }
 
