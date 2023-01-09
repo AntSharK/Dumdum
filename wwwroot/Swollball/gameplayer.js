@@ -55,8 +55,7 @@ connection.on("Reconnect_ResumeWaiting", function (userName, roomId) {
 connection.on("StartGame", function (sceneToStartOn) {
     document.body.innerHTML = "<div id='controlbar' style=\"min-height:20px; height:2vh\"></div><div id='phaserapp' style=\"height:93vh\"></div>";
     var sessionRoomId = sessionStorage.getItem(RoomIdSessionStorageKey);
-    var sessionUserName = sessionStorage.getItem(UserIdSessionStorageKey)
-    document.getElementById("controlbar").textContent = "GAME:" + sessionRoomId + "\t\t" + "USERID:" + sessionUserName;
+    document.getElementById("controlbar").innerHTML = "ROOMID:" + sessionRoomId + "<a href = 'javascript:window.location.reload()' style = 'float:right' > REFRESH</a> ";
     Game = new Swollball_Player_Game();
 });
 
