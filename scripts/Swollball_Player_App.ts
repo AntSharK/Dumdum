@@ -486,7 +486,7 @@ class BallStats extends Phaser.Scene {
 
     preload() {
         this.load.image('dummyimage', '/content/dummyimage.png');
-        this.load.image('mahjong', '/content/mahjong.jpg');
+        this.load.image('mahjong', '/content/ui/mahjong.jpg');
     }
 
     create() {

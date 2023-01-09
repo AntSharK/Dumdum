@@ -60,8 +60,7 @@ class BallArena extends Phaser.Scene {
 
     preload() {
         this.load.image('dummyimage', '/content/dummyimage.png');
-        //this.load.image('ylow', '/content/ylow.png');
-        this.load.image('squarena', '/content/squarena.jpg');
+        this.load.image('colosseum', '/content/ui/colosseum.png');
     }
 
     create() {
@@ -83,11 +82,9 @@ class BallArena extends Phaser.Scene {
         }), this.game.canvas);
 
         this.arena.Initialize();
-        var backgroundImage = this.add.sprite(this.arena.XPos, this.arena.YPos, 'squarena');
+        var backgroundImage = this.add.sprite(this.arena.XPos, this.arena.YPos, 'colosseum');
         backgroundImage.setDepth(-1);
-        var scale = boundingDimension / backgroundImage.height * 1.02;
-        backgroundImage.setScale(scale, scale);
-        //backgroundImage.setDisplaySize(this.arena.Radius * 2, this.arena.Radius * 2);
+        backgroundImage.setDisplaySize(this.arena.Radius * 4, this.arena.Radius * 4);
 
         this.balls = this.physics.add.group({
             defaultKey: 'dummyimage',
