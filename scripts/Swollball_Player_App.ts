@@ -73,7 +73,7 @@ class EndScreen extends Phaser.Scene {
                     placingText = yourPlacing + "th";
                     break;
             }
-            this.add.text(this.scale.canvas.width * 0.1, this.scale.canvas.height * 0.5, placingText + "/" + totalPlayers, { color: 'Black' }).setScale(boundingDimension * 0.0075);
+            this.add.text(this.scale.canvas.width * 0.1, this.scale.canvas.height * 0.5, placingText + " place\n(Out of " + totalPlayers + ")", { color: 'Black' }).setScale(boundingDimension * 0.0075);
         }
 
         this.time.addEvent(new Phaser.Time.TimerEvent({ delay: FINALSCOREDISPLAYDURATION * 1000, callback: this.EndGame, callbackScope: this }));
