@@ -74,6 +74,7 @@ class BallUpgrades extends Phaser.Scene {
     upgradeCards: UpgradeCard[];
 
     creditsLeft: Phaser.GameObjects.Text;
+    creditsLeftButton: Phaser.GameObjects.Sprite;
     creditNextIncrementTime: number;
     refreshButton: Phaser.GameObjects.Sprite;
 
@@ -81,8 +82,26 @@ class BallUpgrades extends Phaser.Scene {
     upgradeTierButton: Phaser.GameObjects.Sprite;
 
     preload() {
-        this.load.image('refreshimage', '/content/refreshimage.png');
-        this.load.image('uparrow', '/content/uparrow.png');
+        this.load.image('refreshimage', '/content/ui/refreshimage.png');
+        this.load.image('uparrow', '/content/ui/uparrow2.png');
+        this.load.image('credit', '/content/ui/credit.png');
+
+        // Note that the key is the same as the upgrade name
+        this.load.image('Tofu', '/content/cards/Tofu.png');
+        this.load.image('Apple', '/content/cards/Apple.png');
+        this.load.image('Brocolli', '/content/cards/Brocolli2.png');
+        this.load.image('BROcolli', '/content/cards/Brocolli.png');
+        this.load.image('Milk', '/content/cards/Milk.png');
+        this.load.image('Bread', '/content/cards/Bread.png');
+        this.load.image('Bacon', '/content/cards/Bacon.png');
+        this.load.image('Banana', '/content/cards/Banana.png');
+        this.load.image('Buffet', '/content/cards/Buffet.png');
+        this.load.image('Soy Milk', '/content/cards/SoyMilk.png');
+        this.load.image('Rice', '/content/cards/Rice.png');
+        this.load.image('Yoga', '/content/cards/Yoga.png');
+        this.load.image('GET SWOLL', '/content/cards/Swoll.png');
+        this.load.image('Ketones', '/content/cards/Bike.png');
+        this.load.image('Wagyu', '/content/cards/Steak.png');
     }
 
     constructor() {
@@ -98,8 +117,11 @@ class BallUpgrades extends Phaser.Scene {
 
         // Paint the CreditsLeft display
         this.creditNextIncrementTime = this.time.now;
+        this.creditsLeftButton = this.add.sprite(this.scale.canvas.width * 0.86 + boundingDimension * 0.004 * 7, this.scale.canvas.height * 0.08 + boundingDimension * 0.004 * 8, 'credit');
+        this.creditsLeftButton.scale = boundingDimension * 0.0012;
         this.creditsLeft = this.add.text(this.scale.canvas.width * 0.86, this.scale.canvas.height * 0.08, "0", { color: 'Black' });
         this.creditsLeft.scale = boundingDimension * 0.004;
+        this.creditsLeft.setDepth(2);
 
         // Paint the Refresh Button
         this.refreshButton = this.add.sprite(this.scale.canvas.width * 0.9, this.scale.canvas.height * 0.36, 'refreshimage');
@@ -118,6 +140,7 @@ class BallUpgrades extends Phaser.Scene {
             this.upgradeTierButton.x - this.upgradeTierButton.width * this.upgradeTierButton.scale / 2 + boundingDimension * 0.02,
             this.upgradeTierButton.y - this.upgradeTierButton.height * this.upgradeTierButton.scale / 2 + boundingDimension * 0.035, "0", { color: 'Black' });
         this.upgradeTierCost.scale = boundingDimension * 0.004;
+        this.upgradeTierCost.setDepth(2);
 
         /* Stuff for debugging hit area
         this.upgradeTierButton.on('pointerover', function (pointer) {
@@ -139,24 +162,20 @@ class BallUpgrades extends Phaser.Scene {
 
         if (this.upgradeCards.length > 0) {
             // Draw the fade screen
-            this.graphics.fillStyle(0xFFFFFF, 0.3);
+            this.graphics.fillStyle(0xFFFFFF, 0.2);
             this.graphics.fillRect(0, 0, this.scale.canvas.width, this.scale.canvas.height);
 
             // Set all graphics to visible
             this.creditsLeft.setVisible(true);
+            this.creditsLeftButton.setVisible(true);
             this.refreshButton.setVisible(true);
             this.upgradeTierButton.setVisible(true);
             this.upgradeTierCost.setVisible(true);
-
-            // Draw the number of credits left
-            this.graphics.fillStyle(0xFFC90E);
-            this.graphics.fillCircle(this.creditsLeft.x + this.creditsLeft.scale * 7, this.creditsLeft.y + this.creditsLeft.scale * 8, this.creditsLeft.scale * 15);
-            this.graphics.lineStyle(10, 0x222222);
-            this.graphics.strokeCircle(this.creditsLeft.x + this.creditsLeft.scale * 7, this.creditsLeft.y + this.creditsLeft.scale * 8, this.creditsLeft.scale * 15);
         }
         else {
             // Set all graphics to invisible
             this.creditsLeft.setVisible(false);
+            this.creditsLeftButton.setVisible(false);
             this.refreshButton.setVisible(false);
             this.upgradeTierButton.setVisible(false);
             this.upgradeTierCost.setVisible(false);
@@ -191,6 +210,9 @@ class BallUpgrades extends Phaser.Scene {
                 upgradeCard.Title.destroy(true);
                 upgradeCard.Description.destroy(true);
                 upgradeCard.Cost.destroy(true);
+                if (upgradeCard.CardBackground != null) {
+                    upgradeCard.CardBackground.destroy(true);
+                }
                 upgradeCard.destroy(true);
             }
 
@@ -385,6 +407,7 @@ class UpgradeCard extends Phaser.Physics.Arcade.Sprite {
     Title: Phaser.GameObjects.Text;
     Description: Phaser.GameObjects.Text;
     Cost: Phaser.GameObjects.Text;
+    CardBackground: Phaser.GameObjects.Sprite;
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, upgradeData: ServerUpgradeData, height: number, width: number) {
         super(scene, x, y, texture);
@@ -395,6 +418,14 @@ class UpgradeCard extends Phaser.Physics.Arcade.Sprite {
 
         var displayTitle = upgradeData.UpgradeName;
         if (upgradeData.UpgradeName.length == 0) { displayTitle = "" }; // Represent the blank upgrade card
+
+        if (scene.textures.exists(displayTitle)) {
+            this.CardBackground = scene.add.sprite(x + this.width * 0.5, y + this.height * 0.65, displayTitle);
+            // Scale to either 0.8 * width or 0.6 * height
+            var scaleValue = Math.min(this.width * 0.8 / this.CardBackground.displayWidth, this.height * 0.6 / this.CardBackground.displayHeight);
+            this.CardBackground.setDisplaySize(this.CardBackground.displayWidth * scaleValue, this.CardBackground.displayHeight * scaleValue);
+            this.CardBackground.setAlpha(0.4);
+        }
 
         this.Title = scene.add.text(x + this.width * (0.5 - displayTitle.length * 0.04), y + this.height * 0.05, displayTitle, { color: 'Black' });
         this.Title.scale = width * 0.008;
