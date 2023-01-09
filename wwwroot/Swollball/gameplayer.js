@@ -6,6 +6,10 @@ document.getElementById("joinroombutton").addEventListener("click", function (ev
     var roomIdIn = document.getElementById("roomid").value;
     var colorIn = document.getElementById("colorpicker").value;
 
+    if (userNameIn.length <= 0) {
+        return;
+    }
+
     connection.invoke("JoinRoom", userNameIn, roomIdIn, colorIn).catch(function (err) {
         return console.error(err.toString());
     });
