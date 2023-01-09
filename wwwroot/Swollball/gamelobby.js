@@ -57,7 +57,7 @@ connection.on("HostUpdateRoom", function (room) {
 });
 
 connection.on("StartGame", function (sceneToStartOn = "BallArena") {
-    document.body.innerHTML = "<div id='phaserapp' style=\"height:'100%' width:'100%'\"></div>";
+    document.body.innerHTML = "<div id='controlbar' style=\"min-height:20px; height:2vh\"></div><div id='phaserapp' style=\"height:93vh\"></div>";
     Game = new Swollball_Lobby_Game(sceneToStartOn);
 });
 

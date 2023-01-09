@@ -4,7 +4,7 @@
         this.game = new Phaser.Game(
             {
                 width: "100%",
-                height: "97%",
+                height: "100%",
                 type: Phaser.AUTO,
 
                 physics: {

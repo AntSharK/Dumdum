@@ -52,8 +52,11 @@ connection.on("Reconnect_ResumeWaiting", function (userName, roomId) {
     SwitchToWaitingView(userName, roomId);
 });
 
-connection.on("StartGame", function (playersConcat, userJoined) {
-    document.body.innerHTML = "<div id='phaserapp' style=\"height:'100%' width:'100%'\"></div>";
+connection.on("StartGame", function (sceneToStartOn) {
+    document.body.innerHTML = "<div id='controlbar' style=\"min-height:20px; height:2vh\"></div><div id='phaserapp' style=\"height:93vh\"></div>";
+    var sessionRoomId = sessionStorage.getItem(RoomIdSessionStorageKey);
+    var sessionUserName = sessionStorage.getItem(UserIdSessionStorageKey)
+    document.getElementById("controlbar").textContent = "GAME:" + sessionRoomId + "\t\t" + "USERID:" + sessionUserName;
     Game = new Swollball_Player_Game();
 });
 
