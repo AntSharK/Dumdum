@@ -98,6 +98,16 @@ class BallUpgrades extends Phaser.Scene {
     upgradeTierButton: Phaser.GameObjects.Sprite;
 
     preload() {
+        // Loading progress updates
+        this.load.on('progress', function (value) {
+            console.log(value);
+            document.getElementById("loadingbar").textContent = "Loading: " + Math.floor(value * 100) + "%";
+        });
+        this.load.on('complete', function () {
+            var sessionRoomId = sessionStorage.getItem("roomid");
+            document.getElementById("loadingbar").textContent = "ROOMID: " + sessionRoomId;
+        });
+
         this.load.image('refreshimage', '/content/ui/refreshimage.png');
         this.load.image('uparrow', '/content/ui/uparrowoverlay.png');
         this.load.image('credit', '/content/ui/creditoverlay.png');
@@ -127,6 +137,7 @@ class BallUpgrades extends Phaser.Scene {
     }
 
     create() {
+
         this.graphics = this.add.graphics({ x: 0, y: 0 });
         this.input.on('gameobjectdown', this.onObjectClicked);
         var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
