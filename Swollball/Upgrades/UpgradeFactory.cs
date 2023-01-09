@@ -31,6 +31,7 @@ namespace Swollball.Upgrades
         {
             Tuple.Create(12, () => new Damage(5, 4, "Bacon") as IUpgrade),
             Tuple.Create(12, () => new Armor(4, 5, "Banana") as IUpgrade),
+            Tuple.Create(10, () => new Harden(1, 6) as IUpgrade),
             Tuple.Create(10, () => new Giant(2, 4) as IUpgrade),
             Tuple.Create(10, () => new Impulse(1, 10) as IUpgrade),
             Tuple.Create(10, () => new Payday(1, 10) as IUpgrade),
