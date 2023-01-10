@@ -486,7 +486,7 @@ class BallStats extends Phaser.Scene {
 
     preload() {
         this.load.image('dummyimage', '/content/dummyimage.png');
-        this.load.image('mahjong', '/content/ui/mahjong.jpg');
+        this.load.image('background', '/content/ui/wooden.jpg');
     }
 
     create() {
@@ -547,8 +547,8 @@ class BallStats extends Phaser.Scene {
         }
         Phaser.Actions.PlaceOnCircle(textArray2, new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y - 15 * scaleMultiplier, this.playerBall.Size + 5 * scaleMultiplier), -0.6, 1.3);
 
-        var backgroundImage = this.add.sprite(this.scale.canvas.width / 2, this.scale.canvas.height / 2, 'mahjong');
-        backgroundImage.alpha = 0.3;
+        var backgroundImage = this.add.sprite(this.scale.canvas.width / 2, this.scale.canvas.height / 2, 'background');
+        backgroundImage.alpha = 0.55;
         backgroundImage.setDepth(-1);
         backgroundImage.setDisplaySize(this.scale.canvas.width, this.scale.canvas.height);
     }
