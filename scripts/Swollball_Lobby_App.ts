@@ -84,6 +84,7 @@ class BallArena extends Phaser.Scene {
 
         this.balls = this.physics.add.group({
             defaultKey: 'dummyimage',
+            
             bounceX: 1,
             bounceY: 1,            
         });
@@ -106,6 +107,10 @@ class BallArena extends Phaser.Scene {
             var ball2 = body2 as PlayerBall;
             if (ball1.Hp != undefined && ball2.Hp != undefined) {
                 HitBalls(ball1, ball2, this.time.now /*Pass in the time the ball was hit*/);
+
+                // Maintain system velocity
+                SetBallVelocity([ball1, ball2], this, false /*Do not initialize direction*/);
+
                 if (ball1.Hp <= 0) {
                     DisableBall(ball1);
                     this.balls.remove(ball1);
@@ -125,7 +130,7 @@ class BallArena extends Phaser.Scene {
 
     startBallsMoving() {
         this.circlesMoving = true;
-        SetBallVelocity(this.playerBalls, this);
+        SetBallVelocity(this.playerBalls, this, true /*Initialize direction*/);
     }
 
     update() {
