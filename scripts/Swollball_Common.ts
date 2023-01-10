@@ -353,10 +353,10 @@ function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBal
             // Align text to the center
             pb.NameText.x = pb.body.position.x + pb.Size * (1 - pb.NameText.text.length * 0.075);
             pb.NameText.y = pb.body.position.y + pb.Size * 0.95;
-            pb.NameText.alpha = colorAlpha;
+            //pb.NameText.alpha = colorAlpha;
             pb.HpText.x = pb.body.position.x + pb.Size * (1 - pb.HpText.text.length * 0.075);
             pb.HpText.y = pb.body.position.y + pb.Size * 1.15;
-            pb.HpText.alpha = colorAlpha;
+            //pb.HpText.alpha = colorAlpha;
         }
     };
 }
