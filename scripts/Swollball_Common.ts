@@ -319,8 +319,8 @@ function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBal
     for (let pb of playerBalls) {
         if (pb.active) {
             var hp = Math.min(pb.Hp, pb.MaxHp);
-            // Transparency is according to the bezier curve - 50% hp is 35% transparency
-            var colorAlpha = Phaser.Math.Interpolation.QuadraticBezier(hp / pb.MaxHp, 0.10, 0.35, 1.0);
+            // Transparency is according to the bezier curve - 50% hp is 50% transparency
+            var colorAlpha = Phaser.Math.Interpolation.QuadraticBezier(hp / pb.MaxHp, 0.15, 0.5, 1.0);
 
             if (pb.HitTime > 0
                 && (graphics.scene.time.now - pb.HitTime) < FLASHTIME
@@ -353,10 +353,10 @@ function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBal
             // Align text to the center
             pb.NameText.x = pb.body.position.x + pb.Size * (1 - pb.NameText.text.length * 0.075);
             pb.NameText.y = pb.body.position.y + pb.Size * 0.95;
-            pb.NameText.alpha = colorAlpha;
+            //pb.NameText.alpha = colorAlpha;
             pb.HpText.x = pb.body.position.x + pb.Size * (1 - pb.HpText.text.length * 0.075);
             pb.HpText.y = pb.body.position.y + pb.Size * 1.15;
-            pb.HpText.alpha = colorAlpha;
+            //pb.HpText.alpha = colorAlpha;
         }
     };
 }
