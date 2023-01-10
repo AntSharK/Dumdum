@@ -77,8 +77,9 @@ class BallArena extends Phaser.Scene {
 
         this.arena = new Arena(this.physics.add.group({
             defaultKey: 'dummyimage',
-            bounceX: 2,
-            bounceY: 2,
+            bounceX: 1,
+            bounceY: 1,
+            immovable: true,
         }), this.game.canvas);
 
         this.arena.Initialize();
@@ -89,7 +90,8 @@ class BallArena extends Phaser.Scene {
         this.balls = this.physics.add.group({
             defaultKey: 'dummyimage',
             bounceX: 1,
-            bounceY: 1,            
+            bounceY: 1,
+            
         });
 
         const AREATAKENBYBALLS = 0.25;

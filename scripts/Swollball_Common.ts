@@ -203,6 +203,17 @@ class PlayerBall extends Phaser.Physics.Arcade.Sprite {
 }
 
 function HitBalls(ball1: PlayerBall, ball2: PlayerBall, timeNow: number) {
+    // Invulnerability for a while after being hit
+    const INVULNERABLETIME = 175;
+    if (ball1.HitTime > 0
+        && (timeNow - ball1.HitTime) < INVULNERABLETIME) {
+        return;
+    }
+    if (ball2.HitTime > 0
+        && (timeNow - ball2.HitTime) < INVULNERABLETIME) {
+        return;
+    }
+
     ball1.HitTime = timeNow;
     ball2.HitTime = timeNow;
 
