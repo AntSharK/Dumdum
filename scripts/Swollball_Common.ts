@@ -319,8 +319,8 @@ function DrawBalls(graphics: Phaser.GameObjects.Graphics, playerBalls: PlayerBal
     for (let pb of playerBalls) {
         if (pb.active) {
             var hp = Math.min(pb.Hp, pb.MaxHp);
-            // Transparency is according to the bezier curve - 50% hp is 35% transparency
-            var colorAlpha = Phaser.Math.Interpolation.QuadraticBezier(hp / pb.MaxHp, 0.10, 0.35, 1.0);
+            // Transparency is according to the bezier curve - 50% hp is 50% transparency
+            var colorAlpha = Phaser.Math.Interpolation.QuadraticBezier(hp / pb.MaxHp, 0.15, 0.5, 1.0);
 
             if (pb.HitTime > 0
                 && (graphics.scene.time.now - pb.HitTime) < FLASHTIME

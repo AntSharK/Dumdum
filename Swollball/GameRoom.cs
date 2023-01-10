@@ -31,7 +31,7 @@ namespace Swollball
                 tp.Ball.Keystones["Feast"] = new Upgrades.Keystones.Feast(5, 0);
                 tp.Ball.Keystones["Harden"] = new Upgrades.Keystones.Harden(4, 0);
                 tp.Ball.Upgrades.Add(new Upgrades.Hp(25, 0, "TESTUPGRADE"));
-                tp.Ball.SizeMultiplier = 600;
+                tp.Ball.SizeMultiplier = 350;
                 tp.Economy.CreditsLeft = 99;
             }
             /*
