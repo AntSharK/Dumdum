@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 using Swollball.Upgrades;
 
 namespace Swollball
@@ -22,6 +23,7 @@ namespace Swollball
 
         public async Task JoinRoom(string userName, string roomId, string colorIn)
         {
+            Logger.LogInformation("PLAYER: {0} JOINS ROOM:{1}.", userName, roomId);
             if (!this.GameLobby.Rooms.ContainsKey(roomId))
             {
                 await Clients.Caller.SendAsync("ShowError", "Room not found.");
@@ -46,6 +48,7 @@ namespace Swollball
 
         public async Task ResumePlayerSession(string userName, string roomId)
         {
+            Logger.LogInformation("PLAYER: {0} RESUMES ROOM:{1}.", userName, roomId);
             (var player, var room) = await this.FindPlayerAndRoom(userName, roomId);
             if (player == null || room == null) return;
 
@@ -121,6 +124,7 @@ namespace Swollball
 
         public async Task StartNextPlayerRound(string userName, string roomId)
         {
+            Logger.LogInformation("PLAYER: {0} STARTS NEXT ROUND IN ROOM:{1}.", userName, roomId);
             (var player, var room) = await this.FindPlayerAndRoom(userName, roomId);
             if (player == null || room == null) return;
 

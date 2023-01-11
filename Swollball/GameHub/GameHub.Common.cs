@@ -1,13 +1,21 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 
 namespace Swollball
 {
     public partial class GameHub : Hub
     {
         private Lobby GameLobby;
+        private static ILogger Logger;
+
+        public static void RegisterLogger(ILogger logger)
+        {
+            Logger = logger;
+        }
 
         public GameHub(Lobby lobby)
         {
+            
             this.GameLobby = lobby;
         }
 
@@ -36,6 +44,7 @@ namespace Swollball
         {
             if (!this.GameLobby.Rooms.ContainsKey(roomId))
             {
+                Logger.LogWarning("UNABLE TO FIND ROOM ID:{0}", roomId);
                 await Clients.Caller.SendAsync("ShowError", "Room not found.");
                 await Clients.Caller.SendAsync("ClearState");
                 return (null, null);
@@ -49,6 +58,7 @@ namespace Swollball
 
             if (!room.Players.ContainsKey(userName))
             {
+                Logger.LogWarning("UNABLE TO FIND PLAYER {0} IN ROOM:{0}", userName, roomId);
                 await Clients.Caller.SendAsync("ShowError", "Could not find player in room.");
                 await Clients.Caller.SendAsync("ClearState");
                 return (null, room);
