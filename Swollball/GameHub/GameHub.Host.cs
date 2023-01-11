@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
 namespace Swollball
@@ -10,16 +11,19 @@ namespace Swollball
             var newRoom = this.GameLobby.CreateRoom(Context.ConnectionId);
             if (newRoom != null)
             {
+                Logger.LogInformation("CREATED ROOM ID {0}", newRoom.RoomId);
                 await Clients.Caller.SendAsync("CreateRoom_GetId", newRoom.RoomId);
             }
             else
             {
+                Logger.LogWarning("FAILED TO CREATE ROOM.");
                 await Clients.Caller.SendAsync("ShowError", "ERROR CREATING ROOM.");
             }
         }
 
         public async Task StartRoom(string roomId, string maxRounds /*Serialization: This version of SignalR passes in everything as strings*/)
         {
+            Logger.LogInformation("STARTING ROOM {0} WITH MAX ROUNDS {1}.", roomId, maxRounds);
             (var player, var roomToStart) = await this.FindPlayerAndRoom(null, roomId);
             if (roomToStart == null) return;
 
@@ -52,6 +56,7 @@ namespace Swollball
 
         public async Task StartNextLobbyRound(string roomId)
         {
+            Logger.LogInformation("STARTING NEXT ROUND FOR ROOM:{0}.", roomId);
             (var player, var roomToStart) = await this.FindPlayerAndRoom(null, roomId);
             if (roomToStart == null) return;
 
@@ -62,6 +67,7 @@ namespace Swollball
 
         public async Task FinishRound(RoundEvent[] roundEvents, string roomId)
         {
+            Logger.LogInformation("FINISHED ROUND FOR ROOM:{0}.", roomId);
             (var player, var room) = await this.FindPlayerAndRoom(null, roomId);
             if (room == null) return;
             room.UpdateRoundEnd(roundEvents);
@@ -81,6 +87,7 @@ namespace Swollball
 
         private async Task EndGame(GameRoom room)
         {
+            Logger.LogInformation("ENDGAME FOR ROOM:{0}.", room.RoomId);
             await Clients.Caller.SendAsync("ClearState"); // For host machine, display last scoreboard and clear state
 
             // For all players, update score information and display their position
@@ -90,6 +97,7 @@ namespace Swollball
 
         public async Task ResumeHostSession(string roomId)
         {
+            Logger.LogInformation("ATTEMPTING TO RESUME ROOM {0}.", roomId);
             (var player, var room) = await this.FindPlayerAndRoom(null, roomId);
             if (room == null) return;
 
