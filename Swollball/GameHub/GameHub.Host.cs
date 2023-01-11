@@ -23,7 +23,7 @@ namespace Swollball
 
         public async Task StartRoom(string roomId, string maxRounds /*Serialization: This version of SignalR passes in everything as strings*/)
         {
-            Logger.LogInformation("STARTING ROOM {0} WITH MAX ROUNDS {1}.", roomId, maxRounds);
+            Logger.LogInformation("STARTING ROOM {0}.", roomId);
             (var player, var roomToStart) = await this.FindPlayerAndRoom(null, roomId);
             if (roomToStart == null) return;
 
@@ -88,6 +88,12 @@ namespace Swollball
         private async Task EndGame(GameRoom room)
         {
             Logger.LogInformation("ENDGAME FOR ROOM:{0}.", room.RoomId);
+            foreach (var player in room.Players.Values)
+            {
+                Logger.LogInformation("ENDGAME STATS. ROOM:{0}, PLAYER:{1}. SCORE:{2}. Ball Stats - D:{3},A:{4},Sz:{5},Sp:{6},Hp:{7}. Keystones:{8}.", player.RoomId, player.Name,
+                    player.PlayerScore.TotalScore, player.Ball.Dmg, player.Ball.Armor, player.Ball.SizeMultiplier, player.Ball.SpeedMultiplier, player.Ball.Hp,
+                    string.Join(';', player.Ball.KeystoneData));
+            }
             await Clients.Caller.SendAsync("ClearState"); // For host machine, display last scoreboard and clear state
 
             // For all players, update score information and display their position
