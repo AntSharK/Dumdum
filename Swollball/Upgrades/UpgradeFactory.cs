@@ -40,7 +40,8 @@ namespace Swollball.Upgrades
 
         private static List<Tuple<int, Func<IUpgrade>>> Tier3UpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
         {
-            Tuple.Create(8, () => new Hp(30, 4, "BROcolli") as IUpgrade),
+            Tuple.Create(8, () => new Regrowth(2, 5, "+Regrowth") as IUpgrade),
+            Tuple.Create(8, () => new Hp(40, 4, "BROcolli") as IUpgrade),
             Tuple.Create(8, () => new Size(35, 3, "Soy Milk") as IUpgrade),
             Tuple.Create(8, () => new Speed(50, 3, "Rice") as IUpgrade),
             Tuple.Create(8, () => new Furious(1, 6, "Yoga") as IUpgrade),
