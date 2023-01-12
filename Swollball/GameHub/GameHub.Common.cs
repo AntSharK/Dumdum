@@ -58,7 +58,7 @@ namespace Swollball
 
             if (!room.Players.ContainsKey(userName))
             {
-                Logger.LogWarning("UNABLE TO FIND PLAYER {0} IN ROOM:{0}", userName, roomId);
+                Logger.LogWarning("UNABLE TO FIND PLAYER {1} IN ROOM:{0}", roomId, userName);
                 await Clients.Caller.SendAsync("ShowError", "Could not find player in room.");
                 await Clients.Caller.SendAsync("ClearState");
                 return (null, room);

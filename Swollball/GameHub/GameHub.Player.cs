@@ -23,7 +23,7 @@ namespace Swollball
 
         public async Task JoinRoom(string userName, string roomId, string colorIn)
         {
-            Logger.LogInformation("PLAYER: {0} JOINS ROOM:{1}.", userName, roomId);
+            Logger.LogInformation("PLAYER: {1} JOINS ROOM:{0}.", roomId, userName);
             if (!this.GameLobby.Rooms.ContainsKey(roomId))
             {
                 await Clients.Caller.SendAsync("ShowError", "Room not found.");
@@ -48,7 +48,7 @@ namespace Swollball
 
         public async Task ResumePlayerSession(string userName, string roomId)
         {
-            Logger.LogInformation("PLAYER: {0} RESUMES ROOM:{1}.", userName, roomId);
+            Logger.LogInformation("PLAYER:{1} RESUMES ROOM:{0}.", roomId, userName);
             (var player, var room) = await this.FindPlayerAndRoom(userName, roomId);
             if (player == null || room == null) return;
 
@@ -124,7 +124,7 @@ namespace Swollball
 
         public async Task StartNextPlayerRound(string userName, string roomId)
         {
-            Logger.LogInformation("PLAYER: {0} STARTS NEXT ROUND IN ROOM:{1}.", userName, roomId);
+            Logger.LogInformation("PLAYER:{0} STARTS NEXT ROUND IN ROOM:{1}.", roomId, userName);
             (var player, var room) = await this.FindPlayerAndRoom(userName, roomId);
             if (player == null || room == null) return;
 
