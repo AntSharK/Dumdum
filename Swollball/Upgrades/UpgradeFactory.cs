@@ -31,6 +31,7 @@ namespace Swollball.Upgrades
         {
             Tuple.Create(12, () => new Damage(5, 4, "Bacon") as IUpgrade),
             Tuple.Create(12, () => new Armor(4, 5, "Banana") as IUpgrade),
+            Tuple.Create(12, () => new Inertia(2, 3, "+Inertia") as IUpgrade),
             Tuple.Create(10, () => new Harden(1, 6) as IUpgrade),
             Tuple.Create(10, () => new Giant(2, 4) as IUpgrade),
             Tuple.Create(10, () => new Impulse(1, 6) as IUpgrade),
@@ -40,18 +41,21 @@ namespace Swollball.Upgrades
 
         private static List<Tuple<int, Func<IUpgrade>>> Tier3UpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
         {
-            Tuple.Create(8, () => new Hp(30, 4, "BROcolli") as IUpgrade),
+            Tuple.Create(8, () => new Regrowth(2, 5, "+Regrowth") as IUpgrade),
+            Tuple.Create(8, () => new Hp(40, 4, "BROcolli") as IUpgrade),
             Tuple.Create(8, () => new Size(35, 3, "Soy Milk") as IUpgrade),
             Tuple.Create(8, () => new Speed(50, 3, "Rice") as IUpgrade),
             Tuple.Create(8, () => new Furious(1, 6, "Yoga") as IUpgrade),
             Tuple.Create(8, () => new Bloat(1, 7, "GET SWOLL") as IUpgrade),
             Tuple.Create(8, () => new Bulwark(3, 6) as IUpgrade),
             Tuple.Create(8, () => new Harden(4, 10) as IUpgrade),
+            Tuple.Create(8, () => new Ossify(1, 5) as IUpgrade),
         };
 
         private static List<Tuple<int, Func<IUpgrade>>> Tier4UpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
         {
-            Tuple.Create(6, () => new Tech(2, 10, "Ketones") as IUpgrade),
+            Tuple.Create(6, () => new Inertia(6, 5, "++Inertia") as IUpgrade),
+            Tuple.Create(6, () => new Tech(3, 10, "Ketones") as IUpgrade),
             Tuple.Create(6, () => new Feast(8, 9) as IUpgrade),
             Tuple.Create(6, () => new Damage(20, 6, "Wagyu") as IUpgrade),
         };

@@ -35,7 +35,7 @@ namespace Swollball.Upgrades.Keystones
 
         public override void PerformUpgrade(Player player)
         {
-            this.preUpgradeStat = player.Ball.Hp;
+            this.preUpgradeStat = player.Ball.SpeedMultiplier;
             base.PerformUpgrade(player);
         }
     }
