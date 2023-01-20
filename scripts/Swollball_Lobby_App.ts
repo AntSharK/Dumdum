@@ -22,7 +22,7 @@ class Swollball_Lobby_Game {
                 physics: {
                     default: 'arcade',
                     arcade: {
-                        debug: false
+                        debug: true
                     }
                 },
 
@@ -250,11 +250,22 @@ class Arena {
         this.PhysicsGroup.children.each(function (b) {
             (<Phaser.Physics.Arcade.Sprite>b).setPushable(false);
             (<Phaser.Physics.Arcade.Sprite>b).setImmovable(true);
-        });
+
+            // Preliminary code to shrink arena
+            var xDiff = (<Phaser.Physics.Arcade.Sprite>b).x - this.XPos;
+            var yDiff = (<Phaser.Physics.Arcade.Sprite>b).y - this.YPos;
+            var direction = new Phaser.Math.Vector2(xDiff, yDiff);
+            var normalizedDirection = direction.normalize();
+            (<Phaser.Physics.Arcade.Sprite>b).setVelocity(normalizedDirection.x * -10, normalizedDirection.y * -10);
+        }, this);
     }
 }
 
 function DrawArena(graphics: Phaser.GameObjects.Graphics, arena: Arena) {
-    graphics.lineStyle(8, 0x000000);                        
-    graphics.strokeCircle(arena.XPos, arena.YPos, arena.Radius + 4)
+    var xDiff = (<Phaser.Physics.Arcade.Sprite>arena.PhysicsGroup.children.entries[0]).x - arena.XPos;
+    var yDiff = (<Phaser.Physics.Arcade.Sprite>arena.PhysicsGroup.children.entries[0]).y - arena.YPos;
+    var drawnRadius = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+
+    graphics.lineStyle(8, 0x000000);
+    graphics.strokeCircle(arena.XPos, arena.YPos, drawnRadius + 4)
 }
