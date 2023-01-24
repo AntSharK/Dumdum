@@ -107,7 +107,7 @@ namespace Swollball
             room.State = GameRoom.RoomState.TearingDown;
 
             // TODO: A proper endgame screen with proper endgame data
-            await Clients.Caller.SendAsync("UpdateLeaderboard", room.Players.Values.Select(s => s.PlayerScore));
+            await Clients.Caller.SendAsync("UpdateLeaderboard", room.Players.Values.Select(s => s.PlayerScore).Union(room.DeadPlayers.Select(s => s.PlayerScore)));
             await Clients.Caller.SendAsync("SceneTransition", "BallArena", "Leaderboard");
 
             Logger.LogInformation("ENDGAME FOR ROOM:{0}.", room.RoomId);

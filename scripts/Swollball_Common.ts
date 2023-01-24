@@ -38,17 +38,26 @@ function InitializeBallData(dataIn: any[]) {
 
 function InitializeLeaderboardData(dataIn: any[]) {
     RoundScoreData = [];
+    var alivePlayers = 0;
     for (let data of dataIn) {
         var serverData = new ServerRoundScoreData();
         serverData.PlayerName = data.playerName;
         serverData.HpLeft = data.hpLeft;
+
+        if (data.hpLeft > 0) {
+            alivePlayers++;
+        }
+
         serverData.RoundDamageDone = data.roundDamageDone;
         serverData.RoundDamageReceived = data.roundDamageReceived;
 
         RoundScoreData.push(serverData);
     }
 
-    if (dataIn.length > 0) {
+    if (alivePlayers <= 1) {
+        RoundNumber = -1;
+    }
+    else if (dataIn.length > 0) {
         RoundNumber = dataIn[0].roundNumber;
     }
 }
