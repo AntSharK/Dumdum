@@ -239,6 +239,10 @@ class Leaderboard extends Phaser.Scene {
             for (let scoreData of RoundScoreData.sort((a: ServerRoundScoreData, b: ServerRoundScoreData) => {
                 return b.RoundNumber - a.RoundNumber; // Sort in descending order of round killed
             })) {
+                if (scoreData.RoundNumber == 0) { // Account for the fact that Round 0 means the game hasn't started, and round 2 requires the player to survive round 1
+                    scoreData.RoundNumber = 1;
+                }
+
                 this.add.text(200, 200 + 50 * i, scoreData.PlayerName + " - ROUND ELIMINATED:" + scoreData.RoundNumber + " - DMG DEALT (TOTAL):" + scoreData.TotalDamageDone + " - DMG TAKEN (TOTAL):" + scoreData.TotalDamageReceived,
                     { color: 'White' });
                 i++;
