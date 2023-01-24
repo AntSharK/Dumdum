@@ -72,9 +72,6 @@ namespace Swollball
             if (room == null) return;
             var newDeadPlayers = room.UpdateRoundEnd(roundEvents);
 
-            await Clients.Caller.SendAsync("UpdateLeaderboard", room.Players.Values.Select(s => s.PlayerScore));
-            await Clients.Caller.SendAsync("SceneTransition", "BallArena", "Leaderboard");
-
             // Send out messages for players who are dead
             await Task.WhenAll(newDeadPlayers.Select(player =>
             {
@@ -99,6 +96,8 @@ namespace Swollball
             }
             else
             {
+                await Clients.Caller.SendAsync("UpdateLeaderboard", room.Players.Values.Select(s => s.PlayerScore));
+                await Clients.Caller.SendAsync("SceneTransition", "BallArena", "Leaderboard");
                 await Clients.Group(room.RoomId).SendAsync("StartNextRound");
             }
         }
@@ -106,6 +105,10 @@ namespace Swollball
         private async Task EndGame(GameRoom room)
         {
             room.State = GameRoom.RoomState.TearingDown;
+
+            // TODO: A proper endgame screen with proper endgame data
+            await Clients.Caller.SendAsync("UpdateLeaderboard", room.Players.Values.Select(s => s.PlayerScore));
+            await Clients.Caller.SendAsync("SceneTransition", "BallArena", "Leaderboard");
 
             Logger.LogInformation("ENDGAME FOR ROOM:{0}.", room.RoomId);
             foreach (var player in room.Players.Values)

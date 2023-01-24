@@ -210,12 +210,13 @@ class Leaderboard extends Phaser.Scene {
 
         var timerEndFunction = this.StartNextRound;
         var roundDurationSeconds = parseInt(sessionStorage.getItem("leaderboardduration"));
+
         switch (RoundNumber) {
             case 0:
                 this.add.text(200, 100, "FIRST ROUND STARTING SOON...");
                 roundDurationSeconds = roundDurationSeconds * 2;
                 break;
-            case -1:
+            case -1: // TODO - Proper endgame function to end round
                 this.add.text(200, 100, "END OF GAME");
                 roundDurationSeconds = FINALSCOREDISPLAYDURATION;
                 timerEndFunction = this.EndGame;

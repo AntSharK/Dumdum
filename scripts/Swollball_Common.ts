@@ -44,7 +44,6 @@ function InitializeLeaderboardData(dataIn: any[]) {
         serverData.HpLeft = data.hpLeft;
         serverData.RoundDamageDone = data.roundDamageDone;
         serverData.RoundDamageReceived = data.roundDamageReceived;
-        serverData.RoundDamageDone
 
         RoundScoreData.push(serverData);
     }
