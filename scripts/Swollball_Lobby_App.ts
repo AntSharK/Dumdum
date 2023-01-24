@@ -51,15 +51,19 @@ class BallArena extends Phaser.Scene {
     roundTimer: Phaser.Time.TimerEvent;
     timeLeftDisplay: Phaser.GameObjects.Text;
     circlesMoving: boolean;
-    radiusForScale: number;
+    readyTextScale: number;
+    readyText: Phaser.GameObjects.Sprite;
 
     ROUNDDELAY: integer = 1500;
+    READYDISPLAYTIME: integer = 1000;
     constructor() {
         super({ key: 'BallArena', active: false });
     }
 
     preload() {
         this.load.image('dummyimage', '/content/dummyimage.png');
+        this.load.image('readytext', '/content/ui/readytext.png');
+        this.load.image('fighttext', '/content/ui/fighttext.png');
         this.load.image('background', '/content/ui/circlearenalines.png');
     }
 
@@ -97,9 +101,11 @@ class BallArena extends Phaser.Scene {
         const AREATAKENBYBALLS = 0.25;
         this.playerBalls = InitializeBalls(this.balls, this, AREATAKENBYBALLS);
 
-        // The DUMMYBALL is a ball before the game, rendered to give players a sense of scale
-        const DUMMYBALLSIZE = 100;
-        this.radiusForScale = DUMMYBALLSIZE * this.playerBalls[0].Size / this.playerBalls[0].SizeMultiplier;
+        // Text is smaller when balls are bigger, to give players a sense of scale
+        const BASESCALE = 2;
+        this.readyTextScale = BASESCALE * this.playerBalls[0].Size / this.playerBalls[0].SizeMultiplier;
+        this.readyText = this.add.sprite(this.arena.XPos, this.arena.YPos, 'readytext');
+        this.readyText.setScale(this.readyTextScale);
         this.circlesMoving = false;
 
         this.physics.add.collider(this.balls, this.arena.PhysicsGroup, (body1, body2) => {
@@ -142,13 +148,32 @@ class BallArena extends Phaser.Scene {
 
         if (!this.circlesMoving) { // Draw a circle for scale
             this.timeLeftDisplay.text = "Starting...";
-            var interpolationPoint = this.roundTimer.getElapsed() / this.ROUNDDELAY;
-            this.graphics.fillStyle(0x000000); 
-            this.graphics.fillCircle(this.arena.XPos, this.arena.YPos,
-                Phaser.Math.Interpolation.QuadraticBezier(interpolationPoint,
-                    this.radiusForScale, this.radiusForScale * 0.995, 0));
+            this.drawPreliminaryText();
         } else {
             this.timeLeftDisplay.text = Math.ceil(this.roundTimer.getRemainingSeconds()).toString();
+
+            // Destroy text until it has faded away it has faded out
+            if (this.readyText.active) {
+                this.drawPreliminaryText();
+            }
+            if (this.readyText.alpha <= 0) {
+                this.readyText.destroy();
+            }
+        }
+    }
+
+    drawPreliminaryText() {
+        if (this.roundTimer.getElapsed() > this.READYDISPLAYTIME) {
+            if (this.readyText.texture.key == 'readytext') {
+                this.readyText.setTexture('fighttext');
+            }
+
+            // Interpolate and draw
+            var interpolationPoint = (this.roundTimer.getElapsed() - this.READYDISPLAYTIME) / this.ROUNDDELAY;
+            this.readyText.setScale(Phaser.Math.Interpolation.QuadraticBezier(interpolationPoint,
+                this.readyTextScale, this.readyTextScale * 4, this.readyTextScale * 5));
+            this.readyText.alpha = Phaser.Math.Interpolation.QuadraticBezier(interpolationPoint,
+                1, 0.2, 0);
         }
     }
 
