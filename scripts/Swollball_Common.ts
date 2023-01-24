@@ -51,6 +51,7 @@ function InitializeLeaderboardData(dataIn: any[]) {
         serverData.RoundDamageDone = data.roundDamageDone;
         serverData.RoundDamageReceived = data.roundDamageReceived;
         serverData.RoundNumber = data.roundNumber;
+        serverData.PointsDeducted = data.pointsDeducted;
         serverData.TotalDamageDone = data.totalDamageDone;
         serverData.TotalDamageReceived = data.totalDamageReceived;
 
@@ -117,6 +118,7 @@ class ServerRoundScoreData {
     RoundDamageDone: integer;
     RoundDamageReceived: integer;
     PlayerName: string;
+    PointsDeducted: integer;
     RoundNumber: integer;
     TotalDamageDone: integer;
     TotalDamageReceived: integer;

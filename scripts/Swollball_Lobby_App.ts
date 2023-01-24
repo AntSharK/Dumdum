@@ -253,7 +253,7 @@ class Leaderboard extends Phaser.Scene {
             for (let scoreData of RoundScoreData.sort((a: ServerRoundScoreData, b: ServerRoundScoreData) => {
                 return b.PointsLeft - a.PointsLeft; // Sort in descending order of points left
             })) {
-                this.add.text(200, 200 + 50 * i, scoreData.PlayerName + " - POINTS LEFT:" + scoreData.PointsLeft + " - DMG DEALT:" + scoreData.RoundDamageDone + " - DMG TAKEN:" + scoreData.RoundDamageReceived,
+                this.add.text(200, 200 + 50 * i, scoreData.PlayerName + " - POINTS LEFT:" + scoreData.PointsLeft + "(-" + scoreData.PointsDeducted + ") - DMG DEALT: " + scoreData.RoundDamageDone + " - DMG TAKEN: " + scoreData.RoundDamageReceived,
                     { color: 'White' });
                 i++;
             }

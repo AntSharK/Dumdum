@@ -158,6 +158,7 @@ namespace Swollball
         public class Score
         {
             public int PointsLeft { get; set; } = 0;
+            public int PointsDeducted { get; set; } = 0;
             public int RoundDamageDone { get; set; } = 0;
             public int RoundDamageReceived { get; set; } = 0;
             public string PlayerName { get; private set; }

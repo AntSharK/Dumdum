@@ -146,16 +146,17 @@ namespace Swollball
                 }
             }
 
-            // Update player HP totals - This is a ranking from LAST to first
-            var roundRanking = playerHealthLeft.OrderBy(x => x.Item1);
-
-            // TODO: Actually update HP totals smartly, with a number that increases per round
+            // Update player HP totals - This is a ranking from highest to lowest
+            var roundRanking = playerHealthLeft.OrderByDescending(x => x.Item1);
             var i = 0;
             foreach (var p in roundRanking)
             {
+                // Interpolate between 0 and RoundNumber * 10
+                var deductedPoints = i * ((RoundNumber-1) * 10) / (roundRanking.Count() + 1); 
                 var player = this.Players[p.Item2];
-                player.PlayerScore.PointsLeft -= i;
-                i = i + 10;
+                player.PlayerScore.PointsDeducted = deductedPoints;
+                player.PlayerScore.PointsLeft -= deductedPoints;
+                i++;
             }
 
             var deadPlayers = this.Players.Values.Where(p => p.PlayerScore.PointsLeft <= 0);
