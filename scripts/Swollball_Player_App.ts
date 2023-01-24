@@ -47,7 +47,7 @@ class EndScreen extends Phaser.Scene {
         var yourPlacing = 0;
         var playerName = (this.scene.get("BallStats") as BallStats).playerBall.NameText.text;
         for (let scoreData of RoundScoreData.sort((a: ServerRoundScoreData, b: ServerRoundScoreData) => {
-            return b.PointsLeft - a.PointsLeft; // Sort in descending order
+            return b.RoundNumber - a.RoundNumber; // Sort in descending order of round number eliminated
         })) {
             totalPlayers++;
             if (playerName != null
