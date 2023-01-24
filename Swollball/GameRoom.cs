@@ -12,9 +12,10 @@ namespace Swollball
         public string ConnectionId { get; set; }
         public int RoundNumber { get; private set; } = 1;
         public Dictionary<string, Player> Players { get; private set; } = new Dictionary<string, Player>();
+        public List<Player> DeadPlayers { get; private set; } = new List<Player>();
         public DateTime UpdatedTime { get; private set; } = DateTime.UtcNow;
-        public RoomState State { get; private set; } = RoomState.SettingUp;
-        public int MaxRounds { get; private set; } = 5;
+        public RoomState State { get; internal set; } = RoomState.SettingUp;
+        public int StartingHp { get; private set; } = 0;
 
         public GameRoom(string roomId, string connectionId)
         {
@@ -92,9 +93,14 @@ namespace Swollball
             return newPlayer;
         }
 
-        public void StartGame(int maxRounds)
+        public void StartGame(int startingHp)
         {
-            this.MaxRounds = maxRounds;
+            this.StartingHp = startingHp;
+            foreach (var player in this.Players.Values)
+            {
+                player.PlayerScore.HpLeft = startingHp;
+            }
+
             this.State = RoomState.Leaderboard;
         }
 
@@ -104,13 +110,9 @@ namespace Swollball
             this.UpdatedTime = DateTime.UtcNow;
         }
 
-        public void UpdateRoundEnd(RoundEvent[] roundEvents)
+        public IEnumerable<Player> UpdateRoundEnd(RoundEvent[] roundEvents)
         {
             this.RoundNumber++;
-            if (this.RoundNumber > this.MaxRounds) {
-                this.RoundNumber = -1;
-                this.State = RoomState.TearingDown;
-            }
 
             this.State = RoomState.Leaderboard;
             foreach (var player in this.Players.Values)
@@ -118,18 +120,51 @@ namespace Swollball
                 player.PlayerScore.ResetRound();
             }
 
+            var playerHealthLeft = new List<Tuple<double, string>>();
             foreach (var roundEvent in roundEvents)
             {
-                this.Players[roundEvent.AttackerId].PlayerScore.RoundDamageDone += roundEvent.DamageDone;
-                this.Players[roundEvent.ReceiverId].PlayerScore.RoundDamageReceived += roundEvent.DamageDone;
+                switch (roundEvent.EventName)
+                {
+                    case RoundEvent.KILL:
+                        playerHealthLeft.Add(Tuple.Create(roundEvent.EventNumber, roundEvent.ReceiverId));
+                        break;
+                    case RoundEvent.HEALTH:
+                        // Assume that "alive" players died at time 99999 - that's 1000 seconds
+                        if (roundEvent.EventNumber > 0) 
+                        { 
+                            playerHealthLeft.Add(Tuple.Create(roundEvent.EventNumber + 99999, roundEvent.AttackerId));
+                        }
+                        break;
+                    case RoundEvent.DAMAGE:
+                        this.Players[roundEvent.AttackerId].PlayerScore.RoundDamageDone += (int)roundEvent.EventNumber;
+                        this.Players[roundEvent.AttackerId].PlayerScore.TotalDamageDone += (int)roundEvent.EventNumber;
+                        this.Players[roundEvent.ReceiverId].PlayerScore.RoundDamageReceived += (int)roundEvent.EventNumber;
+                        this.Players[roundEvent.ReceiverId].PlayerScore.TotalDamageReceived += (int)roundEvent.EventNumber;
+                        break;
+                    default:
+                        break;
+                }
             }
 
+            // Update player HP totals
+            var roundRanking = playerHealthLeft.OrderBy(x => x.Item1.CompareTo(x.Item2));
+            // TODO: Actually update HP totals
+
+            var deadPlayers = this.Players.Values.Where(p => p.PlayerScore.HpLeft <= 0);
+            foreach (var player in deadPlayers)
+            {
+                this.Players.Remove(player.Name);
+                this.DeadPlayers.Add(player);
+            }
+
+            // Only alive players are here
             foreach (var player in this.Players.Values)
             {
                 player.PlayerScore.RoundNumber = this.RoundNumber;
-                player.PlayerScore.UpdateRound();
                 player.StartNextRound();
             }
+
+            return deadPlayers;
         }
 
         public override int GetHashCode()

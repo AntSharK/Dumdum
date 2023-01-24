@@ -41,10 +41,10 @@ function InitializeLeaderboardData(dataIn: any[]) {
     for (let data of dataIn) {
         var serverData = new ServerRoundScoreData();
         serverData.PlayerName = data.playerName;
-        serverData.TotalScore = data.totalScore;
-        serverData.RoundScore = data.roundScore;
+        serverData.HpLeft = data.hpLeft;
         serverData.RoundDamageDone = data.roundDamageDone;
         serverData.RoundDamageReceived = data.roundDamageReceived;
+        serverData.RoundDamageDone
 
         RoundScoreData.push(serverData);
     }
@@ -102,22 +102,23 @@ class ServerBallData {
 }
 
 class ServerRoundScoreData {
-    TotalScore: integer;
-    RoundScore: integer;
+    HpLeft: integer;
     RoundDamageDone: integer;
     RoundDamageReceived: integer;
     PlayerName: string;
 }
 
 class RoundEvent {
+    EventName: string;
     AttackerId: string;
     ReceiverId: string;
-    DamageDone: integer;
+    EventNumber: number;
 
-    constructor(attacker: string, receiver: string, damage: number) {
+    constructor(eventName: string, attacker: string, receiver: string, eventNumber: number) {
+        this.EventName = eventName;
         this.AttackerId = attacker;
         this.ReceiverId = receiver;
-        this.DamageDone = damage;
+        this.EventNumber = eventNumber;
     }
 }
 
@@ -225,16 +226,29 @@ function HitBalls(ball1: PlayerBall, ball2: PlayerBall, timeNow: number) {
     ball1.Hp = ball1.Hp - damageDoneTo1;
     ball2.Hp = ball2.Hp - damageDoneTo2;
 
-    for (let action of ball1.KeystoneActions) {
-        action.Apply(ball1, ball2, damageDoneTo2, damageDoneTo1);
+    // Cap damage if it overkills
+    if (ball1.Hp <= 0) {
+        damageDoneTo1 = damageDoneTo1 + ball1.Hp;
     }
 
-    for (let action of ball2.KeystoneActions) {
-        action.Apply(ball2, ball1, damageDoneTo1, damageDoneTo2);
+    if (ball2.Hp <= 0) {
+        damageDoneTo2 = damageDoneTo2 + ball2.Hp;
     }
 
-    RoundLog.push(new RoundEvent(ball2.NameText.text, ball1.NameText.text, damageDoneTo1));
-    RoundLog.push(new RoundEvent(ball1.NameText.text, ball2.NameText.text, damageDoneTo2));
+    if (ball1.Hp > 0) {
+        for (let action of ball1.KeystoneActions) {
+            action.Apply(ball1, ball2, damageDoneTo2, damageDoneTo1);
+        }
+    }
+
+    if (ball2.Hp > 0) {
+        for (let action of ball2.KeystoneActions) {
+            action.Apply(ball2, ball1, damageDoneTo1, damageDoneTo2);
+        }
+    }
+
+    RoundLog.push(new RoundEvent("DAMAGE", ball2.NameText.text, ball1.NameText.text, damageDoneTo1));
+    RoundLog.push(new RoundEvent("DAMAGE", ball1.NameText.text, ball2.NameText.text, damageDoneTo2));
 }
 
 function DisableBall(ball: PlayerBall) {

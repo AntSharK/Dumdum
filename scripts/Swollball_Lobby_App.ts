@@ -121,11 +121,13 @@ class BallArena extends Phaser.Scene {
                 if (ball1.Hp <= 0) {
                     DisableBall(ball1);
                     this.balls.remove(ball1);
+                    RoundLog.push(new RoundEvent("KILL", ball2.NameText.text, ball1.NameText.text, this.roundTimer.elapsed /*Time of death*/));
                 }
 
                 if (ball2.Hp <= 0) {
                     DisableBall(ball2);
                     this.balls.remove(ball2);
+                    RoundLog.push(new RoundEvent("KILL", ball1.NameText.text, ball2.NameText.text, this.roundTimer.elapsed /*Time of death*/));
                 }
 
                 if (this.balls.countActive() <= 1) {
@@ -179,6 +181,11 @@ class BallArena extends Phaser.Scene {
 
     finishScene() {
         var sessionRoomId = sessionStorage.getItem("roomid");
+
+        for (let ball of this.playerBalls) {
+            RoundLog.push(new RoundEvent("HEALTH", ball.NameText.text, "", ball.Hp));
+        }
+
         connection.invoke("FinishRound", RoundLog, sessionRoomId).catch(function (err) {
             return console.error(err.toString());
         });
@@ -228,9 +235,9 @@ class Leaderboard extends Phaser.Scene {
         // Totally temporary leaderboard drawing
         var i = 0;
         for (let scoreData of RoundScoreData.sort((a: ServerRoundScoreData, b: ServerRoundScoreData) => {
-            return b.TotalScore - a.TotalScore; // Sort in descending order
+            return b.HpLeft - a.HpLeft; // Sort in descending order - TODO: Display time of death and ranking
         })) {
-            this.add.text(200, 200+50*i, scoreData.PlayerName + " - Total:" + scoreData.TotalScore + " - This Round:" + scoreData.RoundScore,
+            this.add.text(200, 200 + 50 * i, scoreData.PlayerName + " - HP LEFT:" + scoreData.HpLeft,
                 { color: 'White' });
             i++;
         }

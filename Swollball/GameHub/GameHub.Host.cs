@@ -21,18 +21,18 @@ namespace Swollball
             }
         }
 
-        public async Task StartRoom(string roomId, string maxRounds /*Serialization: This version of SignalR passes in everything as strings*/)
+        public async Task StartRoom(string roomId, string startingHp /*Serialization: This version of SignalR passes in everything as strings*/)
         {
             Logger.LogInformation("STARTING ROOM {0}.", roomId);
             (var player, var roomToStart) = await this.FindPlayerAndRoom(null, roomId);
             if (roomToStart == null) return;
 
-            if (!int.TryParse(maxRounds, out int rounds))
+            if (!int.TryParse(startingHp, out int hpToStart))
             {
-                rounds = 5;
+                hpToStart = 50;
             }
 
-            roomToStart.StartGame(rounds);
+            roomToStart.StartGame(hpToStart);
 
             await Clients.Caller.SendAsync("UpdateLeaderboard", roomToStart.Players.Values.Select(s => s.PlayerScore));
             await Clients.Caller.SendAsync("StartGame", "Leaderboard");
@@ -70,13 +70,31 @@ namespace Swollball
             Logger.LogInformation("FINISHED ROUND FOR ROOM:{0}.", roomId);
             (var player, var room) = await this.FindPlayerAndRoom(null, roomId);
             if (room == null) return;
-            room.UpdateRoundEnd(roundEvents);
+            var newDeadPlayers = room.UpdateRoundEnd(roundEvents);
 
             await Clients.Caller.SendAsync("UpdateLeaderboard", room.Players.Values.Select(s => s.PlayerScore));
             await Clients.Caller.SendAsync("SceneTransition", "BallArena", "Leaderboard");
 
-            // Termination condition - for when round hits max rounds
-            if (room.RoundNumber < 0) {
+            // Send out messages for players who are dead
+            await Task.WhenAll(newDeadPlayers.Select(player =>
+            {
+                return Clients.Client(player.ConnectionId).SendAsync("EndGame"); // TODO: Populate endgame data
+            }));
+
+            foreach (var newDeadPlayer in newDeadPlayers)
+            {
+                await Groups.RemoveFromGroupAsync(newDeadPlayer.ConnectionId, room.RoomId);
+            }
+
+            // Termination condition - for when only one player is alive
+            if (room.Players.Count <= 1)
+            {
+                // Send out messages for the only alive player
+                await Task.WhenAll(room.Players.Values.Select(player =>
+                {
+                    return Clients.Client(player.ConnectionId).SendAsync("EndGame"); // TODO: Populate endgame data
+                }));
+
                 await this.EndGame(room);
             }
             else
@@ -87,18 +105,26 @@ namespace Swollball
 
         private async Task EndGame(GameRoom room)
         {
+            room.State = GameRoom.RoomState.TearingDown;
+
             Logger.LogInformation("ENDGAME FOR ROOM:{0}.", room.RoomId);
             foreach (var player in room.Players.Values)
             {
-                Logger.LogInformation("ENDGAME STATS. ROOM:{0}, PLAYER:{1}. SCORE:{2}. Ball Stats - D:{3},A:{4},Sz:{5},Sp:{6},Hp:{7}. Keystones:{8}.", player.RoomId, player.Name,
-                    player.PlayerScore.TotalScore, player.Ball.Dmg, player.Ball.Armor, player.Ball.SizeMultiplier, player.Ball.SpeedMultiplier, player.Ball.Hp,
+                Logger.LogInformation("ENDGAME STATS. ROOM:{0}, PLAYER:{1}. ROUND:{2}. Ball Stats - D:{3},A:{4},Sz:{5},Sp:{6},Hp:{7}, TotalDealt:{8}, TotalTaken:{9}, HpLeft:{10}, Keystones:{11}.", player.RoomId, player.Name,
+                    player.PlayerScore.RoundNumber, player.Ball.Dmg, player.Ball.Armor, player.Ball.SizeMultiplier, player.Ball.SpeedMultiplier, player.Ball.Hp,
+                    player.PlayerScore.TotalDamageDone, player.PlayerScore.TotalDamageReceived, player.PlayerScore.HpLeft,
                     string.Join(';', player.Ball.KeystoneData));
             }
-            await Clients.Caller.SendAsync("ClearState"); // For host machine, display last scoreboard and clear state
 
-            // For all players, update score information and display their position
-            await Clients.Group(room.RoomId).SendAsync("UpdateLeaderboard", room.Players.Values.Select(s => s.PlayerScore));
-            await Clients.Group(room.RoomId).SendAsync("EndGame");
+            foreach (var player in room.DeadPlayers)
+            {
+                Logger.LogInformation("ENDGAME STATS. ROOM:{0}, PLAYER:{1}. ROUND:{2}. Ball Stats - D:{3},A:{4},Sz:{5},Sp:{6},Hp:{7}, TotalDealt:{8}, TotalTaken:{9}, Keystones:{10}.", player.RoomId, player.Name,
+                    player.PlayerScore.RoundNumber, player.Ball.Dmg, player.Ball.Armor, player.Ball.SizeMultiplier, player.Ball.SpeedMultiplier, player.Ball.Hp,
+                    player.PlayerScore.TotalDamageDone, player.PlayerScore.TotalDamageReceived,
+                    string.Join(';', player.Ball.KeystoneData));
+            }
+
+            await Clients.Caller.SendAsync("ClearState"); // For host machine, display last scoreboard and clear state
         }
 
         public async Task ResumeHostSession(string roomId)

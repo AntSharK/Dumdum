@@ -6,7 +6,7 @@ namespace Swollball
     public partial class GameHub : Hub
     {
         private Lobby GameLobby;
-        private static ILogger Logger;
+        private static ILogger? Logger;
 
         public static void RegisterLogger(ILogger logger)
         {
