@@ -62,10 +62,9 @@ class BallArena extends Phaser.Scene {
 
     preload() {
         this.load.image('dummyimage', '/content/dummyimage.png');
-        this.load.image('background', '/content/ui/circlearenaedit.png');
-
         this.load.image('readytext', '/content/ui/readytext.png');
         this.load.image('fighttext', '/content/ui/fighttext.png');
+        this.load.image('background', '/content/ui/circlearenalines.png');
     }
 
     create() {
@@ -139,6 +138,7 @@ class BallArena extends Phaser.Scene {
     startBallsMoving() {
         this.circlesMoving = true;
         SetBallVelocity(this.playerBalls, this);
+        ShrinkArena(this.arena, this.roundTimer.getRemainingSeconds() * 4); // Shrink the arena to 75% the radius by the end of the round
     }
 
     update() {
@@ -280,7 +280,20 @@ class Arena {
     }
 }
 
+function ShrinkArena(arena: Arena, timeToDisappear: number) {
+    arena.PhysicsGroup.children.each(function (b) {
+        var xDiff = arena.XPos - (<Phaser.Physics.Arcade.Sprite>b).x;
+        var yDiff = arena.YPos - (<Phaser.Physics.Arcade.Sprite>b).y;
+        var direction = new Phaser.Math.Vector2(xDiff, yDiff);
+        (<Phaser.Physics.Arcade.Sprite>b).setVelocity(direction.x / timeToDisappear, direction.y / timeToDisappear);
+    });
+}
+
 function DrawArena(graphics: Phaser.GameObjects.Graphics, arena: Arena) {
-    graphics.lineStyle(8, 0x000000);                        
-    graphics.strokeCircle(arena.XPos, arena.YPos, arena.Radius + 4)
+    var xDiff = (<Phaser.Physics.Arcade.Sprite>arena.PhysicsGroup.children.entries[0]).x - arena.XPos;
+    var yDiff = (<Phaser.Physics.Arcade.Sprite>arena.PhysicsGroup.children.entries[0]).y - arena.YPos;
+    var drawnRadius = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+
+    graphics.lineStyle(8, 0x000000);
+    graphics.strokeCircle(arena.XPos, arena.YPos, drawnRadius + 4)
 }
