@@ -15,7 +15,7 @@ namespace Swollball
         public List<Player> DeadPlayers { get; private set; } = new List<Player>();
         public DateTime UpdatedTime { get; private set; } = DateTime.UtcNow;
         public RoomState State { get; internal set; } = RoomState.SettingUp;
-        public int StartingHp { get; private set; } = 0;
+        public int StartingPoints { get; private set; } = 0;
 
         public GameRoom(string roomId, string connectionId)
         {
@@ -93,12 +93,12 @@ namespace Swollball
             return newPlayer;
         }
 
-        public void StartGame(int startingHp)
+        public void StartGame(int startingPoints)
         {
-            this.StartingHp = startingHp;
+            this.StartingPoints = startingPoints;
             foreach (var player in this.Players.Values)
             {
-                player.PlayerScore.HpLeft = startingHp;
+                player.PlayerScore.PointsLeft = startingPoints;
             }
 
             this.State = RoomState.Leaderboard;
@@ -154,11 +154,11 @@ namespace Swollball
             foreach (var p in roundRanking)
             {
                 var player = this.Players[p.Item2];
-                player.PlayerScore.HpLeft -= i;
+                player.PlayerScore.PointsLeft -= i;
                 i = i + 10;
             }
 
-            var deadPlayers = this.Players.Values.Where(p => p.PlayerScore.HpLeft <= 0);
+            var deadPlayers = this.Players.Values.Where(p => p.PlayerScore.PointsLeft <= 0);
             foreach (var player in deadPlayers)
             {
                 this.Players.Remove(player.Name);

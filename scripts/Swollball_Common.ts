@@ -42,14 +42,17 @@ function InitializeLeaderboardData(dataIn: any[]) {
     for (let data of dataIn) {
         var serverData = new ServerRoundScoreData();
         serverData.PlayerName = data.playerName;
-        serverData.HpLeft = data.hpLeft;
+        serverData.PointsLeft = data.pointsLeft;
 
-        if (data.hpLeft > 0) {
+        if (data.pointsLeft > 0) {
             alivePlayers++;
         }
 
         serverData.RoundDamageDone = data.roundDamageDone;
         serverData.RoundDamageReceived = data.roundDamageReceived;
+        serverData.RoundNumber = data.roundNumber;
+        serverData.TotalDamageDone = data.totalDamageDone;
+        serverData.TotalDamageReceived = data.totalDamageReceived;
 
         RoundScoreData.push(serverData);
     }
@@ -110,10 +113,13 @@ class ServerBallData {
 }
 
 class ServerRoundScoreData {
-    HpLeft: integer;
+    PointsLeft: integer;
     RoundDamageDone: integer;
     RoundDamageReceived: integer;
     PlayerName: string;
+    RoundNumber: integer;
+    TotalDamageDone: integer;
+    TotalDamageReceived: integer;
 }
 
 class RoundEvent {

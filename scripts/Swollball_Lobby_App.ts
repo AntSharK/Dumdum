@@ -234,13 +234,25 @@ class Leaderboard extends Phaser.Scene {
         this.timeLeftDisplay.scale = boundingDimension * 0.005;
 
         // Totally temporary leaderboard drawing
-        var i = 0;
-        for (let scoreData of RoundScoreData.sort((a: ServerRoundScoreData, b: ServerRoundScoreData) => {
-            return b.HpLeft - a.HpLeft; // Sort in descending order - TODO: Display time of death and ranking
-        })) {
-            this.add.text(200, 200 + 50 * i, scoreData.PlayerName + " - HP LEFT:" + scoreData.HpLeft,
-                { color: 'White' });
-            i++;
+        if (RoundNumber == -1) {
+            var i = 0;
+            for (let scoreData of RoundScoreData.sort((a: ServerRoundScoreData, b: ServerRoundScoreData) => {
+                return b.RoundNumber - a.RoundNumber; // Sort in descending order of round killed
+            })) {
+                this.add.text(200, 200 + 50 * i, scoreData.PlayerName + " - ROUND ELIMINATED:" + scoreData.RoundNumber + " - DMG DEALT (TOTAL):" + scoreData.TotalDamageDone + " - DMG TAKEN (TOTAL):" + scoreData.TotalDamageReceived,
+                    { color: 'White' });
+                i++;
+            }
+        }
+        else {
+            var i = 0;
+            for (let scoreData of RoundScoreData.sort((a: ServerRoundScoreData, b: ServerRoundScoreData) => {
+                return b.PointsLeft - a.PointsLeft; // Sort in descending order of points left
+            })) {
+                this.add.text(200, 200 + 50 * i, scoreData.PlayerName + " - POINTS LEFT:" + scoreData.PointsLeft + " - DMG DEALT:" + scoreData.RoundDamageDone + " - DMG TAKEN:" + scoreData.RoundDamageReceived,
+                    { color: 'White' });
+                i++;
+            }
         }
     }
 

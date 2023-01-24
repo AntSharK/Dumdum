@@ -113,9 +113,9 @@ namespace Swollball
             Logger.LogInformation("ENDGAME FOR ROOM:{0}.", room.RoomId);
             foreach (var player in room.Players.Values)
             {
-                Logger.LogInformation("ENDGAME STATS. ROOM:{0}, PLAYER:{1}. ROUND:{2}. Ball Stats - D:{3},A:{4},Sz:{5},Sp:{6},Hp:{7}, TotalDealt:{8}, TotalTaken:{9}, HpLeft:{10}, Keystones:{11}.", player.RoomId, player.Name,
+                Logger.LogInformation("ENDGAME STATS. ROOM:{0}, PLAYER:{1}. ROUND:{2}. Ball Stats - D:{3},A:{4},Sz:{5},Sp:{6},Hp:{7}, TotalDealt:{8}, TotalTaken:{9}, PointsLeft:{10}, Keystones:{11}.", player.RoomId, player.Name,
                     player.PlayerScore.RoundNumber, player.Ball.Dmg, player.Ball.Armor, player.Ball.SizeMultiplier, player.Ball.SpeedMultiplier, player.Ball.Hp,
-                    player.PlayerScore.TotalDamageDone, player.PlayerScore.TotalDamageReceived, player.PlayerScore.HpLeft,
+                    player.PlayerScore.TotalDamageDone, player.PlayerScore.TotalDamageReceived, player.PlayerScore.PointsLeft,
                     string.Join(';', player.Ball.KeystoneData));
             }
 
