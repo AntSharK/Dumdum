@@ -149,10 +149,10 @@ namespace Swollball
             // Update player HP totals - This is a ranking from highest to lowest
             var roundRanking = playerHealthLeft.OrderByDescending(x => x.Item1);
             var i = 0;
+            var maxPointsLost = 10 + this.RoundNumber * 4;
             foreach (var p in roundRanking)
             {
-                // Interpolate between 0 and RoundNumber * 10
-                var deductedPoints = i * ((RoundNumber-1) * 10) / (roundRanking.Count()); 
+                var deductedPoints = i * maxPointsLost / (roundRanking.Count()); 
                 var player = this.Players[p.Item2];
                 player.PlayerScore.PointsDeducted = deductedPoints;
                 player.PlayerScore.PointsLeft -= deductedPoints;
