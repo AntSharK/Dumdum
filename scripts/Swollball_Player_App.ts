@@ -186,28 +186,6 @@ class BallUpgrades extends Phaser.Scene {
 
     update() {
         this.graphics.clear();
-        /*
-        if (this.upgradeCards.length > 0) {
-            // Draw the fade screen
-            this.graphics.fillStyle(0xFFFFFF, 0.2);
-            this.graphics.fillRect(0, 0, this.scale.canvas.width, this.scale.canvas.height);
-
-            // Set all graphics to visible
-            this.creditsLeft.setVisible(true);
-            this.creditsLeftButton.setVisible(true);
-            this.refreshButton.setVisible(true);
-            this.upgradeTierButton.setVisible(true);
-            this.upgradeTierCost.setVisible(true);
-        }
-        else {
-            // Set all graphics to invisible
-            this.creditsLeft.setVisible(false);
-            this.creditsLeftButton.setVisible(false);
-            this.refreshButton.setVisible(false);
-            this.upgradeTierButton.setVisible(false);
-            this.upgradeTierCost.setVisible(false);
-        }*/
-
         this.updateUpgrades();
         this.drawUpgradeCards();
     }
@@ -506,19 +484,14 @@ class BallStats extends Phaser.Scene {
             defaultKey: 'dummyimage',
             bounceX: 1,
             bounceY: 1,
-        }), this, 0.15 /*Area taken by the balls*/);
+        }), this, 0.18 /*Area taken by the balls*/);
 
         this.playerBall = playerBalls[0];
 
         // Get the scale multiplier, so we know where to put things
-        var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
-        var scaleMultiplier = GetScale(this);
-
-        this.playerBall.setPosition(200 * scaleMultiplier, 200 * scaleMultiplier); // Set the ball to the top-left of the screen
+        this.playerBall.setPosition(this.scale.canvas.width * 0.25, this.scale.canvas.height * 0.225); // Set the ball position relative to the screen
 
         this.updateText();
-
-        const STATFONTSCALE = 0.002;
 
         var backgroundImage = this.add.sprite(this.scale.canvas.width / 2, this.scale.canvas.height / 2, 'background');
         backgroundImage.alpha = 0.55;
