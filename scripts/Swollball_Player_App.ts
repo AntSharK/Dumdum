@@ -464,6 +464,7 @@ class UpgradeCard extends Phaser.Physics.Arcade.Sprite {
 class BallStats extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
     playerBall: PlayerBall;
+    statsDisplay: Record<string, Phaser.GameObjects.Text>;
 
     displayToggle: integer;
     constructor() {
@@ -479,6 +480,7 @@ class BallStats extends Phaser.Scene {
         this.displayToggle = 0;
         this.graphics = this.add.graphics({ x: 0, y: 0 });
         this.input.on('gameobjectdown', this.onObjectClicked);
+        this.statsDisplay = {};
 
         var playerBalls = InitializeBalls(this.physics.add.group({
             defaultKey: 'dummyimage',
@@ -487,11 +489,30 @@ class BallStats extends Phaser.Scene {
         }), this, 0.18 /*Area taken by the balls*/);
 
         this.playerBall = playerBalls[0];
-
-        // Get the scale multiplier, so we know where to put things
         this.playerBall.setPosition(this.scale.canvas.width * 0.25, this.scale.canvas.height * 0.225); // Set the ball position relative to the screen
+        this.playerBall.setInteractive(
+            new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y, this.playerBall.Size),
+            CircleDetection);
+
+        this.statsDisplay["points"] = this.add.text(0, 0, "", { color: 'Black' });
+        this.statsDisplay["dmg"] = this.add.text(0, 0, "", { color: 'Black' });
+        this.statsDisplay["armor"] = this.add.text(0, 0, "", { color: 'Black' });
+        this.statsDisplay["velocity"] = this.add.text(0, 0, "", { color: 'Black' });
+        this.statsDisplay["size"] = this.add.text(0, 0, "", { color: 'Black' });
 
         this.updateText();
+
+        // Get the scale multiplier, so we know where to put things and scale text
+        var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
+        var scaleMultiplier = GetScale(this);
+        const STATFONTSCALE = 0.002;
+        var textArray = [];
+        for (let key in this.statsDisplay) {
+            var stat = this.statsDisplay[key];
+            stat.scale = boundingDimension * STATFONTSCALE;
+            textArray.push(stat);
+        }
+        Phaser.Actions.PlaceOnCircle(textArray, new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y - 15 * scaleMultiplier, this.playerBall.Size + 5 * scaleMultiplier), -0.6, 1.3);
 
         var backgroundImage = this.add.sprite(this.scale.canvas.width / 2, this.scale.canvas.height / 2, 'background');
         backgroundImage.alpha = 0.55;
@@ -510,9 +531,29 @@ class BallStats extends Phaser.Scene {
         for (let data of BallData) {
             CopyBallData(this.playerBall, data);
         }
+
+        var playerScore = RoundScoreData[0];
+        this.statsDisplay["points"].text = "POINTS:" + playerScore.PointsLeft;
+        this.statsDisplay["dmg"].text = "DMG:" + this.playerBall.Damage.toString();
+        this.statsDisplay["armor"].text = "ARMOR:" + this.playerBall.Armor.toString();
+        this.statsDisplay["velocity"].text = "SPEED:" + this.playerBall.VelocityMultiplier.toString();
+        this.statsDisplay["size"].text = "SIZE:" + this.playerBall.SizeMultiplier.toString();
     }
 
     onObjectClicked(pointer, gameObject: Phaser.GameObjects.GameObject) {
-        // TODO
+
+        var scene = gameObject.scene as BallStats;
+        var ball = gameObject as PlayerBall;
+
+        // Check for clicking the ball
+        if (ball.KeystoneData != undefined && scene.statsDisplay != undefined) {
+
+            // Set the ball stats to be visible, and everything else to not be
+            for (let key in scene.statsDisplay) {
+                scene.statsDisplay[key].setVisible(true);
+            }
+
+            return;
+        }
     }
 }
