@@ -121,11 +121,13 @@ class BallArena extends Phaser.Scene {
                 if (ball1.Hp <= 0) {
                     DisableBall(ball1);
                     this.balls.remove(ball1);
+                    RoundLog.push(new RoundEvent("KILL", ball2.NameText.text, ball1.NameText.text, this.roundTimer.elapsed /*Time of death*/));
                 }
 
                 if (ball2.Hp <= 0) {
                     DisableBall(ball2);
                     this.balls.remove(ball2);
+                    RoundLog.push(new RoundEvent("KILL", ball1.NameText.text, ball2.NameText.text, this.roundTimer.elapsed /*Time of death*/));
                 }
 
                 if (this.balls.countActive() <= 1) {
@@ -179,6 +181,11 @@ class BallArena extends Phaser.Scene {
 
     finishScene() {
         var sessionRoomId = sessionStorage.getItem("roomid");
+
+        for (let ball of this.playerBalls) {
+            RoundLog.push(new RoundEvent("HEALTH", ball.NameText.text, "", ball.Hp));
+        }
+
         connection.invoke("FinishRound", RoundLog, sessionRoomId).catch(function (err) {
             return console.error(err.toString());
         });
@@ -203,6 +210,7 @@ class Leaderboard extends Phaser.Scene {
 
         var timerEndFunction = this.StartNextRound;
         var roundDurationSeconds = parseInt(sessionStorage.getItem("leaderboardduration"));
+
         switch (RoundNumber) {
             case 0:
                 this.add.text(200, 100, "FIRST ROUND STARTING SOON...");
@@ -226,13 +234,29 @@ class Leaderboard extends Phaser.Scene {
         this.timeLeftDisplay.scale = boundingDimension * 0.005;
 
         // Totally temporary leaderboard drawing
-        var i = 0;
-        for (let scoreData of RoundScoreData.sort((a: ServerRoundScoreData, b: ServerRoundScoreData) => {
-            return b.TotalScore - a.TotalScore; // Sort in descending order
-        })) {
-            this.add.text(200, 200+50*i, scoreData.PlayerName + " - Total:" + scoreData.TotalScore + " - This Round:" + scoreData.RoundScore,
-                { color: 'White' });
-            i++;
+        if (RoundNumber == -1) {
+            var i = 0;
+            for (let scoreData of RoundScoreData.sort((a: ServerRoundScoreData, b: ServerRoundScoreData) => {
+                return b.RoundNumber - a.RoundNumber; // Sort in descending order of round killed
+            })) {
+                if (scoreData.RoundNumber == 0) { // Account for the fact that Round 0 means the game hasn't started, and round 2 requires the player to survive round 1
+                    scoreData.RoundNumber = 1;
+                }
+
+                this.add.text(200, 200 + 50 * i, scoreData.PlayerName + " - ROUND ELIMINATED:" + scoreData.RoundNumber + " - DMG DEALT (TOTAL):" + scoreData.TotalDamageDone + " - DMG TAKEN (TOTAL):" + scoreData.TotalDamageReceived,
+                    { color: 'White' });
+                i++;
+            }
+        }
+        else {
+            var i = 0;
+            for (let scoreData of RoundScoreData.sort((a: ServerRoundScoreData, b: ServerRoundScoreData) => {
+                return b.PointsLeft - a.PointsLeft; // Sort in descending order of points left
+            })) {
+                this.add.text(200, 200 + 50 * i, scoreData.PlayerName + " - POINTS LEFT:" + scoreData.PointsLeft + "(-" + scoreData.PointsDeducted + ") - DMG DEALT: " + scoreData.RoundDamageDone + " - DMG TAKEN: " + scoreData.RoundDamageReceived,
+                    { color: 'White' });
+                i++;
+            }
         }
     }
 

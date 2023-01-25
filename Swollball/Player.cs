@@ -28,7 +28,7 @@ namespace Swollball
             this.PlayerScore = new Score(this.Name);
             this.Ball = new Ball(this.Name);
 
-            this.Ball.Keystones["Payday"] = new Payday(2, 0); // Start with a free payday upgrade
+            this.Ball.Keystones["Payday"] = new Payday(1, 0); // Start with a free payday upgrade
 #if DEBUG
             this.Economy.CreditsLeft = 30;
             this.Economy.ShopTier = 1;
@@ -157,12 +157,15 @@ namespace Swollball
 
         public class Score
         {
-            public int TotalScore { get; set; } = 0;
-            public int RoundScore { get; set; } = 0;
+            public int PointsLeft { get; set; } = 0;
+            public int PointsDeducted { get; set; } = 0;
             public int RoundDamageDone { get; set; } = 0;
             public int RoundDamageReceived { get; set; } = 0;
             public string PlayerName { get; private set; }
             public int RoundNumber { get; set; } = 0;
+            public int TotalDamageDone { get; set; } = 0;
+            public int TotalDamageReceived { get; set; } = 0;
+
 
             public Score(string name)
             {
@@ -173,13 +176,6 @@ namespace Swollball
             {
                 this.RoundDamageReceived = 0;
                 this.RoundDamageDone = 0;
-                this.RoundScore = 0;
-            }
-
-            public void UpdateRound()
-            {
-                this.RoundScore = this.RoundScore + this.RoundDamageDone - this.RoundDamageReceived / 2;
-                this.TotalScore += this.RoundScore;
             }
         }
     }

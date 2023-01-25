@@ -72,7 +72,8 @@ connection.on("StartNextRound", function () {
     }
 });
 
-connection.on("EndGame", function () {
+connection.on("EndGame", function (leaderboardData) {
+    InitializeLeaderboardData(leaderboardData);
     SceneTransition("BallUpgrades", "EndScreen");
     ClearState();
 });

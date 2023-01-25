@@ -47,7 +47,7 @@ class EndScreen extends Phaser.Scene {
         var yourPlacing = 0;
         var playerName = (this.scene.get("BallStats") as BallStats).playerBall.NameText.text;
         for (let scoreData of RoundScoreData.sort((a: ServerRoundScoreData, b: ServerRoundScoreData) => {
-            return b.TotalScore - a.TotalScore; // Sort in descending order
+            return b.RoundNumber - a.RoundNumber; // Sort in descending order of round number eliminated
         })) {
             totalPlayers++;
             if (playerName != null
@@ -524,8 +524,6 @@ class BallStats extends Phaser.Scene {
         this.pointsDisplay["round"] = this.add.text(0, 0, "", { color: 'Black' });
         this.pointsDisplay["dmgdone"] = this.add.text(0, 0, "", { color: 'Black' });
         this.pointsDisplay["dmgreceived"] = this.add.text(0, 0, "", { color: 'Black' });
-        this.pointsDisplay["roundscore"] = this.add.text(0, 0, "", { color: 'Black' });
-        this.pointsDisplay["totalscore"] = this.add.text(0, 0, "", { color: 'Black' });
 
         this.updateText();
 
@@ -575,8 +573,8 @@ class BallStats extends Phaser.Scene {
         this.pointsDisplay["round"].text = "ROUND: " + (RoundNumber - 1).toString();
         this.pointsDisplay["dmgdone"].text = "DMG Dealt: " + playerScore.RoundDamageDone.toString();
         this.pointsDisplay["dmgreceived"].text = "DMG Received: " + playerScore.RoundDamageReceived.toString();
-        this.pointsDisplay["roundscore"].text = "SCORE (Round): " + playerScore.RoundScore.toString();
-        this.pointsDisplay["totalscore"].text = "SCORE (Total): " + playerScore.TotalScore.toString();
+
+        // TODO: Show more stuff in leaderboard
 
         if (RoundNumber == 0) { // Start of game
             this.pointsDisplay["round"].text = "ROUND: 0";
