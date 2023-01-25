@@ -186,7 +186,7 @@ class BallUpgrades extends Phaser.Scene {
 
     update() {
         this.graphics.clear();
-
+        /*
         if (this.upgradeCards.length > 0) {
             // Draw the fade screen
             this.graphics.fillStyle(0xFFFFFF, 0.2);
@@ -206,7 +206,7 @@ class BallUpgrades extends Phaser.Scene {
             this.refreshButton.setVisible(false);
             this.upgradeTierButton.setVisible(false);
             this.upgradeTierCost.setVisible(false);
-        }
+        }*/
 
         this.updateUpgrades();
         this.drawUpgradeCards();
@@ -378,6 +378,11 @@ class BallUpgrades extends Phaser.Scene {
     }
 
     onRefreshClicked(sprite: Phaser.GameObjects.Sprite) {
+        // Disallow refreshes if not enough credits
+        if (EconomyData.CreditsLeft <= 0) {
+            return;
+        }
+
         var sessionRoomId = sessionStorage.getItem("roomid");
         var sessionUserId = sessionStorage.getItem("userid");
 
