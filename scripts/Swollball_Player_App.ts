@@ -471,6 +471,7 @@ class BallStats extends Phaser.Scene {
     playerBall: PlayerBall;
     statsDisplay: Record<string, Phaser.GameObjects.Text>;
     keystoneCards: UpgradeCard[];
+    displayedCard: UpgradeCard;
     lastUpdate: number;
 
     constructor() {
@@ -547,6 +548,11 @@ class BallStats extends Phaser.Scene {
         for (let card of this.keystoneCards) {
             DrawUpgradeCardBorder(card, this.graphics);
         }
+
+        if (this.displayedCard != undefined
+            && this.displayedCard.active) {
+            DrawUpgradeCardBorder(this.displayedCard, this.graphics);
+        }
     }
 
     updateText() {
@@ -598,7 +604,41 @@ class BallStats extends Phaser.Scene {
         // Check for clicking on a card
         var card = gameObject as UpgradeCard;
         if (card.Upgrade != undefined && scene.statsDisplay != undefined) {
-            // TODO: Render stuff
+            // Case 1 - Already selected, unselect
+            if (scene.displayedCard != undefined
+                && scene.displayedCard.active
+                && scene.displayedCard.visible
+                && scene.displayedCard.Upgrade.UpgradeName == card.Upgrade.UpgradeName) {
+
+                DestroyCard(scene.displayedCard)
+                scene.lastUpdate = Date.now();
+
+                // Make the other text visible
+                for (let key in scene.statsDisplay) {
+                    scene.statsDisplay[key].setVisible(true);
+                }
+                return;
+            }
+
+            // Case 2 - Not selected, display info
+            if (scene.displayedCard != undefined) {
+                DestroyCard(scene.displayedCard);
+            }
+
+            var height = scene.scale.canvas.height * 9 / 31;
+            var width = scene.scale.canvas.width * 9 / 35
+            scene.displayedCard = new UpgradeCard(scene,
+                scene.playerBall.x + scene.playerBall.Size,
+                scene.playerBall.y - height * 0.5,
+                null,
+                card.Upgrade,
+                height,
+                width);
+            scene.lastUpdate = Date.now();
+            // Make the other text invisible
+            for (let key in scene.statsDisplay) {
+                scene.statsDisplay[key].setVisible(false);
+            }
             return;
         }
     }
