@@ -159,7 +159,7 @@ namespace Swollball
                 i++;
             }
 
-            var deadPlayers = this.Players.Values.Where(p => p.PlayerScore.PointsLeft <= 0);
+            var deadPlayers = this.Players.Values.Where(p => p.PlayerScore.PointsLeft <= 0).ToList(); // Make a copy
             foreach (var player in deadPlayers)
             {
                 this.Players.Remove(player.Name);

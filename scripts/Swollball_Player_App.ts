@@ -84,6 +84,25 @@ class EndScreen extends Phaser.Scene {
     }
 }
 
+function LoadCardImages(scene: Phaser.Scene) {
+    // Note that the key is the same as the upgrade name
+    scene.load.image('Tofu', '/content/cards/Tofu.png');
+    scene.load.image('Apple', '/content/cards/Apple.png');
+    scene.load.image('Brocolli', '/content/cards/Brocolli2.png');
+    scene.load.image('BROcolli', '/content/cards/Brocolli.png');
+    scene.load.image('Milk', '/content/cards/Milk.png');
+    scene.load.image('Bread', '/content/cards/Bread.png');
+    scene.load.image('Bacon', '/content/cards/Bacon.png');
+    scene.load.image('Banana', '/content/cards/Banana.png');
+    scene.load.image('Buffet', '/content/cards/Buffet.png');
+    scene.load.image('Soy Milk', '/content/cards/SoyMilk.png');
+    scene.load.image('Rice', '/content/cards/Rice.png');
+    scene.load.image('Yoga', '/content/cards/Yoga.png');
+    scene.load.image('GET SWOLL', '/content/cards/Swoll.png');
+    scene.load.image('Ketones', '/content/cards/Bike.png');
+    scene.load.image('Wagyu', '/content/cards/Steak.png');
+}
+
 class BallUpgrades extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
     readyToUpdateUpgrades: boolean;
@@ -100,7 +119,7 @@ class BallUpgrades extends Phaser.Scene {
     preload() {
         // Loading progress updates
         this.load.on('progress', function (value) {
-            console.log(value);
+            console.log("LOADING:" + value);
             document.getElementById("loadingbar").textContent = "Loading: " + Math.floor(value * 100) + "%";
         });
         this.load.on('complete', function () {
@@ -112,22 +131,7 @@ class BallUpgrades extends Phaser.Scene {
         this.load.image('uparrow', '/content/ui/uparrowoverlay.png');
         this.load.image('credit', '/content/ui/creditoverlay.png');
 
-        // Note that the key is the same as the upgrade name
-        this.load.image('Tofu', '/content/cards/Tofu.png');
-        this.load.image('Apple', '/content/cards/Apple.png');
-        this.load.image('Brocolli', '/content/cards/Brocolli2.png');
-        this.load.image('BROcolli', '/content/cards/Brocolli.png');
-        this.load.image('Milk', '/content/cards/Milk.png');
-        this.load.image('Bread', '/content/cards/Bread.png');
-        this.load.image('Bacon', '/content/cards/Bacon.png');
-        this.load.image('Banana', '/content/cards/Banana.png');
-        this.load.image('Buffet', '/content/cards/Buffet.png');
-        this.load.image('Soy Milk', '/content/cards/SoyMilk.png');
-        this.load.image('Rice', '/content/cards/Rice.png');
-        this.load.image('Yoga', '/content/cards/Yoga.png');
-        this.load.image('GET SWOLL', '/content/cards/Swoll.png');
-        this.load.image('Ketones', '/content/cards/Bike.png');
-        this.load.image('Wagyu', '/content/cards/Steak.png');
+        LoadCardImages(this);
     }
 
     constructor() {
@@ -137,7 +141,6 @@ class BallUpgrades extends Phaser.Scene {
     }
 
     create() {
-
         this.graphics = this.add.graphics({ x: 0, y: 0 });
         this.input.on('gameobjectdown', this.onObjectClicked);
         var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
@@ -186,28 +189,6 @@ class BallUpgrades extends Phaser.Scene {
 
     update() {
         this.graphics.clear();
-
-        if (this.upgradeCards.length > 0) {
-            // Draw the fade screen
-            this.graphics.fillStyle(0xFFFFFF, 0.2);
-            this.graphics.fillRect(0, 0, this.scale.canvas.width, this.scale.canvas.height);
-
-            // Set all graphics to visible
-            this.creditsLeft.setVisible(true);
-            this.creditsLeftButton.setVisible(true);
-            this.refreshButton.setVisible(true);
-            this.upgradeTierButton.setVisible(true);
-            this.upgradeTierCost.setVisible(true);
-        }
-        else {
-            // Set all graphics to invisible
-            this.creditsLeft.setVisible(false);
-            this.creditsLeftButton.setVisible(false);
-            this.refreshButton.setVisible(false);
-            this.upgradeTierButton.setVisible(false);
-            this.upgradeTierCost.setVisible(false);
-        }
-
         this.updateUpgrades();
         this.drawUpgradeCards();
     }
@@ -231,29 +212,29 @@ class BallUpgrades extends Phaser.Scene {
             this.creditsLeft.setX(this.scale.canvas.width * (0.89 - 0.0175 * this.creditsLeft.text.length)) // Adjust the x-position based on how long the string is
         }
 
+        const MaxUpgradeTierDisplay = "XX";
+        if (this.upgradeTierCost.text != MaxUpgradeTierDisplay) {
+            var upgradeCostDisplayed = parseInt(this.upgradeTierCost.text);
+            if (upgradeCostDisplayed != EconomyData.UpgradeTierCost) {
+                // Upgrade Tier Cost can be maxed out - indicated by -1 to upgrade cost
+                if (EconomyData.UpgradeTierCost < 0) {
+                    this.upgradeTierCost.text = MaxUpgradeTierDisplay;
+                    this.upgradeTierButton.disableInteractive();
+                }
+                else {
+                    this.upgradeTierCost.text = EconomyData.UpgradeTierCost.toString();
+                }
+            }
+        }
+
         if (this.readyToUpdateUpgrades == true
             && UpgradeData.length > 0) {
             this.readyToUpdateUpgrades = false;
             for (let upgradeCard of this.upgradeCards) {
-                upgradeCard.Title.destroy(true);
-                upgradeCard.Description.destroy(true);
-                upgradeCard.Cost.destroy(true);
-                if (upgradeCard.CardBackground != null) {
-                    upgradeCard.CardBackground.destroy(true);
-                }
-                upgradeCard.destroy(true);
+                DestroyCard(upgradeCard);
             }
 
             this.upgradeCards = [];
-
-            // Upgrade Tier Cost can be maxed out
-            if (EconomyData.UpgradeTierCost < 0) {
-                this.upgradeTierCost.text = "XX";
-                this.upgradeTierButton.disableInteractive();
-            }
-            else {
-                this.upgradeTierCost.text = EconomyData.UpgradeTierCost.toString();
-            }
             var hasActionableCards = false;
             this.createUpgradeCards();
 
@@ -339,17 +320,7 @@ class BallUpgrades extends Phaser.Scene {
 
     drawUpgradeCards() {
         for (let card of this.upgradeCards) {
-            this.graphics.fillStyle(card.Upgrade.FillColor);
-            this.graphics.fillRoundedRect(card.x, card.y, card.width, card.height);
-            this.graphics.lineStyle(10, card.Upgrade.BorderColor);
-            this.graphics.strokeRoundedRect(card.x, card.y, card.width, card.height);
-
-            // Draw the cost of the card - Draw to the right for more expensive cards to offset the text being on the left
-            var xPos = card.Cost.x + card.Cost.scale * 4 + (card.width * 0.015 * card.Cost.text.length);
-            this.graphics.fillStyle(0xFFC90E);
-            this.graphics.fillCircle(xPos, card.Cost.y + card.Cost.scale * 8, card.Cost.scale * 12);
-            this.graphics.lineStyle(3, 0x222222);
-            this.graphics.strokeCircle(xPos, card.Cost.y + card.Cost.scale * 8, card.Cost.scale * 12);
+            DrawUpgradeCardBorder(card, this.graphics);
         }
     }
 
@@ -378,6 +349,11 @@ class BallUpgrades extends Phaser.Scene {
     }
 
     onRefreshClicked(sprite: Phaser.GameObjects.Sprite) {
+        // Disallow refreshes if not enough credits
+        if (EconomyData.CreditsLeft <= 0) {
+            return;
+        }
+
         var sessionRoomId = sessionStorage.getItem("roomid");
         var sessionUserId = sessionStorage.getItem("userid");
 
@@ -472,61 +448,74 @@ class UpgradeCard extends Phaser.Physics.Arcade.Sprite {
     }
 }
 
+function ShiftText(card: UpgradeCard) {
+    if (card.CardBackground != undefined) {
+        card.CardBackground.x = card.x + card.width * 0.5;
+        card.CardBackground.y = card.y + card.height * 0.65;
+    }
+
+    card.Title.x = card.x + card.width * (0.5 * card.Title.text.length * 0.04);
+    card.Title.y = card.y + card.height * 0.05;
+
+    card.Description.x = card.x + card.width * 0.05;
+    card.Description.y = card.y + card.height * 0.3;
+
+    if (card.Cost != undefined) {
+        card.Cost.x = card.x + card.width * (0.915 - 0.015 * card.Cost.text.length);
+        card.Cost.y = card.y + card.height * 0.01;
+    }
+}
+
 class BallStats extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
     playerBall: PlayerBall;
     statsDisplay: Record<string, Phaser.GameObjects.Text>;
-    pointsDisplay: Record<string, Phaser.GameObjects.Text>;
-    keystoneDisplay: Phaser.GameObjects.Text[];
+    keystoneCards: UpgradeCard[];
+    displayedCard: UpgradeCard;
+    displayedCardName: string;
+    lastUpdate: number;
 
-    displayToggle: integer;
     constructor() {
         super({ key: 'BallStats', active: true, visible: true });
+        this.lastUpdate = 0;
     }
 
     preload() {
         this.load.image('dummyimage', '/content/dummyimage.png');
         this.load.image('background', '/content/ui/wooden.jpg');
+
+        LoadCardImages(this);
     }
 
     create() {
-        this.displayToggle = 0;
         this.graphics = this.add.graphics({ x: 0, y: 0 });
         this.input.on('gameobjectdown', this.onObjectClicked);
         this.statsDisplay = {};
-        this.pointsDisplay = {};
-        this.keystoneDisplay = [];
+        this.keystoneCards = [];
 
         var playerBalls = InitializeBalls(this.physics.add.group({
             defaultKey: 'dummyimage',
             bounceX: 1,
             bounceY: 1,
-        }), this, 0.15 /*Area taken by the balls*/);
+        }), this, 0.18 /*Area taken by the balls*/);
 
         this.playerBall = playerBalls[0];
+        this.playerBall.setPosition(this.scale.canvas.width * 0.25, this.scale.canvas.height * 0.225); // Set the ball position relative to the screen
+        this.playerBall.NameText.setVisible(false);
+        this.playerBall.HpText.setVisible(false);
 
-        // Get the scale multiplier, so we know where to put things
-        var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
-        var scaleMultiplier = GetScale(this);
-
-        this.playerBall.setPosition(200 * scaleMultiplier, 200 * scaleMultiplier); // Set the ball to the top-left of the screen
-
-        this.playerBall.setInteractive(
-            new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y, this.playerBall.Size),
-            CircleDetection);
-
+        this.statsDisplay["points"] = this.add.text(0, 0, "", { color: 'Black' });
         this.statsDisplay["hp"] = this.add.text(0, 0, "", { color: 'Black' });
         this.statsDisplay["dmg"] = this.add.text(0, 0, "", { color: 'Black' });
         this.statsDisplay["armor"] = this.add.text(0, 0, "", { color: 'Black' });
         this.statsDisplay["velocity"] = this.add.text(0, 0, "", { color: 'Black' });
         this.statsDisplay["size"] = this.add.text(0, 0, "", { color: 'Black' });
 
-        this.pointsDisplay["round"] = this.add.text(0, 0, "", { color: 'Black' });
-        this.pointsDisplay["dmgdone"] = this.add.text(0, 0, "", { color: 'Black' });
-        this.pointsDisplay["dmgreceived"] = this.add.text(0, 0, "", { color: 'Black' });
-
         this.updateText();
 
+        // Get the scale multiplier, so we know where to put things and scale text
+        var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
+        var scaleMultiplier = GetScale(this);
         const STATFONTSCALE = 0.002;
         var textArray = [];
         for (let key in this.statsDisplay) {
@@ -534,16 +523,7 @@ class BallStats extends Phaser.Scene {
             stat.scale = boundingDimension * STATFONTSCALE;
             textArray.push(stat);
         }
-        Phaser.Actions.PlaceOnCircle(textArray, new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y - 15 * scaleMultiplier, this.playerBall.Size + 5 * scaleMultiplier), -0.6, 1.3);
-
-        var textArray2 = [];
-        for (let key in this.pointsDisplay) {
-            var points = this.pointsDisplay[key];
-            points.scale = boundingDimension * STATFONTSCALE;
-            textArray2.push(points);
-            points.setVisible(false);
-        }
-        Phaser.Actions.PlaceOnCircle(textArray2, new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y - 15 * scaleMultiplier, this.playerBall.Size + 5 * scaleMultiplier), -0.6, 1.3);
+        Phaser.Actions.PlaceOnCircle(textArray, new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y - 15 * scaleMultiplier, this.playerBall.Size + 15 * scaleMultiplier), -0.7, 1.2);
 
         var backgroundImage = this.add.sprite(this.scale.canvas.width / 2, this.scale.canvas.height / 2, 'background');
         backgroundImage.alpha = 0.55;
@@ -552,10 +532,27 @@ class BallStats extends Phaser.Scene {
     }
 
     update() {
-        // No actual to clear graphics - just update text - but we do so anyway
+        if (this.lastUpdate == BallUpdateTime) {
+            return;
+        }
+
+        this.lastUpdate = BallUpdateTime;
+
         this.graphics.clear();
         this.updateText();
         DrawBalls(this.graphics, [this.playerBall]);
+        this.drawUpgradeCards();
+    }
+
+    drawUpgradeCards() {
+        for (let card of this.keystoneCards) {
+            DrawUpgradeCardBorder(card, this.graphics);
+        }
+
+        if (this.displayedCard != undefined
+            && this.displayedCard.active) {
+            DrawUpgradeCardBorder(this.displayedCard, this.graphics);
+        }
     }
 
     updateText() {
@@ -563,97 +560,127 @@ class BallStats extends Phaser.Scene {
             CopyBallData(this.playerBall, data);
         }
 
-        this.statsDisplay["hp"].text = "HP:" + this.playerBall.MaxHp.toString();
+        var playerScore = RoundScoreData[0];
+        this.statsDisplay["points"].text = "POINTS:" + playerScore.PointsLeft;
+        this.statsDisplay["hp"].text = "HP:" + this.playerBall.Hp;
         this.statsDisplay["dmg"].text = "DMG:" + this.playerBall.Damage.toString();
         this.statsDisplay["armor"].text = "ARMOR:" + this.playerBall.Armor.toString();
         this.statsDisplay["velocity"].text = "SPEED:" + this.playerBall.VelocityMultiplier.toString();
         this.statsDisplay["size"].text = "SIZE:" + this.playerBall.SizeMultiplier.toString();
 
-        var playerScore = RoundScoreData[0];
-        this.pointsDisplay["round"].text = "ROUND: " + (RoundNumber - 1).toString();
-        this.pointsDisplay["dmgdone"].text = "DMG Dealt: " + playerScore.RoundDamageDone.toString();
-        this.pointsDisplay["dmgreceived"].text = "DMG Received: " + playerScore.RoundDamageReceived.toString();
-
-        // TODO: Show more stuff in leaderboard
-
-        if (RoundNumber == 0) { // Start of game
-            this.pointsDisplay["round"].text = "ROUND: 0";
-        }
-        else if (RoundNumber < 0) { // Detect when the game has ended
-            this.pointsDisplay["round"].text = "END OF GAME";
+        for (let card of this.keystoneCards) {
+            DestroyCard(card);
         }
 
-        // Update keystone display info - reinitialize only if needed
-        var keystonesUpdated = false;
-        if (EconomyData.CreditsWereSpent) {
-            keystonesUpdated = true;
+        this.keystoneCards = [];
+        var cardWidth = this.playerBall.Size * 0.5;
+        var cardHeight = this.playerBall.Size * 0.5;
+        for (var i = 0; i < this.playerBall.KeystoneData.length; i++) {
+            let keystoneCard = new UpgradeCard(this,
+                0, 0,
+                null,
+                this.playerBall.KeystoneData[i],
+                cardWidth,
+                cardHeight);
+
+            this.keystoneCards[i] = keystoneCard;
         }
-        else if (this.playerBall.KeystoneData.length > this.keystoneDisplay.length) {
-            keystonesUpdated = true;
+
+        Phaser.Actions.PlaceOnCircle(this.keystoneCards, new Phaser.Geom.Circle(this.playerBall.x - cardWidth*0.5, this.playerBall.y-cardHeight*0.5, this.playerBall.Size * 0.65));
+
+        // Re-position text in the card
+        for (let card of this.keystoneCards) {
+            ShiftText(card);
+            card.Title.y = card.y + 0.3 * card.height;
+            card.setInteractive(new Phaser.Geom.Rectangle(card.x, card.y, card.width, card.height),
+                RectDetection);
+            card.Description.setVisible(false);
         }
-        else if (this.playerBall.KeystoneData.length == this.keystoneDisplay.length) {
-            for (var i = 0; i < this.keystoneDisplay.length; i++) {
-                if (this.keystoneDisplay[i].text != this.playerBall.KeystoneData[i][0] + this.playerBall.KeystoneData[i][1]) {
-                    keystonesUpdated = true;
-                    break;
-                }
+
+        // Check whether the selected keystone card is still valid
+        this.destroyDisplayedCard();
+        if (this.displayedCardName != undefined) {
+            for (let keystoneUpgrade of this.playerBall.KeystoneData) {
+                if (keystoneUpgrade.UpgradeName == this.displayedCardName)
+                    this.updateDisplayedCard(keystoneUpgrade);
             }
         }
-        else {
-            keystonesUpdated = true;
+    }
+
+    destroyDisplayedCard() {
+        if (this.displayedCard != undefined) {
+            DestroyCard(this.displayedCard);
         }
 
-        if (keystonesUpdated) {
-            for (let keystoneDisplay of this.keystoneDisplay) {
-                keystoneDisplay.destroy();
-            }
+        // Make the other text visible
+        for (let key in this.statsDisplay) {
+            this.statsDisplay[key].setVisible(true);
+        }
+        return;
+    }
 
-            EconomyData.CreditsWereSpent = false;
-            this.keystoneDisplay = [];
-            for (let keystoneData of this.playerBall.KeystoneData) {
-                this.keystoneDisplay.push(this.add.text(0, 0, keystoneData[0] + keystoneData[1], { color: 'Black' }));
-            }
+    updateDisplayedCard(upgradeData: ServerUpgradeData) {
+        var height = this.scale.canvas.height * 9 / 31;
+        var width = this.scale.canvas.width * 9 / 35
+        this.displayedCard = new UpgradeCard(this,
+            this.playerBall.x + this.playerBall.Size,
+            this.playerBall.y - height * 0.5,
+            null,
+            upgradeData,
+            height,
+            width);
 
-            var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
-            var scaleMultiplier = GetScale(this);
-
-            for (let textElement of this.keystoneDisplay) {
-                // Start shrinking font at 8 keystones
-                var fontScale = Math.min(0.0020, 0.016 / this.keystoneDisplay.length);
-                textElement.scale = boundingDimension * fontScale;
-                if (this.displayToggle != 1) {
-                    textElement.setVisible(false);
-                }
-            }
-
-            var maxRadians = Math.min(0.3 * this.keystoneDisplay.length - 0.8, 1.3);
-            Phaser.Actions.PlaceOnCircle(this.keystoneDisplay, new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y - 10 * scaleMultiplier, this.playerBall.Size + 5 * scaleMultiplier), -0.7, maxRadians);
+        // Make the other text invisible
+        for (let key in this.statsDisplay) {
+            this.statsDisplay[key].setVisible(false);
         }
     }
 
     onObjectClicked(pointer, gameObject: Phaser.GameObjects.GameObject) {
         var scene = gameObject.scene as BallStats;
-        var ball = gameObject as PlayerBall;
-        if (ball.KeystoneData == null || scene.playerBall == null) {
+
+        // Check for clicking on a card
+        var card = gameObject as UpgradeCard;
+        if (card.Upgrade != undefined && scene.statsDisplay != undefined) {
+            // Case 1 - Already selected, unselect
+            if (scene.displayedCardName != undefined
+                && scene.displayedCardName == card.Upgrade.UpgradeName) {
+                scene.displayedCardName = null;
+                scene.lastUpdate = Date.now();
+                return;
+            }
+
+            // Case 2 - Not selected, display info
+            scene.displayedCardName = card.Upgrade.UpgradeName;
+            scene.lastUpdate = Date.now(); // Update to draw borders
             return;
         }
-
-        // Change what is displayed
-        scene.displayToggle = (scene.displayToggle + 1) % 3;
-
-        // 0 for displaying stats
-        for (let key in scene.statsDisplay) {
-            scene.statsDisplay[key].setVisible(scene.displayToggle == 0);
-        }
-
-        // 1 for displaying keystones
-        for (let display of scene.keystoneDisplay) {
-            display.setVisible(scene.displayToggle == 1);
-        }
-
-        // 2 for displaying points{
-        for (let key in scene.pointsDisplay) {
-            scene.pointsDisplay[key].setVisible(scene.displayToggle == 2);
-        }
     }
+}
+
+function DrawUpgradeCardBorder(card: UpgradeCard, graphics: Phaser.GameObjects.Graphics) {
+    graphics.fillStyle(card.Upgrade.FillColor);
+    graphics.fillRoundedRect(card.x, card.y, card.width, card.height);
+
+    var lineWidth = Math.min(10, Math.min(card.width, card.height) * 0.05);
+
+    graphics.lineStyle(lineWidth, card.Upgrade.BorderColor);
+    graphics.strokeRoundedRect(card.x, card.y, card.width, card.height);
+
+    // Draw the cost of the card - Draw to the right for more expensive cards to offset the text being on the left
+    if (card.Cost != undefined) {
+        var xPos = card.Cost.x + card.Cost.scale * 4 + (card.width * 0.015 * card.Cost.text.length);
+        graphics.fillStyle(0xFFC90E);
+        graphics.fillCircle(xPos, card.Cost.y + card.Cost.scale * 8, card.Cost.scale * 12);
+        graphics.lineStyle(lineWidth * 0.3, 0x222222);
+        graphics.strokeCircle(xPos, card.Cost.y + card.Cost.scale * 8, card.Cost.scale * 12);
+    }
+}
+
+function DestroyCard(card: UpgradeCard) {
+    card.Title?.destroy(true);
+    card.Description?.destroy(true);
+    card.Cost?.destroy(true);
+    card.CardBackground?.destroy(true);
+    card.destroy(true);
 }

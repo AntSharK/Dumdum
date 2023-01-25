@@ -19,7 +19,7 @@ namespace Swollball.Upgrades.Keystones
 
         public virtual int FillColor => 13421772;
 
-        public int Cost { get; }
+        public int Cost { get; set; }
 
         public int UpgradeAmount { get; set;  }
 
@@ -48,12 +48,14 @@ namespace Swollball.Upgrades.Keystones
 
         public virtual void PerformUpgrade(Player player)
         {
+            // TODO: Stacking keystones infinitely should be disallowed
             if (player.Ball.Keystones.ContainsKey(this.UpgradeName))
             {
                 player.Ball.Keystones[this.UpgradeName].UpgradeAmount += this.UpgradeAmount;
             }
             else
             {
+                this.Cost = 0; // Make cost 0;
                 player.Ball.Keystones[this.UpgradeName] = this;
             }
         }

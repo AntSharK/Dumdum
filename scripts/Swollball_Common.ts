@@ -10,10 +10,15 @@ declare var connection;
 const FINALSCOREDISPLAYDURATION = 30;
 const LINEARSCALEFACTOR = 0.9;
 
+declare var BallUpdateTime: number;
+declare var LeaderboardUpdateTime: number;
+declare var UpgradeUpdateTime: number;
+
 /* 
 RECEIVE DATA FROM SERVER AND SEND STUFF BACK TO SERVER
  * */
 function InitializeBallData(dataIn: any[]) {
+    BallUpdateTime = Date.now();
     BallData = [];
     RoundLog = [];
 
@@ -29,7 +34,7 @@ function InitializeBallData(dataIn: any[]) {
         serverData.VelocityMultiplier = data.speedMultiplier;
 
         for (let keystoneData of data.keystoneData) {
-            serverData.KeystoneData.push([keystoneData.item1, keystoneData.item2]);
+            serverData.KeystoneData.push(ParseUpgradeData(keystoneData));
         }
 
         BallData.push(serverData);
@@ -37,6 +42,7 @@ function InitializeBallData(dataIn: any[]) {
 }
 
 function InitializeLeaderboardData(dataIn: any[]) {
+    LeaderboardUpdateTime = Date.now();
     RoundScoreData = [];
     var alivePlayers = 0;
     for (let data of dataIn) {
@@ -67,6 +73,7 @@ function InitializeLeaderboardData(dataIn: any[]) {
 }
 
 function InitializeUpgradeData(dataIn: any[], economyData: any) {
+    UpgradeUpdateTime = Date.now();
     UpgradeData = [];
 
     EconomyData = new ServerEconomyData();
@@ -78,17 +85,22 @@ function InitializeUpgradeData(dataIn: any[], economyData: any) {
     EconomyData.UpgradeTierCost = economyData.upgradeTierCost;
 
     for (let data of dataIn) {
-        var serverData = new ServerUpgradeData();
-        serverData.UpgradeAmount = data.upgradeAmount;
-        serverData.UpgradeName = data.upgradeName;
-        serverData.Description = data.description;
-        serverData.ServerId = data.serverId;
-        serverData.BorderColor = data.borderColor
-        serverData.FillColor = data.fillColor;
-        serverData.Cost = data.cost;
-
+        var serverData = ParseUpgradeData(data);
         UpgradeData.push(serverData);
     }
+}
+
+function ParseUpgradeData(data: any): ServerUpgradeData{
+    var serverData = new ServerUpgradeData();
+    serverData.UpgradeAmount = data.upgradeAmount;
+    serverData.UpgradeName = data.upgradeName;
+    serverData.Description = data.description;
+    serverData.ServerId = data.serverId;
+    serverData.BorderColor = data.borderColor
+    serverData.FillColor = data.fillColor;
+    serverData.Cost = data.cost;
+
+    return serverData;
 }
 
 function SceneTransition(sceneFrom: string, sceneTo: string) {
@@ -110,7 +122,7 @@ class ServerBallData {
     Color: number;
     Hp: integer;
     Name: string;
-    KeystoneData: [string, integer][];
+    KeystoneData: ServerUpgradeData[];
 }
 
 class ServerRoundScoreData {
@@ -163,14 +175,13 @@ class ServerEconomyData {
 function InitializeKeystoneUpgrades(ball: PlayerBall) {
     // Initialize upgrades which the client needs to know about
     ball.KeystoneActions = [];
-    for (let key in ball.KeystoneData) {
-        var amount = ball.KeystoneData[key][1];
-        switch (ball.KeystoneData[key][0]) {
+    for (let keystoneData of ball.KeystoneData) {
+        switch (keystoneData.UpgradeName) {
             case 'Feast':
-                ball.KeystoneActions.push(new FeastAction(amount));
+                ball.KeystoneActions.push(new FeastAction(keystoneData.UpgradeAmount));
                 break;
             case 'Harden':
-                ball.KeystoneActions.push(new HardenAction(amount));
+                ball.KeystoneActions.push(new HardenAction(keystoneData.UpgradeAmount));
                 break;
         }
     }
@@ -215,7 +226,7 @@ class PlayerBall extends Phaser.Physics.Arcade.Sprite {
     HitTime: number = 0;
     LastDisplayedHp: integer = 0;
 
-    KeystoneData: [string, integer][];
+    KeystoneData: ServerUpgradeData[];
     KeystoneActions: KeystoneAction[];
 }
 
