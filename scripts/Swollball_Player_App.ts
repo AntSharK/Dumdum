@@ -100,7 +100,7 @@ class BallUpgrades extends Phaser.Scene {
     preload() {
         // Loading progress updates
         this.load.on('progress', function (value) {
-            console.log(value);
+            console.log("LOADING:" + value);
             document.getElementById("loadingbar").textContent = "Loading: " + Math.floor(value * 100) + "%";
         });
         this.load.on('complete', function () {
@@ -230,10 +230,8 @@ class BallUpgrades extends Phaser.Scene {
             for (let upgradeCard of this.upgradeCards) {
                 upgradeCard.Title.destroy(true);
                 upgradeCard.Description.destroy(true);
-                upgradeCard.Cost.destroy(true);
-                if (upgradeCard.CardBackground != null) {
-                    upgradeCard.CardBackground.destroy(true);
-                }
+                upgradeCard.Cost?.destroy(true);
+                upgradeCard.CardBackground?.destroy(true);
                 upgradeCard.destroy(true);
             }
 
@@ -555,9 +553,11 @@ function DrawUpgradeCard(card: UpgradeCard, graphics: Phaser.GameObjects.Graphic
     graphics.strokeRoundedRect(card.x, card.y, card.width, card.height);
 
     // Draw the cost of the card - Draw to the right for more expensive cards to offset the text being on the left
-    var xPos = card.Cost.x + card.Cost.scale * 4 + (card.width * 0.015 * card.Cost.text.length);
-    graphics.fillStyle(0xFFC90E);
-    graphics.fillCircle(xPos, card.Cost.y + card.Cost.scale * 8, card.Cost.scale * 12);
-    graphics.lineStyle(3, 0x222222);
-    graphics.strokeCircle(xPos, card.Cost.y + card.Cost.scale * 8, card.Cost.scale * 12);
+    if (card.Cost != undefined) {
+        var xPos = card.Cost.x + card.Cost.scale * 4 + (card.width * 0.015 * card.Cost.text.length);
+        graphics.fillStyle(0xFFC90E);
+        graphics.fillCircle(xPos, card.Cost.y + card.Cost.scale * 8, card.Cost.scale * 12);
+        graphics.lineStyle(3, 0x222222);
+        graphics.strokeCircle(xPos, card.Cost.y + card.Cost.scale * 8, card.Cost.scale * 12);
+    }
 }
