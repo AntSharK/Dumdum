@@ -19,12 +19,13 @@ namespace Swollball
 
         /// <summary>
         /// Gets the keystone data to pass down to the client
+        /// Downcast to an IUpgrade object
         /// </summary>
-        public IEnumerable<Tuple<string, int>> KeystoneData
+        public IEnumerable<IUpgrade> KeystoneData
         {
             get
             {
-                return this.Keystones.Values.Select(s => Tuple.Create(s.UpgradeName, s.UpgradeAmount));
+                return this.Keystones.Values;
             }
         }
 
