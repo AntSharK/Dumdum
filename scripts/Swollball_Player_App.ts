@@ -474,6 +474,7 @@ class BallStats extends Phaser.Scene {
     displayedCard: UpgradeCard;
     displayedCardId: string;
     lastUpdate: number;
+    sellButton: Phaser.GameObjects.Sprite;
 
     constructor() {
         super({ key: 'BallStats', active: true, visible: true });
@@ -483,6 +484,7 @@ class BallStats extends Phaser.Scene {
     preload() {
         this.load.image('dummyimage', '/content/dummyimage.png');
         this.load.image('background', '/content/ui/wooden.jpg');
+        this.load.image('sellbutton', '/content/ui/sellbutton.png');
 
         LoadCardImages(this);
     }
@@ -529,6 +531,14 @@ class BallStats extends Phaser.Scene {
         backgroundImage.alpha = 0.55;
         backgroundImage.setDepth(-1);
         backgroundImage.setDisplaySize(this.scale.canvas.width, this.scale.canvas.height);
+
+        // Paint the Sell Button
+        this.sellButton = this.add.sprite(this.playerBall.x + this.playerBall.Size + this.scale.canvas.width * 0.1, this.playerBall.y - this.scale.canvas.height * 5 / 31, 'sellbutton');
+        this.sellButton.setDisplaySize(this.scale.canvas.width * 7 / 35, this.scale.canvas.height * 2 / 31);
+        this.sellButton.setInteractive(new Phaser.Geom.Rectangle(this.sellButton.x, this.sellButton.y, this.sellButton.displayWidth, this.sellButton.displayHeight),
+            RectDetection);
+        this.sellButton.active = false;
+        this.sellButton.visible = false;
     }
 
     update() {
@@ -609,6 +619,8 @@ class BallStats extends Phaser.Scene {
 
     destroyDisplayedCard() {
         if (this.displayedCard != undefined) {
+            this.sellButton.active = false;
+            this.sellButton.visible = false;
             DestroyCard(this.displayedCard);
         }
 
@@ -631,6 +643,8 @@ class BallStats extends Phaser.Scene {
             width);
 
         // Make the other text invisible
+        this.sellButton.active = true;
+        this.sellButton.visible = true;
         for (let key in this.statsDisplay) {
             this.statsDisplay[key].setVisible(false);
         }

@@ -37,6 +37,24 @@ namespace Swollball
             this.FillShop();
         }
 
+        public bool SellUpgrade(string upgradeId)
+        {
+            var keystoneToSell = this.Ball.Keystones.Where(k => k.ServerId == upgradeId).FirstOrDefault();
+            if (keystoneToSell == null)
+            {
+                return false;
+            }
+
+            this.Economy.CreditsLeft += keystoneToSell.Cost;
+            this.Ball.Keystones.Remove(keystoneToSell);
+            if (this.Economy.CreditsLeft > 0)
+            {
+                this.FillShop();
+            }
+
+            return true;
+        }
+
         public bool ApplyUpgrade(string upgradeId)
         {
             if (this.CurrentUpgrades.ContainsKey(upgradeId))
