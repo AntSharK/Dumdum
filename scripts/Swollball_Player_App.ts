@@ -137,7 +137,6 @@ class BallUpgrades extends Phaser.Scene {
     }
 
     create() {
-
         this.graphics = this.add.graphics({ x: 0, y: 0 });
         this.input.on('gameobjectdown', this.onObjectClicked);
         var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
@@ -453,10 +452,12 @@ class BallStats extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
     playerBall: PlayerBall;
     statsDisplay: Record<string, Phaser.GameObjects.Text>;
+    keystoneCards: UpgradeCard[];
+    lastUpdate: number;
 
-    displayToggle: integer;
     constructor() {
         super({ key: 'BallStats', active: true, visible: true });
+        this.lastUpdate = 0;
     }
 
     preload() {
@@ -465,10 +466,10 @@ class BallStats extends Phaser.Scene {
     }
 
     create() {
-        this.displayToggle = 0;
         this.graphics = this.add.graphics({ x: 0, y: 0 });
         this.input.on('gameobjectdown', this.onObjectClicked);
         this.statsDisplay = {};
+        this.keystoneCards = [];
 
         var playerBalls = InitializeBalls(this.physics.add.group({
             defaultKey: 'dummyimage',
@@ -509,7 +510,7 @@ class BallStats extends Phaser.Scene {
     }
 
     update() {
-        // No actual to clear graphics - just update text - but we do so anyway
+        // No actual need to clear graphics - just update text - but we do so anyway
         this.graphics.clear();
         this.updateText();
         DrawBalls(this.graphics, [this.playerBall]);
@@ -526,6 +527,9 @@ class BallStats extends Phaser.Scene {
         this.statsDisplay["armor"].text = "ARMOR:" + this.playerBall.Armor.toString();
         this.statsDisplay["velocity"].text = "SPEED:" + this.playerBall.VelocityMultiplier.toString();
         this.statsDisplay["size"].text = "SIZE:" + this.playerBall.SizeMultiplier.toString();
+        
+        var scaleMultiplier = GetScale(this);
+        Phaser.Actions.PlaceOnCircle(this.keystoneCards, new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y - 15 * scaleMultiplier, this.playerBall.Size + 5 * scaleMultiplier), -0.6, 1.3);
     }
 
     onObjectClicked(pointer, gameObject: Phaser.GameObjects.GameObject) {

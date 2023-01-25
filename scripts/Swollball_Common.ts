@@ -10,10 +10,15 @@ declare var connection;
 const FINALSCOREDISPLAYDURATION = 30;
 const LINEARSCALEFACTOR = 0.9;
 
+declare var BallUpdateTime: number;
+declare var LeaderboardUpdateTime: number;
+declare var UpgradeUpdateTime: number;
+
 /* 
 RECEIVE DATA FROM SERVER AND SEND STUFF BACK TO SERVER
  * */
 function InitializeBallData(dataIn: any[]) {
+    BallUpdateTime = Date.now();
     BallData = [];
     RoundLog = [];
 
@@ -37,6 +42,7 @@ function InitializeBallData(dataIn: any[]) {
 }
 
 function InitializeLeaderboardData(dataIn: any[]) {
+    LeaderboardUpdateTime = Date.now();
     RoundScoreData = [];
     var alivePlayers = 0;
     for (let data of dataIn) {
@@ -67,6 +73,7 @@ function InitializeLeaderboardData(dataIn: any[]) {
 }
 
 function InitializeUpgradeData(dataIn: any[], economyData: any) {
+    UpgradeUpdateTime = Date.now();
     UpgradeData = [];
 
     EconomyData = new ServerEconomyData();
