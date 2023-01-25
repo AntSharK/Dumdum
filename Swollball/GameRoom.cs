@@ -152,7 +152,7 @@ namespace Swollball
             foreach (var p in roundRanking)
             {
                 // Interpolate between 0 and RoundNumber * 10
-                var deductedPoints = i * ((RoundNumber-1) * 10) / (roundRanking.Count() + 1); 
+                var deductedPoints = i * ((RoundNumber-1) * 10) / (roundRanking.Count()); 
                 var player = this.Players[p.Item2];
                 player.PlayerScore.PointsDeducted = deductedPoints;
                 player.PlayerScore.PointsLeft -= deductedPoints;
