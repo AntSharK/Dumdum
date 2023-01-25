@@ -472,7 +472,7 @@ class BallStats extends Phaser.Scene {
     statsDisplay: Record<string, Phaser.GameObjects.Text>;
     persistentUpgradeCards: UpgradeCard[];
     displayedCard: UpgradeCard;
-    displayedCardName: string;
+    displayedCardId: string;
     lastUpdate: number;
 
     constructor() {
@@ -599,9 +599,9 @@ class BallStats extends Phaser.Scene {
 
         // Check whether the selected persistent upgrade card is still valid
         this.destroyDisplayedCard();
-        if (this.displayedCardName != undefined) {
+        if (this.displayedCardId != undefined) {
             for (let persistentUpgrade of this.playerBall.PersistentUpgradeData) {
-                if (persistentUpgrade.UpgradeName == this.displayedCardName)
+                if (persistentUpgrade.ServerId == this.displayedCardId)
                     this.updateDisplayedCard(persistentUpgrade);
             }
         }
@@ -643,15 +643,15 @@ class BallStats extends Phaser.Scene {
         var card = gameObject as UpgradeCard;
         if (card.Upgrade != undefined && scene.statsDisplay != undefined) {
             // Case 1 - Already selected, unselect
-            if (scene.displayedCardName != undefined
-                && scene.displayedCardName == card.Upgrade.UpgradeName) {
-                scene.displayedCardName = null;
+            if (scene.displayedCardId != undefined
+                && scene.displayedCardId == card.Upgrade.ServerId) {
+                scene.displayedCardId = null;
                 scene.lastUpdate = Date.now();
                 return;
             }
 
             // Case 2 - Not selected, display info
-            scene.displayedCardName = card.Upgrade.UpgradeName;
+            scene.displayedCardId = card.Upgrade.ServerId;
             scene.lastUpdate = Date.now(); // Update to draw borders
             return;
         }
