@@ -171,20 +171,6 @@ class BallUpgrades extends Phaser.Scene {
             this.upgradeTierButton.y - this.upgradeTierButton.height * this.upgradeTierButton.scale / 2 + boundingDimension * 0.035, "0", { color: 'Black' });
         this.upgradeTierCost.scale = boundingDimension * 0.004;
         this.upgradeTierCost.setDepth(2);
-
-        /* Stuff for debugging hit area
-        this.upgradeTierButton.on('pointerover', function (pointer) {
-            this.setTint(0xff0000);
-        })
-        this.upgradeTierButton.on('pointerout', function (pointer) {
-            this.clearTint();
-        })
-        this.refreshButton.on('pointerover', function (pointer) {
-            this.setTint(0xff0000);
-        })
-        this.refreshButton.on('pointerout', function (pointer) {
-            this.clearTint();
-        })*/
     }
 
     update() {
@@ -535,10 +521,17 @@ class BallStats extends Phaser.Scene {
         // Paint the Sell Button
         this.sellButton = this.add.sprite(this.playerBall.x + this.playerBall.Size + this.scale.canvas.width * 0.1, this.playerBall.y - this.scale.canvas.height * 5 / 31, 'sellbutton');
         this.sellButton.setDisplaySize(this.scale.canvas.width * 7 / 35, this.scale.canvas.height * 2 / 31);
-        this.sellButton.setInteractive(new Phaser.Geom.Rectangle(this.sellButton.x, this.sellButton.y, this.sellButton.displayWidth, this.sellButton.displayHeight),
-            RectDetection);
+        this.sellButton.setInteractive();
         this.sellButton.active = false;
         this.sellButton.visible = false;
+
+        /* Stuff for debugging hit area
+        this.sellButton.on('pointerover', function (pointer) {
+            this.setTint(0xff0000);
+        })
+        this.sellButton.on('pointerout', function (pointer) {
+            this.clearTint();
+        });*/
     }
 
     update() {
@@ -669,6 +662,22 @@ class BallStats extends Phaser.Scene {
             scene.lastUpdate = Date.now(); // Update to draw borders
             return;
         }
+
+        // Check for clicking the sell button
+        var sprite = gameObject as Phaser.GameObjects.Sprite;
+        if (sprite.texture.key == 'sellbutton') {
+            scene.onSellKeystone();
+            return;
+        }
+    }
+
+    onSellKeystone() {
+        var sessionRoomId = sessionStorage.getItem("roomid");
+        var sessionUserId = sessionStorage.getItem("userid");
+
+        connection.invoke("SellKeystone", this.displayedCardId, sessionUserId, sessionRoomId).catch(function (err) {
+            return console.error(err.toString());
+        });
     }
 }
 
