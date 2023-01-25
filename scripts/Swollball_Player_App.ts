@@ -231,6 +231,21 @@ class BallUpgrades extends Phaser.Scene {
             this.creditsLeft.setX(this.scale.canvas.width * (0.89 - 0.0175 * this.creditsLeft.text.length)) // Adjust the x-position based on how long the string is
         }
 
+        const MaxUpgradeTierDisplay = "XX";
+        if (this.upgradeTierCost.text != MaxUpgradeTierDisplay) {
+            var upgradeCostDisplayed = parseInt(this.upgradeTierCost.text);
+            if (upgradeCostDisplayed != EconomyData.UpgradeTierCost) {
+                // Upgrade Tier Cost can be maxed out - indicated by -1 to upgrade cost
+                if (EconomyData.UpgradeTierCost < 0) {
+                    this.upgradeTierCost.text = MaxUpgradeTierDisplay;
+                    this.upgradeTierButton.disableInteractive();
+                }
+                else {
+                    this.upgradeTierCost.text = EconomyData.UpgradeTierCost.toString();
+                }
+            }
+        }
+
         if (this.readyToUpdateUpgrades == true
             && UpgradeData.length > 0) {
             this.readyToUpdateUpgrades = false;
@@ -245,15 +260,6 @@ class BallUpgrades extends Phaser.Scene {
             }
 
             this.upgradeCards = [];
-
-            // Upgrade Tier Cost can be maxed out
-            if (EconomyData.UpgradeTierCost < 0) {
-                this.upgradeTierCost.text = "XX";
-                this.upgradeTierButton.disableInteractive();
-            }
-            else {
-                this.upgradeTierCost.text = EconomyData.UpgradeTierCost.toString();
-            }
             var hasActionableCards = false;
             this.createUpgradeCards();
 
