@@ -476,7 +476,6 @@ class BallStats extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
     playerBall: PlayerBall;
     statsDisplay: Record<string, Phaser.GameObjects.Text>;
-    pointsDisplay: Record<string, Phaser.GameObjects.Text>;
     keystoneDisplay: Phaser.GameObjects.Text[];
 
     displayToggle: integer;
@@ -494,7 +493,6 @@ class BallStats extends Phaser.Scene {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
         this.input.on('gameobjectdown', this.onObjectClicked);
         this.statsDisplay = {};
-        this.pointsDisplay = {};
         this.keystoneDisplay = [];
 
         var playerBalls = InitializeBalls(this.physics.add.group({
@@ -521,10 +519,6 @@ class BallStats extends Phaser.Scene {
         this.statsDisplay["velocity"] = this.add.text(0, 0, "", { color: 'Black' });
         this.statsDisplay["size"] = this.add.text(0, 0, "", { color: 'Black' });
 
-        this.pointsDisplay["round"] = this.add.text(0, 0, "", { color: 'Black' });
-        this.pointsDisplay["dmgdone"] = this.add.text(0, 0, "", { color: 'Black' });
-        this.pointsDisplay["dmgreceived"] = this.add.text(0, 0, "", { color: 'Black' });
-
         this.updateText();
 
         const STATFONTSCALE = 0.002;
@@ -535,15 +529,6 @@ class BallStats extends Phaser.Scene {
             textArray.push(stat);
         }
         Phaser.Actions.PlaceOnCircle(textArray, new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y - 15 * scaleMultiplier, this.playerBall.Size + 5 * scaleMultiplier), -0.6, 1.3);
-
-        var textArray2 = [];
-        for (let key in this.pointsDisplay) {
-            var points = this.pointsDisplay[key];
-            points.scale = boundingDimension * STATFONTSCALE;
-            textArray2.push(points);
-            points.setVisible(false);
-        }
-        Phaser.Actions.PlaceOnCircle(textArray2, new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y - 15 * scaleMultiplier, this.playerBall.Size + 5 * scaleMultiplier), -0.6, 1.3);
 
         var backgroundImage = this.add.sprite(this.scale.canvas.width / 2, this.scale.canvas.height / 2, 'background');
         backgroundImage.alpha = 0.55;
@@ -570,18 +555,6 @@ class BallStats extends Phaser.Scene {
         this.statsDisplay["size"].text = "SIZE:" + this.playerBall.SizeMultiplier.toString();
 
         var playerScore = RoundScoreData[0];
-        this.pointsDisplay["round"].text = "ROUND: " + (RoundNumber - 1).toString();
-        this.pointsDisplay["dmgdone"].text = "DMG Dealt: " + playerScore.RoundDamageDone.toString();
-        this.pointsDisplay["dmgreceived"].text = "DMG Received: " + playerScore.RoundDamageReceived.toString();
-
-        // TODO: Show more stuff in leaderboard
-
-        if (RoundNumber == 0) { // Start of game
-            this.pointsDisplay["round"].text = "ROUND: 0";
-        }
-        else if (RoundNumber < 0) { // Detect when the game has ended
-            this.pointsDisplay["round"].text = "END OF GAME";
-        }
 
         // Update keystone display info - reinitialize only if needed
         var keystonesUpdated = false;
@@ -639,7 +612,7 @@ class BallStats extends Phaser.Scene {
         }
 
         // Change what is displayed
-        scene.displayToggle = (scene.displayToggle + 1) % 3;
+        scene.displayToggle = (scene.displayToggle + 1) % 2;
 
         // 0 for displaying stats
         for (let key in scene.statsDisplay) {
@@ -649,11 +622,6 @@ class BallStats extends Phaser.Scene {
         // 1 for displaying keystones
         for (let display of scene.keystoneDisplay) {
             display.setVisible(scene.displayToggle == 1);
-        }
-
-        // 2 for displaying points{
-        for (let key in scene.pointsDisplay) {
-            scene.pointsDisplay[key].setVisible(scene.displayToggle == 2);
         }
     }
 }
