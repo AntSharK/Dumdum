@@ -475,8 +475,6 @@ class UpgradeCard extends Phaser.Physics.Arcade.Sprite {
 class BallStats extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
     playerBall: PlayerBall;
-    statsDisplay: Record<string, Phaser.GameObjects.Text>;
-    keystoneDisplay: Phaser.GameObjects.Text[];
 
     displayToggle: integer;
     constructor() {
@@ -492,8 +490,6 @@ class BallStats extends Phaser.Scene {
         this.displayToggle = 0;
         this.graphics = this.add.graphics({ x: 0, y: 0 });
         this.input.on('gameobjectdown', this.onObjectClicked);
-        this.statsDisplay = {};
-        this.keystoneDisplay = [];
 
         var playerBalls = InitializeBalls(this.physics.add.group({
             defaultKey: 'dummyimage',
@@ -509,26 +505,9 @@ class BallStats extends Phaser.Scene {
 
         this.playerBall.setPosition(200 * scaleMultiplier, 200 * scaleMultiplier); // Set the ball to the top-left of the screen
 
-        this.playerBall.setInteractive(
-            new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y, this.playerBall.Size),
-            CircleDetection);
-
-        this.statsDisplay["hp"] = this.add.text(0, 0, "", { color: 'Black' });
-        this.statsDisplay["dmg"] = this.add.text(0, 0, "", { color: 'Black' });
-        this.statsDisplay["armor"] = this.add.text(0, 0, "", { color: 'Black' });
-        this.statsDisplay["velocity"] = this.add.text(0, 0, "", { color: 'Black' });
-        this.statsDisplay["size"] = this.add.text(0, 0, "", { color: 'Black' });
-
         this.updateText();
 
         const STATFONTSCALE = 0.002;
-        var textArray = [];
-        for (let key in this.statsDisplay) {
-            var stat = this.statsDisplay[key];
-            stat.scale = boundingDimension * STATFONTSCALE;
-            textArray.push(stat);
-        }
-        Phaser.Actions.PlaceOnCircle(textArray, new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y - 15 * scaleMultiplier, this.playerBall.Size + 5 * scaleMultiplier), -0.6, 1.3);
 
         var backgroundImage = this.add.sprite(this.scale.canvas.width / 2, this.scale.canvas.height / 2, 'background');
         backgroundImage.alpha = 0.55;
@@ -547,81 +526,9 @@ class BallStats extends Phaser.Scene {
         for (let data of BallData) {
             CopyBallData(this.playerBall, data);
         }
-
-        this.statsDisplay["hp"].text = "HP:" + this.playerBall.MaxHp.toString();
-        this.statsDisplay["dmg"].text = "DMG:" + this.playerBall.Damage.toString();
-        this.statsDisplay["armor"].text = "ARMOR:" + this.playerBall.Armor.toString();
-        this.statsDisplay["velocity"].text = "SPEED:" + this.playerBall.VelocityMultiplier.toString();
-        this.statsDisplay["size"].text = "SIZE:" + this.playerBall.SizeMultiplier.toString();
-
-        var playerScore = RoundScoreData[0];
-
-        // Update keystone display info - reinitialize only if needed
-        var keystonesUpdated = false;
-        if (EconomyData.CreditsWereSpent) {
-            keystonesUpdated = true;
-        }
-        else if (this.playerBall.KeystoneData.length > this.keystoneDisplay.length) {
-            keystonesUpdated = true;
-        }
-        else if (this.playerBall.KeystoneData.length == this.keystoneDisplay.length) {
-            for (var i = 0; i < this.keystoneDisplay.length; i++) {
-                if (this.keystoneDisplay[i].text != this.playerBall.KeystoneData[i][0] + this.playerBall.KeystoneData[i][1]) {
-                    keystonesUpdated = true;
-                    break;
-                }
-            }
-        }
-        else {
-            keystonesUpdated = true;
-        }
-
-        if (keystonesUpdated) {
-            for (let keystoneDisplay of this.keystoneDisplay) {
-                keystoneDisplay.destroy();
-            }
-
-            EconomyData.CreditsWereSpent = false;
-            this.keystoneDisplay = [];
-            for (let keystoneData of this.playerBall.KeystoneData) {
-                this.keystoneDisplay.push(this.add.text(0, 0, keystoneData[0] + keystoneData[1], { color: 'Black' }));
-            }
-
-            var boundingDimension = Math.min(this.scale.canvas.width, this.scale.canvas.height);
-            var scaleMultiplier = GetScale(this);
-
-            for (let textElement of this.keystoneDisplay) {
-                // Start shrinking font at 8 keystones
-                var fontScale = Math.min(0.0020, 0.016 / this.keystoneDisplay.length);
-                textElement.scale = boundingDimension * fontScale;
-                if (this.displayToggle != 1) {
-                    textElement.setVisible(false);
-                }
-            }
-
-            var maxRadians = Math.min(0.3 * this.keystoneDisplay.length - 0.8, 1.3);
-            Phaser.Actions.PlaceOnCircle(this.keystoneDisplay, new Phaser.Geom.Circle(this.playerBall.x, this.playerBall.y - 10 * scaleMultiplier, this.playerBall.Size + 5 * scaleMultiplier), -0.7, maxRadians);
-        }
     }
 
     onObjectClicked(pointer, gameObject: Phaser.GameObjects.GameObject) {
-        var scene = gameObject.scene as BallStats;
-        var ball = gameObject as PlayerBall;
-        if (ball.KeystoneData == null || scene.playerBall == null) {
-            return;
-        }
-
-        // Change what is displayed
-        scene.displayToggle = (scene.displayToggle + 1) % 2;
-
-        // 0 for displaying stats
-        for (let key in scene.statsDisplay) {
-            scene.statsDisplay[key].setVisible(scene.displayToggle == 0);
-        }
-
-        // 1 for displaying keystones
-        for (let display of scene.keystoneDisplay) {
-            display.setVisible(scene.displayToggle == 1);
-        }
+        // TODO
     }
 }
