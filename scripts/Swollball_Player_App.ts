@@ -472,6 +472,7 @@ class BallStats extends Phaser.Scene {
     statsDisplay: Record<string, Phaser.GameObjects.Text>;
     keystoneCards: UpgradeCard[];
     displayedCard: UpgradeCard;
+    displayedCardName: string;
     lastUpdate: number;
 
     constructor() {
@@ -543,7 +544,6 @@ class BallStats extends Phaser.Scene {
         this.drawUpgradeCards();
     }
 
-    // TODO: Draw the selected card's outline and the info for the selected card
     drawUpgradeCards() {
         for (let card of this.keystoneCards) {
             DrawUpgradeCardBorder(card, this.graphics);
@@ -596,6 +596,44 @@ class BallStats extends Phaser.Scene {
                 RectDetection);
             card.Description.setVisible(false);
         }
+
+        // Check whether the selected keystone card is still valid
+        this.destroyDisplayedCard();
+        if (this.displayedCardName != undefined) {
+            for (let keystoneUpgrade of this.playerBall.KeystoneData) {
+                if (keystoneUpgrade.UpgradeName == this.displayedCardName)
+                    this.updateDisplayedCard(keystoneUpgrade);
+            }
+        }
+    }
+
+    destroyDisplayedCard() {
+        if (this.displayedCard != undefined) {
+            DestroyCard(this.displayedCard);
+        }
+
+        // Make the other text visible
+        for (let key in this.statsDisplay) {
+            this.statsDisplay[key].setVisible(true);
+        }
+        return;
+    }
+
+    updateDisplayedCard(upgradeData: ServerUpgradeData) {
+        var height = this.scale.canvas.height * 9 / 31;
+        var width = this.scale.canvas.width * 9 / 35
+        this.displayedCard = new UpgradeCard(this,
+            this.playerBall.x + this.playerBall.Size,
+            this.playerBall.y - height * 0.5,
+            null,
+            upgradeData,
+            height,
+            width);
+
+        // Make the other text invisible
+        for (let key in this.statsDisplay) {
+            this.statsDisplay[key].setVisible(false);
+        }
     }
 
     onObjectClicked(pointer, gameObject: Phaser.GameObjects.GameObject) {
@@ -605,40 +643,16 @@ class BallStats extends Phaser.Scene {
         var card = gameObject as UpgradeCard;
         if (card.Upgrade != undefined && scene.statsDisplay != undefined) {
             // Case 1 - Already selected, unselect
-            if (scene.displayedCard != undefined
-                && scene.displayedCard.active
-                && scene.displayedCard.visible
-                && scene.displayedCard.Upgrade.UpgradeName == card.Upgrade.UpgradeName) {
-
-                DestroyCard(scene.displayedCard)
+            if (scene.displayedCardName != undefined
+                && scene.displayedCardName == card.Upgrade.UpgradeName) {
+                scene.displayedCardName = null;
                 scene.lastUpdate = Date.now();
-
-                // Make the other text visible
-                for (let key in scene.statsDisplay) {
-                    scene.statsDisplay[key].setVisible(true);
-                }
                 return;
             }
 
             // Case 2 - Not selected, display info
-            if (scene.displayedCard != undefined) {
-                DestroyCard(scene.displayedCard);
-            }
-
-            var height = scene.scale.canvas.height * 9 / 31;
-            var width = scene.scale.canvas.width * 9 / 35
-            scene.displayedCard = new UpgradeCard(scene,
-                scene.playerBall.x + scene.playerBall.Size,
-                scene.playerBall.y - height * 0.5,
-                null,
-                card.Upgrade,
-                height,
-                width);
-            scene.lastUpdate = Date.now();
-            // Make the other text invisible
-            for (let key in scene.statsDisplay) {
-                scene.statsDisplay[key].setVisible(false);
-            }
+            scene.displayedCardName = card.Upgrade.UpgradeName;
+            scene.lastUpdate = Date.now(); // Update to draw borders
             return;
         }
     }
