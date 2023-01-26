@@ -8,11 +8,10 @@ namespace Swollball.Upgrades.Keystones
 {
     public class Payday : BaseKeystone
     {
-        public Payday(int value, int cost) : base(value, cost)
+        public Payday(int value, int cost, string name) : base(value, cost, name)
         {
+            this.Tags.Add(UpgradeTags.ONTURNSTART);
         }
-
-        public override string UpgradeName => $"Payday";
 
         public override string Description => $"Every round, gain {this.UpgradeAmount} credits for every 100 damage done in the previous round.";
 

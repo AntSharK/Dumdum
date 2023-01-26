@@ -75,10 +75,10 @@ namespace Swollball
             // Send out messages for players who are dead
             await Task.WhenAll(newDeadPlayers.Select(player =>
             {
-                Logger.LogInformation("PLAYER ELIMINATED. STATS. ROOM:{0}, PLAYER:{1}. ROUND:{2}. Ball Stats - D:{3},A:{4},Sz:{5},Sp:{6},Hp:{7}, TotalDealt:{8}, TotalTaken:{9}, Keystones:{10}.", player.RoomId, player.Name,
+                Logger.LogInformation("PLAYER ELIMINATED. STATS. ROOM:{0}, PLAYER:{1}. ROUND:{2}. Ball Stats - D:{3},A:{4},Sz:{5},Sp:{6},Hp:{7}, TotalDealt:{8}, TotalTaken:{9}, PersistentUpgrades:{10}.", player.RoomId, player.Name,
                     player.PlayerScore.RoundNumber, player.Ball.Dmg, player.Ball.Armor, player.Ball.SizeMultiplier, player.Ball.SpeedMultiplier, player.Ball.Hp,
                     player.PlayerScore.TotalDamageDone, player.PlayerScore.TotalDamageReceived,
-                    string.Join(';', player.Ball.Keystones.Values));
+                    string.Join(';', player.Ball.Upgrades.Where(upgrade => upgrade.Tags.Contains(Upgrades.UpgradeTags.PERSISTENT))));
 
                 return Clients.Client(player.ConnectionId).SendAsync("EndGame", room.Players.Values.Select(s => s.PlayerScore).Union(room.DeadPlayers.Select(s => s.PlayerScore).Union(room.DeadPlayers.Select(s => s.PlayerScore))));
             }));
@@ -118,10 +118,10 @@ namespace Swollball
             Logger.LogInformation("ENDGAME FOR ROOM:{0}.", room.RoomId);
             foreach (var player in room.Players.Values)
             {
-                Logger.LogInformation("ENDGAME STATS. ROOM:{0}, PLAYER:{1}. ROUND:{2}. Ball Stats - D:{3},A:{4},Sz:{5},Sp:{6},Hp:{7}, TotalDealt:{8}, TotalTaken:{9}, PointsLeft:{10}, Keystones:{11}.", player.RoomId, player.Name,
+                Logger.LogInformation("ENDGAME STATS. ROOM:{0}, PLAYER:{1}. ROUND:{2}. Ball Stats - D:{3},A:{4},Sz:{5},Sp:{6},Hp:{7}, TotalDealt:{8}, TotalTaken:{9}, PointsLeft:{10}, PersistentUpgrades:{11}.", player.RoomId, player.Name,
                     player.PlayerScore.RoundNumber, player.Ball.Dmg, player.Ball.Armor, player.Ball.SizeMultiplier, player.Ball.SpeedMultiplier, player.Ball.Hp,
                     player.PlayerScore.TotalDamageDone, player.PlayerScore.TotalDamageReceived, player.PlayerScore.PointsLeft,
-                    string.Join(';', player.Ball.Keystones.Values));
+                    string.Join(';', player.Ball.Upgrades.Where(upgrade => upgrade.Tags.Contains(Upgrades.UpgradeTags.PERSISTENT))));
             }
 
             await Clients.Caller.SendAsync("ClearState"); // For host machine, display last scoreboard and clear state

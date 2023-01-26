@@ -8,11 +8,10 @@ namespace Swollball.Upgrades.Keystones
 {
     public class Ossify : BaseKeystone
     {
-        public Ossify(int value, int cost) : base(value, cost)
+        public Ossify(int value, int cost, string name) : base(value, cost, name)
         {
+            this.Tags.Add(UpgradeTags.UPGRADEMODIFIER);
         }
-
-        public override string UpgradeName => $"Ossify";
 
         public override string Description => $"Gain {this.UpgradeAmount} armor whenever you gain 10 HP.";
 

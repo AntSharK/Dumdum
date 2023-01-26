@@ -28,7 +28,7 @@ namespace Swollball
             this.PlayerScore = new Score(this.Name);
             this.Ball = new Ball(this.Name);
 
-            this.Ball.Keystones["Payday"] = new Payday(1, 0); // Start with a free payday upgrade
+            this.Ball.Upgrades.Add(new Payday(1, 0, "Payday")); // Start with a free payday upgrade
 #if DEBUG
             this.Economy.CreditsLeft = 30;
             this.Economy.ShopTier = 1;
@@ -41,15 +41,18 @@ namespace Swollball
         {
             if (this.CurrentUpgrades.ContainsKey(upgradeId))
             {
-                foreach (var keystone in this.Ball.Keystones.Values)
+                var upgradeModifiers = this.Ball.Upgrades.Where(upgrade => upgrade.Tags.Contains(UpgradeTags.UPGRADEMODIFIER));
+                foreach (var upgradeModifier in upgradeModifiers)
                 {
-                    keystone.BeforeUpgrade(this);
+                    upgradeModifier.BeforeUpgrade(this);
                 }
+
                 var upgradeToApply = this.CurrentUpgrades[upgradeId];
                 upgradeToApply.PerformUpgrade(this);
-                foreach (var keystone in this.Ball.Keystones.Values)
+
+                foreach (var upgradeModifier in upgradeModifiers)
                 {
-                    keystone.AfterUpgrade(this);
+                    upgradeModifier.AfterUpgrade(this);
                 }
 
                 // Current logic - clear the upgrade list, re-generate new ones
@@ -109,9 +112,10 @@ namespace Swollball
                 this.Economy.CreditsLeft = 0;
             }
 
-            foreach (var keystone in this.Ball.Keystones.Values)
+            var rewardUpgrades = this.Ball.Upgrades.Where(upgrade => upgrade.Tags.Contains(UpgradeTags.ONTURNSTART));
+            foreach (var rewardUpgrade in rewardUpgrades)
             {
-                keystone.StartNextRound(this);
+                rewardUpgrade.StartNextRound(this);
             }
 
             this.Economy.MaxCredits += CREDITINCREMENTPERROUND;

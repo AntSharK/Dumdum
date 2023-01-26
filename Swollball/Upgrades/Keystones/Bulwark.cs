@@ -8,11 +8,10 @@ namespace Swollball.Upgrades.Keystones
 {
     public class Bulwark : BaseKeystone
     {
-        public Bulwark(int value, int cost) : base(value, cost)
+        public Bulwark(int value, int cost, string name) : base(value, cost, name)
         {
+            this.Tags.Add(UpgradeTags.UPGRADEMODIFIER);
         }
-
-        public override string UpgradeName => $"Bulwark";
 
         public override string Description => $"Increase your damage by {this.UpgradeAmount} for every armor you gain.";
 
