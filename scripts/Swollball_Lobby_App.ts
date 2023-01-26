@@ -214,7 +214,7 @@ class Leaderboard extends Phaser.Scene {
         switch (RoundNumber) {
             case 0:
                 this.add.text(200, 100, "FIRST ROUND STARTING SOON...");
-                roundDurationSeconds = roundDurationSeconds * 2;
+                roundDurationSeconds = roundDurationSeconds * 1.2;
                 break;
             case -1:
                 this.add.text(200, 100, "END OF GAME");

@@ -7,7 +7,7 @@ declare var UpgradeData: ServerUpgradeData[];
 declare var EconomyData: ServerEconomyData;
 declare var connection;
 
-const FINALSCOREDISPLAYDURATION = 30;
+const FINALSCOREDISPLAYDURATION = 45;
 const LINEARSCALEFACTOR = 0.9;
 
 declare var BallUpdateTime: number;
