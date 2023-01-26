@@ -20,16 +20,27 @@ namespace Swollball
         /// <summary>
         /// Gets the Persistent Upgrades to send down to the client
         /// </summary>
-        public IEnumerable<IUpgrade> PersistentUpgradeData
+        public IEnumerable<IUpgrade> PersistentUpgradeData => this.UpgradeIndex[UpgradeTags.PERSISTENT];
+
+        /// <summary>
+        /// Operations modifying upgrades should be done using provided public methods
+        /// </summary>
+        private List<IUpgrade> Upgrades = new List<IUpgrade>();
+        private Dictionary<string, List<IUpgrade>> UpgradeIndex = new Dictionary<string, List<IUpgrade>>();
+
+        public void AddUpgrade(IUpgrade upgrade)
         {
-            get
+            this.Upgrades.Add(upgrade);
+            foreach (var tag in upgrade.Tags)
             {
-                return this.Upgrades.Where(upgrade => upgrade.Tags.Contains(UpgradeTags.PERSISTENT));
+                if (!UpgradeIndex.ContainsKey(tag))
+                {
+                    UpgradeIndex[tag] = new List<IUpgrade>();
+                }
+
+                this.UpgradeIndex[tag].Add(upgrade);
             }
         }
-
-        [System.Text.Json.Serialization.JsonIgnore]
-        public List<IUpgrade> Upgrades { get; set; } = new List<IUpgrade>();
 
         public Ball(string playerName)
         {
