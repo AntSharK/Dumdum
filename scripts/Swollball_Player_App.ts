@@ -470,7 +470,7 @@ class BallStats extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
     playerBall: PlayerBall;
     statsDisplay: Record<string, Phaser.GameObjects.Text>;
-    keystoneCards: UpgradeCard[];
+    persistentUpgradeCards: UpgradeCard[];
     displayedCard: UpgradeCard;
     displayedCardName: string;
     lastUpdate: number;
@@ -491,7 +491,7 @@ class BallStats extends Phaser.Scene {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
         this.input.on('gameobjectdown', this.onObjectClicked);
         this.statsDisplay = {};
-        this.keystoneCards = [];
+        this.persistentUpgradeCards = [];
 
         var playerBalls = InitializeBalls(this.physics.add.group({
             defaultKey: 'dummyimage',
@@ -545,7 +545,7 @@ class BallStats extends Phaser.Scene {
     }
 
     drawUpgradeCards() {
-        for (let card of this.keystoneCards) {
+        for (let card of this.persistentUpgradeCards) {
             DrawUpgradeCardBorder(card, this.graphics);
         }
 
@@ -568,28 +568,28 @@ class BallStats extends Phaser.Scene {
         this.statsDisplay["velocity"].text = "SPEED:" + this.playerBall.VelocityMultiplier.toString();
         this.statsDisplay["size"].text = "SIZE:" + this.playerBall.SizeMultiplier.toString();
 
-        for (let card of this.keystoneCards) {
+        for (let card of this.persistentUpgradeCards) {
             DestroyCard(card);
         }
 
-        this.keystoneCards = [];
+        this.persistentUpgradeCards = [];
         var cardWidth = this.playerBall.Size * 0.5;
         var cardHeight = this.playerBall.Size * 0.5;
-        for (var i = 0; i < this.playerBall.KeystoneData.length; i++) {
-            let keystoneCard = new UpgradeCard(this,
+        for (var i = 0; i < this.playerBall.PersistentUpgradeData.length; i++) {
+            let upgradeCard = new UpgradeCard(this,
                 0, 0,
                 null,
-                this.playerBall.KeystoneData[i],
+                this.playerBall.PersistentUpgradeData[i],
                 cardWidth,
                 cardHeight);
 
-            this.keystoneCards[i] = keystoneCard;
+            this.persistentUpgradeCards[i] = upgradeCard;
         }
 
-        Phaser.Actions.PlaceOnCircle(this.keystoneCards, new Phaser.Geom.Circle(this.playerBall.x - cardWidth*0.5, this.playerBall.y-cardHeight*0.5, this.playerBall.Size * 0.65));
+        Phaser.Actions.PlaceOnCircle(this.persistentUpgradeCards, new Phaser.Geom.Circle(this.playerBall.x - cardWidth*0.5, this.playerBall.y-cardHeight*0.5, this.playerBall.Size * 0.65));
 
         // Re-position text in the card
-        for (let card of this.keystoneCards) {
+        for (let card of this.persistentUpgradeCards) {
             ShiftText(card);
             card.Title.y = card.y + 0.3 * card.height;
             card.setInteractive(new Phaser.Geom.Rectangle(card.x, card.y, card.width, card.height),
@@ -597,12 +597,12 @@ class BallStats extends Phaser.Scene {
             card.Description.setVisible(false);
         }
 
-        // Check whether the selected keystone card is still valid
+        // Check whether the selected persistent upgrade card is still valid
         this.destroyDisplayedCard();
         if (this.displayedCardName != undefined) {
-            for (let keystoneUpgrade of this.playerBall.KeystoneData) {
-                if (keystoneUpgrade.UpgradeName == this.displayedCardName)
-                    this.updateDisplayedCard(keystoneUpgrade);
+            for (let persistentUpgrade of this.playerBall.PersistentUpgradeData) {
+                if (persistentUpgrade.UpgradeName == this.displayedCardName)
+                    this.updateDisplayedCard(persistentUpgrade);
             }
         }
     }

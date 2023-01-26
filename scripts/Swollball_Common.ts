@@ -24,7 +24,7 @@ function InitializeBallData(dataIn: any[]) {
 
     for (let data of dataIn) {
         var serverData = new ServerBallData();
-        serverData.KeystoneData = [];
+        serverData.PersistentUpgradeData = [];
         serverData.Armor = data.armor;
         serverData.Color = data.color;
         serverData.Damage = data.dmg;
@@ -33,8 +33,8 @@ function InitializeBallData(dataIn: any[]) {
         serverData.SizeMultiplier = data.sizeMultiplier;
         serverData.VelocityMultiplier = data.speedMultiplier;
 
-        for (let keystoneData of data.keystoneData) {
-            serverData.KeystoneData.push(ParseUpgradeData(keystoneData));
+        for (let persistentUpgradeData of data.persistentUpgradeData) {
+            serverData.PersistentUpgradeData.push(ParseUpgradeData(persistentUpgradeData));
         }
 
         BallData.push(serverData);
@@ -99,6 +99,7 @@ function ParseUpgradeData(data: any): ServerUpgradeData{
     serverData.BorderColor = data.borderColor
     serverData.FillColor = data.fillColor;
     serverData.Cost = data.cost;
+    serverData.Tags = data.tags;
 
     return serverData;
 }
@@ -122,7 +123,7 @@ class ServerBallData {
     Color: number;
     Hp: integer;
     Name: string;
-    KeystoneData: ServerUpgradeData[];
+    PersistentUpgradeData: ServerUpgradeData[];
 }
 
 class ServerRoundScoreData {
@@ -158,6 +159,7 @@ class ServerUpgradeData {
     BorderColor: number;
     FillColor: number;
     Cost: integer;
+    Tags: string[];
 }
 
 class ServerEconomyData {
@@ -170,28 +172,27 @@ class ServerEconomyData {
 }
 
 /* 
- HELPERS FOR KEYSTONE ACTIONS
+ HELPERS FOR PERSISTENT UPGRADE ACTIONS
  */
-function InitializeKeystoneUpgrades(ball: PlayerBall) {
+function InitializePersistentUpgrades(ball: PlayerBall) {
     // Initialize upgrades which the client needs to know about
-    ball.KeystoneActions = [];
-    for (let keystoneData of ball.KeystoneData) {
-        switch (keystoneData.UpgradeName) {
-            case 'Feast':
-                ball.KeystoneActions.push(new FeastAction(keystoneData.UpgradeAmount));
-                break;
-            case 'Harden':
-                ball.KeystoneActions.push(new HardenAction(keystoneData.UpgradeAmount));
-                break;
+    ball.PersistentUpgradeActions = [];
+    for (let persistentUpgradeData of ball.PersistentUpgradeData) {
+        if (persistentUpgradeData.Tags.indexOf("Lifesteal") > -1) {
+            ball.PersistentUpgradeActions.push(new FeastAction(persistentUpgradeData.UpgradeAmount));
+        }
+
+        if (persistentUpgradeData.Tags.indexOf("Reinforce") > -1) {
+            ball.PersistentUpgradeActions.push(new HardenAction(persistentUpgradeData.UpgradeAmount));
         }
     }
 }
 
-interface KeystoneAction {
+interface PersistentUpgradeAction {
     Apply(owner: PlayerBall, target: PlayerBall, damageDone: number, damageTaken: number): void;
 }
 
-class FeastAction implements KeystoneAction {
+class FeastAction implements PersistentUpgradeAction {
     amount: number;
     constructor(amount: number) { this.amount = amount; }
     Apply(owner: PlayerBall, target: PlayerBall, damageDone: number, damageTaken: number): void {
@@ -200,7 +201,7 @@ class FeastAction implements KeystoneAction {
     }
 }
 
-class HardenAction implements KeystoneAction {
+class HardenAction implements PersistentUpgradeAction {
     amount: number;
     constructor(amount: number) { this.amount = amount; }
     Apply(owner: PlayerBall, target: PlayerBall, damageDone: number, damageTaken: number): void {
@@ -226,8 +227,8 @@ class PlayerBall extends Phaser.Physics.Arcade.Sprite {
     HitTime: number = 0;
     LastDisplayedHp: integer = 0;
 
-    KeystoneData: ServerUpgradeData[];
-    KeystoneActions: KeystoneAction[];
+    PersistentUpgradeData: ServerUpgradeData[];
+    PersistentUpgradeActions: PersistentUpgradeAction[];
 }
 
 function HitBalls(ball1: PlayerBall, ball2: PlayerBall, timeNow: number) {
@@ -263,13 +264,13 @@ function HitBalls(ball1: PlayerBall, ball2: PlayerBall, timeNow: number) {
     }
 
     if (ball1.Hp > 0) {
-        for (let action of ball1.KeystoneActions) {
+        for (let action of ball1.PersistentUpgradeActions) {
             action.Apply(ball1, ball2, damageDoneTo2, damageDoneTo1);
         }
     }
 
     if (ball2.Hp > 0) {
-        for (let action of ball2.KeystoneActions) {
+        for (let action of ball2.PersistentUpgradeActions) {
             action.Apply(ball2, ball1, damageDoneTo1, damageDoneTo2);
         }
     }
@@ -292,7 +293,7 @@ function CopyBallData(newBall: PlayerBall, data: ServerBallData) {
     newBall.Armor = data.Armor;
     newBall.SizeMultiplier = data.SizeMultiplier;
     newBall.VelocityMultiplier = data.VelocityMultiplier;
-    newBall.KeystoneData = data.KeystoneData;
+    newBall.PersistentUpgradeData = data.PersistentUpgradeData;
 }
 
 function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.Scene, screenAreaTakenByBalls: number = 0.25): PlayerBall[] {
@@ -328,7 +329,7 @@ function InitializeBalls(ballGroup: Phaser.Physics.Arcade.Group, scene: Phaser.S
             { color: 'Black', font: 'Comic-Sans' });
         newBall.HpText.scale = newBall.Size * FONTSIZEMULTIPLIER;
 
-        InitializeKeystoneUpgrades(newBall);
+        InitializePersistentUpgrades(newBall);
 
         retVal.push(newBall);
     }
