@@ -33,7 +33,7 @@ namespace Swollball.Upgrades
 
         public virtual void PerformUpgrade(Player player)
         {
-            player.Ball.Upgrades.Add(this);
+            player.Ball.AddUpgrade(this);
         }
 
         public virtual void BeforeUpgrade(Player player)

@@ -28,7 +28,7 @@ namespace Swollball
             this.RoomId = roomName;
             this.PlayerScore = new Score(this.Name);
             this.Ball = new Ball(this.Name);
-            this.Ball.Upgrades.Add(new Payday(1, 5, "Payday")); // Start with a free payday upgrade
+            this.Ball.AddUpgrade(new Payday(1, 5, "Payday")); // Start with a free payday upgrade
 #if DEBUG
             this.Economy.CreditsLeft = 30;
             this.Economy.ShopTier = 1;
@@ -39,14 +39,14 @@ namespace Swollball
 
         public bool SellUpgrade(string upgradeId)
         {
-            var upgradeToSell = this.Ball.Upgrades.Where(k => k.ServerId == upgradeId).FirstOrDefault();
+            var upgradeToSell = this.Ball.FindUpgrade(upgradeId);
             if (upgradeToSell == null)
             {
                 return false;
             }
 
             this.Economy.CreditsLeft += upgradeToSell.Cost;
-            this.Ball.Upgrades.Remove(upgradeToSell);
+            this.Ball.RemoveUpgrade(upgradeToSell);
             if (this.Economy.CreditsLeft > 0)
             {
                 this.FillShop();
@@ -60,17 +60,13 @@ namespace Swollball
             if (this.CurrentUpgrades.ContainsKey(upgradeId))
             {
                 var upgradeToApply = this.CurrentUpgrades[upgradeId];
-                var persistentUpgrades = this.Ball.Upgrades.Where(upgrade => upgrade.Tags.Contains(UpgradeTags.PERSISTENT));
-
-                if (upgradeToApply.Tags.Contains(UpgradeTags.PERSISTENT))
+                var persistentUpgrades = this.Ball.GetUpgradesByTag(UpgradeTags.PERSISTENT);
+                if (upgradeToApply.Tags.Contains(UpgradeTags.PERSISTENT) && persistentUpgrades.Count() >= MAXKEYSTONES)
                 {
-                    if (persistentUpgrades.Count() >= MAXKEYSTONES)
-                    {
-                        return false; // Too many keystones - need to free up space
-                    }
+                    return false; // Too many keystones - need to free up space
                 }
 
-                var upgradeModifiers = persistentUpgrades.Where(upgrade => upgrade.Tags.Contains(UpgradeTags.UPGRADEMODIFIER));
+                var upgradeModifiers = this.Ball.GetUpgradesByTag(UpgradeTags.UPGRADEMODIFIER);
                 foreach (var upgradeModifier in upgradeModifiers)
                 {
                     upgradeModifier.BeforeUpgrade(this);
@@ -78,9 +74,12 @@ namespace Swollball
 
                 upgradeToApply.PerformUpgrade(this);
 
-                foreach (var upgradeModifier in upgradeModifiers)
+                if (upgradeModifiers != null)
                 {
-                    upgradeModifier.AfterUpgrade(this);
+                    foreach (var upgradeModifier in upgradeModifiers)
+                    {
+                        upgradeModifier.AfterUpgrade(this);
+                    }
                 }
 
                 // Current logic - clear the upgrade list, re-generate new ones
@@ -140,7 +139,7 @@ namespace Swollball
                 this.Economy.CreditsLeft = 0;
             }
 
-            var rewardUpgrades = this.Ball.Upgrades.Where(upgrade => upgrade.Tags.Contains(UpgradeTags.ONTURNSTART));
+            var rewardUpgrades = this.Ball.GetUpgradesByTag(UpgradeTags.ONTURNSTART);
             foreach (var rewardUpgrade in rewardUpgrades)
             {
                 rewardUpgrade.StartNextRound(this);
