@@ -171,20 +171,6 @@ class BallUpgrades extends Phaser.Scene {
             this.upgradeTierButton.y - this.upgradeTierButton.height * this.upgradeTierButton.scale / 2 + boundingDimension * 0.035, "0", { color: 'Black' });
         this.upgradeTierCost.scale = boundingDimension * 0.004;
         this.upgradeTierCost.setDepth(2);
-
-        /* Stuff for debugging hit area
-        this.upgradeTierButton.on('pointerover', function (pointer) {
-            this.setTint(0xff0000);
-        })
-        this.upgradeTierButton.on('pointerout', function (pointer) {
-            this.clearTint();
-        })
-        this.refreshButton.on('pointerover', function (pointer) {
-            this.setTint(0xff0000);
-        })
-        this.refreshButton.on('pointerout', function (pointer) {
-            this.clearTint();
-        })*/
     }
 
     update() {
@@ -472,8 +458,9 @@ class BallStats extends Phaser.Scene {
     statsDisplay: Record<string, Phaser.GameObjects.Text>;
     persistentUpgradeCards: UpgradeCard[];
     displayedCard: UpgradeCard;
-    displayedCardName: string;
+    displayedCardId: string;
     lastUpdate: number;
+    sellButton: Phaser.GameObjects.Sprite;
 
     constructor() {
         super({ key: 'BallStats', active: true, visible: true });
@@ -483,6 +470,7 @@ class BallStats extends Phaser.Scene {
     preload() {
         this.load.image('dummyimage', '/content/dummyimage.png');
         this.load.image('background', '/content/ui/wooden.jpg');
+        this.load.image('sellbutton', '/content/ui/sellbutton.png');
 
         LoadCardImages(this);
     }
@@ -529,6 +517,21 @@ class BallStats extends Phaser.Scene {
         backgroundImage.alpha = 0.55;
         backgroundImage.setDepth(-1);
         backgroundImage.setDisplaySize(this.scale.canvas.width, this.scale.canvas.height);
+
+        // Paint the Sell Button
+        this.sellButton = this.add.sprite(this.playerBall.x + this.playerBall.Size + this.scale.canvas.width * 0.1, this.playerBall.y - this.scale.canvas.height * 5 / 31, 'sellbutton');
+        this.sellButton.setDisplaySize(this.scale.canvas.width * 7 / 35, this.scale.canvas.height * 2 / 31);
+        this.sellButton.setInteractive();
+        this.sellButton.active = false;
+        this.sellButton.visible = false;
+
+        /* Stuff for debugging hit area
+        this.sellButton.on('pointerover', function (pointer) {
+            this.setTint(0xff0000);
+        })
+        this.sellButton.on('pointerout', function (pointer) {
+            this.clearTint();
+        });*/
     }
 
     update() {
@@ -599,9 +602,9 @@ class BallStats extends Phaser.Scene {
 
         // Check whether the selected persistent upgrade card is still valid
         this.destroyDisplayedCard();
-        if (this.displayedCardName != undefined) {
+        if (this.displayedCardId != undefined) {
             for (let persistentUpgrade of this.playerBall.PersistentUpgradeData) {
-                if (persistentUpgrade.UpgradeName == this.displayedCardName)
+                if (persistentUpgrade.ServerId == this.displayedCardId)
                     this.updateDisplayedCard(persistentUpgrade);
             }
         }
@@ -609,6 +612,8 @@ class BallStats extends Phaser.Scene {
 
     destroyDisplayedCard() {
         if (this.displayedCard != undefined) {
+            this.sellButton.active = false;
+            this.sellButton.visible = false;
             DestroyCard(this.displayedCard);
         }
 
@@ -631,6 +636,8 @@ class BallStats extends Phaser.Scene {
             width);
 
         // Make the other text invisible
+        this.sellButton.active = true;
+        this.sellButton.visible = true;
         for (let key in this.statsDisplay) {
             this.statsDisplay[key].setVisible(false);
         }
@@ -643,18 +650,34 @@ class BallStats extends Phaser.Scene {
         var card = gameObject as UpgradeCard;
         if (card.Upgrade != undefined && scene.statsDisplay != undefined) {
             // Case 1 - Already selected, unselect
-            if (scene.displayedCardName != undefined
-                && scene.displayedCardName == card.Upgrade.UpgradeName) {
-                scene.displayedCardName = null;
+            if (scene.displayedCardId != undefined
+                && scene.displayedCardId == card.Upgrade.ServerId) {
+                scene.displayedCardId = null;
                 scene.lastUpdate = Date.now();
                 return;
             }
 
             // Case 2 - Not selected, display info
-            scene.displayedCardName = card.Upgrade.UpgradeName;
+            scene.displayedCardId = card.Upgrade.ServerId;
             scene.lastUpdate = Date.now(); // Update to draw borders
             return;
         }
+
+        // Check for clicking the sell button
+        var sprite = gameObject as Phaser.GameObjects.Sprite;
+        if (sprite.texture.key == 'sellbutton') {
+            scene.onSellKeystone();
+            return;
+        }
+    }
+
+    onSellKeystone() {
+        var sessionRoomId = sessionStorage.getItem("roomid");
+        var sessionUserId = sessionStorage.getItem("userid");
+
+        connection.invoke("SellKeystone", this.displayedCardId, sessionUserId, sessionRoomId).catch(function (err) {
+            return console.error(err.toString());
+        });
     }
 }
 

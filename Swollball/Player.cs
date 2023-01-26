@@ -19,6 +19,7 @@ namespace Swollball
         public EconomyData Economy { get; private set; } = new EconomyData();
 
         private const int CREDITINCREMENTPERROUND = 2;
+        private const int MAXKEYSTONES = 6;
 
         public Player(string name, string connectionId, string roomName)
         {
@@ -27,8 +28,7 @@ namespace Swollball
             this.RoomId = roomName;
             this.PlayerScore = new Score(this.Name);
             this.Ball = new Ball(this.Name);
-
-            this.Ball.Upgrades.Add(new Payday(1, 0, "Payday")); // Start with a free payday upgrade
+            this.Ball.Upgrades.Add(new Payday(1, 5, "Payday")); // Start with a free payday upgrade
 #if DEBUG
             this.Economy.CreditsLeft = 30;
             this.Economy.ShopTier = 1;
@@ -37,17 +37,45 @@ namespace Swollball
             this.FillShop();
         }
 
+        public bool SellUpgrade(string upgradeId)
+        {
+            var upgradeToSell = this.Ball.Upgrades.Where(k => k.ServerId == upgradeId).FirstOrDefault();
+            if (upgradeToSell == null)
+            {
+                return false;
+            }
+
+            this.Economy.CreditsLeft += upgradeToSell.Cost;
+            this.Ball.Upgrades.Remove(upgradeToSell);
+            if (this.Economy.CreditsLeft > 0)
+            {
+                this.FillShop();
+            }
+
+            return true;
+        }
+
         public bool ApplyUpgrade(string upgradeId)
         {
             if (this.CurrentUpgrades.ContainsKey(upgradeId))
             {
-                var upgradeModifiers = this.Ball.Upgrades.Where(upgrade => upgrade.Tags.Contains(UpgradeTags.UPGRADEMODIFIER));
+                var upgradeToApply = this.CurrentUpgrades[upgradeId];
+                var persistentUpgrades = this.Ball.Upgrades.Where(upgrade => upgrade.Tags.Contains(UpgradeTags.PERSISTENT));
+
+                if (upgradeToApply.Tags.Contains(UpgradeTags.PERSISTENT))
+                {
+                    if (persistentUpgrades.Count() >= MAXKEYSTONES)
+                    {
+                        return false; // Too many keystones - need to free up space
+                    }
+                }
+
+                var upgradeModifiers = persistentUpgrades.Where(upgrade => upgrade.Tags.Contains(UpgradeTags.UPGRADEMODIFIER));
                 foreach (var upgradeModifier in upgradeModifiers)
                 {
                     upgradeModifier.BeforeUpgrade(this);
                 }
 
-                var upgradeToApply = this.CurrentUpgrades[upgradeId];
                 upgradeToApply.PerformUpgrade(this);
 
                 foreach (var upgradeModifier in upgradeModifiers)

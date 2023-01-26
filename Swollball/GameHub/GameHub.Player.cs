@@ -84,9 +84,25 @@ namespace Swollball
             if (upgradeApplied)
             {
                 await Clients.Caller.SendAsync("UpdateBalls", new Ball[] { player.Ball });
+                await this.UpdateUpgrades(player);
             }
+            else
+            {
+                await Clients.Caller.SendAsync("ShowError", "You cannot have more than 6 persistent upgrades.");
+            }
+        }
 
-            await this.UpdateUpgrades(player);
+        public async Task SellKeystone(string upgradeId, string userName, string roomId)
+        {
+            (var player, var room) = await this.FindPlayerAndRoom(userName, roomId);
+            if (player == null || room == null) return;
+
+            var upgradeSold = player.SellUpgrade(upgradeId);
+            if (upgradeSold)
+            {
+                await Clients.Caller.SendAsync("UpdateBalls", new Ball[] { player.Ball });
+                await this.UpdateUpgrades(player);
+            }
         }
 
         public async Task RefreshShop(string userName, string roomId)
