@@ -8,11 +8,10 @@ namespace Swollball.Upgrades.Keystones
 {
     public class Feast : BaseKeystone
     {
-        public Feast(int value, int cost) : base(value, cost)
+        public Feast(int value, int cost, string name) : base(value, cost, name)
         {
+            this.Tags.Add(UpgradeTags.LIFESTEAL);
         }
-
-        public override string UpgradeName => $"Feast";
 
         public override string Description => $"Regain {this.UpgradeAmount} HP for every 10 damage dealt";
 

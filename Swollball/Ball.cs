@@ -18,22 +18,18 @@ namespace Swollball
         public int Armor { get; set; } = 0;
 
         /// <summary>
-        /// Gets the keystone data to pass down to the client
-        /// Downcast to an IUpgrade object
+        /// Gets the Persistent Upgrades to send down to the client
         /// </summary>
-        public IEnumerable<IUpgrade> KeystoneData
+        public IEnumerable<IUpgrade> PersistentUpgradeData
         {
             get
             {
-                return this.Keystones.Values;
+                return this.Upgrades.Where(upgrade => upgrade.Tags.Contains(UpgradeTags.PERSISTENT));
             }
         }
 
         [System.Text.Json.Serialization.JsonIgnore]
         public List<IUpgrade> Upgrades { get; set; } = new List<IUpgrade>();
-
-        [System.Text.Json.Serialization.JsonIgnore]
-        public Dictionary<string, IKeystone> Keystones { get; set; } = new Dictionary<string, IKeystone>();
 
         public Ball(string playerName)
         {

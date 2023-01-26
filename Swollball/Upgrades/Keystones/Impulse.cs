@@ -8,11 +8,10 @@ namespace Swollball.Upgrades.Keystones
 {
     public class Impulse : BaseKeystone
     {
-        public Impulse(int value, int cost) : base(value, cost)
+        public Impulse(int value, int cost, string name) : base(value, cost, name)
         {
+            this.Tags.Add(UpgradeTags.UPGRADEMODIFIER);
         }
-
-        public override string UpgradeName => $"Impulse";
 
         public override string Description => $"Increase your damage by {this.UpgradeAmount} for every 10 speed you gain";
 

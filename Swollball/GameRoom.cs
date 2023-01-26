@@ -27,10 +27,10 @@ namespace Swollball
             if (tp != null)
             {
                 tp.Ball.Color = 11745079;
-                tp.Ball.Keystones["Giant"] = new Upgrades.Keystones.Giant(2, 0);
-                tp.Ball.Keystones["Bulwark"] = new Upgrades.Keystones.Bulwark(2, 0);
-                tp.Ball.Keystones["Feast"] = new Upgrades.Keystones.Feast(5, 0);
-                tp.Ball.Keystones["Harden"] = new Upgrades.Keystones.Harden(4, 0);
+                tp.Ball.Upgrades.Add(new Upgrades.Keystones.Giant(2, 0, "TestGiant"));
+                tp.Ball.Upgrades.Add(new Upgrades.Keystones.Bulwark(2, 0, "TestBulwark"));
+                tp.Ball.Upgrades.Add(new Upgrades.Keystones.Feast(5, 0, "TestFeast"));
+                tp.Ball.Upgrades.Add(new Upgrades.Keystones.Harden(4, 0, "TestHarden"));
                 tp.Ball.Upgrades.Add(new Upgrades.Hp(25, 0, "TESTUPGRADE"));
                 tp.Ball.SizeMultiplier = 350;
                 tp.Economy.CreditsLeft = 99;

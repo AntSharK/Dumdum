@@ -8,11 +8,10 @@ namespace Swollball.Upgrades.Keystones
 {
     public class Giant : BaseKeystone
     {
-        public Giant(int value, int cost) : base(value, cost)
+        public Giant(int value, int cost, string name) : base(value, cost, name)
         {
+            this.Tags.Add(UpgradeTags.UPGRADEMODIFIER);
         }
-
-        public override string UpgradeName => $"Giant";
 
         public override string Description => $"Increase your size by {this.UpgradeAmount} for every 10 hp gained.";
 

@@ -8,11 +8,10 @@ namespace Swollball.Upgrades.Keystones
 {
     public class Harden : BaseKeystone
     {
-        public Harden(int value, int cost) : base(value, cost)
+        public Harden(int value, int cost, string name) : base(value, cost, name)
         {
+            this.Tags.Add(UpgradeTags.REINFORCE);
         }
-
-        public override string UpgradeName => $"Harden";
 
         public override string Description => $"Gain {this.UpgradeAmount} armor for the round when you get hit";
 

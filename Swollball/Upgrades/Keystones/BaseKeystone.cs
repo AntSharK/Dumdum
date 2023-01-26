@@ -6,58 +6,21 @@ using System.Threading.Tasks;
 
 namespace Swollball.Upgrades.Keystones
 {
-    public abstract class BaseKeystone : IKeystone
+    // Keystones are persistent upgrades
+    public abstract class BaseKeystone : BaseUpgrade
     {
-        // Note that keystone upgrade names have to be mirrored on the client-side for them to be effective
-        public abstract string UpgradeName { get; }
-
-        public abstract string Description { get; }
-
-        public string ServerId { get; private set; } = Guid.NewGuid().ToString();
-
-        public abstract int BorderColor { get; }
-
-        public virtual int FillColor => 13421772;
-
-        public int Cost { get; set; }
-
-        public int UpgradeAmount { get; set;  }
-
         internal int preUpgradeStat;
 
-        public BaseKeystone(int amount, int cost)
+        public BaseKeystone(int amount, int cost, string name) :
+            base(amount, cost, name)
         {
-            this.UpgradeAmount = amount;
-            this.Cost = cost;
+            this.Tags.Add(UpgradeTags.PERSISTENT);
         }
 
-        public virtual void AfterUpgrade(Player player)
+        public override void PerformUpgrade(Player player)
         {
-            // Does nothing
-        }
-
-        public virtual void BeforeUpgrade(Player player)
-        {
-            // Does nothing
-        }
-
-        public virtual void StartNextRound(Player player)
-        {
-            // Does nothing
-        }
-
-        public virtual void PerformUpgrade(Player player)
-        {
-            // TODO: Stacking keystones infinitely should be disallowed
-            if (player.Ball.Keystones.ContainsKey(this.UpgradeName))
-            {
-                player.Ball.Keystones[this.UpgradeName].UpgradeAmount += this.UpgradeAmount;
-            }
-            else
-            {
-                this.Cost = 0; // Make cost 0;
-                player.Ball.Keystones[this.UpgradeName] = this;
-            }
+            base.PerformUpgrade(player);
+            // TODO: Some logic later will be introduced to limit amount of upgrades
         }
     }
 }

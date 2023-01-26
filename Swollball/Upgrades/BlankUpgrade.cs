@@ -23,7 +23,26 @@ namespace Swollball.Upgrades
 
         public int Cost => 0;
 
+        public HashSet<string> Tags { get; set; } = new HashSet<string>();
+
+        int IUpgrade.UpgradeAmount { get; set; } = 0;
+
+        public void AfterUpgrade(Player player)
+        {
+            // Do nothing
+        }
+
+        public void BeforeUpgrade(Player player)
+        {
+            // Do nothing
+        }
+
         public void PerformUpgrade(Player player)
+        {
+            // Do nothing
+        }
+
+        public void StartNextRound(Player player)
         {
             // Do nothing
         }
