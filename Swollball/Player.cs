@@ -39,14 +39,14 @@ namespace Swollball
 
         public bool SellUpgrade(string upgradeId)
         {
-            var keystoneToSell = this.Ball.Keystones.Where(k => k.ServerId == upgradeId).FirstOrDefault();
-            if (keystoneToSell == null)
+            var upgradeToSell = this.Ball.Upgrades.Where(k => k.ServerId == upgradeId).FirstOrDefault();
+            if (upgradeToSell == null)
             {
                 return false;
             }
 
-            this.Economy.CreditsLeft += keystoneToSell.Cost;
-            this.Ball.Keystones.Remove(keystoneToSell);
+            this.Economy.CreditsLeft += upgradeToSell.Cost;
+            this.Ball.Upgrades.Remove(upgradeToSell);
             if (this.Economy.CreditsLeft > 0)
             {
                 this.FillShop();
@@ -59,13 +59,23 @@ namespace Swollball
         {
             if (this.CurrentUpgrades.ContainsKey(upgradeId))
             {
-                var upgradeModifiers = this.Ball.Upgrades.Where(upgrade => upgrade.Tags.Contains(UpgradeTags.UPGRADEMODIFIER));
+                var upgradeToApply = this.CurrentUpgrades[upgradeId];
+                var persistentUpgrades = this.Ball.Upgrades.Where(upgrade => upgrade.Tags.Contains(UpgradeTags.PERSISTENT));
+
+                if (upgradeToApply.Tags.Contains(UpgradeTags.PERSISTENT))
+                {
+                    if (persistentUpgrades.Count() >= MAXKEYSTONES)
+                    {
+                        return false; // Too many keystones - need to free up space
+                    }
+                }
+
+                var upgradeModifiers = persistentUpgrades.Where(upgrade => upgrade.Tags.Contains(UpgradeTags.UPGRADEMODIFIER));
                 foreach (var upgradeModifier in upgradeModifiers)
                 {
                     upgradeModifier.BeforeUpgrade(this);
                 }
 
-                var upgradeToApply = this.CurrentUpgrades[upgradeId];
                 upgradeToApply.PerformUpgrade(this);
 
                 foreach (var upgradeModifier in upgradeModifiers)
