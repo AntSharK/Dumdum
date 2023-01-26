@@ -378,6 +378,13 @@ class BallUpgrades extends Phaser.Scene {
             return;
         } */
 
+        // Check for whether we are at the persistent card limit
+        if (upgrade.Upgrade.Tags.indexOf("Persistent") > -1
+            && BallData[0].PersistentUpgradeData.length >= 6) {
+            window.alert("Cannot have more than 6 persistent upgrades.");
+            return;
+        }
+
         EconomyData.CreditsWereSpent = true;
         var sessionRoomId = sessionStorage.getItem("roomid");
         var sessionUserId = sessionStorage.getItem("userid");
