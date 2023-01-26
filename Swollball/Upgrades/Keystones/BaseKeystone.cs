@@ -20,7 +20,6 @@ namespace Swollball.Upgrades.Keystones
         public override void PerformUpgrade(Player player)
         {
             base.PerformUpgrade(player);
-            // TODO: Some logic later will be introduced to limit amount of upgrades
         }
     }
 }
