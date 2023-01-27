@@ -63,10 +63,11 @@ namespace Swollball
                     break;
                 case GameRoom.RoomState.Arena:
                 case GameRoom.RoomState.Leaderboard:
-                    await Clients.Caller.SendAsync("UpdateLeaderboard", new Player.Score[] { player.PlayerScore });
-                    await Clients.Caller.SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values, player.Economy);
-                    await Clients.Caller.SendAsync("UpdateBalls", new Ball[] { player.Ball });
-                    await Clients.Caller.SendAsync("StartGame");
+                    // Updates the leaderboard, upgrades, and balls
+                    await Clients.Caller.SendAsync("UpdateState", new Ball[] { player.Ball },
+                        new Player.Score[] { player.PlayerScore },
+                        player.CurrentUpgrades.Values, player.Economy,
+                        "StartGame");
                     break;
                 case GameRoom.RoomState.TearingDown:
                     await Clients.Caller.SendAsync("ShowError", "ROOM HAS FINISHED.");
@@ -144,9 +145,11 @@ namespace Swollball
             (var player, var room) = await this.FindPlayerAndRoom(userName, roomId);
             if (player == null || room == null) return;
 
-            await Clients.Caller.SendAsync("UpdateLeaderboard", new Player.Score[] { player.PlayerScore });
-            await Clients.Caller.SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values, player.Economy);
-            await Clients.Caller.SendAsync("UpdateBalls", new Ball[] { player.Ball });
+            // Updates the leaderboard, upgrades, and balls
+            await Clients.Caller.SendAsync("UpdateState", new Ball[] { player.Ball },
+                new Player.Score[] { player.PlayerScore },
+                player.CurrentUpgrades.Values, player.Economy,
+                null /*Send nothing*/);
         }
     }
 }
