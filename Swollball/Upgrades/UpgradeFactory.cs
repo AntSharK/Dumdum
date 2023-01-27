@@ -31,33 +31,33 @@ namespace Swollball.Upgrades
         {
             Tuple.Create(12, () => new Damage(5, 4, "Bacon") as IUpgrade),
             Tuple.Create(12, () => new Inertia(2, 3, "Inertia") as IUpgrade),
-            Tuple.Create(8, () => new Harden(1, 6, "Harden") as IUpgrade),
+            Tuple.Create(6, () => new Harden(1, 6, "Harden") as IUpgrade),
             Tuple.Create(6, () => new Impulse(1, 6, "Impulse") as IUpgrade),
             Tuple.Create(6, () => new Payday(1, 6, "Payday") as IUpgrade),
             Tuple.Create(6, () => new Cover(1, 6, "Buffet") as IUpgrade),
+            Tuple.Create(5, () => new Bulwark(2, 6, "Vanguard") as IUpgrade),
         };
 
         private static List<Tuple<int, Func<IUpgrade>>> Tier3UpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
         {
             Tuple.Create(10, () => new Giant(2, 4, "Giant") as IUpgrade),
-            Tuple.Create(12, () => new Armor(4, 5, "Banana") as IUpgrade),
-            Tuple.Create(8, () => new Regrowth(2, 5, "+Regrowth") as IUpgrade),
-            Tuple.Create(8, () => new Hp(40, 4, "BROcolli") as IUpgrade),
-            Tuple.Create(8, () => new Size(35, 3, "Soy Milk") as IUpgrade),
-            Tuple.Create(8, () => new Speed(50, 3, "Rice") as IUpgrade),
-            Tuple.Create(8, () => new Furious(1, 6, "Yoga") as IUpgrade),
-            Tuple.Create(8, () => new Bloat(1, 7, "GET SWOLL") as IUpgrade),
-            Tuple.Create(8, () => new Bulwark(3, 6, "Vanguard") as IUpgrade),
-            Tuple.Create(8, () => new Harden(4, 10, "Reinforce") as IUpgrade),
-            Tuple.Create(8, () => new Ossify(1, 5, "Ossify") as IUpgrade),
+            Tuple.Create(10, () => new Armor(4, 5, "Banana") as IUpgrade),
+            Tuple.Create(9, () => new Regrowth(2, 5, "+Regrowth") as IUpgrade),
+            Tuple.Create(9, () => new Hp(40, 4, "BROcolli") as IUpgrade),
+            Tuple.Create(9, () => new Size(35, 3, "Soy Milk") as IUpgrade),
+            Tuple.Create(9, () => new Speed(50, 3, "Rice") as IUpgrade),
+            Tuple.Create(9, () => new Furious(1, 6, "Yoga") as IUpgrade),
+            Tuple.Create(9, () => new Bloat(1, 7, "GET SWOLL") as IUpgrade),
+            Tuple.Create(5, () => new Harden(4, 10, "Reinforce") as IUpgrade),
+            Tuple.Create(5, () => new Ossify(1, 5, "Ossify") as IUpgrade),
         };
 
         private static List<Tuple<int, Func<IUpgrade>>> Tier4UpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
         {
             Tuple.Create(6, () => new Inertia(6, 5, "++Inertia") as IUpgrade),
             Tuple.Create(6, () => new Tech(3, 10, "Ketones") as IUpgrade),
-            Tuple.Create(6, () => new Feast(8, 9, "Siphon") as IUpgrade),
             Tuple.Create(6, () => new Damage(20, 6, "Wagyu") as IUpgrade),
+            Tuple.Create(4, () => new Feast(8, 9, "Siphon") as IUpgrade),
         };
         
         private static Lazy<Func<IUpgrade>[]> Tier1Upgrades = new Lazy<Func<IUpgrade>[]>(() =>
