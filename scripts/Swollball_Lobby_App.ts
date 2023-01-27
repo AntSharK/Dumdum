@@ -181,12 +181,33 @@ class BallArena extends Phaser.Scene {
 
     finishScene() {
         var sessionRoomId = sessionStorage.getItem("roomid");
+        this.balls.clear();
 
-        for (let ball of this.playerBalls) {
-            RoundLog.push(new RoundEvent("HEALTH", ball.NameText.text, "", ball.Hp));
+        // Collate the round log and send it
+        var DamageDone: Record<string, integer> = {};
+
+        var collatedRoundLog: RoundEvent[] = [];
+        for (let event of RoundLog) {
+            if (event.EventName == "DAMAGE") {
+                var key = event.AttackerId + "-" + event.ReceiverId;
+                if (DamageDone[key] == undefined) { DamageDone[key] = 0; }
+                DamageDone[key] += event.EventNumber;
+            }
+            else {
+                collatedRoundLog.push(event);
+            }
         }
 
-        connection.invoke("FinishRound", RoundLog, sessionRoomId).catch(function (err) {
+        for (let damageDoneKey in DamageDone) {
+            var participants = damageDoneKey.split('-');
+            collatedRoundLog.push(new RoundEvent("DAMAGE", participants[0], participants[1], DamageDone[damageDoneKey]));
+        }
+
+        for (let ball of this.playerBalls) {
+            collatedRoundLog.push(new RoundEvent("HEALTH", ball.NameText.text, "", ball.Hp));
+        }
+
+        connection.invoke("FinishRound", collatedRoundLog, sessionRoomId).catch(function (err) {
             return console.error(err.toString());
         });
     }
