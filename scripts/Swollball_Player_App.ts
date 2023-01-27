@@ -396,6 +396,7 @@ class UpgradeCard extends Phaser.Physics.Arcade.Sprite {
     Upgrade: ServerUpgradeData;
     Title: Phaser.GameObjects.Text;
     Description: Phaser.GameObjects.Text;
+    Tags: Phaser.GameObjects.Text;
     Cost: Phaser.GameObjects.Text;
     CardBackground: Phaser.GameObjects.Sprite;
 
@@ -431,6 +432,11 @@ class UpgradeCard extends Phaser.Physics.Arcade.Sprite {
             this.Cost = scene.add.text(x + this.width * (0.915 - 0.015 * upgradeCost.length), y + this.height * 0.01, upgradeCost, { color: 'Black' });
             this.Cost.scale = width * 0.0065;
         }
+
+        if (upgradeData.Tags.indexOf("Persistent") > -1) {
+            this.Tags = scene.add.text(x + this.width * 0.05, y + this.height * 0.05, "[P]", { color: 'Black', align: 'Center' });
+            this.Tags.scale = width * 0.005;
+        }
     }
 }
 
@@ -449,6 +455,11 @@ function ShiftText(card: UpgradeCard) {
     if (card.Cost != undefined) {
         card.Cost.x = card.x + card.width * (0.915 - 0.015 * card.Cost.text.length);
         card.Cost.y = card.y + card.height * 0.01;
+    }
+
+    if (card.Tags != undefined) {
+        card.Tags.x = card.x + card.width * 0.05;
+        card.Tags.y = card.y + card.height * 0.05;
     }
 }
 
@@ -705,5 +716,6 @@ function DestroyCard(card: UpgradeCard) {
     card.Description?.destroy(true);
     card.Cost?.destroy(true);
     card.CardBackground?.destroy(true);
+    card.Tags?.destroy(true);
     card.destroy(true);
 }
