@@ -67,7 +67,7 @@ namespace Swollball
                     await Clients.Caller.SendAsync("UpdateState", new Ball[] { player.Ball },
                         new Player.Score[] { player.PlayerScore },
                         player.CurrentUpgrades.Values, player.Economy,
-                        "" /*No scene to start on*/);
+                        "" /*No scene to start on, just start the game*/, null /*No transition*/);
                     break;
                 case GameRoom.RoomState.TearingDown:
                     await Clients.Caller.SendAsync("ShowError", "ROOM HAS FINISHED.");
@@ -149,7 +149,7 @@ namespace Swollball
             await Clients.Caller.SendAsync("UpdateState", new Ball[] { player.Ball },
                 new Player.Score[] { player.PlayerScore },
                 player.CurrentUpgrades.Values, player.Economy,
-                null /*Send nothing*/);
+                null /*Do not start game*/, null /*No transition*/);
         }
     }
 }

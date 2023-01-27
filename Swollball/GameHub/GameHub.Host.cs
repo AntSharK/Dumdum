@@ -34,24 +34,21 @@ namespace Swollball
 
             roomToStart.StartGame(hpToStart);
 
-            await Clients.Caller.SendAsync("UpdateLeaderboard", roomToStart.Players.Values.Select(s => s.PlayerScore));
-            await Clients.Caller.SendAsync("StartGame", "Leaderboard");
+
+            roomToStart.StartNextRound();
+            await Clients.Caller.SendAsync("UpdateState", null /*No ball data*/,
+                roomToStart.Players.Values.Select(s => s.PlayerScore),
+                null, null /*No Upgrade Data*/,
+                "Leaderboard" /*Start in Leaderboard*/, null /*No transition*/);
 
             // Bulk dispatch
             await Task.WhenAll(roomToStart.Players.Values.Select(player =>
             {
-                return Clients.Client(player.ConnectionId).SendAsync("UpdateLeaderboard", new Player.Score[] { player.PlayerScore });
+                return Clients.Client(player.ConnectionId).SendAsync("UpdateState", new Ball[] { player.Ball },
+                    new Player.Score[] { player.PlayerScore },
+                    player.CurrentUpgrades.Values, player.Economy,
+                    "" /*No scene to start on, just start the game*/, null /*No transition*/);
             }));
-            await Task.WhenAll(roomToStart.Players.Values.Select(player =>
-            {
-                return Clients.Client(player.ConnectionId).SendAsync("UpdateBalls", new Ball[] { player.Ball });
-            }));
-            await Task.WhenAll(roomToStart.Players.Values.Select(player =>
-            {
-                return Clients.Client(player.ConnectionId).SendAsync("UpdateUpgrades", player.CurrentUpgrades.Values, player.Economy);
-            }));
-
-            await Clients.Group(roomToStart.RoomId).SendAsync("StartGame");
         }
 
         public async Task StartNextLobbyRound(string roomId)
@@ -61,8 +58,10 @@ namespace Swollball
             if (roomToStart == null) return;
 
             roomToStart.StartNextRound();
-            await Clients.Caller.SendAsync("UpdateBalls", roomToStart.Players.Values.Select(p => p.Ball));
-            await Clients.Caller.SendAsync("SceneTransition", "Leaderboard", "BallArena");
+            await Clients.Caller.SendAsync("UpdateState", roomToStart.Players.Values.Select(p => p.Ball),
+                null /*No Leaderboard Data*/,
+                null, null /*No Upgrade Data*/,
+                "BallArena", "Leaderboard" /*Transition from Leaderboard to Ball Arena*/);
         }
 
         public async Task FinishRound(RoundEvent[] roundEvents, string roomId)
@@ -101,8 +100,11 @@ namespace Swollball
             }
             else
             {
-                await Clients.Caller.SendAsync("UpdateLeaderboard", room.Players.Values.Select(s => s.PlayerScore));
-                await Clients.Caller.SendAsync("SceneTransition", "BallArena", "Leaderboard");
+                await Clients.Caller.SendAsync("UpdateState", null /*No ball*/,
+                    room.Players.Values.Select(s => s.PlayerScore),
+                    null, null /*No Upgrade Data*/,
+                    "Leaderboard", "BallArena" /*Transition from Ball Arena to Leaderboard*/);
+                Logger.LogInformation("ENDGAME FOR ROOM:{0}.", room.RoomId);
                 await Clients.Group(room.RoomId).SendAsync("StartNextRound");
             }
         }
@@ -112,9 +114,10 @@ namespace Swollball
             room.State = GameRoom.RoomState.TearingDown;
 
             // For now, the endgame data is no different from a regular leaderboard update, except dead player data is also sent
-            await Clients.Caller.SendAsync("UpdateLeaderboard", room.Players.Values.Select(s => s.PlayerScore).Union(room.DeadPlayers.Select(s => s.PlayerScore)));
-            await Clients.Caller.SendAsync("SceneTransition", "BallArena", "Leaderboard");
-
+            await Clients.Caller.SendAsync("UpdateState", null /*No ball*/,
+                room.Players.Values.Select(s => s.PlayerScore).Union(room.DeadPlayers.Select(s => s.PlayerScore)),
+                null, null /*No Upgrade Data*/,
+                "Leaderboard", "BallArena" /*Transition from Ball Arena to Leaderboard*/);
             Logger.LogInformation("ENDGAME FOR ROOM:{0}.", room.RoomId);
             foreach (var player in room.Players.Values)
             {
@@ -141,12 +144,16 @@ namespace Swollball
                     await Clients.Caller.SendAsync("Reconnect_ResumeRoomSetup", room);
                     break;
                 case GameRoom.RoomState.Arena:
-                    await Clients.Caller.SendAsync("UpdateBalls", room.Players.Values.Select(p => p.Ball));
-                    await Clients.Caller.SendAsync("StartGame", "BallArena");
+                    await Clients.Caller.SendAsync("UpdateState", room.Players.Values.Select(p => p.Ball),
+                        null, /*No Leaderboard Data*/
+                        null, null /*No Leaderboard Data*/,
+                        "BallArena" /*Scene to start on*/, null /*No transition*/);
                     break;
                 case GameRoom.RoomState.Leaderboard:
-                    await Clients.Caller.SendAsync("UpdateLeaderboard", room.Players.Values.Select(s => s.PlayerScore));
-                    await Clients.Caller.SendAsync("StartGame", "Leaderboard");
+                    await Clients.Caller.SendAsync("UpdateState", null /*No ball*/,
+                        room.Players.Values.Select(s => s.PlayerScore),
+                        null, null /*No Upgrade Data*/,
+                        "Leaderboard" /*Scene to start on*/, null /*No transition*/);
                     break;
                 case GameRoom.RoomState.TearingDown:
                     await Clients.Caller.SendAsync("ShowError", "ROOM HAS FINISHED.");

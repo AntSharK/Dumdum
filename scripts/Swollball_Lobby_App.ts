@@ -183,6 +183,7 @@ class BallArena extends Phaser.Scene {
         var sessionRoomId = sessionStorage.getItem("roomid");
         for (let ball of this.playerBalls) {
             DisableBall(ball);
+            this.balls.remove(ball);
         }
 
         // Collate the round log and send it
