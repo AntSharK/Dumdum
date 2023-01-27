@@ -12,7 +12,7 @@ namespace Swollball.Upgrades
         {
         }
 
-        public override string Description => $"Gain {this.UpgradeAmount} HP for every 10 speed you have.";
+        public override string Description => $"HP+{this.UpgradeAmount} for every 10 speed you have.";
         public override int BorderColor => 3342387; // 330033
         public override int FillColor => 15597806; // EE00EE;
 

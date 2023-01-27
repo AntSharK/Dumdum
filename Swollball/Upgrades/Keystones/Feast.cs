@@ -13,7 +13,7 @@ namespace Swollball.Upgrades.Keystones
             this.Tags.Add(UpgradeTags.LIFESTEAL);
         }
 
-        public override string Description => $"Regain {this.UpgradeAmount} HP for every 10 damage dealt";
+        public override string Description => $"In combat, regain {this.UpgradeAmount} HP for every 10 damage dealt.";
 
         public override int BorderColor => 16711748; // FF0044
         public override int FillColor => 12369084; // BCBCBC

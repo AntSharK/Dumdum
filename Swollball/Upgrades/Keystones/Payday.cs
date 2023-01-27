@@ -13,7 +13,7 @@ namespace Swollball.Upgrades.Keystones
             this.Tags.Add(UpgradeTags.ONTURNSTART);
         }
 
-        public override string Description => $"Every round, gain {this.UpgradeAmount} credits for every 100 damage done in the previous round.";
+        public override string Description => $"Gain {this.UpgradeAmount} credits per round for every 100 damage done.";
 
         public override int BorderColor => 15662848; // EEFF00
         public override int FillColor => 12237498; // BABABA

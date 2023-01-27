@@ -13,7 +13,7 @@ namespace Swollball.Upgrades.Keystones
             this.Tags.Add(UpgradeTags.UPGRADEMODIFIER);
         }
 
-        public override string Description => $"Increase your damage by {this.UpgradeAmount} for every armor you gain.";
+        public override string Description => $"Damage+{this.UpgradeAmount} every armor gained.";
 
         public override int BorderColor => 16759756; // FFBBCC
         public override int FillColor => 15395562; // EAEAEA

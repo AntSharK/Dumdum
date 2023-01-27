@@ -22,25 +22,25 @@ namespace Swollball.Upgrades
             Tuple.Create(18, () => new Hp(10, 2, "Brocolli") as IUpgrade),
             Tuple.Create(18, () => new Size(15, 2, "Milk") as IUpgrade),
             Tuple.Create(18, () => new Speed(30, 2, "Bread") as IUpgrade),
-            Tuple.Create(14, () => new Giant(1, 3, "Giant") as IUpgrade),
-            Tuple.Create(14, () => new Bulwark(1, 4, "Bulwark") as IUpgrade),
-            Tuple.Create(14, () => new Feast(2, 4, "Feast") as IUpgrade),
+            Tuple.Create(7, () => new Giant(1, 3, "Bigger") as IUpgrade),
+            Tuple.Create(7, () => new Bulwark(1, 4, "Bulwark") as IUpgrade),
+            Tuple.Create(7, () => new Feast(2, 4, "Feast") as IUpgrade),
         };
 
         private static List<Tuple<int, Func<IUpgrade>>> Tier2UpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
         {
             Tuple.Create(12, () => new Damage(5, 4, "Bacon") as IUpgrade),
-            Tuple.Create(12, () => new Armor(4, 5, "Banana") as IUpgrade),
-            Tuple.Create(12, () => new Inertia(2, 3, "+Inertia") as IUpgrade),
-            Tuple.Create(10, () => new Harden(1, 6, "Harden") as IUpgrade),
-            Tuple.Create(10, () => new Giant(2, 4, "Giant") as IUpgrade),
-            Tuple.Create(10, () => new Impulse(1, 6, "Impulse") as IUpgrade),
-            Tuple.Create(10, () => new Payday(1, 6, "Payday") as IUpgrade),
-            Tuple.Create(10, () => new Cover(1, 6, "Buffet") as IUpgrade),
+            Tuple.Create(12, () => new Inertia(2, 3, "Inertia") as IUpgrade),
+            Tuple.Create(8, () => new Harden(1, 6, "Harden") as IUpgrade),
+            Tuple.Create(6, () => new Impulse(1, 6, "Impulse") as IUpgrade),
+            Tuple.Create(6, () => new Payday(1, 6, "Payday") as IUpgrade),
+            Tuple.Create(6, () => new Cover(1, 6, "Buffet") as IUpgrade),
         };
 
         private static List<Tuple<int, Func<IUpgrade>>> Tier3UpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
         {
+            Tuple.Create(10, () => new Giant(2, 4, "Giant") as IUpgrade),
+            Tuple.Create(12, () => new Armor(4, 5, "Banana") as IUpgrade),
             Tuple.Create(8, () => new Regrowth(2, 5, "+Regrowth") as IUpgrade),
             Tuple.Create(8, () => new Hp(40, 4, "BROcolli") as IUpgrade),
             Tuple.Create(8, () => new Size(35, 3, "Soy Milk") as IUpgrade),

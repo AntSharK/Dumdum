@@ -13,7 +13,7 @@ namespace Swollball.Upgrades.Keystones
             this.Tags.Add(UpgradeTags.UPGRADEMODIFIER);
         }
 
-        public override string Description => $"Increase your size by {this.UpgradeAmount} for every 10 hp gained.";
+        public override string Description => $"Size+{this.UpgradeAmount} every 10 hp gained";
 
         public override int BorderColor => 43775; // 00AAFF
         public override int FillColor => 11259375; // ABCDEF
