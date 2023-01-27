@@ -19,17 +19,54 @@ namespace Swollball
 
         /// <summary>
         /// Gets the Persistent Upgrades to send down to the client
+        /// Listed as a property so that it's automatically serialized and sent to the client
         /// </summary>
-        public IEnumerable<IUpgrade> PersistentUpgradeData
+        public IEnumerable<IUpgrade> PersistentUpgradeData => this.GetUpgradesByTag(UpgradeTags.PERSISTENT);
+
+        /// <summary>
+        /// Operations modifying upgrades should be done using provided public methods
+        /// </summary>
+        private List<IUpgrade> Upgrades = new List<IUpgrade>();
+        private Dictionary<string, List<IUpgrade>> UpgradeIndex = new Dictionary<string, List<IUpgrade>>();
+
+        public void AddUpgrade(IUpgrade upgrade)
         {
-            get
+            this.Upgrades.Add(upgrade);
+            foreach (var tag in upgrade.Tags)
             {
-                return this.Upgrades.Where(upgrade => upgrade.Tags.Contains(UpgradeTags.PERSISTENT));
+                if (!UpgradeIndex.ContainsKey(tag))
+                {
+                    UpgradeIndex[tag] = new List<IUpgrade>();
+                }
+
+                this.UpgradeIndex[tag].Add(upgrade);
             }
         }
 
-        [System.Text.Json.Serialization.JsonIgnore]
-        public List<IUpgrade> Upgrades { get; set; } = new List<IUpgrade>();
+        public IEnumerable<IUpgrade> GetUpgradesByTag(string tag)
+        {
+            if (!this.UpgradeIndex.ContainsKey(tag))
+            {
+                return Enumerable.Empty<IUpgrade>();
+            }
+
+            return this.UpgradeIndex[tag];
+        }
+
+        public IUpgrade? FindUpgrade(string upgradeId)
+        {
+            return this.Upgrades.Where(k => k.ServerId == upgradeId).FirstOrDefault();
+        }
+
+        public bool RemoveUpgrade(IUpgrade upgrade)
+        {
+            foreach (var tag in upgrade.Tags)
+            {
+                this.UpgradeIndex[tag].Remove(upgrade);
+            }
+
+            return this.Upgrades.Remove(upgrade);
+        }
 
         public Ball(string playerName)
         {
