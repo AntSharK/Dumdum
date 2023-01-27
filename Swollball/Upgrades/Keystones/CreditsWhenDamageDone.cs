@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Swollball.Upgrades.Keystones
 {
-    public class Payday : BaseKeystone
+    public class CreditsWhenDamageDone : BaseKeystone
     {
-        public Payday(int value, int cost, string name) : base(value, cost, name)
+        public CreditsWhenDamageDone(int value, int cost, string name) : base(value, cost, name)
         {
             this.Tags.Add(UpgradeTags.ONTURNSTART);
         }

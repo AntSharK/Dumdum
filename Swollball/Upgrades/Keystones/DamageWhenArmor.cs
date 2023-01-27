@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Swollball.Upgrades.Keystones
 {
-    public class Bulwark : BaseKeystone
+    public class DamageWhenArmor : BaseKeystone
     {
-        public Bulwark(int value, int cost, string name) : base(value, cost, name)
+        public DamageWhenArmor(int value, int cost, string name) : base(value, cost, name)
         {
             this.Tags.Add(UpgradeTags.UPGRADEMODIFIER);
         }

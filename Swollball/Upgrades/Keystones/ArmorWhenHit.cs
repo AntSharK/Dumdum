@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Swollball.Upgrades.Keystones
 {
-    public class Harden : BaseKeystone
+    public class ArmorWhenHit : BaseKeystone
     {
-        public Harden(int value, int cost, string name) : base(value, cost, name)
+        public ArmorWhenHit(int value, int cost, string name) : base(value, cost, name)
         {
             this.Tags.Add(UpgradeTags.REINFORCE);
         }

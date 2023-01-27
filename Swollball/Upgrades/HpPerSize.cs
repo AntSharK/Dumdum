@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Swollball.Upgrades
 {
-    public class Inertia: BaseUpgrade
+    public class HpPerSize: BaseUpgrade
     {
-        public Inertia(int value, int cost, string name) : base(value, cost, name)
+        public HpPerSize(int value, int cost, string name) : base(value, cost, name)
         {
         }
 

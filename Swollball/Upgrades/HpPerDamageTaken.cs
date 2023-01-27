@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Swollball.Upgrades
 {
-    public class Cover : BaseUpgrade
+    public class HpPerDamageTaken : BaseUpgrade
     {
-        public Cover(int value, int cost, string name) : base(value, cost, name)
+        public HpPerDamageTaken(int value, int cost, string name) : base(value, cost, name)
         {
         }
 

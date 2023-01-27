@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Swollball.Upgrades
 {
-    public class Bloat : BaseUpgrade
+    public class SizePerSize : BaseUpgrade
     {
-        public Bloat(int value, int cost, string name) : base(value, cost, name)
+        public SizePerSize(int value, int cost, string name) : base(value, cost, name)
         {
         }
 

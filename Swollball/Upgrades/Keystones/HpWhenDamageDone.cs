@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Swollball.Upgrades.Keystones
 {
-    public class Feast : BaseKeystone
+    public class HpWhenDamageDone : BaseKeystone
     {
-        public Feast(int value, int cost, string name) : base(value, cost, name)
+        public HpWhenDamageDone(int value, int cost, string name) : base(value, cost, name)
         {
             this.Tags.Add(UpgradeTags.LIFESTEAL);
         }

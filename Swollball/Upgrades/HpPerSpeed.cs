@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Swollball.Upgrades
 {
-    public class Regrowth: BaseUpgrade
+    public class HpPerSpeed: BaseUpgrade
     {
-        public Regrowth(int value, int cost, string name) : base(value, cost, name)
+        public HpPerSpeed(int value, int cost, string name) : base(value, cost, name)
         {
         }
 
