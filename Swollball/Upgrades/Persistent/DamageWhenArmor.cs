@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Swollball.Upgrades
 {
-    public class DamageWhenArmor : BaseKeystone
+    public class DamageWhenArmor : BasePersistentUpgrade
     {
         public DamageWhenArmor(int value, int cost, string name) : base(value, cost, name)
         {

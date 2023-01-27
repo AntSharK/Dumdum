@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Swollball.Upgrades
 {
-    public class CreditsWhenDamageDone : BaseKeystone
+    public class CreditsWhenDamageDone : BasePersistentUpgrade
     {
         public CreditsWhenDamageDone(int value, int cost, string name) : base(value, cost, name)
         {
