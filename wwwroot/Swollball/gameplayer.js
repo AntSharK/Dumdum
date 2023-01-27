@@ -56,21 +56,11 @@ connection.on("Reconnect_ResumeWaiting", function (userName, roomId) {
     SwitchToWaitingView(userName, roomId);
 });
 
-connection.on("UpdateState", function (ballData, leaderboardData, upgradeData, creditsLeft, gameStart) {
-    if (ballData != null) { InitializeBallData(ballData); }
-    if (leaderboardData != null) { InitializeLeaderboardData(leaderboardData); }
-    if (upgradeData != null) { InitializeUpgradeData(upgradeData, creditsLeft); }
-
-    if (gameStart == "StartGame") {
-        StartGame();
-    }
-});
-
 connection.on("StartGame", function (sceneToStartOn) {
-    StartGame();
+    StartGame(sceneToStartOn);
 });
 
-function StartGame() {
+function StartGame(sceneToStartOn) {
     document.body.innerHTML = "<div id='controlbar' style=\"min-height:20px; height:2vh\"></div><div id='phaserapp' style=\"height:80vh\"></div>";
     document.getElementById("controlbar").innerHTML = "<text id='loadingbar'></text><a href = 'javascript:window.location.reload()' style = 'float:right' > REFRESH</a> ";
     Game = new Swollball_Player_Game();

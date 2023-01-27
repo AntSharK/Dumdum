@@ -67,7 +67,7 @@ namespace Swollball
                     await Clients.Caller.SendAsync("UpdateState", new Ball[] { player.Ball },
                         new Player.Score[] { player.PlayerScore },
                         player.CurrentUpgrades.Values, player.Economy,
-                        "StartGame");
+                        "" /*No scene to start on*/);
                     break;
                 case GameRoom.RoomState.TearingDown:
                     await Clients.Caller.SendAsync("ShowError", "ROOM HAS FINISHED.");
