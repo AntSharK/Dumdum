@@ -57,9 +57,13 @@ connection.on("HostUpdateRoom", function (room) {
 });
 
 connection.on("StartGame", function (sceneToStartOn = "BallArena") {
+    StartGame(sceneToStartOn);
+});
+
+function StartGame(sceneToStartOn) {    
     document.body.innerHTML = "<div id='controlbar' style=\"min-height:20px; height:2vh\"></div><div id='phaserapp' style=\"height:93vh\"></div>";
     Game = new Swollball_Lobby_Game(sceneToStartOn);
-});
+}
 
 /***
 VIEW CHANGES

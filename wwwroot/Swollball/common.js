@@ -21,6 +21,25 @@ connection.on("SceneTransition", function (sceneFrom, sceneTo) {
     SceneTransition(sceneFrom, sceneTo);
 })
 
+
+connection.on("UpdateState", function (ballData,
+    leaderboardData,
+    upgradeData,
+    creditsLeft,
+    sceneToStartOn,
+    sceneToTransitionFrom) {
+    if (ballData != null) { InitializeBallData(ballData); }
+    if (leaderboardData != null) { InitializeLeaderboardData(leaderboardData); }
+    if (upgradeData != null) { InitializeUpgradeData(upgradeData, creditsLeft); }
+
+    if (sceneToStartOn != null && sceneToTransitionFrom == null) {
+        StartGame(sceneToStartOn);
+    }
+    else if (sceneToStartOn != null && sceneToTransitionFrom != null) {
+        SceneTransition(sceneToTransitionFrom, sceneToStartOn);
+    }
+});
+
 connection.on("UpdateBalls", function (ballData) {
     InitializeBallData(ballData);
 });

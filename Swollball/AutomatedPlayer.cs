@@ -28,9 +28,11 @@ namespace Swollball
             while (this.CurrentUpgrades.Count > 0)
             {
                 var upgradeId = this.CurrentUpgrades.Keys.First();
-                this.ApplyUpgrade(upgradeId);
+                if (!this.ApplyUpgrade(upgradeId)) // Avoid infinite loops when unable to buy upgrades
+                {
+                    this.RefreshShop();
+                }
             }
-
         }
     }
 }
