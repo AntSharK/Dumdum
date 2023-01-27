@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Swollball.Upgrades.Keystones
+namespace Swollball.Upgrades
 {
     public class SizeWhenHp : BaseKeystone
     {

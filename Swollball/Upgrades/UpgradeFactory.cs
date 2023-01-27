@@ -1,5 +1,4 @@
-﻿using Swollball.Upgrades.Keystones;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,7 +29,7 @@ namespace Swollball.Upgrades
         private static List<Tuple<int, Func<IUpgrade>>> Tier2UpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
         {
             Tuple.Create(12, () => new Damage(5, 4, "Bacon") as IUpgrade),
-            Tuple.Create(12, () => new HpPerSize(2, 3, "Inertia") as IUpgrade),
+            Tuple.Create(12, () => new HpPerSize(2, 3, "Calcify") as IUpgrade),
             Tuple.Create(9, () => new SizePerSize(1, 6, "GET BUFF") as IUpgrade),
             Tuple.Create(6, () => new ArmorWhenHit(1, 6, "Harden") as IUpgrade),
             Tuple.Create(6, () => new DamageWhenSpeed(1, 6, "Impulse") as IUpgrade),
@@ -47,19 +46,19 @@ namespace Swollball.Upgrades
             Tuple.Create(9, () => new Hp(40, 4, "BROcolli") as IUpgrade),
             Tuple.Create(9, () => new Size(35, 3, "Soy Milk") as IUpgrade),
             Tuple.Create(9, () => new Speed(50, 3, "Rice") as IUpgrade),
-            Tuple.Create(9, () => new Furious(1, 6, "Yoga") as IUpgrade),
+            Tuple.Create(9, () => new SpeedPerSize(1, 6, "Yoga") as IUpgrade),
             Tuple.Create(5, () => new ArmorWhenHit(4, 10, "Reinforce") as IUpgrade),
-            Tuple.Create(5, () => new ArmorWhenHp(1, 5, "Ossify") as IUpgrade),
+            Tuple.Create(5, () => new ArmorWhenHp(1, 5, "Bioshield") as IUpgrade),
             Tuple.Create(4, () => new DamageWhenSpeed(3, 7, "Inertia") as IUpgrade),
         };
 
         private static List<Tuple<int, Func<IUpgrade>>> Tier4UpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
         {
-            Tuple.Create(6, () => new HpPerSize(6, 5, "++Inertia") as IUpgrade),
+            Tuple.Create(6, () => new HpPerSize(6, 5, "Ossify") as IUpgrade),
             Tuple.Create(6, () => new ArmorPerArmor(3, 10, "Ketones") as IUpgrade),
             Tuple.Create(6, () => new Damage(20, 6, "Wagyu") as IUpgrade),
-            Tuple.Create(4, () => new HpWhenDamageDone(8, 9, "Siphon") as IUpgrade),
             Tuple.Create(4, () => new SizePerSize(4, 8, "GET SWOLL") as IUpgrade),
+            Tuple.Create(4, () => new HpWhenDamageDone(8, 9, "Siphon") as IUpgrade),
             Tuple.Create(3, () => new ArmorWhenHit(8, 10, "Fortify") as IUpgrade),
         };
         
