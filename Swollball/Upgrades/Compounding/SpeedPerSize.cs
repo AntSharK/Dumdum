@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Swollball.Upgrades
 {
-    public class Furious: BaseUpgrade
+    public class SpeedPerSize: BaseUpgrade
     {
-        public Furious(int value, int cost, string name) : base(value, cost, name)
+        public SpeedPerSize(int value, int cost, string name) : base(value, cost, name)
         {
         }
 
-        public override string Description => $"Gain {this.UpgradeAmount} speed for every 10 size you have.";
+        public override string Description => $"Speed+{this.UpgradeAmount} for every 10 size you have.";
         public override int BorderColor => 2228258; // 220022
         public override int FillColor => 16711935; // FF00FF;
 

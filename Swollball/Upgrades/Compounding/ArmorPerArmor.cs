@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Swollball.Upgrades
 {
-    public class Tech : BaseUpgrade
+    public class ArmorPerArmor : BaseUpgrade
     {
-        public Tech(int value, int cost, string name) : base(value, cost, name)
+        public ArmorPerArmor(int value, int cost, string name) : base(value, cost, name)
         {
         }
 

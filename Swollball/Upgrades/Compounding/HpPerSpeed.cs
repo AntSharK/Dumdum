@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Swollball.Upgrades
 {
-    public class Regrowth: BaseUpgrade
+    public class HpPerSpeed: BaseUpgrade
     {
-        public Regrowth(int value, int cost, string name) : base(value, cost, name)
+        public HpPerSpeed(int value, int cost, string name) : base(value, cost, name)
         {
         }
 
-        public override string Description => $"Gain {this.UpgradeAmount} HP for every 10 speed you have.";
+        public override string Description => $"HP+{this.UpgradeAmount} for every 10 speed you have.";
         public override int BorderColor => 3342387; // 330033
         public override int FillColor => 15597806; // EE00EE;
 

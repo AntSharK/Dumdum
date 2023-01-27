@@ -4,16 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Swollball.Upgrades.Keystones
+namespace Swollball.Upgrades
 {
-    public class Bulwark : BaseKeystone
+    public class DamageWhenArmor : BasePersistentUpgrade
     {
-        public Bulwark(int value, int cost, string name) : base(value, cost, name)
+        public DamageWhenArmor(int value, int cost, string name) : base(value, cost, name)
         {
             this.Tags.Add(UpgradeTags.UPGRADEMODIFIER);
         }
 
-        public override string Description => $"Increase your damage by {this.UpgradeAmount} for every armor you gain.";
+        public override string Description => $"Damage+{this.UpgradeAmount} every armor gained.";
 
         public override int BorderColor => 16759756; // FFBBCC
         public override int FillColor => 15395562; // EAEAEA

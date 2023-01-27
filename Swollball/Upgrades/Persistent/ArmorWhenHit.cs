@@ -4,16 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Swollball.Upgrades.Keystones
+namespace Swollball.Upgrades
 {
-    public class Harden : BaseKeystone
+    public class ArmorWhenHit : BasePersistentUpgrade
     {
-        public Harden(int value, int cost, string name) : base(value, cost, name)
+        public ArmorWhenHit(int value, int cost, string name) : base(value, cost, name)
         {
             this.Tags.Add(UpgradeTags.REINFORCE);
         }
 
-        public override string Description => $"Gain {this.UpgradeAmount} armor for the round when you get hit";
+        public override string Description => $"In combat, gain {this.UpgradeAmount} armor for the round when you get hit";
 
         public override int BorderColor => 16755370; // FFAAAA
         public override int FillColor => 11206655; // AAFFFF

@@ -4,16 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Swollball.Upgrades.Keystones
+namespace Swollball.Upgrades
 {
-    public class Giant : BaseKeystone
+    public class SizeWhenHp : BasePersistentUpgrade
     {
-        public Giant(int value, int cost, string name) : base(value, cost, name)
+        public SizeWhenHp(int value, int cost, string name) : base(value, cost, name)
         {
             this.Tags.Add(UpgradeTags.UPGRADEMODIFIER);
         }
 
-        public override string Description => $"Increase your size by {this.UpgradeAmount} for every 10 hp gained.";
+        public override string Description => $"Size+{this.UpgradeAmount} every 10 hp gained";
 
         public override int BorderColor => 43775; // 00AAFF
         public override int FillColor => 11259375; // ABCDEF

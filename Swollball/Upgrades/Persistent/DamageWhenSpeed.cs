@@ -4,16 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Swollball.Upgrades.Keystones
+namespace Swollball.Upgrades
 {
-    public class Impulse : BaseKeystone
+    public class DamageWhenSpeed : BasePersistentUpgrade
     {
-        public Impulse(int value, int cost, string name) : base(value, cost, name)
+        public DamageWhenSpeed(int value, int cost, string name) : base(value, cost, name)
         {
             this.Tags.Add(UpgradeTags.UPGRADEMODIFIER);
         }
 
-        public override string Description => $"Increase your damage by {this.UpgradeAmount} for every 10 speed you gain";
+        public override string Description => $"Damage+{this.UpgradeAmount} for every 10 speed gained";
 
         public override int BorderColor => 10092288; // 99FF00
         public override int FillColor => 11250603; // ABABAB

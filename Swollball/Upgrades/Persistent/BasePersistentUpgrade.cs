@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Swollball.Upgrades.Keystones
+namespace Swollball.Upgrades
 {
     // Keystones are persistent upgrades
-    public abstract class BaseKeystone : BaseUpgrade
+    public abstract class BasePersistentUpgrade : BaseUpgrade
     {
         internal int preUpgradeStat;
 
-        public BaseKeystone(int amount, int cost, string name) :
+        public BasePersistentUpgrade(int amount, int cost, string name) :
             base(amount, cost, name)
         {
             this.Tags.Add(UpgradeTags.PERSISTENT);

@@ -430,7 +430,7 @@ class UpgradeCard extends Phaser.Physics.Arcade.Sprite {
 
         this.Description = scene.add.text(x + this.width * 0.05, y + this.height * 0.3, upgradeData.Description, { color: 'Black' });
         var heightRatio = this.height / this.width;
-        this.Description.scale = width * Math.min(0.0065, 0.5 * heightRatio / this.Description.text.length);
+        this.Description.scale = width * Math.min(0.006, 0.5 * heightRatio / this.Description.text.length, (this.height * this.width * 0.00005) / this.Description.text.length);
         this.Description.setWordWrapWidth(this.width * 0.92 / this.Description.scale);
 
         if (upgradeData.Cost > 0) {
@@ -441,7 +441,7 @@ class UpgradeCard extends Phaser.Physics.Arcade.Sprite {
         }
 
         if (upgradeData.Tags.indexOf("Persistent") > -1) {
-            this.Tags = scene.add.text(x + this.width * 0.05, y + this.height * 0.05, "[P]", { color: 'Black', align: 'Center' });
+            this.Tags = scene.add.text(x + this.width * 0.005, y + this.height * 0.005, "[P]", { color: 'Black', align: 'Center' });
             this.Tags.scale = width * 0.005;
         }
     }

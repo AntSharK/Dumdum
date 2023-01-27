@@ -4,16 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Swollball.Upgrades.Keystones
+namespace Swollball.Upgrades
 {
-    public class Payday : BaseKeystone
+    public class CreditsWhenDamageDone : BasePersistentUpgrade
     {
-        public Payday(int value, int cost, string name) : base(value, cost, name)
+        public CreditsWhenDamageDone(int value, int cost, string name) : base(value, cost, name)
         {
             this.Tags.Add(UpgradeTags.ONTURNSTART);
         }
 
-        public override string Description => $"Every round, gain {this.UpgradeAmount} credits for every 100 damage done in the previous round.";
+        public override string Description => $"Gain {this.UpgradeAmount} credits per round for every 100 damage done.";
 
         public override int BorderColor => 15662848; // EEFF00
         public override int FillColor => 12237498; // BABABA
