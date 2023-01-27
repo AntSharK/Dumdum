@@ -42,7 +42,7 @@ namespace Swollball.Upgrades
         {
             Tuple.Create(10, () => new SizeWhenHp(2, 4, "Giant") as IUpgrade),
             Tuple.Create(10, () => new Armor(4, 5, "Banana") as IUpgrade),
-            Tuple.Create(9, () => new HpPerSpeed(2, 5, "+Regrowth") as IUpgrade),
+            Tuple.Create(9, () => new HpPerSpeed(2, 5, "Regrowth") as IUpgrade),
             Tuple.Create(9, () => new Hp(40, 4, "BROcolli") as IUpgrade),
             Tuple.Create(9, () => new Size(35, 3, "Soy Milk") as IUpgrade),
             Tuple.Create(9, () => new Speed(50, 3, "Rice") as IUpgrade),
@@ -60,6 +60,7 @@ namespace Swollball.Upgrades
             Tuple.Create(4, () => new SizePerSize(4, 8, "GET SWOLL") as IUpgrade),
             Tuple.Create(4, () => new HpWhenDamageDone(8, 9, "Siphon") as IUpgrade),
             Tuple.Create(3, () => new ArmorWhenHit(8, 10, "Fortify") as IUpgrade),
+            Tuple.Create(3, () => new CreditWhenHp(1, 10, "Modelling") as IUpgrade),
         };
         
         private static Lazy<Func<IUpgrade>[]> Tier1Upgrades = new Lazy<Func<IUpgrade>[]>(() =>
