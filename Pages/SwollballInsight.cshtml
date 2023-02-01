@@ -12,6 +12,7 @@ RoomId: @Model.Room.RoomId
         <th>Hp</th>
         <th>Size</th>
         <th>Speed</th>
+        <th>Upgrades</th>
     @foreach(var player in Model.Room.Players.Values)
     {
             <tr>
@@ -21,6 +22,9 @@ RoomId: @Model.Room.RoomId
                 <th>@player.Ball.Hp</th>
                 <th>@player.Ball.SizeMultiplier</th>
                 <th>@player.Ball.SpeedMultiplier</th>
+                <th>@player.Ball.UpgradeDisplayInfo</th>
+            </tr>
+            <tr>
             </tr>
     }
     </table>

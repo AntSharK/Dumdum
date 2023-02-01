@@ -28,6 +28,8 @@ namespace Swollball
         private List<IUpgrade> Upgrades = new List<IUpgrade>();
         private Dictionary<string, List<IUpgrade>> UpgradeIndex = new Dictionary<string, List<IUpgrade>>();
 
+        public string UpgradeDisplayInfo => string.Join(',', this.Upgrades.Select(u => u.UpgradeName + u.UpgradeAmount));
+
         public void AddUpgrade(IUpgrade upgrade)
         {
             this.Upgrades.Add(upgrade);
