@@ -123,6 +123,15 @@ var conditionalReload = function () {
 
         document.getElementById("pageName").textContent = "RECONNECTING...";
     }
+    else {
+        const params = new Proxy(new URLSearchParams(window.location.search), {
+            get: (searchParams, prop) => searchParams.get(prop),
+        });
+        let roomIdIn = params.RoomId;
+        if (roomIdIn.length > 0) {
+            document.getElementById("roomid").value = roomIdIn;
+        }
+    }
 }
 
 window.onload = conditionalReload;
