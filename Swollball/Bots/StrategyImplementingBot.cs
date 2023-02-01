@@ -4,14 +4,13 @@ namespace Swollball
 {
     public class StrategyImplementingBot : Player
     {
-        private Dictionary<string, int> UpgradeScores;
+        private Func<IUpgrade, int> GetUpgradeScore;
         private Func<Player, int> GetTierUpScore;
 
-
-        public StrategyImplementingBot(string name, string roomName, Dictionary<string, int> upgradeScores, Func<Player, int> tierUpScore)
+        public StrategyImplementingBot(string name, string roomName, Func<IUpgrade, int> upgradeScore, Func<Player, int> tierUpScore)
             : base(name, "TestConnectionId", roomName)
         {
-            this.UpgradeScores = upgradeScores;
+            this.GetUpgradeScore = upgradeScore;
             this.GetTierUpScore = tierUpScore;
 
             this.BuyUpgrades();
@@ -40,11 +39,20 @@ namespace Swollball
                     }
                 }
 
+                // If it's time to tier up, do so
                 var tierUpScore = GetTierUpScore(this);
                 if (tierUpScore >= maxUpgradeScore
+                    && this.Economy.UpgradeTierCost > 0
                     && this.Economy.UpgradeTierCost <= this.Economy.CreditsLeft)
                 {
                     this.TierUp();
+                    return;
+                }
+
+                // If no cards are good, refresh
+                if (maxUpgradeScore < 0)
+                {
+                    this.RefreshShop();
                     return;
                 }
 
@@ -60,11 +68,7 @@ namespace Swollball
         {
             foreach (var upgrade in currentUpgrades.Values)
             {
-                var upgradeScore = 1;
-                if (this.UpgradeScores.ContainsKey(upgrade.UpgradeName)) {
-                    upgradeScore = this.UpgradeScores[upgrade.UpgradeName];
-                }
-
+                var upgradeScore = this.GetUpgradeScore(upgrade);
                 yield return new Tuple<IUpgrade, int>(upgrade, upgradeScore);
             }
         }

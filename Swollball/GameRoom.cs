@@ -67,7 +67,8 @@ namespace Swollball
             var i = rng.Next(BotNames.Count); 
             var playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1);
 
-            var newPlayer = new RandomCheatingBot(playerName, this.RoomId);
+            //var newPlayer = new RandomCheatingBot(playerName, this.RoomId);
+            var newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.Random, TierUpStrategy.WhenRich);
 
             // Assign the bot a random color
             newPlayer.Ball.Color = rng.Next(0xFFFFFF);

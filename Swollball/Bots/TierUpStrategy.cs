@@ -14,9 +14,9 @@ namespace Swollball
             return -1;
         }
 
-        public static int Often(Player p)
+        public static int Sometimes(Player p)
         {
-            return 5;
+            return 10;
         }
 
         public static int Always(Player p)
