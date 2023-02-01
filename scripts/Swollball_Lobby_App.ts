@@ -131,7 +131,10 @@ class BallArena extends Phaser.Scene {
                 }
 
                 if (this.balls.countActive() <= 1) {
-                    this.finishScene();
+                    // End the turn in 1.5 seconds
+                    if (this.roundTimer.getRemaining() > this.ROUNDDELAY) {
+                        this.time.addEvent(new Phaser.Time.TimerEvent({ delay: this.ROUNDDELAY, callback: this.finishScene, callbackScope: this }));
+                    }
                 }
             }
         });
