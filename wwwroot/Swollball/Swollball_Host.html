@@ -9,8 +9,7 @@
     <title>SWOLLBALL HOST</title>
 </head>
 <body>
-    <div id="pageName" class="display-4" style="text-decoration:underline; text-align:center">CREATE GAME</div>
-
+    <div id="pageName" class="display-4" style="text-align:center">CREATE GAME</div>
     <div class="state" id="startLobby" style="display:none">
         <div class="display-4">
             <u>GAME PARAMETERS</u><br />
@@ -20,6 +19,7 @@
         </div>
         <hr />
         <input type="button" id="addbotbutton" value="ADD BOT" />
+        <input type="button" id="generatelinkbutton" value="GET LINK" onclick="GenerateLink()" />
         <div id="lobbyplayercount" class="h3"><u>0 PLAYERS IN GAME</u></div>
         <ul id="lobbyList" class="h4"></ul>
         <div style="text-align:center" class="display-2"><input type="button" id="startbutton" value="BEGIN GAME" /><br /><br /></div>
