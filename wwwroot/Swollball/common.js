@@ -58,3 +58,10 @@ function ClearState() {
     sessionStorage.removeItem(LeaderBoardDurationStorageKey);
     sessionStorage.removeItem(RoundDurationStorageKey);
 }
+
+function GenerateLink() {
+    var sessionRoomId = sessionStorage.getItem(RoomIdSessionStorageKey);
+    var baseUrl = window.location.origin;
+    var joinRoomUrl = baseUrl + "/Swollball/Swollball_Player.html?RoomId=" + sessionRoomId;
+    window.prompt("Copy to clipboard: Ctrl+C, Enter", joinRoomUrl);
+}
