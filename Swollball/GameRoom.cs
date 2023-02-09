@@ -27,28 +27,23 @@ namespace Swollball
             if (tp != null)
             {
                 tp.Ball.Color = 11745079;
-                tp.Ball.AddUpgrade(new Upgrades.SizeWhenHp(2, 0, "TestGiant"));
-                tp.Ball.AddUpgrade(new Upgrades.DamageWhenArmor(2, 0, "TestBulwark"));
-                tp.Ball.AddUpgrade(new Upgrades.HpWhenDamageDone(5, 0, "TestFeast"));
-                tp.Ball.AddUpgrade(new Upgrades.ArmorWhenHit(4, 0, "TestHarden"));
+                tp.Ball.AddUpgrade(new Upgrades.SizeWhenHp(1, 0, "TestGiant"));
+                tp.Ball.AddUpgrade(new Upgrades.DamageWhenArmor(1, 0, "TestBulwark"));
+                tp.Ball.AddUpgrade(new Upgrades.HpWhenDamageDone(1, 0, "TestFeast"));
+                tp.Ball.AddUpgrade(new Upgrades.ArmorWhenHit(1, 0, "TestHarden"));
                 tp.Ball.AddUpgrade(new Upgrades.Hp(25, 0, "TESTUPGRADE"));
-                tp.Ball.SizeMultiplier = 350;
+                tp.Ball.SizeMultiplier = 150;
                 tp.Economy.CreditsLeft = 99;
             }
-            /*
-            var tp2 = this.CreatePlayer("S", "YAYA");
-            tp2.Ball.Color = 11045079;
-            tp2.Ball.Dmg = 20;
-            tp2.Ball.SpeedMultiplier = 400;
-            tp2.Ball.SizeMultiplier = 400;
-            var tp3 = this.CreatePlayer("LCBAT", "BARA");
-            tp3.Ball.Color = 01745079;
-            tp3.Ball.SizeMultiplier = 500;
-            tp3.Ball.SpeedMultiplier = 500; */
 
-            this.CreateAutomatedPlayer();
-            this.CreateAutomatedPlayer();
-            this.CreateAutomatedPlayer();
+            this.CreateAutomatedPlayer(0);
+            this.CreateAutomatedPlayer(1);
+            this.CreateAutomatedPlayer(2);
+            this.CreateAutomatedPlayer(3);
+            this.CreateAutomatedPlayer(4);
+            this.CreateAutomatedPlayer(5);
+            this.CreateAutomatedPlayer(6);
+            this.CreateAutomatedPlayer(7);
 #endif
         }
 
@@ -62,13 +57,53 @@ namespace Swollball
 
         private static Random rng = new Random();
 
-        internal Player? CreateAutomatedPlayer()
+        internal Player? CreateAutomatedPlayer(int botStrat = -1)
         {
-            var i = rng.Next(BotNames.Count); 
-            var playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1);
+            var i = rng.Next(BotNames.Count);
 
-            //var newPlayer = new RandomCheatingBot(playerName, this.RoomId);
-            var newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.Random, TierUpStrategy.WhenRich);
+            Player newPlayer;
+            string playerName;
+            if (botStrat <= 0) { botStrat = rng.Next(8); }
+            switch (botStrat)
+            {
+                case 0:
+                    playerName = BotNames[i] + "ABOT" + (this.Players.Count() + 1);
+                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.Random, TierUpStrategy.WhenRich);
+                    break;
+                case 1:
+                    playerName = BotNames[i] + "BBOT" + (this.Players.Count() + 1);
+                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.Random, TierUpStrategy.Always);
+                    break;
+                case 2:
+                    playerName = BotNames[i] + "CBOT" + (this.Players.Count() + 1);
+                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.ArmorBulwarker, TierUpStrategy.WhenRich);
+                    break;
+                case 3:
+                    playerName = BotNames[i] + "DBOT" + (this.Players.Count() + 1);
+                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.ArmorBulwarker, TierUpStrategy.Always);
+                    break;
+                case 4:
+                    playerName = BotNames[i] + "EBOT" + (this.Players.Count() + 1);
+                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.DamageSustain, TierUpStrategy.WhenRich);
+                    break;
+                case 5:
+                    playerName = BotNames[i] + "FBOT" + (this.Players.Count() + 1);
+                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.DamageSustain, TierUpStrategy.Always);
+                    break;
+                case 6:
+                    playerName = BotNames[i] + "GBOT" + (this.Players.Count() + 1);
+                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.ArmorSustain, TierUpStrategy.WhenRich);
+                    break;
+                case 7:
+                    playerName = BotNames[i] + "HBOT" + (this.Players.Count() + 1);
+                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.ArmorSustain, TierUpStrategy.Always);
+                    break;
+                default:
+                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1);
+                    newPlayer = new RandomCheatingBot(playerName, this.RoomId); // For the cheating bot
+                    break;
+
+            }
 
             // Assign the bot a random color
             newPlayer.Ball.Color = rng.Next(0xFFFFFF);

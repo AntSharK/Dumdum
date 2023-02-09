@@ -62,5 +62,51 @@ namespace Swollball
 
             return -1;
         }
+
+        /// <summary>
+        /// Priotizes damage and sustain
+        /// </summary>
+        public static int DamageSustain(IUpgrade u)
+        {
+            if (FlatDamageScores.ContainsKey(u.UpgradeName))
+            {
+                return FlatDamageScores[u.UpgradeName] * 4;
+            }
+
+            if (SustainScores.ContainsKey(u.UpgradeName))
+            {
+                return SustainScores[u.UpgradeName] * 5;
+            }
+
+            if (ArmorScores.ContainsKey(u.UpgradeName))
+            {
+                return ArmorScores[u.UpgradeName] * 1;
+            }
+
+            return -1;
+        }
+
+        /// <summary>
+        /// Priotizes armor and sustain
+        /// </summary>
+        public static int ArmorSustain(IUpgrade u)
+        {
+            if (FlatDamageScores.ContainsKey(u.UpgradeName))
+            {
+                return FlatDamageScores[u.UpgradeName] * 1;
+            }
+
+            if (SustainScores.ContainsKey(u.UpgradeName))
+            {
+                return SustainScores[u.UpgradeName] * 5;
+            }
+
+            if (ArmorScores.ContainsKey(u.UpgradeName))
+            {
+                return ArmorScores[u.UpgradeName] * 3;
+            }
+
+            return -1;
+        }
     }
 }
