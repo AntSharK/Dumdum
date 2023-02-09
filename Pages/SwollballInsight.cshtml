@@ -13,6 +13,7 @@ RoomId: @Model.Room.RoomId
         <th>Size</th>
         <th>Speed</th>
         <th>Tier</th>
+        <th>Points</th>
         <th>Upgrades</th>
     @foreach(var player in Model.Room.Players.Values)
     {
@@ -24,12 +25,13 @@ RoomId: @Model.Room.RoomId
                 <th>@player.Ball.SizeMultiplier</th>
                 <th>@player.Ball.SpeedMultiplier</th>
                 <th>@player.Economy.ShopTier</th>
+                <th>@player.PlayerScore.PointsLeft</th>
                 <th>@player.Ball.UpgradeDisplayInfo</th>
             </tr>
             <tr>
             </tr>
     }
-    <tr>DEAD PLAYERS</tr>
+    <tr><th>DEAD PLAYERS</th></tr>
     @foreach(var player in Model.Room.DeadPlayers)
     {
             <tr>
@@ -40,6 +42,7 @@ RoomId: @Model.Room.RoomId
                 <th>@player.Ball.SizeMultiplier</th>
                 <th>@player.Ball.SpeedMultiplier</th>
                 <th>@player.Economy.ShopTier</th>
+                <th>@player.PlayerScore.PointsLeft</th>
                 <th>@player.Ball.UpgradeDisplayInfo</th>
             </tr>
             <tr>
