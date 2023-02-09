@@ -168,7 +168,7 @@ namespace Swollball
             (var player, var room) = await this.FindPlayerAndRoom(null, roomId);
             if (room == null) return;
 
-            room.CreateAutomatedPlayer();
+            room.CreateAutomatedPlayer(null, null, string.Empty);
             await Clients.Caller.SendAsync("HostUpdateRoom", room);
         }
     }

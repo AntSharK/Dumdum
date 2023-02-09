@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Swollball.Upgrades;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,28 +28,25 @@ namespace Swollball
             if (tp != null)
             {
                 tp.Ball.Color = 11745079;
-                tp.Ball.AddUpgrade(new Upgrades.SizeWhenHp(2, 0, "TestGiant"));
-                tp.Ball.AddUpgrade(new Upgrades.DamageWhenArmor(2, 0, "TestBulwark"));
-                tp.Ball.AddUpgrade(new Upgrades.HpWhenDamageDone(5, 0, "TestFeast"));
-                tp.Ball.AddUpgrade(new Upgrades.ArmorWhenHit(4, 0, "TestHarden"));
+                tp.Ball.AddUpgrade(new Upgrades.SizeWhenHp(1, 0, "TestGiant"));
+                tp.Ball.AddUpgrade(new Upgrades.DamageWhenArmor(1, 0, "TestBulwark"));
+                tp.Ball.AddUpgrade(new Upgrades.HpWhenDamageDone(1, 0, "TestFeast"));
+                tp.Ball.AddUpgrade(new Upgrades.ArmorWhenHit(1, 0, "TestHarden"));
                 tp.Ball.AddUpgrade(new Upgrades.Hp(25, 0, "TESTUPGRADE"));
-                tp.Ball.SizeMultiplier = 350;
+                tp.Ball.SizeMultiplier = 150;
                 tp.Economy.CreditsLeft = 99;
             }
-            /*
-            var tp2 = this.CreatePlayer("S", "YAYA");
-            tp2.Ball.Color = 11045079;
-            tp2.Ball.Dmg = 20;
-            tp2.Ball.SpeedMultiplier = 400;
-            tp2.Ball.SizeMultiplier = 400;
-            var tp3 = this.CreatePlayer("LCBAT", "BARA");
-            tp3.Ball.Color = 01745079;
-            tp3.Ball.SizeMultiplier = 500;
-            tp3.Ball.SpeedMultiplier = 500; */
 
-            this.CreateAutomatedPlayer();
-            this.CreateAutomatedPlayer();
-            this.CreateAutomatedPlayer();
+            this.CreateAutomatedPlayer(UpgradeScores.ArmorSustain, TierUpStrategy.Never, "AS0");
+            this.CreateAutomatedPlayer(UpgradeScores.ArmorBulwarker, TierUpStrategy.Never, "AB0");
+            this.CreateAutomatedPlayer(UpgradeScores.DamageSustain, TierUpStrategy.Never, "DS0");
+            this.CreateAutomatedPlayer(UpgradeScores.Random, TierUpStrategy.Never, "RNG");
+            this.CreateAutomatedPlayer(UpgradeScores.ArmorSustain, TierUpStrategy.Sometimes, "AS1");
+            this.CreateAutomatedPlayer(UpgradeScores.ArmorBulwarker, TierUpStrategy.Sometimes, "AB1");
+            this.CreateAutomatedPlayer(UpgradeScores.DamageSustain, TierUpStrategy.Sometimes, "DS1");
+            this.CreateAutomatedPlayer(UpgradeScores.ArmorSustain, TierUpStrategy.Always, "AS2");
+            this.CreateAutomatedPlayer(UpgradeScores.ArmorBulwarker, TierUpStrategy.Always, "AB2");
+            this.CreateAutomatedPlayer(UpgradeScores.DamageSustain, TierUpStrategy.Always, "DS2");
 #endif
         }
 
@@ -62,12 +60,59 @@ namespace Swollball
 
         private static Random rng = new Random();
 
-        internal Player? CreateAutomatedPlayer()
+        internal Player? CreateAutomatedPlayer(Func<IUpgrade, int>? implementedStrat, Func<Player, int>? tierUpStrat, string postFix)
         {
-            var i = rng.Next(BotNames.Count); 
-            var playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1);
+            var i = rng.Next(BotNames.Count);
 
-            var newPlayer = new AutomatedPlayer(playerName, this.RoomId);
+            if (implementedStrat == null)
+            {
+                var strat = rng.Next(4);
+                switch (strat)
+                {
+                    case 0:
+                        implementedStrat = UpgradeScores.ArmorBulwarker;
+                        postFix += "AB";
+                        break;
+                    case 1:
+                        implementedStrat = UpgradeScores.ArmorSustain;
+                        postFix += "AS";
+                        break;
+                    case 2:
+                        implementedStrat = UpgradeScores.DamageSustain;
+                        postFix += "DS";
+                        break;
+                    default:
+                        implementedStrat = UpgradeScores.Random;
+                        postFix += "RAN";
+                        break;
+                }
+            }
+
+            if (tierUpStrat == null)
+            {
+                var tierUpPriority = rng.Next(3);
+                switch (tierUpPriority)
+                {
+                    case 0:
+                        tierUpStrat = TierUpStrategy.Never;
+                        postFix += "0";
+                        break;
+                    case 1:
+                        tierUpStrat = TierUpStrategy.Sometimes;
+                        postFix += "1";
+                        break;
+                    case 2:
+                        tierUpStrat = TierUpStrategy.Always;
+                        postFix += "2";
+                        break;
+                    default:
+                        tierUpStrat = TierUpStrategy.Never;
+                        break;
+                }
+            }
+
+            var playerName = BotNames[i] + (this.Players.Count() + 1) + postFix;
+            var newPlayer = new StrategyImplementingBot(playerName, this.RoomId, implementedStrat, tierUpStrat);
 
             // Assign the bot a random color
             newPlayer.Ball.Color = rng.Next(0xFFFFFF);

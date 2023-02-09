@@ -1,0 +1,53 @@
+﻿@page
+@model Dumdum.Pages.SwollballInsightModel
+
+RoomId: @Model.Room.RoomId
+<br />
+
+@{        
+    <table border="1">
+        <th>Name</th>
+        <th>Armor</th>
+        <th>Damage</th>
+        <th>Hp</th>
+        <th>Size</th>
+        <th>Speed</th>
+        <th>Tier</th>
+        <th>Points</th>
+        <th>Upgrades</th>
+    @foreach(var player in Model.Room.Players.Values)
+    {
+            <tr>
+                <th>@player.Name</th>
+                <th>@player.Ball.Armor</th>
+                <th>@player.Ball.Dmg</th>
+                <th>@player.Ball.Hp</th>
+                <th>@player.Ball.SizeMultiplier</th>
+                <th>@player.Ball.SpeedMultiplier</th>
+                <th>@player.Economy.ShopTier</th>
+                <th>@player.PlayerScore.PointsLeft</th>
+                <th>@player.Ball.UpgradeDisplayInfo</th>
+            </tr>
+            <tr>
+            </tr>
+    }
+    <tr><th colspan="5">DEAD PLAYERS</th></tr>
+    @foreach(var player in Model.Room.DeadPlayers)
+    {
+            <tr>
+                <th>@player.Name</th>
+                <th>@player.Ball.Armor</th>
+                <th>@player.Ball.Dmg</th>
+                <th>@player.Ball.Hp</th>
+                <th>@player.Ball.SizeMultiplier</th>
+                <th>@player.Ball.SpeedMultiplier</th>
+                <th>@player.Economy.ShopTier</th>
+                <th>@player.PlayerScore.PointsLeft</th>
+                <th>@player.Ball.UpgradeDisplayInfo</th>
+            </tr>
+            <tr>
+            </tr>
+    }
+    </table>
+    <br />
+}
