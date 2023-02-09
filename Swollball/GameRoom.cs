@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Swollball.Upgrades;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,14 +37,16 @@ namespace Swollball
                 tp.Economy.CreditsLeft = 99;
             }
 
-            this.CreateAutomatedPlayer(0);
-            this.CreateAutomatedPlayer(1);
-            this.CreateAutomatedPlayer(3);
-            this.CreateAutomatedPlayer(4);
-            this.CreateAutomatedPlayer(6);
-            this.CreateAutomatedPlayer(7);
-            this.CreateAutomatedPlayer(9);
-            this.CreateAutomatedPlayer(10);
+            this.CreateAutomatedPlayer(UpgradeScores.ArmorSustain, TierUpStrategy.Never, "AS0");
+            this.CreateAutomatedPlayer(UpgradeScores.ArmorBulwarker, TierUpStrategy.Never, "AB0");
+            this.CreateAutomatedPlayer(UpgradeScores.DamageSustain, TierUpStrategy.Never, "DS0");
+            this.CreateAutomatedPlayer(UpgradeScores.Random, TierUpStrategy.Never, "RNG");
+            this.CreateAutomatedPlayer(UpgradeScores.ArmorSustain, TierUpStrategy.Sometimes, "AS1");
+            this.CreateAutomatedPlayer(UpgradeScores.ArmorBulwarker, TierUpStrategy.Sometimes, "AB1");
+            this.CreateAutomatedPlayer(UpgradeScores.DamageSustain, TierUpStrategy.Sometimes, "DS1");
+            this.CreateAutomatedPlayer(UpgradeScores.ArmorSustain, TierUpStrategy.Always, "AS2");
+            this.CreateAutomatedPlayer(UpgradeScores.ArmorBulwarker, TierUpStrategy.Always, "AB2");
+            this.CreateAutomatedPlayer(UpgradeScores.DamageSustain, TierUpStrategy.Always, "DS2");
 #endif
         }
 
@@ -57,69 +60,59 @@ namespace Swollball
 
         private static Random rng = new Random();
 
-        internal Player? CreateAutomatedPlayer(int botStrat = -1)
+        internal Player? CreateAutomatedPlayer(Func<IUpgrade, int>? implementedStrat, Func<Player, int>? tierUpStrat, string postFix)
         {
             var i = rng.Next(BotNames.Count);
 
-            Player newPlayer;
-            string playerName;
-            if (botStrat < 0) { botStrat = rng.Next(12); }
-            switch (botStrat)
+            if (implementedStrat == null)
             {
-                case 0:
-                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1) + "A";
-                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.Random, TierUpStrategy.WhenRich);
-                    break;
-                case 1:
-                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1) + "B";
-                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.Random, TierUpStrategy.Sometimes);
-                    break;
-                case 2:
-                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1) + "C";
-                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.Random, TierUpStrategy.Always);
-                    break;
-                case 3:
-                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1) + "D";
-                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.ArmorBulwarker, TierUpStrategy.WhenRich);
-                    break;
-                case 4:
-                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1) + "E";
-                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.ArmorBulwarker, TierUpStrategy.Sometimes);
-                    break;
-                case 5:
-                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1) + "F";
-                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.ArmorBulwarker, TierUpStrategy.Always);
-                    break;
-                case 6:
-                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1) + "G";
-                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.ArmorSustain, TierUpStrategy.WhenRich);
-                    break;
-                case 7:
-                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1) + "H";
-                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.ArmorSustain, TierUpStrategy.Sometimes);
-                    break;
-                case 8:
-                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1) + "I";
-                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.ArmorSustain, TierUpStrategy.Always);
-                    break;
-                case 9:
-                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1) + "J";
-                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.DamageSustain, TierUpStrategy.WhenRich);
-                    break;
-                case 10:
-                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1) + "K";
-                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.DamageSustain, TierUpStrategy.Sometimes);
-                    break;
-                case 11:
-                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1) + "L";
-                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.DamageSustain, TierUpStrategy.Always);
-                    break;
-                default:
-                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1);
-                    newPlayer = new RandomCheatingBot(playerName, this.RoomId); // For the cheating bot
-                    break;
-
+                var strat = rng.Next(4);
+                switch (strat)
+                {
+                    case 0:
+                        implementedStrat = UpgradeScores.ArmorBulwarker;
+                        postFix += "AB";
+                        break;
+                    case 1:
+                        implementedStrat = UpgradeScores.ArmorSustain;
+                        postFix += "AS";
+                        break;
+                    case 2:
+                        implementedStrat = UpgradeScores.DamageSustain;
+                        postFix += "DS";
+                        break;
+                    default:
+                        implementedStrat = UpgradeScores.Random;
+                        postFix += "RAN";
+                        break;
+                }
             }
+
+            if (tierUpStrat == null)
+            {
+                var tierUpPriority = rng.Next(3);
+                switch (tierUpPriority)
+                {
+                    case 0:
+                        tierUpStrat = TierUpStrategy.Never;
+                        postFix += "0";
+                        break;
+                    case 1:
+                        tierUpStrat = TierUpStrategy.Sometimes;
+                        postFix += "1";
+                        break;
+                    case 2:
+                        tierUpStrat = TierUpStrategy.Always;
+                        postFix += "2";
+                        break;
+                    default:
+                        tierUpStrat = TierUpStrategy.Never;
+                        break;
+                }
+            }
+
+            var playerName = BotNames[i] + (this.Players.Count() + 1) + postFix;
+            var newPlayer = new StrategyImplementingBot(playerName, this.RoomId, implementedStrat, tierUpStrat);
 
             // Assign the bot a random color
             newPlayer.Ball.Color = rng.Next(0xFFFFFF);

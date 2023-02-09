@@ -16,28 +16,28 @@ namespace Swollball
 
         private static Dictionary<string, int> ArmorScores = new Dictionary<string, int>()
         {
-            { "Apple", 1 },
-            { "Bulwark", 3 },
-            { "Vanguard", 7 },
-            { "Banana", 5 },
-            { "Ketones", 6 },
+            { UpgradeFactory.Names.Apple, 1 },
+            { UpgradeFactory.Names.Bulwark, 3 },
+            { UpgradeFactory.Names.Vanguard, 7 },
+            { UpgradeFactory.Names.Banana, 5 },
+            { UpgradeFactory.Names.Ketones, 6 },
         };
 
         private static Dictionary<string, int> FlatDamageScores = new Dictionary<string, int>()
         {
-            { "Tofu", 1 },
-            { "Bacon", 2 },
-            { "Wagyu", 3 },
+            { UpgradeFactory.Names.Tofu, 1 },
+            { UpgradeFactory.Names.Bacon, 2 },
+            { UpgradeFactory.Names.Wagyu, 3 },
         };
 
         private static Dictionary<string, int> SustainScores = new Dictionary<string, int>()
         {
-            { "Brocolli", 1 },
-            { "BROcolli", 3 },
-            { "Feast", 4 },
-            { "Harden", 5 },
-            { "Reinforce", 8 },
-            { "Siphon", 9 },
+            { UpgradeFactory.Names.Brocolli, 1 },
+            { UpgradeFactory.Names.BROcolli, 3 },
+            { UpgradeFactory.Names.Feast, 4 },
+            { UpgradeFactory.Names.Harden, 5 },
+            { UpgradeFactory.Names.Reinforce, 8 },
+            { UpgradeFactory.Names.Siphon, 9 },
         };
 
         /// <summary>
