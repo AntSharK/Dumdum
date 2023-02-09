@@ -38,12 +38,12 @@ namespace Swollball
 
             this.CreateAutomatedPlayer(0);
             this.CreateAutomatedPlayer(1);
-            this.CreateAutomatedPlayer(2);
             this.CreateAutomatedPlayer(3);
             this.CreateAutomatedPlayer(4);
-            this.CreateAutomatedPlayer(5);
             this.CreateAutomatedPlayer(6);
             this.CreateAutomatedPlayer(7);
+            this.CreateAutomatedPlayer(9);
+            this.CreateAutomatedPlayer(10);
 #endif
         }
 
@@ -63,40 +63,56 @@ namespace Swollball
 
             Player newPlayer;
             string playerName;
-            if (botStrat <= 0) { botStrat = rng.Next(8); }
+            if (botStrat <= 0) { botStrat = rng.Next(12); }
             switch (botStrat)
             {
                 case 0:
-                    playerName = BotNames[i] + "ABOT" + (this.Players.Count() + 1);
+                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1) + "A";
                     newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.Random, TierUpStrategy.WhenRich);
                     break;
                 case 1:
-                    playerName = BotNames[i] + "BBOT" + (this.Players.Count() + 1);
-                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.Random, TierUpStrategy.Always);
+                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1) + "B";
+                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.Random, TierUpStrategy.Sometimes);
                     break;
                 case 2:
-                    playerName = BotNames[i] + "CBOT" + (this.Players.Count() + 1);
-                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.ArmorBulwarker, TierUpStrategy.WhenRich);
+                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1) + "C";
+                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.Random, TierUpStrategy.Always);
                     break;
                 case 3:
-                    playerName = BotNames[i] + "DBOT" + (this.Players.Count() + 1);
-                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.ArmorBulwarker, TierUpStrategy.Always);
+                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1) + "D";
+                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.ArmorBulwarker, TierUpStrategy.WhenRich);
                     break;
                 case 4:
-                    playerName = BotNames[i] + "EBOT" + (this.Players.Count() + 1);
-                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.DamageSustain, TierUpStrategy.WhenRich);
+                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1) + "E";
+                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.ArmorBulwarker, TierUpStrategy.Sometimes);
                     break;
                 case 5:
-                    playerName = BotNames[i] + "FBOT" + (this.Players.Count() + 1);
-                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.DamageSustain, TierUpStrategy.Always);
+                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1) + "F";
+                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.ArmorBulwarker, TierUpStrategy.Always);
                     break;
                 case 6:
-                    playerName = BotNames[i] + "GBOT" + (this.Players.Count() + 1);
+                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1) + "G";
                     newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.ArmorSustain, TierUpStrategy.WhenRich);
                     break;
                 case 7:
-                    playerName = BotNames[i] + "HBOT" + (this.Players.Count() + 1);
+                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1) + "H";
+                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.ArmorSustain, TierUpStrategy.Sometimes);
+                    break;
+                case 8:
+                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1) + "I";
                     newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.ArmorSustain, TierUpStrategy.Always);
+                    break;
+                case 9:
+                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1) + "J";
+                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.DamageSustain, TierUpStrategy.WhenRich);
+                    break;
+                case 10:
+                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1) + "K";
+                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.DamageSustain, TierUpStrategy.Sometimes);
+                    break;
+                case 11:
+                    playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1) + "L";
+                    newPlayer = new StrategyImplementingBot(playerName, this.RoomId, UpgradeScores.DamageSustain, TierUpStrategy.Always);
                     break;
                 default:
                     playerName = BotNames[i] + "BOT" + (this.Players.Count() + 1);
