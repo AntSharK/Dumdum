@@ -63,7 +63,7 @@ namespace Swollball
 
             Player newPlayer;
             string playerName;
-            if (botStrat <= 0) { botStrat = rng.Next(12); }
+            if (botStrat < 0) { botStrat = rng.Next(12); }
             switch (botStrat)
             {
                 case 0:
