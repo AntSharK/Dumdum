@@ -95,9 +95,10 @@ var UpdatePlayerList = function (players) {
         var kickbutton = document.createElement("input");
         kickbutton.type = "button";
         kickbutton.value = "BOOT";
+        kickbutton.playername = player.name;
         kickbutton.addEventListener("click", function (event) {
             var sessionRoomId = sessionStorage.getItem(RoomIdSessionStorageKey);
-            connection.invoke("KickPlayer", sessionRoomId, player.name).catch(function (err) {
+            connection.invoke("KickPlayer", sessionRoomId, this.playername).catch(function (err) {
                 return console.error(err.toString());
             });
             event.preventDefault()
