@@ -152,7 +152,7 @@ namespace Swollball.Upgrades
             return array;
         }
 
-        public static void FillShop(Dictionary<string, IUpgrade> currentUpgrades, int shopSize, int shopTier, bool replaceBlankCards)
+        public static Dictionary<string, IUpgrade> FillShop(Dictionary<string, IUpgrade> currentUpgrades, int shopSize, int shopTier, bool replaceBlankCards)
         {
             Func<IUpgrade>[] cardGenerator;
             switch (shopTier)
@@ -183,16 +183,25 @@ namespace Swollball.Upgrades
 
             if (replaceBlankCards)
             {
+                var replacementDeck = new Dictionary<string, IUpgrade>();
                 foreach (var card in currentUpgrades.Values)
                 {
-                    if (card == BlankUpgrade.Instance.First())
+                    if (card.UpgradeName == string.Empty)
                     {
                         var rng = Rng.Next(cardGenerator.Count());
                         var generatedUpgrade = cardGenerator[rng]();
-                        currentUpgrades[card.ServerId] = generatedUpgrade;
+                        replacementDeck[generatedUpgrade.ServerId] = generatedUpgrade;
+                    }
+                    else
+                    {
+                        replacementDeck[card.ServerId] = card;
                     }
                 }
+
+                return replacementDeck;
             }
+
+            return currentUpgrades;
         }
 
         // Test stuff

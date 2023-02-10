@@ -124,7 +124,7 @@ namespace Swollball
 
         private void FillShop(bool replaceBlankCards)
         {
-            UpgradeFactory.FillShop(this.CurrentUpgrades, this.Economy.ShopSize, this.Economy.ShopTier, replaceBlankCards);
+            this.CurrentUpgrades = UpgradeFactory.FillShop(this.CurrentUpgrades, this.Economy.ShopSize, this.Economy.ShopTier, replaceBlankCards);
         }
 
         public virtual void StartNextRound()
