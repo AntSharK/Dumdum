@@ -19,9 +19,27 @@ namespace Swollball.Upgrades
         public int FillColor { get; }
         public int Cost { get; }
         public HashSet<string> Tags { get; }
-        public void PerformUpgrade(Player player);
+
+        /// <summary>
+        /// Performs the current upgrade
+        /// </summary>
+        void PerformUpgrade(Player player);
+
+        /// <summary>
+        /// Applies before an upgrade is applied
+        /// Can be used to hold values about pre-upgrade stats
+        /// </summary>
         void BeforeUpgrade(Player player);
+
+        /// <summary>
+        /// Applies after an upgrade is applied
+        /// This is applied in order - so upgrades bought earlier can modify stats for later upgrades
+        /// </summary>
         void AfterUpgrade(Player player);
+
+        /// <summary>
+        /// Applies just before the next round begins - when new credits are issued
+        /// </summary>
         void StartNextRound(Player player);
     }
 }
