@@ -33,7 +33,7 @@ namespace Swollball
             this.Economy.ShopTier = 1;
 #endif
 
-            this.FillShop();
+            this.FillShop(false /*Don't replace blank cards*/);
         }
 
         public bool SellUpgrade(string upgradeId)
@@ -48,7 +48,7 @@ namespace Swollball
             this.Ball.RemoveUpgrade(upgradeToSell);
             if (this.Economy.CreditsLeft > 0)
             {
-                this.FillShop();
+                this.FillShop(false /*Don't replace blank cards*/);
             }
 
             return true;
@@ -81,13 +81,9 @@ namespace Swollball
                     }
                 }
 
-                // Current logic - clear the upgrade list, re-generate new ones
+                // Current logic - replace the upgrade with a blank card
                 this.Economy.CreditsLeft -= upgradeToApply.Cost;
-                CurrentUpgrades.Clear();
-                if (this.Economy.CreditsLeft > 0)
-                {
-                    this.FillShop();
-                }
+                CurrentUpgrades[upgradeToApply.ServerId] = BlankUpgrade.Instance.First();
 
                 return true;
             }
@@ -102,7 +98,7 @@ namespace Swollball
             CurrentUpgrades.Clear();
             if (this.Economy.CreditsLeft > 0)
             {
-                this.FillShop();
+                this.FillShop(false /*No need to replace blank cards - they're cleared*/);
             }
         }
 
@@ -126,9 +122,9 @@ namespace Swollball
             return true;
         }
 
-        private void FillShop()
+        private void FillShop(bool replaceBlankCards)
         {
-            UpgradeFactory.FillShop(this.CurrentUpgrades, this.Economy.ShopSize, this.Economy.ShopTier);
+            UpgradeFactory.FillShop(this.CurrentUpgrades, this.Economy.ShopSize, this.Economy.ShopTier, replaceBlankCards);
         }
 
         public virtual void StartNextRound()
@@ -151,7 +147,8 @@ namespace Swollball
             {
                 this.Economy.CreditsLeft = 0;
             }
-            this.FillShop();
+
+            this.FillShop(true /*Replace blank cards*/);
         }
 
         public override int GetHashCode()
