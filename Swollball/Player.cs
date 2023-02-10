@@ -148,7 +148,7 @@ namespace Swollball
                 this.Economy.CreditsLeft = 0;
             }
 
-            this.FillShop(true /*Replace blank cards*/);
+            this.FillShop(false /*Don't replace blank cards - UI can't handle it yet*/);
         }
 
         public override int GetHashCode()
