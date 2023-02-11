@@ -11,6 +11,7 @@ namespace Swollball.Upgrades
         public HpWhenDamageDone(int value, int cost, string name) : base(value, cost, name)
         {
             this.Tags.Add(UpgradeTags.LIFESTEAL);
+            this.Tags.Add(UpgradeTags.HPUPGRADE);
         }
 
         public override string Description => $"In combat, regain {this.UpgradeAmount} HP for every 10 damage dealt.";

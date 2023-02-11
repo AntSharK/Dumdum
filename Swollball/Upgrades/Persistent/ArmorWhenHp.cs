@@ -11,6 +11,7 @@ namespace Swollball.Upgrades
         public ArmorWhenHp(int value, int cost, string name) : base(value, cost, name)
         {
             this.Tags.Add(UpgradeTags.UPGRADEMODIFIER);
+            this.Tags.Add(UpgradeTags.ARMORUPGRADE);
         }
 
         public override string Description => $"Armor+{this.UpgradeAmount} whenever you gain 10 HP.";

@@ -11,6 +11,7 @@ namespace Swollball.Upgrades
         public CreditsWhenDamageDone(int value, int cost, string name) : base(value, cost, name)
         {
             this.Tags.Add(UpgradeTags.ONTURNSTART);
+            this.Tags.Add(UpgradeTags.CASHUPGRADE);
         }
 
         public override string Description => $"Gain {this.UpgradeAmount} credits per round for every 100 damage done.";

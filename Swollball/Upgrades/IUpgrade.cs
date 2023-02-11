@@ -18,15 +18,21 @@ namespace Swollball.Upgrades
         public int BorderColor { get; }
         public int FillColor { get; }
         public int Cost { get; }
+        public int Duration { get; set; }
         public HashSet<string> Tags { get; }
 
         /// <summary>
-        /// Performs the current upgrade
+        /// Applies before an upgrade is applied
         /// </summary>
         void PerformUpgrade(Player player);
 
         /// <summary>
-        /// Applies before an upgrade is applied
+        /// Action performed when the upgrade is removed
+        /// </summary>
+        void RemoveUpgrade(Player player);
+
+        /// <summary>
+        /// Action performed before an upgrade is applied
         /// Can be used to hold values about pre-upgrade stats
         /// </summary>
         void BeforeUpgrade(Player player);

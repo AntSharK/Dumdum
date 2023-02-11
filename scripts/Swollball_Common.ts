@@ -100,6 +100,7 @@ function ParseUpgradeData(data: any): ServerUpgradeData{
     serverData.FillColor = data.fillColor;
     serverData.Cost = data.cost;
     serverData.Tags = data.tags;
+    serverData.Duration = data.duration;
 
     return serverData;
 }
@@ -159,6 +160,7 @@ class ServerUpgradeData {
     BorderColor: number;
     FillColor: number;
     Cost: integer;
+    Duration: integer;
     Tags: string[];
 }
 

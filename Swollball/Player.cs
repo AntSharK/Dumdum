@@ -148,6 +148,16 @@ namespace Swollball
                 this.Economy.CreditsLeft = 0;
             }
 
+            // Remove upgrades
+            foreach (var upgrade in this.Ball.GetUpgradesByTag(UpgradeTags.TEMPORARY))
+            {
+                upgrade.Duration--;
+                if (upgrade.Duration <= 0)
+                {
+                    upgrade.RemoveUpgrade(this);
+                }
+            }
+            
             this.FillShop(false /*Don't replace blank cards - UI can't handle it yet*/);
         }
 

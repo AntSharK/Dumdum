@@ -11,6 +11,7 @@ namespace Swollball.Upgrades
         public ArmorWhenHit(int value, int cost, string name) : base(value, cost, name)
         {
             this.Tags.Add(UpgradeTags.REINFORCE);
+            this.Tags.Add(UpgradeTags.ARMORUPGRADE);
         }
 
         public override string Description => $"In combat, gain {this.UpgradeAmount} armor for the round when you get hit";

@@ -24,6 +24,8 @@ namespace Swollball.Upgrades
 
         public HashSet<string> Tags { get; set; } = new HashSet<string>();
 
+        public int Duration { get; set; } = -1;
+
         public BaseUpgrade(int amount, int cost, string name)
         {
             this.UpgradeAmount = amount;
@@ -34,6 +36,11 @@ namespace Swollball.Upgrades
         public virtual void PerformUpgrade(Player player)
         {
             player.Ball.AddUpgrade(this);
+        }
+
+        public virtual void RemoveUpgrade(Player player)
+        {
+            player.SellUpgrade(this.ServerId);
         }
 
         public virtual void BeforeUpgrade(Player player)

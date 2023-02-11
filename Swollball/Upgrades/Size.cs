@@ -10,6 +10,7 @@ namespace Swollball.Upgrades
     {
         public Size(int value, int cost, string name) : base(value, cost, name)
         {
+            this.Tags.Add(UpgradeTags.SIZEUPGRADE);
         }
 
         public override string Description => $"Size+{this.UpgradeAmount}";

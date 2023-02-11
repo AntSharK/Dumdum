@@ -10,6 +10,7 @@ namespace Swollball.Upgrades
     {
         public Damage(int value, int cost, string name) : base(value, cost, name)
         {
+            this.Tags.Add(UpgradeTags.DAMAGEUPGRADE);
         }
 
         public override string Description => $"Damage+{this.UpgradeAmount}";
