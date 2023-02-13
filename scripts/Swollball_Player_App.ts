@@ -393,6 +393,12 @@ class BallUpgrades extends Phaser.Scene {
         UpgradeData = [];
         this.readyToUpdateUpgrades = true;
 
+        // Set the upgrade to be invisible until server updates
+        upgrade.Description?.setVisible(false);
+        upgrade.Title?.setVisible(false);
+        upgrade.CardBackground?.setVisible(false);
+        upgrade.Cost?.setVisible(false);
+
         connection.invoke("ChooseUpgrade", upgrade.Upgrade.ServerId, sessionUserId, sessionRoomId).catch(function (err) {
             return console.error(err.toString());
         });

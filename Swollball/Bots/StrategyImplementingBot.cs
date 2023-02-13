@@ -24,8 +24,8 @@ namespace Swollball
 
         private void BuyUpgrades()
         {
-            // DO AI THINGS - Just buy random upgrades
-            while (this.CurrentUpgrades.Count > 0)
+            // DO AI THINGS
+            while (this.Economy.CreditsLeft > 0)
             {
                 var upgradeScores = this.GetUpgradeScores(this.CurrentUpgrades);
                 var maxUpgradeScore = -1;
@@ -56,6 +56,11 @@ namespace Swollball
                     return;
                 }
 
+                if (bestUpgrade.UpgradeName == String.Empty)
+                {
+                    this.RefreshShop();
+                }
+
                 var upgradeId = bestUpgrade.ServerId;
                 if (!this.ApplyUpgrade(upgradeId)) // Avoid infinite loops when unable to buy upgrades
                 {
@@ -68,6 +73,12 @@ namespace Swollball
         {
             foreach (var upgrade in currentUpgrades.Values)
             {
+                // The blank upgrade is worth -999
+                if (upgrade.UpgradeName == String.Empty)
+                {
+                    yield return new Tuple<IUpgrade, int>(upgrade, -999);
+                }
+
                 var upgradeScore = this.GetUpgradeScore(upgrade);
                 yield return new Tuple<IUpgrade, int>(upgrade, upgradeScore);
             }

@@ -28,9 +28,16 @@ namespace Swollball
         private void BuyRandomUpgrades()
         {
             // DO AI THINGS - Just buy random upgrades
-            while (this.CurrentUpgrades.Count > 0)
+            while (this.Economy.CreditsLeft > 0)
             {
-                var upgradeId = this.CurrentUpgrades.Keys.First();
+                var upgradeToApply = this.CurrentUpgrades.Values.First();
+                if (upgradeToApply.UpgradeName == string.Empty)
+                {
+                    this.RefreshShop();
+                }
+
+                var upgradeId = upgradeToApply.ServerId;
+
                 if (!this.ApplyUpgrade(upgradeId)) // Avoid infinite loops when unable to buy upgrades
                 {
                     this.RefreshShop();
