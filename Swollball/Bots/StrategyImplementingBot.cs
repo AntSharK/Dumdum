@@ -24,8 +24,8 @@ namespace Swollball
 
         private void BuyUpgrades()
         {
-            // DO AI THINGS - Just buy random upgrades
-            while (this.CurrentUpgrades.Count > 0)
+            // DO AI THINGS
+            while (this.Economy.CreditsLeft > 0)
             {
                 var upgradeScores = this.GetUpgradeScores(this.CurrentUpgrades);
                 var maxUpgradeScore = -1;
@@ -54,6 +54,11 @@ namespace Swollball
                 {
                     this.RefreshShop();
                     return;
+                }
+
+                if (bestUpgrade.UpgradeName == String.Empty)
+                {
+                    this.RefreshShop();
                 }
 
                 var upgradeId = bestUpgrade.ServerId;
