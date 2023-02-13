@@ -44,9 +44,9 @@ namespace Swollball
             this.CreateAutomatedPlayer(UpgradeScores.ArmorSustain, TierUpStrategy.Sometimes, "AS1");
             this.CreateAutomatedPlayer(UpgradeScores.ArmorBulwarker, TierUpStrategy.Sometimes, "AB1");
             this.CreateAutomatedPlayer(UpgradeScores.DamageSustain, TierUpStrategy.Sometimes, "DS1");
-            this.CreateAutomatedPlayer(UpgradeScores.ArmorSustain, TierUpStrategy.Always, "AS2");
-            this.CreateAutomatedPlayer(UpgradeScores.ArmorBulwarker, TierUpStrategy.Always, "AB2");
-            this.CreateAutomatedPlayer(UpgradeScores.DamageSustain, TierUpStrategy.Always, "DS2");
+            this.CreateAutomatedPlayer(UpgradeScores.ArmorSustain, TierUpStrategy.WhenRich, "AS2");
+            this.CreateAutomatedPlayer(UpgradeScores.ArmorBulwarker, TierUpStrategy.WhenRich, "AB2");
+            this.CreateAutomatedPlayer(UpgradeScores.DamageSustain, TierUpStrategy.WhenRich, "DS2");
 #endif
         }
 

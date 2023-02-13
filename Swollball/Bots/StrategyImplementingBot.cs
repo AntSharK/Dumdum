@@ -68,6 +68,12 @@ namespace Swollball
         {
             foreach (var upgrade in currentUpgrades.Values)
             {
+                // The blank upgrade is worth -999
+                if (upgrade.UpgradeName == String.Empty)
+                {
+                    yield return new Tuple<IUpgrade, int>(upgrade, -999);
+                }
+
                 var upgradeScore = this.GetUpgradeScore(upgrade);
                 yield return new Tuple<IUpgrade, int>(upgrade, upgradeScore);
             }

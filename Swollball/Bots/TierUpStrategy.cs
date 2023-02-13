@@ -16,7 +16,7 @@ namespace Swollball
 
         public static int Sometimes(Player p)
         {
-            return 10;
+            return 5;
         }
 
         public static int Always(Player p)
