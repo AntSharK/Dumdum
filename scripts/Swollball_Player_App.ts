@@ -105,7 +105,6 @@ function LoadCardImages(scene: Phaser.Scene) {
 
 class BallUpgrades extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
-    readyToUpdateUpgrades: boolean;
     upgradeCards: UpgradeCard[];
 
     creditsLeft: Phaser.GameObjects.Text;
@@ -115,6 +114,7 @@ class BallUpgrades extends Phaser.Scene {
 
     upgradeTierCost: Phaser.GameObjects.Text;
     upgradeTierButton: Phaser.GameObjects.Sprite;
+    lastUpgradeUpdateTime: number;
 
     preload() {
         // Loading progress updates
@@ -136,7 +136,7 @@ class BallUpgrades extends Phaser.Scene {
 
     constructor() {
         super({ key: 'BallUpgrades', active: true, visible: true });
-        this.readyToUpdateUpgrades = true;
+        this.lastUpgradeUpdateTime = 0;
         this.upgradeCards = [];
     }
 
@@ -213,9 +213,9 @@ class BallUpgrades extends Phaser.Scene {
             }
         }
 
-        if (this.readyToUpdateUpgrades == true
+        if (this.lastUpgradeUpdateTime < UpgradeUpdateTime
             && UpgradeData.length > 0) {
-            this.readyToUpdateUpgrades = false;
+            this.lastUpgradeUpdateTime = Date.now();
             for (let upgradeCard of this.upgradeCards) {
                 DestroyCard(upgradeCard);
             }
@@ -236,9 +236,7 @@ class BallUpgrades extends Phaser.Scene {
             // If there are no actionable cards, clear the card list
             if (!hasActionableCards) {
                 this.upgradeCards = [];
-                this.readyToUpdateUpgrades = true;
             }
-
         }
     }
     // Creates the upgrade cards with a variable arrangement depending on how many cards there are
@@ -315,7 +313,7 @@ class BallUpgrades extends Phaser.Scene {
         var ballScene = gameObject.scene as BallUpgrades;
 
         // Check for clicking upgrade cards
-        if (upgrade.Upgrade != undefined && ballScene.readyToUpdateUpgrades != undefined) {
+        if (upgrade.Upgrade != undefined && ballScene.lastUpgradeUpdateTime != undefined) {
             ballScene.onUpgradeClicked(upgrade);
             return;
         }
@@ -346,7 +344,6 @@ class BallUpgrades extends Phaser.Scene {
         // Prepare for the next update of upgrades - clear the update list
         EconomyData.CreditsWereSpent = true;
         UpgradeData = [];
-        this.readyToUpdateUpgrades = true;
 
         connection.invoke("RefreshShop", sessionUserId, sessionRoomId).catch(function (err) {
             return console.error(err.toString());
@@ -365,7 +362,6 @@ class BallUpgrades extends Phaser.Scene {
 
         // Prepare for the next update of upgrades - clear the update list
         UpgradeData = [];
-        this.readyToUpdateUpgrades = true;
 
         connection.invoke("TierUp", sessionUserId, sessionRoomId).catch(function (err) {
             return console.error(err.toString());
@@ -391,7 +387,6 @@ class BallUpgrades extends Phaser.Scene {
 
         // Prepare for the next update of upgrades - clear the update list
         UpgradeData = [];
-        this.readyToUpdateUpgrades = true;
 
         // Set the upgrade to be invisible until server updates
         upgrade.Description?.setVisible(false);
