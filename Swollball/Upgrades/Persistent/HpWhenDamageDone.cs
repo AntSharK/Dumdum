@@ -8,13 +8,13 @@ namespace Swollball.Upgrades
 {
     public class HpWhenDamageDone : BasePersistentUpgrade
     {
-        public HpWhenDamageDone(int value, int cost, string name) : base(value, cost, name)
+        public HpWhenDamageDone(int value, int cost, string name, int duration) : base(value, cost, name, duration)
         {
             this.Tags.Add(UpgradeTags.LIFESTEAL);
             this.Tags.Add(UpgradeTags.HPUPGRADE);
         }
 
-        public override string Description => $"In combat, regain {this.UpgradeAmount} HP for every 10 damage dealt.";
+        public override string Description => $"Regain {this.UpgradeAmount} HP for every 10 damage dealt.";
 
         public override int BorderColor => 16711748; // FF0044
         public override int FillColor => 12369084; // BCBCBC

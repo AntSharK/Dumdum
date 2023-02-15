@@ -8,7 +8,7 @@ namespace Swollball.Upgrades
 {
     public class DamageWhenSpeed : BasePersistentUpgrade
     {
-        public DamageWhenSpeed(int value, int cost, string name) : base(value, cost, name)
+        public DamageWhenSpeed(int value, int cost, string name, int duration) : base(value, cost, name, duration)
         {
             this.Tags.Add(UpgradeTags.UPGRADEMODIFIER);
             this.Tags.Add(UpgradeTags.DAMAGEUPGRADE);

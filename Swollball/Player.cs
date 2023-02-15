@@ -27,7 +27,7 @@ namespace Swollball
             this.RoomId = roomName;
             this.PlayerScore = new Score(this.Name);
             this.Ball = new Ball(this.Name);
-            this.Ball.AddUpgrade(new CreditsWhenDamageDone(1, 5, "Payday")); // Start with a free payday upgrade
+            this.Ball.AddUpgrade(new CreditsWhenDamageDone(1, 5, "Payday", 9)); // Start with a free payday upgrade
 #if DEBUG
             this.Economy.CreditsLeft = 30;
             this.Economy.ShopTier = 1;

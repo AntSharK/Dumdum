@@ -8,7 +8,7 @@ namespace Swollball.Upgrades
 {
     public class CreditsWhenDamageDone : BasePersistentUpgrade
     {
-        public CreditsWhenDamageDone(int value, int cost, string name) : base(value, cost, name)
+        public CreditsWhenDamageDone(int value, int cost, string name, int duration) : base(value, cost, name, duration)
         {
             this.Tags.Add(UpgradeTags.ONTURNSTART);
             this.Tags.Add(UpgradeTags.CASHUPGRADE);

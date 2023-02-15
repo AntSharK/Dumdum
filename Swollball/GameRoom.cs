@@ -28,10 +28,10 @@ namespace Swollball
             if (tp != null)
             {
                 tp.Ball.Color = 11745079;
-                tp.Ball.AddUpgrade(new Upgrades.SizeWhenHp(1, 0, "TestGiant"));
-                tp.Ball.AddUpgrade(new Upgrades.DamageWhenArmor(1, 0, "TestBulwark"));
-                tp.Ball.AddUpgrade(new Upgrades.HpWhenDamageDone(1, 0, "TestFeast"));
-                tp.Ball.AddUpgrade(new Upgrades.ArmorWhenHit(1, 0, "TestHarden"));
+                tp.Ball.AddUpgrade(new Upgrades.SizeWhenHp(1, 0, "TestGiant", 99));
+                tp.Ball.AddUpgrade(new Upgrades.DamageWhenArmor(1, 0, "TestBulwark", 99));
+                tp.Ball.AddUpgrade(new Upgrades.HpWhenDamageDone(1, 0, "TestFeast", 99));
+                tp.Ball.AddUpgrade(new Upgrades.ArmorWhenHit(1, 0, "TestHarden", 99));
                 tp.Ball.AddUpgrade(new Upgrades.Hp(25, 0, "TESTUPGRADE"));
                 tp.Ball.SizeMultiplier = 150;
                 tp.Economy.CreditsLeft = 99;
