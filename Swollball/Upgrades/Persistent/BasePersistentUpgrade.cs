@@ -16,6 +16,11 @@ namespace Swollball.Upgrades
         {
             this.Duration = duration;
             this.Tags.Add(UpgradeTags.PERSISTENT);
+
+            if (duration > 0)
+            {
+                this.Tags.Add(UpgradeTags.TEMPORARY);
+            }
         }
 
         public override void PerformUpgrade(Player player)
