@@ -64,9 +64,12 @@ namespace Swollball
                 case GameRoom.RoomState.Arena:
                 case GameRoom.RoomState.Leaderboard:
                     // Updates the leaderboard, upgrades, and balls
+                    var upgradesToDisplay = player.Economy.CreditsLeft >= 0 ?
+                        player.CurrentUpgrades.Values : BlankUpgrade.Instance; // If the player has 0 credits, send blank upgrade data
+
                     await Clients.Caller.SendAsync("UpdateState", new Ball[] { player.Ball },
                         new Player.Score[] { player.PlayerScore },
-                        player.CurrentUpgrades.Values, player.Economy,
+                        upgradesToDisplay, player.Economy,
                         "" /*No scene to start on, just start the game*/, null /*No transition*/);
                     break;
                 case GameRoom.RoomState.TearingDown:
