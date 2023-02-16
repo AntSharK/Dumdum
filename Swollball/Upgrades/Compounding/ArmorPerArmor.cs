@@ -13,8 +13,8 @@ namespace Swollball.Upgrades
         }
 
         public override string Description => $"Armor+{this.UpgradeAmount} for every 10 armor you have.";
-        public override int BorderColor => 11184827; // AAAABB
-        public override int FillColor => 15527916; // ECEFEC
+        public override int BorderColor => UpgradeColors.GREEN;
+        public override int FillColor => UpgradeColors.LAVENDER;
 
         public override void PerformUpgrade(Player player)
         {

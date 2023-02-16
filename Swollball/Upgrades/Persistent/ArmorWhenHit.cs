@@ -16,8 +16,8 @@ namespace Swollball.Upgrades
 
         public override string Description => $"Gain {this.UpgradeAmount} armor for the round when you get hit";
 
-        public override int BorderColor => 16755370; // FFAAAA
-        public override int FillColor => 11206655; // AAFFFF
+        public override int BorderColor => UpgradeColors.GREEN;
+        public override int FillColor => UpgradeColors.SKYBLUE;
 
         public override void AfterUpgrade(Player player)
         {

@@ -16,8 +16,8 @@ namespace Swollball.Upgrades
 
         public override string Description => $"Armor+{this.UpgradeAmount} whenever you gain 10 HP.";
 
-        public override int BorderColor => 14527197; // DDAADD
-        public override int FillColor => 14483507; // DD0033
+        public override int BorderColor => UpgradeColors.GREEN;
+        public override int FillColor => UpgradeColors.ROSE;
 
         public override void AfterUpgrade(Player player)
         {

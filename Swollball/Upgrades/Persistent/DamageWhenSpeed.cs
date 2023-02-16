@@ -16,8 +16,8 @@ namespace Swollball.Upgrades
 
         public override string Description => $"Damage+{this.UpgradeAmount} for every 10 speed gained";
 
-        public override int BorderColor => 10092288; // 99FF00
-        public override int FillColor => 11250603; // ABABAB
+        public override int BorderColor => UpgradeColors.BROWN;
+        public override int FillColor => UpgradeColors.SKYBLUE;
 
         public override void AfterUpgrade(Player player)
         {

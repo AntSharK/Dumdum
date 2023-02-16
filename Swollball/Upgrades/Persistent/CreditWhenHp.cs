@@ -14,10 +14,10 @@ namespace Swollball.Upgrades
             this.Tags.Add(UpgradeTags.CASHUPGRADE);
         }
 
-        public override string Description => $"Gain {this.UpgradeAmount} credit when you gain HP.";
+        public override string Description => $"Gain {this.UpgradeAmount} credits when you gain HP.";
 
-        public override int BorderColor => 43775; // 00AAFF
-        public override int FillColor => 11259375; // ABCDEF
+        public override int BorderColor => UpgradeColors.BLACK;
+        public override int FillColor => UpgradeColors.PERIWINKLE;
 
         public override void AfterUpgrade(Player player)
         {

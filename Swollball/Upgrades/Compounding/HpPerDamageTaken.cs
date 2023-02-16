@@ -13,8 +13,8 @@ namespace Swollball.Upgrades
         }
 
         public override string Description => $"HP+{this.UpgradeAmount} for every 10 damage taken last round.";
-        public override int BorderColor => 1157887; // 11AAFF
-        public override int FillColor => 11193565; // AACCDD
+        public override int BorderColor => UpgradeColors.RED;
+        public override int FillColor => UpgradeColors.LAVENDER;
 
         public override void PerformUpgrade(Player player)
         {

@@ -16,8 +16,8 @@ namespace Swollball.Upgrades
 
         public override string Description => $"Gain {this.UpgradeAmount} credits per round for every 100 damage done.";
 
-        public override int BorderColor => 15662848; // EEFF00
-        public override int FillColor => 12237498; // BABABA
+        public override int BorderColor => UpgradeColors.BLACK;
+        public override int FillColor => UpgradeColors.PERIWINKLE;
 
         public override void StartNextRound(Player player)
         {
