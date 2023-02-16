@@ -36,7 +36,7 @@ namespace Swollball
             this.FillShop(false /*Don't replace blank cards*/);
         }
 
-        public bool SellUpgrade(IUpgrade upgradeToSell)
+        public bool SellUpgrade(IUpgrade? upgradeToSell)
         {
             if (upgradeToSell == null)
             {
