@@ -36,9 +36,8 @@ namespace Swollball
             this.FillShop(false /*Don't replace blank cards*/);
         }
 
-        public bool SellUpgrade(string upgradeId)
+        public bool SellUpgrade(IUpgrade upgradeToSell)
         {
-            var upgradeToSell = this.Ball.FindUpgrade(upgradeId);
             if (upgradeToSell == null)
             {
                 return false;
@@ -162,6 +161,7 @@ namespace Swollball
             foreach(var upgrade in upgradesToRemove)
             {
                 upgrade.RemoveUpgrade(this);
+                this.SellUpgrade(upgrade);
             }
             
             this.FillShop(false /*Don't replace blank cards - UI can't handle it yet*/);

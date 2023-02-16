@@ -40,7 +40,7 @@ namespace Swollball.Upgrades
 
         public virtual void RemoveUpgrade(Player player)
         {
-            player.SellUpgrade(this.ServerId);
+            // Do nothing - does not involve selling upgrade
         }
 
         public virtual void BeforeUpgrade(Player player)

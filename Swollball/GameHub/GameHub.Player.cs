@@ -98,7 +98,8 @@ namespace Swollball
             (var player, var room) = await this.FindPlayerAndRoom(userName, roomId);
             if (player == null || room == null) return;
 
-            var upgradeSold = player.SellUpgrade(upgradeId);
+            var upgradeToSell = player.Ball.FindUpgrade(upgradeId);
+            var upgradeSold = player.SellUpgrade(upgradeToSell);
             if (upgradeSold)
             {
                 await Clients.Caller.SendAsync("UpdateBalls", new Ball[] { player.Ball });
