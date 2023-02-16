@@ -164,7 +164,7 @@ namespace Swollball
                 this.SellUpgrade(upgrade);
             }
             
-            this.FillShop(false /*Don't replace blank cards - UI can't handle it yet*/);
+            this.FillShop(true /*Replace blank cards*/);
         }
 
         public override int GetHashCode()
