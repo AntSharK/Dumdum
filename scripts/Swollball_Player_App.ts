@@ -446,7 +446,7 @@ class UpgradeCard extends Phaser.Physics.Arcade.Sprite {
             if (upgradeData.Duration > 0) {
                 durationTag = upgradeData.Duration.toString();
             }
-            this.Tags = scene.add.text(x + this.width * 0.001, y + this.height * 0.9, "[" + durationTag + "]", { color: 'Black', align: 'Center' });
+            this.Tags = scene.add.text(x + this.width * 0.001, y + this.height * 0.86, "[" + durationTag + "]", { color: 'Black', align: 'Center' });
             this.Tags.scale = width * 0.005;
         }
     }
@@ -720,6 +720,13 @@ function DrawUpgradeCardBorder(card: UpgradeCard, graphics: Phaser.GameObjects.G
         graphics.fillCircle(xPos, card.Cost.y + card.Cost.scale * 8, card.Cost.scale * 12);
         graphics.lineStyle(lineWidth * 0.3, 0x222222);
         graphics.strokeCircle(xPos, card.Cost.y + card.Cost.scale * 8, card.Cost.scale * 12);
+    }
+
+    if (card.Tags != undefined) {
+        graphics.fillStyle(0x0DE0E0);
+        graphics.fillRect(card.Tags.x, card.Tags.y, card.Tags.displayWidth, card.Tags.displayHeight);
+        graphics.lineStyle(lineWidth * 0.3, 0x222222);
+        graphics.strokeRect(card.Tags.x, card.Tags.y, card.Tags.displayWidth, card.Tags.displayHeight);
     }
 }
 
