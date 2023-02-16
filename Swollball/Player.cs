@@ -27,7 +27,7 @@ namespace Swollball
             this.RoomId = roomName;
             this.PlayerScore = new Score(this.Name);
             this.Ball = new Ball(this.Name);
-            this.Ball.AddUpgrade(new CreditsWhenDamageDone(1, 5, "Payday")); // Start with a free payday upgrade
+            this.Ball.AddUpgrade(new CreditsWhenDamageDone(1, 5, "Payday", -1)); // Start with a free payday upgrade
 #if DEBUG
             this.Economy.CreditsLeft = 30;
             this.Economy.ShopTier = 1;
@@ -36,9 +36,8 @@ namespace Swollball
             this.FillShop(false /*Don't replace blank cards*/);
         }
 
-        public bool SellUpgrade(string upgradeId)
+        public bool SellUpgrade(IUpgrade upgradeToSell)
         {
-            var upgradeToSell = this.Ball.FindUpgrade(upgradeId);
             if (upgradeToSell == null)
             {
                 return false;
@@ -148,6 +147,23 @@ namespace Swollball
                 this.Economy.CreditsLeft = 0;
             }
 
+            // Remove upgrades
+            var upgradesToRemove = new List<IUpgrade>();
+            foreach (var upgrade in this.Ball.GetUpgradesByTag(UpgradeTags.TEMPORARY))
+            {
+                upgrade.Duration--;
+                if (upgrade.Duration <= 0)
+                {
+                    upgradesToRemove.Add(upgrade);
+                }
+            }
+
+            foreach(var upgrade in upgradesToRemove)
+            {
+                upgrade.RemoveUpgrade(this);
+                this.SellUpgrade(upgrade);
+            }
+            
             this.FillShop(true /*Replace blank cards*/);
         }
 

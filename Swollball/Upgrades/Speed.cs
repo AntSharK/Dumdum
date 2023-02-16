@@ -10,6 +10,7 @@ namespace Swollball.Upgrades
     {
         public Speed(int value, int cost, string name) : base(value, cost, name)
         {
+            this.Tags.Add(UpgradeTags.SPEEDUPGRADE);
         }
 
         public override string Description => $"Speed+{this.UpgradeAmount}";

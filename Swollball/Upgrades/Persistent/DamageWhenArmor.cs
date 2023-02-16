@@ -8,9 +8,10 @@ namespace Swollball.Upgrades
 {
     public class DamageWhenArmor : BasePersistentUpgrade
     {
-        public DamageWhenArmor(int value, int cost, string name) : base(value, cost, name)
+        public DamageWhenArmor(int value, int cost, string name, int duration) : base(value, cost, name, duration)
         {
             this.Tags.Add(UpgradeTags.UPGRADEMODIFIER);
+            this.Tags.Add(UpgradeTags.DAMAGEUPGRADE);
         }
 
         public override string Description => $"Damage+{this.UpgradeAmount} every armor gained.";

@@ -442,7 +442,11 @@ class UpgradeCard extends Phaser.Physics.Arcade.Sprite {
         }
 
         if (upgradeData.Tags.indexOf("Persistent") > -1) {
-            this.Tags = scene.add.text(x + this.width * 0.005, y + this.height * 0.005, "[P]", { color: 'Black', align: 'Center' });
+            var durationTag = "P";
+            if (upgradeData.Duration > 0) {
+                durationTag = upgradeData.Duration.toString();
+            }
+            this.Tags = scene.add.text(x + this.width * 0.001, y + this.height * 0.9, "[" + durationTag + "]", { color: 'Black', align: 'Center' });
             this.Tags.scale = width * 0.005;
         }
     }

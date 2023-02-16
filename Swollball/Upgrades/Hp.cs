@@ -10,6 +10,7 @@ namespace Swollball.Upgrades
     {
         public Hp(int value, int cost, string name) : base(value, cost, name)
         {
+            this.Tags.Add(UpgradeTags.HPUPGRADE);
         }
 
         public override string Description => $"HP+{this.UpgradeAmount}";

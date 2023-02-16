@@ -65,9 +65,9 @@ namespace Swollball.Upgrades
             Tuple.Create(18, () => new Hp(10, 2, Names.Brocolli) as IUpgrade),
             Tuple.Create(18, () => new Size(15, 2, Names.Milk) as IUpgrade),
             Tuple.Create(18, () => new Speed(30, 2, Names.Bread) as IUpgrade),
-            Tuple.Create(7, () => new SizeWhenHp(1, 3, Names.Bigger) as IUpgrade),
-            Tuple.Create(7, () => new DamageWhenArmor(1, 4, Names.Bulwark) as IUpgrade),
-            Tuple.Create(7, () => new HpWhenDamageDone(2, 4, Names.Feast) as IUpgrade),
+            Tuple.Create(7, () => new SizeWhenHp(1, 3, Names.Bigger, 5) as IUpgrade),
+            Tuple.Create(7, () => new DamageWhenArmor(1, 4, Names.Bulwark, 3) as IUpgrade),
+            Tuple.Create(7, () => new HpWhenDamageDone(2, 4, Names.Feast, 5) as IUpgrade),
         };
 
         private static List<Tuple<int, Func<IUpgrade>>> Tier2UpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
@@ -75,25 +75,25 @@ namespace Swollball.Upgrades
             Tuple.Create(12, () => new Damage(5, 4, Names.Bacon) as IUpgrade),
             Tuple.Create(12, () => new HpPerSize(2, 3, Names.Calcify) as IUpgrade),
             Tuple.Create(9, () => new SizePerSize(1, 6, Names.GET_BUFF) as IUpgrade),
-            Tuple.Create(6, () => new ArmorWhenHit(1, 6, Names.Harden) as IUpgrade),
-            Tuple.Create(6, () => new DamageWhenSpeed(1, 6, Names.Impulse) as IUpgrade),
-            Tuple.Create(6, () => new CreditsWhenDamageDone(1, 6, Names.Payday) as IUpgrade),
+            Tuple.Create(6, () => new ArmorWhenHit(1, 6, Names.Harden, 3) as IUpgrade),
+            Tuple.Create(6, () => new DamageWhenSpeed(1, 6, Names.Impulse, 5) as IUpgrade),
+            Tuple.Create(6, () => new CreditsWhenDamageDone(1, 6, Names.Payday, -1 /*Permanent*/) as IUpgrade),
             Tuple.Create(6, () => new HpPerDamageTaken(1, 6, Names.Buffet) as IUpgrade),
-            Tuple.Create(5, () => new DamageWhenArmor(2, 6, Names.Vanguard) as IUpgrade),
+            Tuple.Create(5, () => new DamageWhenArmor(2, 6, Names.Vanguard, 3) as IUpgrade),
         };
 
         private static List<Tuple<int, Func<IUpgrade>>> Tier3UpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
         {
-            Tuple.Create(10, () => new SizeWhenHp(2, 4, Names.Giant) as IUpgrade),
+            Tuple.Create(10, () => new SizeWhenHp(2, 4, Names.Giant, 5) as IUpgrade),
             Tuple.Create(10, () => new Armor(4, 5, Names.Banana) as IUpgrade),
             Tuple.Create(9, () => new HpPerSpeed(2, 5, Names.Regrowth) as IUpgrade),
             Tuple.Create(9, () => new Hp(40, 4, Names.BROcolli) as IUpgrade),
             Tuple.Create(9, () => new Size(35, 3, Names.Soy_Milk) as IUpgrade),
             Tuple.Create(9, () => new Speed(50, 3, Names.Rice) as IUpgrade),
             Tuple.Create(9, () => new SpeedPerSize(1, 6, Names.Yoga) as IUpgrade),
-            Tuple.Create(5, () => new ArmorWhenHit(4, 10, Names.Reinforce) as IUpgrade),
-            Tuple.Create(5, () => new ArmorWhenHp(1, 5, Names.Bioshield) as IUpgrade),
-            Tuple.Create(4, () => new DamageWhenSpeed(3, 7, Names.Inertia) as IUpgrade),
+            Tuple.Create(5, () => new ArmorWhenHit(4, 10, Names.Reinforce, 2) as IUpgrade),
+            Tuple.Create(5, () => new ArmorWhenHp(1, 5, Names.Bioshield, 3) as IUpgrade),
+            Tuple.Create(4, () => new DamageWhenSpeed(3, 7, Names.Inertia, 5) as IUpgrade),
         };
 
         private static List<Tuple<int, Func<IUpgrade>>> Tier4UpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
@@ -102,9 +102,9 @@ namespace Swollball.Upgrades
             Tuple.Create(6, () => new ArmorPerArmor(3, 10, Names.Ketones) as IUpgrade),
             Tuple.Create(6, () => new Damage(20, 6, Names.Wagyu) as IUpgrade),
             Tuple.Create(4, () => new SizePerSize(4, 8, Names.GET_SWOLL) as IUpgrade),
-            Tuple.Create(4, () => new HpWhenDamageDone(8, 9, Names.Siphon) as IUpgrade),
-            Tuple.Create(3, () => new ArmorWhenHit(8, 10, Names.Fortify) as IUpgrade),
-            Tuple.Create(3, () => new CreditWhenHp(1, 10, Names.Modelling) as IUpgrade),
+            Tuple.Create(4, () => new HpWhenDamageDone(8, 9, Names.Siphon, 4) as IUpgrade),
+            Tuple.Create(3, () => new ArmorWhenHit(8, 10, Names.Fortify, 2) as IUpgrade),
+            Tuple.Create(3, () => new CreditWhenHp(1, 10, Names.Modelling, 5) as IUpgrade),
         };
         
         private static Lazy<Func<IUpgrade>[]> Tier1Upgrades = new Lazy<Func<IUpgrade>[]>(() =>
@@ -207,9 +207,9 @@ namespace Swollball.Upgrades
         // Test stuff
         private static List<Tuple<int, Func<IUpgrade>>> TestUpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
         {
-            Tuple.Create(1, () => new DamageWhenSpeed(1, 1, "TestImpulse") as IUpgrade),
+            Tuple.Create(1, () => new DamageWhenSpeed(1, 1, "TestImpulse", 99) as IUpgrade),
             Tuple.Create(1, () => new Speed(30, 1, "TestUpgrade") as IUpgrade),
-            Tuple.Create(1, () => new ArmorWhenHit(1, 1, "TestHarden") as IUpgrade),
+            Tuple.Create(1, () => new ArmorWhenHit(1, 1, "TestHarden", 99) as IUpgrade),
         };
 
         private static Lazy<Func<IUpgrade>[]> TestUpgrades = new Lazy<Func<IUpgrade>[]>(() =>
