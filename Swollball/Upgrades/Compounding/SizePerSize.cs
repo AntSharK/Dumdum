@@ -13,8 +13,8 @@ namespace Swollball.Upgrades
         }
 
         public override string Description => $"Size+{this.UpgradeAmount} for every 10 size you have";
-        public override int BorderColor => 48110; // 00BBEE
-        public override int FillColor => 11189950; // AABEBE
+        public override int BorderColor => UpgradeColors.PURPLE;
+        public override int FillColor => UpgradeColors.LAVENDER;
 
         public override void PerformUpgrade(Player player)
         {

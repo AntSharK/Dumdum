@@ -16,7 +16,7 @@ namespace Swollball.Upgrades
 
         public abstract int BorderColor { get; }
 
-        public abstract int FillColor { get; }
+        public virtual int FillColor { get; } = UpgradeColors.WHITE;
 
         public int Cost { get; }
 
