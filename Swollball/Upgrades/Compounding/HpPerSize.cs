@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Swollball.Upgrades
+﻿namespace Swollball.Upgrades
 {
     public class HpPerSize: BaseUpgrade
     {
@@ -18,7 +12,8 @@ namespace Swollball.Upgrades
 
         public override void PerformUpgrade(Player player)
         {
-            player.Ball.Hp += this.UpgradeAmount * player.Ball.SizeMultiplier / 10;
+            var hpIncrease = player.Ball.SizeMultiplier / 10;
+            player.Ball.IncreaseStat(UpgradeTags.HPUPGRADE, hpIncrease, 0);
             base.PerformUpgrade(player);
         }
     }
