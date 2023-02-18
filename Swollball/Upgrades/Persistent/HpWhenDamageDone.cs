@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Swollball.Upgrades
+﻿namespace Swollball.Upgrades
 {
     public class HpWhenDamageDone : BasePersistentUpgrade
     {
@@ -18,15 +12,5 @@ namespace Swollball.Upgrades
 
         public override int BorderColor => UpgradeColors.RED;
         public override int FillColor => UpgradeColors.SKYBLUE;
-
-        public override void AfterUpgrade(Player player)
-        {
-            // Does nothing - all client-side
-        }
-
-        public override void BeforeUpgrade(Player player)
-        {
-            // Does nothing - all client-side
-        }
     }
 }

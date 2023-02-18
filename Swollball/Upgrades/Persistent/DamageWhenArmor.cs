@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Swollball.Upgrades
+﻿namespace Swollball.Upgrades
 {
     public class DamageWhenArmor : BasePersistentUpgrade
     {
         public DamageWhenArmor(int value, int cost, string name, int duration) : base(value, cost, name, duration)
         {
-            this.Tags.Add(UpgradeTags.UPGRADEMODIFIER);
             this.Tags.Add(UpgradeTags.DAMAGEUPGRADE);
             this.Tags.Add(UpgradeTags.TRIGGERONARMORUPGRADE);
         }
@@ -20,23 +13,12 @@ namespace Swollball.Upgrades
         public override int BorderColor => UpgradeColors.BROWN;
         public override int FillColor => UpgradeColors.ROSE;
 
-        public override void AfterUpgrade(Player player)
+        public override void Trigger(Ball ball, string increasedStat, int triggerStatIncrease, int triggerUpgradeDepth)
         {
-            var ball = player.Ball;
-            if (ball.Armor > this.preUpgradeStat)
-            {
-                ball.Dmg = ball.Dmg + (ball.Armor - this.preUpgradeStat) * this.UpgradeAmount;
-            }
-        }
-
-        public override void BeforeUpgrade(Player player)
-        {
-            this.preUpgradeStat = player.Ball.Armor;
-        }
-        public override void PerformUpgrade(Player player)
-        {
-            this.preUpgradeStat = player.Ball.Armor;
-            base.PerformUpgrade(player);
+            var newUpgradeDepth = triggerUpgradeDepth + 1;
+            var damageIncrease = (this.UpgradeAmount * triggerStatIncrease);
+            ball.IncreaseStat(UpgradeTags.DAMAGEUPGRADE, damageIncrease, newUpgradeDepth);
+            base.Trigger(ball, increasedStat, triggerStatIncrease, newUpgradeDepth);
         }
     }
 }
