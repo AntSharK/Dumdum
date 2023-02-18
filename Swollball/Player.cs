@@ -64,21 +64,7 @@ namespace Swollball
                     return false; // Too many keystones - need to free up space
                 }
 
-                var upgradeModifiers = this.Ball.GetUpgradesByTag(UpgradeTags.UPGRADEMODIFIER);
-                foreach (var upgradeModifier in upgradeModifiers)
-                {
-                    upgradeModifier.BeforeUpgrade(this);
-                }
-
                 upgradeToApply.PerformUpgrade(this);
-
-                if (upgradeModifiers != null)
-                {
-                    foreach (var upgradeModifier in upgradeModifiers)
-                    {
-                        upgradeModifier.AfterUpgrade(this);
-                    }
-                }
 
                 // Current logic - replace the upgrade with a blank card
                 this.Economy.CreditsLeft -= upgradeToApply.Cost;

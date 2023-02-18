@@ -32,16 +32,13 @@ namespace Swollball.Upgrades
         void RemoveUpgrade(Player player);
 
         /// <summary>
-        /// Action performed before an upgrade is applied
-        /// Can be used to hold values about pre-upgrade stats
+        /// Action performed when an upgrade is triggered from an increase in stats
         /// </summary>
-        void BeforeUpgrade(Player player);
-
-        /// <summary>
-        /// Applies after an upgrade is applied
-        /// This is applied in order - so upgrades bought earlier can modify stats for later upgrades
-        /// </summary>
-        void AfterUpgrade(Player player);
+        /// <param name="ball">The ball which has a stat increase</param>
+        /// <param name="increasedStat">The stat which was increased</param>
+        /// <param name="triggerStatIncrease">The amount of the stat increase</param>
+        /// <param name="triggerUpgradeDepth">The depth of the call to increase stats</param>
+        void Trigger(Ball ball, string increasedStat, int triggerStatIncrease, int triggerUpgradeDepth);
 
         /// <summary>
         /// Applies just before the next round begins - when new credits are issued

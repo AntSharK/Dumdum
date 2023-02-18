@@ -43,17 +43,12 @@ namespace Swollball.Upgrades
             // Do nothing - does not involve selling upgrade
         }
 
-        public virtual void BeforeUpgrade(Player player)
-        {
-            // Does nothing
-        }
-
-        public virtual void AfterUpgrade(Player player)
-        {
-            // Does nothing
-        }
-
         public virtual void StartNextRound(Player player)
+        {
+            // Does nothing
+        }
+
+        public virtual void Trigger(Ball ball, string increasedStat, int triggerStatIncrease, int triggerUpgradeDepth)
         {
             // Does nothing
         }

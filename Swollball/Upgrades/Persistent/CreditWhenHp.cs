@@ -12,6 +12,7 @@ namespace Swollball.Upgrades
         {
             this.Tags.Add(UpgradeTags.UPGRADEMODIFIER);
             this.Tags.Add(UpgradeTags.CASHUPGRADE);
+            this.Tags.Add(UpgradeTags.TRIGGERONHPUPGRADE);
         }
 
         public override string Description => $"Gain {this.UpgradeAmount} credits when you gain HP.";

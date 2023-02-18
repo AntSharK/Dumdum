@@ -12,6 +12,7 @@ namespace Swollball.Upgrades
         {
             this.Tags.Add(UpgradeTags.UPGRADEMODIFIER);
             this.Tags.Add(UpgradeTags.DAMAGEUPGRADE);
+            this.Tags.Add(UpgradeTags.TRIGGERONARMORUPGRADE);
         }
 
         public override string Description => $"Damage+{this.UpgradeAmount} every armor gained.";

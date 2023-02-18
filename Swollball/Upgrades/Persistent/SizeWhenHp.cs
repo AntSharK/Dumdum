@@ -12,6 +12,7 @@ namespace Swollball.Upgrades
         {
             this.Tags.Add(UpgradeTags.UPGRADEMODIFIER);
             this.Tags.Add(UpgradeTags.SIZEUPGRADE);
+            this.Tags.Add(UpgradeTags.TRIGGERONHPUPGRADE);
         }
 
         public override string Description => $"Size+{this.UpgradeAmount} every 10 hp gained";

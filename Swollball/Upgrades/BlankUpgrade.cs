@@ -8,7 +8,7 @@ namespace Swollball.Upgrades
 {
     public class BlankUpgrade : IUpgrade
     {
-        public static IEnumerable<IUpgrade> Instance = new List<IUpgrade>() { new BlankUpgrade() };
+        public static IEnumerable<IUpgrade> Instance { get; } = new List<IUpgrade>() { new BlankUpgrade() };
 
         public string UpgradeName => $"";
 
@@ -19,7 +19,7 @@ namespace Swollball.Upgrades
         public int BorderColor { get; private set; } = 0;
         public int FillColor => UpgradeColors.WHITE;
 
-        public int UpgradeAmount => 0;
+        public int UpgradeAmount { get; private set; } = 0;
 
         public int Duration { get; set; } = -1;
 
@@ -28,16 +28,6 @@ namespace Swollball.Upgrades
         public HashSet<string> Tags { get; set; } = new HashSet<string>();
 
         int IUpgrade.UpgradeAmount { get; set; } = 0;
-
-        public void AfterUpgrade(Player player)
-        {
-            // Do nothing
-        }
-
-        public void BeforeUpgrade(Player player)
-        {
-            // Do nothing
-        }
 
         public void PerformUpgrade(Player player)
         {
@@ -52,6 +42,11 @@ namespace Swollball.Upgrades
         public void RemoveUpgrade(Player player)
         {
             // Do nothing
+        }
+
+        public void Trigger(Ball ball, string increasedStat, int triggerStatIncrease, int triggerUpgradeDepth)
+        {
+            // Does nothing
         }
     }
 }
