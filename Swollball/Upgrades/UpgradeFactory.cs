@@ -204,12 +204,31 @@ namespace Swollball.Upgrades
             return currentUpgrades;
         }
 
-        // Test stuff
+        // Test - contains every single upgrade with cost 1 duration 1
         private static List<Tuple<int, Func<IUpgrade>>> TestUpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
         {
-            Tuple.Create(1, () => new DamageWhenSpeed(1, 1, "TestImpulse", 99) as IUpgrade),
-            Tuple.Create(1, () => new Speed(30, 1, "TestUpgrade") as IUpgrade),
-            Tuple.Create(1, () => new ArmorWhenHit(1, 1, "TestHarden", 99) as IUpgrade),
+            Tuple.Create(1, () => new Armor(1, 1, "Armor") as IUpgrade),
+            Tuple.Create(1, () => new Damage(1, 1, "Damage") as IUpgrade),
+            Tuple.Create(1, () => new Hp(10, 1, "Hp") as IUpgrade),
+            Tuple.Create(1, () => new Size(10, 1, "Size") as IUpgrade),
+            Tuple.Create(1, () => new Speed(10, 1, "Speed") as IUpgrade),
+
+            Tuple.Create(1, () => new ArmorWhenHit(1, 1, "ArmorWhenHit", 1) as IUpgrade),
+            Tuple.Create(1, () => new ArmorWhenHp(1, 1, "ArmorWhenHp", 1) as IUpgrade),
+            Tuple.Create(1, () => new CreditsWhenDamageDone(1, 1, "CreditsWhenDamageDone", 1) as IUpgrade),
+            Tuple.Create(1, () => new CreditWhenHp(1, 1, "CreditWhenHp", 1) as IUpgrade),
+            Tuple.Create(1, () => new DamageWhenArmor(1, 1, "DamageWhenArmor", 1) as IUpgrade),
+            Tuple.Create(1, () => new DamageWhenSpeed(1, 1, "DamageWhenSpeed", 1) as IUpgrade),
+            Tuple.Create(1, () => new HpWhenDamageDone(1, 1, "HpWhenDamageDone", 1) as IUpgrade),
+            Tuple.Create(1, () => new SizeWhenHp(1, 1, "SizeWhenHp", 1) as IUpgrade),
+            Tuple.Create(1, () => new DamageWhenSpeed(1, 1, "DamageWhenSpeed", 1) as IUpgrade),
+
+            Tuple.Create(1, () => new ArmorPerArmor(1, 1, "ArmorPerArmor") as IUpgrade),
+            Tuple.Create(1, () => new HpPerDamageTaken(1, 1, "HpPerDamageTaken") as IUpgrade),
+            Tuple.Create(1, () => new HpPerSize(1, 1, "HpPerSize") as IUpgrade),
+            Tuple.Create(1, () => new HpPerSpeed(1, 1, "HpPerSpeed") as IUpgrade),
+            Tuple.Create(1, () => new SizePerSize(1, 1, "SizePerSize") as IUpgrade),
+            Tuple.Create(1, () => new SpeedPerSize(1, 1, "SpeedPerSize") as IUpgrade),
         };
 
         private static Lazy<Func<IUpgrade>[]> TestUpgrades = new Lazy<Func<IUpgrade>[]>(() =>

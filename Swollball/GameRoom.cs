@@ -35,6 +35,8 @@ namespace Swollball
                 tp.Ball.AddUpgrade(new Upgrades.Hp(25, 0, "TESTUPGRADE"));
                 tp.Ball.IncreaseStat(UpgradeTags.SIZEUPGRADE, 50, 0);
                 tp.Economy.CreditsLeft = 99;
+                tp.Economy.ShopTier = -1; // Test Shop
+                tp.Economy.ShopSize = 6;
             }
 
             this.CreateAutomatedPlayer(UpgradeScores.ArmorSustain, TierUpStrategy.Never, "AS0");
