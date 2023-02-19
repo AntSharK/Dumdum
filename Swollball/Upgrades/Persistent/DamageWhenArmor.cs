@@ -15,10 +15,9 @@
 
         public override void Trigger(Ball ball, string increasedStat, int triggerStatIncrease, int triggerUpgradeDepth)
         {
-            var newUpgradeDepth = triggerUpgradeDepth + 1;
             var damageIncrease = (this.UpgradeAmount * triggerStatIncrease);
-            ball.IncreaseStat(UpgradeTags.DAMAGEUPGRADE, damageIncrease, newUpgradeDepth);
-            base.Trigger(ball, increasedStat, triggerStatIncrease, newUpgradeDepth);
+            ball.IncreaseStat(UpgradeTags.DAMAGEUPGRADE, damageIncrease, triggerUpgradeDepth);
+            base.Trigger(ball, increasedStat, triggerStatIncrease, triggerUpgradeDepth);
         }
     }
 }

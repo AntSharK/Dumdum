@@ -17,13 +17,12 @@
 
         public override void Trigger(Ball ball, string increasedStat, int triggerStatIncrease, int triggerUpgradeDepth)
         {
-            var newUpgradeDepth = triggerUpgradeDepth + 1;
             if (this.player != null)
             {
                 this.player.Economy.CreditsLeft += triggerStatIncrease;
             }
 
-            base.Trigger(ball, increasedStat, triggerStatIncrease, newUpgradeDepth);
+            base.Trigger(ball, increasedStat, triggerStatIncrease, triggerUpgradeDepth);
         }
 
         public override void PerformUpgrade(Player player)
