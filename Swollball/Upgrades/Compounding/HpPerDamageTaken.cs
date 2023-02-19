@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Swollball.Upgrades
+﻿namespace Swollball.Upgrades
 {
     public class HpPerDamageTaken : BaseUpgrade
     {
@@ -19,8 +13,10 @@ namespace Swollball.Upgrades
         public override void PerformUpgrade(Player player)
         {
             var damageTaken = player.PlayerScore.RoundDamageReceived;
-            if (damageTaken > 0) {
-                player.Ball.Hp += this.UpgradeAmount * damageTaken / 10;
+            if (damageTaken > 0)
+            {
+                var hpIncrease = this.UpgradeAmount * damageTaken / 10;
+                player.Ball.IncreaseStat(UpgradeTags.HPUPGRADE, hpIncrease, 0);
             }
             base.PerformUpgrade(player);
         }

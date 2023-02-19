@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Swollball.Upgrades
+﻿namespace Swollball.Upgrades
 {
     public class ArmorPerArmor : BaseUpgrade
     {
@@ -20,7 +14,8 @@ namespace Swollball.Upgrades
         {
             if (player.Ball.Armor > 0)
             {
-                player.Ball.Armor = player.Ball.Armor + this.UpgradeAmount * player.Ball.Armor / 10;
+                var armorIncrease = this.UpgradeAmount * player.Ball.Armor / 10;
+                player.Ball.IncreaseStat(UpgradeTags.ARMORUPGRADE, armorIncrease, 0);
             }
             base.PerformUpgrade(player);
         }

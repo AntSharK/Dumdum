@@ -17,9 +17,7 @@ namespace Swollball.Upgrades
         public const string REINFORCE = "Reinforce";
 
         // For tags which modify server-side behavior
-        public const string UPGRADEMODIFIER = "Modifier";
         public const string ONTURNSTART = "Reward";
-
         public const string TEMPORARY = "Temporary";
 
         // For tags to denote what is changed
@@ -29,6 +27,13 @@ namespace Swollball.Upgrades
         public const string SIZEUPGRADE = "SizeUpg";
         public const string HPUPGRADE = "HpUpg";
         public const string CASHUPGRADE = "CashUpg";
+
+        // For tags to denote that this upgrade fires when a stat is changed
+        public const string TRIGGERONARMORUPGRADE = "TriggerOnArmorUpg";
+        public const string TRIGGERONSPEEDUPGRADE = "TriggerOnSpeedUpg";
+        public const string TRIGGERONDAMAGEUPGRADE = "TriggerOnDamageUpg";
+        public const string TRIGGERONSIZEUPGRADE = "TriggerOnSizeUpg";
+        public const string TRIGGERONHPUPGRADE = "TriggerOnHpUpg";
     }
 
     /// <summary>

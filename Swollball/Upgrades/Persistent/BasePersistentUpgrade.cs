@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Swollball.Upgrades
+﻿namespace Swollball.Upgrades
 {
     // Keystones are persistent upgrades
     public abstract class BasePersistentUpgrade : BaseUpgrade
     {
-        internal int preUpgradeStat;
-
         public BasePersistentUpgrade(int amount, int cost, string name, int duration) :
             base(amount, cost, name)
         {
@@ -21,11 +13,6 @@ namespace Swollball.Upgrades
             {
                 this.Tags.Add(UpgradeTags.TEMPORARY);
             }
-        }
-
-        public override void PerformUpgrade(Player player)
-        {
-            base.PerformUpgrade(player);
         }
     }
 }

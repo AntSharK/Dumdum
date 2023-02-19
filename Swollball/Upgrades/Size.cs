@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Swollball.Upgrades
+﻿namespace Swollball.Upgrades
 {
     public class Size : BaseUpgrade
     {
@@ -18,7 +12,7 @@ namespace Swollball.Upgrades
 
         public override void PerformUpgrade(Player player)
         {
-            player.Ball.SizeMultiplier += this.UpgradeAmount;
+            player.Ball.IncreaseStat(UpgradeTags.SIZEUPGRADE, this.UpgradeAmount, 0 /*Depth*/);
             base.PerformUpgrade(player);
         }
 

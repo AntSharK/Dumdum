@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Swollball.Upgrades
+﻿namespace Swollball.Upgrades
 {
     public class SizeWhenHp : BasePersistentUpgrade
     {
         public SizeWhenHp(int value, int cost, string name, int duration) : base(value, cost, name, duration)
         {
-            this.Tags.Add(UpgradeTags.UPGRADEMODIFIER);
             this.Tags.Add(UpgradeTags.SIZEUPGRADE);
+            this.Tags.Add(UpgradeTags.TRIGGERONHPUPGRADE);
         }
 
         public override string Description => $"Size+{this.UpgradeAmount} every 10 hp gained";
@@ -19,24 +13,11 @@ namespace Swollball.Upgrades
         public override int BorderColor => UpgradeColors.PURPLE;
         public override int FillColor => UpgradeColors.ROSE;
 
-        public override void AfterUpgrade(Player player)
+        public override void Trigger(Ball ball, string increasedStat, int triggerStatIncrease, int triggerUpgradeDepth)
         {
-            var ball = player.Ball;
-            if (ball.Hp > this.preUpgradeStat)
-            {
-                ball.SizeMultiplier = ball.SizeMultiplier + (this.UpgradeAmount * (ball.Hp - this.preUpgradeStat))/10;
-            }
-        }
-
-        public override void BeforeUpgrade(Player player)
-        {
-            this.preUpgradeStat = player.Ball.Hp;
-        }
-
-        public override void PerformUpgrade(Player player)
-        {
-            this.preUpgradeStat = player.Ball.Hp;
-            base.PerformUpgrade(player);
+            var sizeIncrease = (this.UpgradeAmount * triggerStatIncrease)/10;
+            ball.IncreaseStat(UpgradeTags.SIZEUPGRADE, sizeIncrease, triggerUpgradeDepth);
+            base.Trigger(ball, increasedStat, triggerStatIncrease, triggerUpgradeDepth);
         }
     }
 }
