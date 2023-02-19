@@ -89,18 +89,34 @@ function LoadCardImages(scene: Phaser.Scene) {
     scene.load.image('Tofu', '/content/cards/Tofu.png');
     scene.load.image('Apple', '/content/cards/Apple.png');
     scene.load.image('Brocolli', '/content/cards/Brocolli2.png');
-    scene.load.image('BROcolli', '/content/cards/Brocolli.png');
     scene.load.image('Milk', '/content/cards/Milk.png');
     scene.load.image('Bread', '/content/cards/Bread.png');
+    scene.load.image('Bigger', '/content/cards/Bigger.png');
+    scene.load.image('Bulwark', '/content/cards/Bulwark.png');
+    scene.load.image('Feast', '/content/cards/Feast.png');
+
     scene.load.image('Bacon', '/content/cards/Bacon.png');
-    scene.load.image('Banana', '/content/cards/Banana.png');
+    scene.load.image('Calcify', '/content/cards/Calcify.png');
+    scene.load.image('GET BUFF', '/content/cards/GET_BUFF.png');
+    scene.load.image('Harden', '/content/cards/Harden.png');
+    scene.load.image('Impulse', '/content/cards/Impulse.png');
+    scene.load.image('Payday', '/content/cards/Payday.png');
     scene.load.image('Buffet', '/content/cards/Buffet.png');
+    scene.load.image('Vanguard', '/content/cards/Vanguard.png');
+
+    scene.load.image('Giant', '/content/cards/Giant.png');
+    scene.load.image('Banana', '/content/cards/Banana.png');
+    scene.load.image('Regrowth', '/content/cards/Regrowth.png');
+    scene.load.image('BROcolli', '/content/cards/Brocolli.png');
     scene.load.image('Soy Milk', '/content/cards/SoyMilk.png');
     scene.load.image('Rice', '/content/cards/Rice.png');
     scene.load.image('Yoga', '/content/cards/Yoga.png');
-    scene.load.image('GET SWOLL', '/content/cards/Swoll.png');
+    scene.load.image('Reinforce', '/content/cards/Reinforce.png');
+
+    scene.load.image('Ossify', '/content/cards/Ossify.png');
     scene.load.image('Ketones', '/content/cards/Bike.png');
     scene.load.image('Wagyu', '/content/cards/Steak.png');
+    scene.load.image('GET SWOLL', '/content/cards/Swoll.png');
 }
 
 class BallUpgrades extends Phaser.Scene {
