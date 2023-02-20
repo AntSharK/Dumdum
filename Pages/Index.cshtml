@@ -23,7 +23,7 @@
             @if (Model.AuthResult != null)
             {
                 <h5>
-                    SIGNED IN: @Model.AuthResult.Email
+                    @Model.AuthResult.Email
                     <br>
                     <a href="@Model.ClearCookiesLink">SIGN OUT</a>
                     <hr />
@@ -40,7 +40,8 @@
             }
         </div>
         <h6>
-        <a href="\lobbylist">LobbyList</a><br>
+            <a href="\lobbylist">Lobby List</a><br>
+            <a href="\checklogin">User Info</a><br>
         @Model.BuildNumber
         </h6>
     </body>
