@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+using Swollball.Bots;
 using System.Text.Json;
 
 namespace Swollball
@@ -128,6 +129,8 @@ namespace Swollball
             }
 
             await Clients.Caller.SendAsync("ClearState"); // For host machine, display last scoreboard and clear state
+
+            // TODO: Update backend DB
         }
 
         public async Task ResumeHostSession(string roomId)
