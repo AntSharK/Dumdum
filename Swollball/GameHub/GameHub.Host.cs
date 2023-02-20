@@ -130,13 +130,30 @@ namespace Swollball
             }
 
             await Clients.Caller.SendAsync("ClearState"); // For host machine, display last scoreboard and clear state
+            await this.UpdateRatings(room);
+        }
 
-            // TODO: Update backend DB
-            var playerEmails = room.Players.Values.Union(room.DeadPlayers)
+        private async Task UpdateRatings(GameRoom room)
+        {
+            var allPlayers = room.Players.Values.Union(room.DeadPlayers);
+            var playerEmails = allPlayers
                 .Where(p => !string.IsNullOrWhiteSpace(p.PlayerEmail))
                 .Select(p => p.PlayerEmail);
 
-            var emailToRatings = UserInfoDB.GetPlayerRatings(playerEmails);
+            var emailToRatings = await UserInfoDB.GetPlayerRatings(playerEmails).ConfigureAwait(false);
+            var averageRating = emailToRatings.Values.Average();
+            var allPlayerList = allPlayers.ToList();
+            allPlayerList.Sort((a, b) => a.PlayerScore.RoundNumber - b.PlayerScore.RoundNumber); // Sort from last place to first place
+            var playerRanking = allPlayerList.Count;
+            foreach (var player in allPlayerList)
+            {
+                playerRanking--;
+                if (!string.IsNullOrWhiteSpace(player.PlayerEmail)
+                    && emailToRatings.ContainsKey(player.PlayerEmail))
+                {
+                    var oldPlayerRating = emailToRatings[player.PlayerEmail];
+                }
+            }
         }
 
         public async Task ResumeHostSession(string roomId)
