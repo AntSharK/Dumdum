@@ -5,6 +5,12 @@
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.SignalRService/SignalR/Dumdum",
       "type": "signalr.azure",
       "connectionId": "Azure:SignalR:ConnectionString"
+    },
+    "mssql1": {
+      "secretStore": "AzureAppSettings",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/antsharkbackend/databases/UserInfo",
+      "type": "mssql.azure",
+      "connectionId": "UserInfoDbConnection"
     }
   }
 }
