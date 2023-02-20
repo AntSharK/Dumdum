@@ -19,6 +19,26 @@
                 <hr />
             </h1>
         </div>
+        <div style="text-align:right">
+            @if (Model.AuthResult != null)
+            {
+                <h5>
+                    SIGNED IN: @Model.AuthResult.Email
+                    <br>
+                    <a href="@Model.ClearCookiesLink">SIGN OUT</a>
+                    <hr />
+                </h5>
+            }
+            else
+            {
+                <h5>
+                    <a href="@Model.MSAAuthLink">SIGN IN WITH MICROSOFT</a>
+                    <br>
+                    <a href="@Model.GoogleAuthLink">SIGN IN WITH GOOGLE</a>
+                    <hr />
+                </h5>
+            }
+        </div>
         <h6>
         <a href="\lobbylist">LobbyList</a><br>
         @Model.BuildNumber

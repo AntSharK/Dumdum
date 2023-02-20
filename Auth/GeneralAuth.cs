@@ -8,6 +8,7 @@ namespace Dumdum.Auth
         internal const string CookiesSignInScheme = "Cookies";
         internal const string LoginPath = "/login";
         internal const string AccountDetailsPath = "/checklogin";
+        internal const string ClearCookiesPath = "/clearcookies";
         internal const string AuthSchemeQueryString = "authscheme";
 
         internal static void ConfigureAuth(WebApplicationBuilder builder)
@@ -45,6 +46,21 @@ namespace Dumdum.Auth
                     await context.ChallengeAsync(authScheme, new AuthenticationProperties() { RedirectUri = "/" });
                 });
             }));
+
+            app.Map(ClearCookiesPath, (app =>
+            {
+                app.Run(async context =>
+                {
+                    // Delete all cookies
+                    foreach (var cookie in context.Request.Cookies)
+                    {
+                        context.Response.Cookies.Delete(cookie.Key);
+                    }
+
+                    context.Response.Redirect("/");
+                });
+            }));
+
             app.Map(AccountDetailsPath, (app =>
             {
                 app.Run(async context =>

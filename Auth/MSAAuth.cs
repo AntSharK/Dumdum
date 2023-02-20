@@ -5,7 +5,6 @@ namespace Dumdum.Auth
     public static class MSAAuth
     {
         internal const string AuthScheme = "MSAAuth";
-        internal const string LoginPath = "/msalogin";
         private const string LandingPath = "/msalanding";        
 
         internal static void ConfigureAuth(MicrosoftAccountOptions options, WebApplicationBuilder builder)

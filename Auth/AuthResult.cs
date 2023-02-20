@@ -11,7 +11,7 @@ namespace Dumdum.Auth
 
         private const string RATINGCLAIMKEY = "rating";
 
-        public AuthResult(ClaimsIdentity identity)
+        public AuthResult(ClaimsIdentity? identity)
         {
             if (identity == null ||
                 identity.Claims == null ||
