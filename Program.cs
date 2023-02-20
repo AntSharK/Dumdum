@@ -1,6 +1,8 @@
 using Dumdum.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 SecretManager.Init(builder);
 
 // Configure Auth in Builder
