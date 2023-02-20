@@ -1,11 +1,10 @@
 using Dumdum.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
-
 SecretManager.Init(builder);
 
 // Configure Auth in Builder
-//MSAAuth.AddAuth(builder);
+MSAAuth.AddAuth(builder);
 
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<Swollball.Lobby>();
@@ -17,11 +16,12 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 
 // Configure Auth for App
-//MSAAuth.ConfigureAuth(app);
+MSAAuth.ConfigureAuth(app);
 
 app.Logger.LogInformation("Starting up...");
 Swollball.GameHub.RegisterLogger(app.Logger);
 
+app.UseDeveloperExceptionPage();
 app.MapHub<Swollball.GameHub>("/swollBallHub");
 
 app.MapRazorPages();
