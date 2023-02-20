@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Data.SqlClient;
 
 namespace Dumdum.Auth
 {
@@ -18,38 +19,87 @@ Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=R
 
         public static async Task OnAuthentication(AuthResult authResult)
         {
-            var foundInDb = false;
             using var connection = new SqlConnection(BackendConnectionString);
-            var command = new SqlCommand($"SELECT * FROM dbo.SwollballRating WHERE Email='{authResult.Email}'", connection);
-            command.Connection.Open();
-            using (var reader = await command.ExecuteReaderAsync().ConfigureAwait(false))
-            {
-                while (await reader.ReadAsync())
-                {
-                    foundInDb = true;
-                    authResult.Rating = reader.GetInt32(1);
-                }
-            }
+            await connection.OpenAsync().ConfigureAwait(false);
+
+            var foundInDb = await FindUser(connection, authResult).ConfigureAwait(false);
 
             // Update the DB with the last login time if the user is found
             if (foundInDb)
             {
-                var updateCommand = new SqlCommand("UPDATE dbo.SwollballRating SET LastLogin = @lastlogin WHERE Email = @email", connection);
-                updateCommand.Parameters.AddWithValue("@lastlogin", DateTime.UtcNow);
-                updateCommand.Parameters.AddWithValue("@email", authResult.Email);
-                var result = await updateCommand.ExecuteNonQueryAsync();
+                await UpdateUserInfo(connection, authResult);
             }
             // Otherwise create the entry in the DB
             else
             {
-                authResult.Rating = 1000;
-                var createCommand = new SqlCommand("INSERT INTO dbo.SwollballRating VALUES (@email, @rating, @lastlogin, @createdat)", connection);
-                createCommand.Parameters.AddWithValue("@email", authResult.Email);
-                createCommand.Parameters.AddWithValue("@rating", authResult.Rating);
-                createCommand.Parameters.AddWithValue("@lastlogin", DateTime.UtcNow);
-                createCommand.Parameters.AddWithValue("@createdat", DateTime.UtcNow);
-                var result = await createCommand.ExecuteNonQueryAsync();
+                await CreateUser(connection, authResult).ConfigureAwait(false);
+                await CreateSwollballRating(connection, authResult).ConfigureAwait(false);
             }
+        }
+
+        private static async Task<bool> FindUser(SqlConnection connection, AuthResult authResult)
+        {
+            var command = new SqlCommand($"SELECT * FROM dbo.UserLogin WHERE Email='{authResult.Email}'", connection);
+            using (var reader = await command.ExecuteReaderAsync().ConfigureAwait(false))
+            {
+                if (!reader.HasRows)
+                {
+                    return false;
+                }
+
+                while (await reader.ReadAsync().ConfigureAwait(false))
+                {
+                    // TODO: Write any other auth info from the DB into the cookie
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static async Task UpdateUserInfo(SqlConnection connection, AuthResult authResult)
+        {
+            // Update the last login time
+            var updateCommand = new SqlCommand("UPDATE dbo.UserLogin SET LastLogin = @lastlogin WHERE Email = @email", connection);
+            updateCommand.Parameters.AddWithValue("@lastlogin", DateTime.UtcNow);
+            updateCommand.Parameters.AddWithValue("@email", authResult.Email);
+            await updateCommand.ExecuteNonQueryAsync();
+
+            // Pull rating data
+            var getSwollballRatingCommand = new SqlCommand($"SELECT * FROM dbo.SwollballRating WHERE Email='{authResult.Email}'", connection);
+            using (var reader = await getSwollballRatingCommand.ExecuteReaderAsync().ConfigureAwait(false))
+            {
+                if (!reader.HasRows)
+                {
+                    await CreateSwollballRating(connection, authResult).ConfigureAwait(false);
+                }
+                else
+                {
+                    while (await reader.ReadAsync().ConfigureAwait(false))
+                    {
+                        authResult.SwollballRating = reader.GetInt32(1);
+                    }
+                }
+            }
+        }
+
+        private static async Task CreateUser(SqlConnection connection, AuthResult authResult)
+        {
+            var createCommand = new SqlCommand("INSERT INTO dbo.UserLogin VALUES (@email, @lastlogin, @createdat)", connection);
+            createCommand.Parameters.AddWithValue("@email", authResult.Email);
+            createCommand.Parameters.AddWithValue("@lastlogin", DateTime.UtcNow);
+            createCommand.Parameters.AddWithValue("@createdat", DateTime.UtcNow);
+            await createCommand.ExecuteNonQueryAsync().ConfigureAwait(false);
+        }
+
+        private static async Task CreateSwollballRating(SqlConnection connection, AuthResult authResult)
+        {
+            authResult.SwollballRating = 1000;
+
+            var createCommand = new SqlCommand("INSERT INTO dbo.SwollballRating VALUES (@email, @swollballrating)", connection);
+            createCommand.Parameters.AddWithValue("@email", authResult.Email);
+            createCommand.Parameters.AddWithValue("@swollballrating", authResult.SwollballRating);
+            await createCommand.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
     }
 }
