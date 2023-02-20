@@ -57,8 +57,7 @@ namespace Dumdum.Auth
                         context.Response.Cookies.Delete(cookie.Key);
                     }
 
-                    await context.Response.WriteAsync("Cookies deleted");
-                    context.Response.Redirect("/");
+                    await context.Response.WriteAsync("Cookies deleted<br><a href='/'>RETURN</a>");
                 });
             }));
 

@@ -67,19 +67,22 @@ Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=R
 
             // Pull rating data
             var getSwollballRatingCommand = new SqlCommand($"SELECT * FROM dbo.SwollballRating WHERE Email='{authResult.Email}'", connection);
+            var foundUserSwollballRating = false;
             using (var reader = await getSwollballRatingCommand.ExecuteReaderAsync().ConfigureAwait(false))
             {
-                if (!reader.HasRows)
+                if (reader.HasRows)
                 {
-                    await CreateSwollballRating(connection, authResult).ConfigureAwait(false);
-                }
-                else
-                {
+                    foundUserSwollballRating = true;
                     while (await reader.ReadAsync().ConfigureAwait(false))
                     {
                         authResult.SwollballRating = reader.GetInt32(1);
                     }
                 }
+            }
+
+            if (!foundUserSwollballRating)
+            {
+                await CreateSwollballRating(connection, authResult).ConfigureAwait(false);
             }
         }
 
