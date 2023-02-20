@@ -17,13 +17,7 @@ namespace Dumdum.Pages
 
         public async Task OnGet()
         {
-            var authIdentity = await HttpContext.AuthenticateAsync(GeneralAuth.CookiesSignInScheme).ConfigureAwait(false);
-
-            if (authIdentity.Succeeded
-                && authIdentity.Principal?.Identity != null)
-            {
-                this.AuthResult = new AuthResult(authIdentity.Principal.Identity as ClaimsIdentity);
-            }
+            this.AuthResult = await GeneralAuth.GetAuthResultForPage(this).ConfigureAwait(false);
         }
     }
 }

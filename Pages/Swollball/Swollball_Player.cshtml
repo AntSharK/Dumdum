@@ -13,7 +13,6 @@
     </head>
     <body>
         <div id="pageName" class="display-4" style="text-decoration:underline; text-align:center">JOIN GAME</div>
-
         <div class="state" id="joinroom">
             <div class="display-4" style="text-align:center">
                 Username - Max 10 letters or numbers
@@ -35,6 +34,25 @@
                 <h3><u>WAITING FOR GAME TO START</u></h3>
                 <input type="button" class="display-1" id="leaveroombutton" value="LEAVE" />
             </div>
+        </div>
+        <div style="text-align:right">
+        @if (Model.AuthResult != null)
+        {
+            <h5>
+                @Model.AuthResult.Email
+                <br>
+                RATING: @Model.AuthResult.SwollballRating
+                </h5>
+            }
+            else
+            {
+                <h5>
+                NOT SIGNED IN
+                <br>
+                <a href="/">SIGN IN TO USE RATING</a>
+                </h5>
+            }
+        <hr />
         </div>
     </body>
     </html>

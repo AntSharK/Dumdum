@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Security.Claims;
 
 namespace Dumdum.Auth
 {
@@ -31,6 +33,19 @@ namespace Dumdum.Auth
             {
                 await UserInfoDB.OnAuthentication(authResult).ConfigureAwait(false);
             }
+        }
+
+        internal static async Task<AuthResult?> GetAuthResultForPage(PageModel pageModel)
+        {
+            var authIdentity = await pageModel.HttpContext.AuthenticateAsync(GeneralAuth.CookiesSignInScheme).ConfigureAwait(false);
+
+            if (authIdentity.Succeeded
+                && authIdentity.Principal?.Identity != null)
+            {
+                return new AuthResult(authIdentity.Principal.Identity as ClaimsIdentity);
+            }
+
+            return null;
         }
 
         internal static void ConfigureAuth(WebApplication app)
