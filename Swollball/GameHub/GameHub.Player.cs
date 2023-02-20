@@ -31,6 +31,12 @@ namespace Swollball
             }
 
             var room = this.GameLobby.Rooms[roomId];
+            if (room.State != GameRoom.RoomState.SettingUp)
+            {
+                await Clients.Caller.SendAsync("ShowError", "Game has already started.");
+                return;
+            }
+
             var player = room.CreatePlayer(userName, Context.ConnectionId);
             if (player == null)
             {

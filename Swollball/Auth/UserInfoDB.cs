@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using System.Text;
 
 namespace Swollball.Auth
 {
@@ -31,20 +32,52 @@ namespace Swollball.Auth
             }
         }
 
-        public static async Task<int> GetSwollballRating(AuthResult authResult)
+        public static async Task<IDictionary<string, int>> GetPlayerRatings(IEnumerable<string?> playerEmails)
         {
             using var connection = new SqlConnection(BackendConnectionString);
             await connection.OpenAsync().ConfigureAwait(false);
 
             // Pull rating data
-            var getSwollballRatingCommand = new SqlCommand($"SELECT * FROM dbo.SwollballRating WHERE Email='{authResult.Email}'", connection);
+            var dictionaryToReturn = new Dictionary<string, int>();
+            var sb = new StringBuilder();
+            foreach (var email in playerEmails)
+            {
+                sb.Append('\'');
+                sb.Append(email);
+                sb.Append('\'');
+                sb.Append(',');
+            }
+            sb.Length--;
+            var getSwollballRatingCommand = new SqlCommand($"SELECT Email,Rating FROM dbo.SwollballRating WHERE Email IN (" + sb.ToString() + ")", connection);
             using (var reader = await getSwollballRatingCommand.ExecuteReaderAsync().ConfigureAwait(false))
             {
                 if (reader.HasRows)
                 {
                     while (await reader.ReadAsync().ConfigureAwait(false))
                     {
-                        return reader.GetInt32(1);
+                        dictionaryToReturn[reader.GetString(0)] = reader.GetInt32(1);
+                    }
+                }
+            }
+
+            return dictionaryToReturn;
+        }
+
+        public static async Task<int> GetSwollballRating(AuthResult authResult)
+        {
+            using var connection = new SqlConnection(BackendConnectionString);
+            await connection.OpenAsync().ConfigureAwait(false);
+
+            // Pull rating data
+            var getSwollballRatingCommand = new SqlCommand($"SELECT Rating FROM dbo.SwollballRating WHERE Email=@email", connection);
+            getSwollballRatingCommand.Parameters.AddWithValue("@email", authResult.Email);
+            using (var reader = await getSwollballRatingCommand.ExecuteReaderAsync().ConfigureAwait(false))
+            {
+                if (reader.HasRows)
+                {
+                    while (await reader.ReadAsync().ConfigureAwait(false))
+                    {
+                        return reader.GetInt32(0);
                     }
                 }
             }
@@ -55,7 +88,8 @@ namespace Swollball.Auth
 
         private static async Task<bool> FindUser(SqlConnection connection, AuthResult authResult)
         {
-            var command = new SqlCommand($"SELECT * FROM dbo.UserLogin WHERE Email='{authResult.Email}'", connection);
+            var command = new SqlCommand($"SELECT * FROM dbo.UserLogin WHERE Email=@email", connection);
+            command.Parameters.AddWithValue("@email", authResult.Email);
             using (var reader = await command.ExecuteReaderAsync().ConfigureAwait(false))
             {
                 if (!reader.HasRows)
