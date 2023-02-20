@@ -8,7 +8,7 @@ namespace Dumdum.Pages
 {
     public class IndexModel : PageModel
     {
-        public string BuildNumber => "vBeta 0.220.0300";
+        public string BuildNumber => "vBeta 0.220.0344";
         public AuthResult? AuthResult { get; private set; }
         public string MSAAuthLink => GeneralAuth.LoginPath + '?' + GeneralAuth.AuthSchemeQueryString + '=' + MSAAuth.AuthScheme;
         public string GoogleAuthLink => GeneralAuth.LoginPath + '?' + GeneralAuth.AuthSchemeQueryString + '=' + GAuth.AuthScheme;

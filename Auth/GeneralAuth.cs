@@ -49,15 +49,15 @@ namespace Dumdum.Auth
 
             app.Map(ClearCookiesPath, (app =>
             {
-                app.Run(async context =>
-                {
+                app.Run(context => {
                     // Delete all cookies
                     foreach (var cookie in context.Request.Cookies)
                     {
                         context.Response.Cookies.Delete(cookie.Key);
                     }
 
-                    await context.Response.WriteAsync("Cookies deleted<br><a href='/'>RETURN</a>");
+                    context.Response.Redirect("/");
+                    return Task.CompletedTask;
                 });
             }));
 
