@@ -10,7 +10,7 @@ namespace Dumdum.Auth
             if (builder.Environment.IsProduction())
             {
                 builder.Configuration.AddAzureKeyVault(
-                    new Uri($"https://antshark-vault.vault.azure.net/"),
+                    new Uri($"https://antsharkbackendvault.vault.azure.net/"),
                     new DefaultAzureCredential());
             }
         }
