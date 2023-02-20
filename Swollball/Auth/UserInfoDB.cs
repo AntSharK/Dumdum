@@ -1,21 +1,14 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-using Microsoft.Data.SqlClient;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+﻿using Microsoft.Data.SqlClient;
 
-namespace Dumdum.Auth
+namespace Swollball.Auth
 {
     public static class UserInfoDB
     {
-        private static string BackendConnectionString = @"Data Source=antsharkbackend.database.windows.net;Initial Catalog=UserInfo;
-User ID={0};
-Password={1};
-Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        private static string? BackendConnectionString;
 
-        public static void Init(WebApplicationBuilder builder)
+        public static void Init(string backendConnectionString)
         {
-            BackendConnectionString = string.Format(BackendConnectionString,
-                SecretManager.GetSecret("AntsharkBackendUsername", builder),
-                SecretManager.GetSecret("AntsharkBackendPassword", builder));
+            BackendConnectionString = backendConnectionString;
         }
 
         public static async Task OnAuthentication(AuthResult authResult)
