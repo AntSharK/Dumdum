@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
-using Microsoft.AspNetCore.Authentication.OAuth;
+﻿using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
 
 namespace Dumdum.Auth
 {
