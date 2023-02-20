@@ -2,9 +2,10 @@ using Dumdum.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
 SecretManager.Init(builder);
+UserInfoDB.Init(builder);
 
 // Configure Auth in Builder
-MSAAuth.AddAuth(builder);
+GeneralAuth.ConfigureAuth(builder);
 
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<Swollball.Lobby>();
@@ -16,7 +17,7 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 
 // Configure Auth for App
-MSAAuth.ConfigureAuth(app);
+GeneralAuth.ConfigureAuth(app);
 
 app.Logger.LogInformation("Starting up...");
 Swollball.GameHub.RegisterLogger(app.Logger);
