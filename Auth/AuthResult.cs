@@ -9,9 +9,9 @@ namespace Dumdum.Auth
         private readonly string? name;
         private readonly ClaimsIdentity? claimsIdentity;
 
-        private const string RATINGCLAIMKEY = "rating";
+        private const string SWOLLBALLRATINGCLAIMKEY = "swollballrating";
 
-        public AuthResult(ClaimsIdentity identity)
+        public AuthResult(ClaimsIdentity? identity)
         {
             if (identity == null ||
                 identity.Claims == null ||
@@ -39,11 +39,11 @@ namespace Dumdum.Auth
             }
         }
 
-        public int Rating
+        public int SwollballRating
         {
             get
             {
-                var ratingClaim = this.claimsIdentity?.FindFirst(c => c.Type == RATINGCLAIMKEY);
+                var ratingClaim = this.claimsIdentity?.FindFirst(c => c.Type == SWOLLBALLRATINGCLAIMKEY);
                 if (ratingClaim != null)
                 {
                     return Int32.Parse(ratingClaim.Value);
@@ -53,13 +53,13 @@ namespace Dumdum.Auth
             }
             set
             {
-                var ratingClaim = this.claimsIdentity?.FindFirst(c => c.Type == RATINGCLAIMKEY);
+                var ratingClaim = this.claimsIdentity?.FindFirst(c => c.Type == SWOLLBALLRATINGCLAIMKEY);
                 if (ratingClaim != null)
                 {
                     this.claimsIdentity?.RemoveClaim(ratingClaim);
                 }
 
-                this.claimsIdentity?.AddClaim(new Claim(RATINGCLAIMKEY, value.ToString()));
+                this.claimsIdentity?.AddClaim(new Claim(SWOLLBALLRATINGCLAIMKEY, value.ToString()));
             }
         }
     }

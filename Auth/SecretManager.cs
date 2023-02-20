@@ -19,6 +19,5 @@ namespace Dumdum.Auth
         {
             return builder.Configuration[secretName] ?? string.Empty;
         }
-
     }
 }

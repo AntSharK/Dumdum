@@ -6,7 +6,7 @@ namespace Dumdum.Pages
 {
     public class SwollballInsightModel : PageModel
     {
-        public GameRoom? Room;
+        public GameRoom Room;
 
         public void OnGet([FromServices] Lobby lobby,
             [FromQuery] string roomId)
