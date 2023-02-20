@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 
 namespace Dumdum.Auth
 {
@@ -8,8 +7,6 @@ namespace Dumdum.Auth
         public bool IsAuthenticated { get; private set; } = false;
         private readonly string? name;
         private readonly ClaimsIdentity? claimsIdentity;
-
-        private const string SWOLLBALLRATINGCLAIMKEY = "swollballrating";
 
         public AuthResult(ClaimsIdentity? identity)
         {
@@ -36,30 +33,6 @@ namespace Dumdum.Auth
                 }
 
                 return this.name;
-            }
-        }
-
-        public int SwollballRating
-        {
-            get
-            {
-                var ratingClaim = this.claimsIdentity?.FindFirst(c => c.Type == SWOLLBALLRATINGCLAIMKEY);
-                if (ratingClaim != null)
-                {
-                    return Int32.Parse(ratingClaim.Value);
-                }
-
-                return -1;
-            }
-            set
-            {
-                var ratingClaim = this.claimsIdentity?.FindFirst(c => c.Type == SWOLLBALLRATINGCLAIMKEY);
-                if (ratingClaim != null)
-                {
-                    this.claimsIdentity?.RemoveClaim(ratingClaim);
-                }
-
-                this.claimsIdentity?.AddClaim(new Claim(SWOLLBALLRATINGCLAIMKEY, value.ToString()));
             }
         }
     }

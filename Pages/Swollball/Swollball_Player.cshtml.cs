@@ -18,6 +18,7 @@ namespace Dumdum.Pages.Swollball
         }
 
         public AuthResult? AuthResult { get; private set; }
+        public int SwollballRating { get; private set; }
 
         public async Task OnGet(
             [FromQuery] string action,
@@ -25,6 +26,12 @@ namespace Dumdum.Pages.Swollball
             [FromQuery] string roomIdIn)
         {
             this.AuthResult = await GeneralAuth.GetAuthResultForPage(this).ConfigureAwait(false);
+            if (this.AuthResult == null)
+            {
+                return;
+            }
+
+            this.SwollballRating = await UserInfoDB.GetSwollballRating(this.AuthResult).ConfigureAwait(false);
 
             // Game start - load auth result
             if (action == "GAMESTARTACTION"

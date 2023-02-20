@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Data.SqlClient;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Dumdum.Auth
 {
@@ -37,6 +38,28 @@ Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=R
             }
         }
 
+        public static async Task<int> GetSwollballRating(AuthResult authResult)
+        {
+            using var connection = new SqlConnection(BackendConnectionString);
+            await connection.OpenAsync().ConfigureAwait(false);
+
+            // Pull rating data
+            var getSwollballRatingCommand = new SqlCommand($"SELECT * FROM dbo.SwollballRating WHERE Email='{authResult.Email}'", connection);
+            using (var reader = await getSwollballRatingCommand.ExecuteReaderAsync().ConfigureAwait(false))
+            {
+                if (reader.HasRows)
+                {
+                    while (await reader.ReadAsync().ConfigureAwait(false))
+                    {
+                        return reader.GetInt32(1);
+                    }
+                }
+            }
+
+            // If no rows were found, 
+            return await CreateSwollballRating(connection, authResult).ConfigureAwait(false);
+        }
+
         private static async Task<bool> FindUser(SqlConnection connection, AuthResult authResult)
         {
             var command = new SqlCommand($"SELECT * FROM dbo.UserLogin WHERE Email='{authResult.Email}'", connection);
@@ -64,26 +87,6 @@ Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=R
             updateCommand.Parameters.AddWithValue("@lastlogin", DateTime.UtcNow);
             updateCommand.Parameters.AddWithValue("@email", authResult.Email);
             await updateCommand.ExecuteNonQueryAsync();
-
-            // Pull rating data
-            var getSwollballRatingCommand = new SqlCommand($"SELECT * FROM dbo.SwollballRating WHERE Email='{authResult.Email}'", connection);
-            var foundUserSwollballRating = false;
-            using (var reader = await getSwollballRatingCommand.ExecuteReaderAsync().ConfigureAwait(false))
-            {
-                if (reader.HasRows)
-                {
-                    foundUserSwollballRating = true;
-                    while (await reader.ReadAsync().ConfigureAwait(false))
-                    {
-                        authResult.SwollballRating = reader.GetInt32(1);
-                    }
-                }
-            }
-
-            if (!foundUserSwollballRating)
-            {
-                await CreateSwollballRating(connection, authResult).ConfigureAwait(false);
-            }
         }
 
         private static async Task CreateUser(SqlConnection connection, AuthResult authResult)
@@ -95,14 +98,15 @@ Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=R
             await createCommand.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
-        private static async Task CreateSwollballRating(SqlConnection connection, AuthResult authResult)
+        private static async Task<int> CreateSwollballRating(SqlConnection connection, AuthResult authResult)
         {
-            authResult.SwollballRating = 1000;
-
+            const int DEFAULTSWOLLBALLRATING = 1000;
             var createCommand = new SqlCommand("INSERT INTO dbo.SwollballRating VALUES (@email, @swollballrating)", connection);
             createCommand.Parameters.AddWithValue("@email", authResult.Email);
-            createCommand.Parameters.AddWithValue("@swollballrating", authResult.SwollballRating);
+            createCommand.Parameters.AddWithValue("@swollballrating", DEFAULTSWOLLBALLRATING);
             await createCommand.ExecuteNonQueryAsync().ConfigureAwait(false);
+
+            return DEFAULTSWOLLBALLRATING;
         }
     }
 }
