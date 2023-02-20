@@ -13,6 +13,7 @@ document.getElementById("joinroombutton").addEventListener("click", function (ev
     connection.invoke("JoinRoom", userNameIn, roomIdIn, colorIn).catch(function (err) {
         return console.error(err.toString());
     });
+
     event.preventDefault();
 });
 
@@ -56,10 +57,6 @@ connection.on("Reconnect_ResumeWaiting", function (userName, roomId) {
     SwitchToWaitingView(userName, roomId);
 });
 
-connection.on("StartGame", function (sceneToStartOn) {
-    StartGame(sceneToStartOn);
-});
-
 function StartGame(sceneToStartOn) {
     document.body.innerHTML = "<div id='controlbar' style=\"min-height:20px; height:2vh\"></div><div id='phaserapp' style=\"height:80vh\"></div>";
     document.getElementById("controlbar").innerHTML = "<text id='loadingbar'></text><a href = 'javascript:window.location.reload()' style = 'float:right' > REFRESH</a> ";
@@ -99,6 +96,9 @@ var SwitchToWaitingView = function (sessionUserId, sessionRoomId) {
 
     document.getElementById("pageName").textContent = "LOBBY: " + sessionRoomId;
     document.getElementById("startLobby").style.display = "block";
+
+    // Send a GET to update game data
+    window.fetch("//" + location.host + location.pathname + "?action=GAMESTARTACTION&userNameIn=" + sessionUserId + "&roomIdIn=" + sessionRoomId);
 }
 
 document.getElementById("colorpicker").value = GetRandomColor();

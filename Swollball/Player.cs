@@ -16,6 +16,7 @@ namespace Swollball
         public Score PlayerScore { get; private set; }
         public Dictionary<string, IUpgrade> CurrentUpgrades { get; private set; } = new Dictionary<string, IUpgrade>();
         public EconomyData Economy { get; private set; } = new EconomyData();
+        public string? PlayerEmail { get; set; }
 
         private const int CREDITINCREMENTPERROUND = 2;
         private const int MAXKEYSTONES = 6;
