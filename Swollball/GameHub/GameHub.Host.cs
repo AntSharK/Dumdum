@@ -143,7 +143,7 @@ namespace Swollball
             var emailToRatings = await UserInfoDB.GetPlayerRatings(playerEmails).ConfigureAwait(false);
             var averageRating = emailToRatings.Values.Average();
             var allPlayerList = allPlayers.ToList();
-            allPlayerList.Sort((a, b) => a.PlayerScore.RoundNumber - b.PlayerScore.RoundNumber); // Sort from last place to first place
+            allPlayerList.Sort((a, b) => b.PlayerScore.RoundNumber - a.PlayerScore.RoundNumber); // Sort from first place to last place
 
             // Do nothing if there is only 1 player (and avoid dividing by 0)
             if (allPlayerList.Count <= 1)
