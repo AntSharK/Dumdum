@@ -144,18 +144,26 @@ namespace Swollball
             var averageRating = emailToRatings.Values.Average();
             var allPlayerList = allPlayers.ToList();
             allPlayerList.Sort((a, b) => a.PlayerScore.RoundNumber - b.PlayerScore.RoundNumber); // Sort from last place to first place
+
+            // Do nothing if there is only 1 player (and avoid dividing by 0)
+            if (allPlayerList.Count <= 1)
+            {
+                return;
+            }
+
             var playerRanking = 0;
             foreach (var player in allPlayerList)
             {
-                playerRanking++;
                 if (!string.IsNullOrWhiteSpace(player.PlayerEmail)
                     && emailToRatings.ContainsKey(player.PlayerEmail))
                 {
-                    var baseRatingChange = 200 * playerRanking / allPlayerList.Count - 100;
+                    var baseRatingChange = 200 * playerRanking / (allPlayerList.Count - 1) - 100;
                     var oldPlayerRating = emailToRatings[player.PlayerEmail];
                     var adjustedRating = (averageRating - oldPlayerRating) * 0.025; // Gain 1 less rating every 40 points above the average
                     emailToRatings[player.PlayerEmail] = (int)(baseRatingChange + adjustedRating + oldPlayerRating);
                 }
+
+                playerRanking++;
             }
 
             await UserInfoDB.UpdatePlayerRatings(emailToRatings);
