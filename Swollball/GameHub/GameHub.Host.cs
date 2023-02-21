@@ -138,7 +138,7 @@ namespace Swollball
             var allPlayers = room.Players.Values.Union(room.DeadPlayers);
             var playerEmails = allPlayers
                 .Where(p => !string.IsNullOrWhiteSpace(p.PlayerEmail))
-                .Select(p => p.PlayerEmail);
+                .Select(p => p.PlayerEmail).Distinct();
 
             var emailToRatings = await UserInfoDB.GetPlayerRatings(playerEmails).ConfigureAwait(false);
             var averageRating = emailToRatings.Values.Average();
@@ -151,7 +151,9 @@ namespace Swollball
                 return;
             }
 
-            var playerRanking = 0;
+            // Start from the best to the lowest rating
+            // This way, if someone has multiple accounts, they receive the rating change for the worst result
+            var playerRanking = allPlayerList.Count - 1;
             foreach (var player in allPlayerList)
             {
                 if (!string.IsNullOrWhiteSpace(player.PlayerEmail)
@@ -163,7 +165,7 @@ namespace Swollball
                     emailToRatings[player.PlayerEmail] = (int)(baseRatingChange + adjustedRating + oldPlayerRating);
                 }
 
-                playerRanking++;
+                playerRanking--;
             }
 
             await UserInfoDB.UpdatePlayerRatings(emailToRatings);
