@@ -154,7 +154,7 @@ namespace Swollball
                     var baseRatingChange = 200 * playerRanking / allPlayerList.Count - 100;
                     var oldPlayerRating = emailToRatings[player.PlayerEmail];
                     var adjustedRating = (averageRating - oldPlayerRating) * 0.025; // Gain 1 less rating every 40 points above the average
-                    emailToRatings[player.PlayerEmail] = (int)(baseRatingChange + adjustedRating);
+                    emailToRatings[player.PlayerEmail] = (int)(baseRatingChange + adjustedRating + oldPlayerRating);
                 }
             }
 
