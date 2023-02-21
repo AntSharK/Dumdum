@@ -1,8 +1,15 @@
 using Dumdum.Auth;
+using Swollball.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
 SecretManager.Init(builder);
-UserInfoDB.Init(builder);
+var userDbConnectionString = string.Format(@"Data Source=antsharkbackend.database.windows.net;Initial Catalog=UserInfo;
+User ID={0};
+Password={1};
+Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False", 
+SecretManager.GetSecret("AntsharkBackendUsername", builder),
+SecretManager.GetSecret("AntsharkBackendPassword", builder));
+UserInfoDB.Init(userDbConnectionString);
 
 // Configure Auth in Builder
 GeneralAuth.ConfigureAuth(builder);

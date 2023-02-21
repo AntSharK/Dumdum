@@ -1,21 +1,15 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-using Microsoft.Data.SqlClient;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+﻿using Microsoft.Data.SqlClient;
+using System.Text;
 
-namespace Dumdum.Auth
+namespace Swollball.Auth
 {
     public static class UserInfoDB
     {
-        private static string BackendConnectionString = @"Data Source=antsharkbackend.database.windows.net;Initial Catalog=UserInfo;
-User ID={0};
-Password={1};
-Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        private static string? BackendConnectionString;
 
-        public static void Init(WebApplicationBuilder builder)
+        public static void Init(string backendConnectionString)
         {
-            BackendConnectionString = string.Format(BackendConnectionString,
-                SecretManager.GetSecret("AntsharkBackendUsername", builder),
-                SecretManager.GetSecret("AntsharkBackendPassword", builder));
+            BackendConnectionString = backendConnectionString;
         }
 
         public static async Task OnAuthentication(AuthResult authResult)
@@ -38,20 +32,66 @@ Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=R
             }
         }
 
-        public static async Task<int> GetSwollballRating(AuthResult authResult)
+        public static async Task UpdatePlayerRatings(IDictionary<string, int> emailsToRatings)
+        {
+            using var connection = new SqlConnection(BackendConnectionString);
+            await connection.OpenAsync().ConfigureAwait(false);
+
+            foreach (var emailToRating in emailsToRatings)
+            {
+                var updateCommand = new SqlCommand("UPDATE dbo.SwollballRating SET Rating = @rating WHERE Email = @email", connection);
+                updateCommand.Parameters.AddWithValue("@rating", emailToRating.Value);
+                updateCommand.Parameters.AddWithValue("@email", emailToRating.Key);
+                await updateCommand.ExecuteNonQueryAsync().ConfigureAwait(false);
+            }
+        }
+
+        public static async Task<IDictionary<string, int>> GetPlayerRatings(IEnumerable<string?> playerEmails)
         {
             using var connection = new SqlConnection(BackendConnectionString);
             await connection.OpenAsync().ConfigureAwait(false);
 
             // Pull rating data
-            var getSwollballRatingCommand = new SqlCommand($"SELECT * FROM dbo.SwollballRating WHERE Email='{authResult.Email}'", connection);
+            var dictionaryToReturn = new Dictionary<string, int>();
+            var sb = new StringBuilder();
+            foreach (var email in playerEmails)
+            {
+                sb.Append('\'');
+                sb.Append(email);
+                sb.Append('\'');
+                sb.Append(',');
+            }
+            sb.Length--;
+            var getSwollballRatingCommand = new SqlCommand($"SELECT Email,Rating FROM dbo.SwollballRating WHERE Email IN (" + sb.ToString() + ")", connection);
             using (var reader = await getSwollballRatingCommand.ExecuteReaderAsync().ConfigureAwait(false))
             {
                 if (reader.HasRows)
                 {
                     while (await reader.ReadAsync().ConfigureAwait(false))
                     {
-                        return reader.GetInt32(1);
+                        dictionaryToReturn[reader.GetString(0)] = reader.GetInt32(1);
+                    }
+                }
+            }
+
+            return dictionaryToReturn;
+        }
+
+        public static async Task<int> GetSwollballRating(AuthResult authResult)
+        {
+            using var connection = new SqlConnection(BackendConnectionString);
+            await connection.OpenAsync().ConfigureAwait(false);
+
+            // Pull rating data
+            var getSwollballRatingCommand = new SqlCommand($"SELECT Rating FROM dbo.SwollballRating WHERE Email=@email", connection);
+            getSwollballRatingCommand.Parameters.AddWithValue("@email", authResult.Email);
+            using (var reader = await getSwollballRatingCommand.ExecuteReaderAsync().ConfigureAwait(false))
+            {
+                if (reader.HasRows)
+                {
+                    while (await reader.ReadAsync().ConfigureAwait(false))
+                    {
+                        return reader.GetInt32(0);
                     }
                 }
             }
@@ -62,7 +102,8 @@ Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=R
 
         private static async Task<bool> FindUser(SqlConnection connection, AuthResult authResult)
         {
-            var command = new SqlCommand($"SELECT * FROM dbo.UserLogin WHERE Email='{authResult.Email}'", connection);
+            var command = new SqlCommand($"SELECT * FROM dbo.UserLogin WHERE Email=@email", connection);
+            command.Parameters.AddWithValue("@email", authResult.Email);
             using (var reader = await command.ExecuteReaderAsync().ConfigureAwait(false))
             {
                 if (!reader.HasRows)
@@ -86,7 +127,7 @@ Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=R
             var updateCommand = new SqlCommand("UPDATE dbo.UserLogin SET LastLogin = @lastlogin WHERE Email = @email", connection);
             updateCommand.Parameters.AddWithValue("@lastlogin", DateTime.UtcNow);
             updateCommand.Parameters.AddWithValue("@email", authResult.Email);
-            await updateCommand.ExecuteNonQueryAsync();
+            await updateCommand.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         private static async Task CreateUser(SqlConnection connection, AuthResult authResult)

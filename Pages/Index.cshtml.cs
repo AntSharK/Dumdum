@@ -1,8 +1,6 @@
 using Dumdum.Auth;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Security.Claims;
+using Swollball.Auth;
 
 namespace Dumdum.Pages
 {

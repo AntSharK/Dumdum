@@ -2,6 +2,7 @@ using Dumdum.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Swollball;
+using Swollball.Auth;
 
 namespace Dumdum.Pages.Swollball
 {
