@@ -32,6 +32,20 @@ namespace Swollball.Auth
             }
         }
 
+        public static async Task UpdatePlayerRatings(IDictionary<string, int> emailsToRatings)
+        {
+            using var connection = new SqlConnection(BackendConnectionString);
+            await connection.OpenAsync().ConfigureAwait(false);
+
+            foreach (var emailToRating in emailsToRatings)
+            {
+                var updateCommand = new SqlCommand("UPDATE dbo.SwollballRating SET Rating = @rating WHERE Email = @email", connection);
+                updateCommand.Parameters.AddWithValue("@rating", emailToRating.Value);
+                updateCommand.Parameters.AddWithValue("@email", emailToRating.Key);
+                await updateCommand.ExecuteNonQueryAsync().ConfigureAwait(false);
+            }
+        }
+
         public static async Task<IDictionary<string, int>> GetPlayerRatings(IEnumerable<string?> playerEmails)
         {
             using var connection = new SqlConnection(BackendConnectionString);
@@ -113,7 +127,7 @@ namespace Swollball.Auth
             var updateCommand = new SqlCommand("UPDATE dbo.UserLogin SET LastLogin = @lastlogin WHERE Email = @email", connection);
             updateCommand.Parameters.AddWithValue("@lastlogin", DateTime.UtcNow);
             updateCommand.Parameters.AddWithValue("@email", authResult.Email);
-            await updateCommand.ExecuteNonQueryAsync();
+            await updateCommand.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         private static async Task CreateUser(SqlConnection connection, AuthResult authResult)
