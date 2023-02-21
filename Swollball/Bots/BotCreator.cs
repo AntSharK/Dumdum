@@ -68,6 +68,7 @@ namespace Swollball.Bots
 
             // Assign the bot a random color
             newPlayer.Ball.Color = rng.Next(0xFFFFFF);
+            newPlayer.PlayerEmail = postFix + "bot@antsharkbot";
 
             if (room.Players.ContainsKey(playerName))
             {
