@@ -12,7 +12,7 @@ namespace Swollball.Bots
             "VJ", "PEM", "MA", "RAJ", "JU",
         };
 
-        internal static Player? CreateAutomatedPlayer(this GameRoom room, Func<IUpgrade, int>? implementedStrat, Func<Player, int>? tierUpStrat, string postFix)
+        internal static Player? CreateAutomatedPlayer(this GameRoom room, Func<IUpgrade, int>? implementedStrat, Func<Player, int>? tierUpStrat, string botStratString)
         {
             var i = rng.Next(BotNames.Count);
 
@@ -23,19 +23,19 @@ namespace Swollball.Bots
                 {
                     case 0:
                         implementedStrat = UpgradeScores.ArmorBulwarker;
-                        postFix += "AB";
+                        botStratString += "AB";
                         break;
                     case 1:
                         implementedStrat = UpgradeScores.ArmorSustain;
-                        postFix += "AS";
+                        botStratString += "AS";
                         break;
                     case 2:
                         implementedStrat = UpgradeScores.DamageSustain;
-                        postFix += "DS";
+                        botStratString += "DS";
                         break;
                     default:
                         implementedStrat = UpgradeScores.Random;
-                        postFix += "RAN";
+                        botStratString += "RAN";
                         break;
                 }
             }
@@ -47,15 +47,15 @@ namespace Swollball.Bots
                 {
                     case 0:
                         tierUpStrat = TierUpStrategy.Never;
-                        postFix += "0";
+                        botStratString += "0";
                         break;
                     case 1:
                         tierUpStrat = TierUpStrategy.Sometimes;
-                        postFix += "1";
+                        botStratString += "1";
                         break;
                     case 2:
                         tierUpStrat = TierUpStrategy.Always;
-                        postFix += "2";
+                        botStratString += "2";
                         break;
                     default:
                         tierUpStrat = TierUpStrategy.Never;
@@ -63,12 +63,12 @@ namespace Swollball.Bots
                 }
             }
 
-            var playerName = BotNames[i] + (room.Players.Count() + 1) + postFix;
+            var playerName = BotNames[i] + "BOT" + (room.Players.Count() + 1);
             var newPlayer = new StrategyImplementingBot(playerName, room.RoomId, implementedStrat, tierUpStrat);
 
             // Assign the bot a random color
             newPlayer.Ball.Color = rng.Next(0xFFFFFF);
-            newPlayer.PlayerEmail = postFix + "bot@antsharkbot";
+            newPlayer.PlayerEmail = botStratString + "bot@antsharkbot";
 
             if (room.Players.ContainsKey(playerName))
             {
