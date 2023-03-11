@@ -42,6 +42,7 @@ namespace Swollball.Upgrades
             public const string Reinforce = "Reinforce";
             public const string Bioshield = "Bioshield";
             public const string Inertia = "Inertia";
+            public const string Creditshield = "Creditshield";
 
             public const string Ossify = "Ossify";
             public const string Ketones = "Ketones";
@@ -95,6 +96,7 @@ namespace Swollball.Upgrades
             Tuple.Create(7, () => new ArmorWhenHit(4, 10, Names.Reinforce, 2) as IUpgrade),
             Tuple.Create(7, () => new ArmorWhenHp(1, 5, Names.Bioshield, 3) as IUpgrade),
             Tuple.Create(7, () => new DamageWhenSpeed(3, 7, Names.Inertia, 5) as IUpgrade),
+            Tuple.Create(7, () => new HpWhenCreditSpent(2, 8, Names.Creditshield, 4) as IUpgrade),
         };
 
         private static List<Tuple<int, Func<IUpgrade>>> Tier4UpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
