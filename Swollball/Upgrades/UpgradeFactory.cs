@@ -42,6 +42,7 @@ namespace Swollball.Upgrades
             public const string Reinforce = "Reinforce";
             public const string Bioshield = "Bioshield";
             public const string Inertia = "Inertia";
+            public const string RetirementPlan = "401k";
 
             public const string Ossify = "Ossify";
             public const string Ketones = "Ketones";
@@ -51,6 +52,7 @@ namespace Swollball.Upgrades
             public const string Fortify = "Fortify";
             public const string Modelling = "Modelling";
             public const string Overcharge = "Overcharge";
+            public const string UberBeet = "UberBeet";
         }
 
         private static Random Rng = new Random();
@@ -95,6 +97,7 @@ namespace Swollball.Upgrades
             Tuple.Create(7, () => new ArmorWhenHit(4, 10, Names.Reinforce, 2) as IUpgrade),
             Tuple.Create(7, () => new ArmorWhenHp(1, 5, Names.Bioshield, 3) as IUpgrade),
             Tuple.Create(7, () => new DamageWhenSpeed(3, 7, Names.Inertia, 5) as IUpgrade),
+            Tuple.Create(7, () => new HpWhenCreditSpent(2, 8, Names.RetirementPlan, 4) as IUpgrade),
         };
 
         private static List<Tuple<int, Func<IUpgrade>>> Tier4UpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
@@ -107,6 +110,7 @@ namespace Swollball.Upgrades
             Tuple.Create(5, () => new ArmorWhenHit(8, 10, Names.Fortify, 2) as IUpgrade),
             Tuple.Create(5, () => new SpeedEnhancement(2, 6, Names.Overcharge, 4) as IUpgrade),
             Tuple.Create(5, () => new CreditWhenHp(1, 10, Names.Modelling, 3) as IUpgrade),
+            Tuple.Create(9, () => new Hp(100, 6, Names.UberBeet) as IUpgrade),
         };
         
         private static Lazy<Func<IUpgrade>[]> Tier1Upgrades = new Lazy<Func<IUpgrade>[]>(() =>
