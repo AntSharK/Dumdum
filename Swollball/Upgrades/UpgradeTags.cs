@@ -19,6 +19,7 @@ namespace Swollball.Upgrades
         // For tags which modify server-side behavior
         public const string ONTURNSTART = "Reward";
         public const string TEMPORARY = "Temporary";
+        public const string ENHANCEMENT = "Enhancement";
 
         // For tags to denote what is changed
         public const string ARMORUPGRADE = "ArmorUpg";

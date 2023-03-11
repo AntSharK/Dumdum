@@ -65,6 +65,12 @@ namespace Swollball
                     return false; // Too many keystones - need to free up space
                 }
 
+                var enhancements = this.Ball.GetUpgradesByTag(UpgradeTags.ENHANCEMENT);
+                foreach (var enhancement in enhancements)
+                {
+                    enhancement.AnotherUpgradePurchased(upgradeToApply);
+                }
+
                 upgradeToApply.PerformUpgrade(this);
 
                 // Current logic - replace the upgrade with a blank card

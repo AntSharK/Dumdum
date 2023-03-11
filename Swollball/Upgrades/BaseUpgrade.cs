@@ -42,6 +42,11 @@
             // Does nothing
         }
 
+        public virtual void AnotherUpgradePurchased(IUpgrade upgrade)
+        {
+            // Does nothing
+        }
+
         public virtual void Trigger(Ball ball, string increasedStat, int triggerStatIncrease, int triggerUpgradeDepth)
         {
             // Does nothing
