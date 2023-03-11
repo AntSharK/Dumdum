@@ -60,19 +60,19 @@ namespace Swollball.Upgrades
         // TODO: Balance all the shops!
         private static List<Tuple<int, Func<IUpgrade>>> Tier1UpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
         {
-            Tuple.Create(18, () => new Damage(3, 3, Names.Tofu) as IUpgrade),
+            Tuple.Create(18, () => new Damage(3, 4, Names.Tofu) as IUpgrade),
             Tuple.Create(18, () => new Armor(1, 3, Names.Apple) as IUpgrade),
             Tuple.Create(18, () => new Hp(10, 2, Names.Brocolli) as IUpgrade),
             Tuple.Create(18, () => new Size(15, 2, Names.Milk) as IUpgrade),
             Tuple.Create(18, () => new Speed(30, 2, Names.Bread) as IUpgrade),
             Tuple.Create(7, () => new SizeWhenHp(1, 3, Names.Bigger, 5) as IUpgrade),
             Tuple.Create(7, () => new DamageWhenArmor(1, 4, Names.Bulwark, 3) as IUpgrade),
-            Tuple.Create(7, () => new HpWhenDamageDone(2, 4, Names.Feast, 5) as IUpgrade),
+            Tuple.Create(7, () => new HpWhenDamageDone(2, 5, Names.Feast, 4) as IUpgrade),
         };
 
         private static List<Tuple<int, Func<IUpgrade>>> Tier2UpgradeOdds = new List<Tuple<int, Func<IUpgrade>>>()
         {
-            Tuple.Create(12, () => new Damage(5, 4, Names.Bacon) as IUpgrade),
+            Tuple.Create(12, () => new Damage(4, 4, Names.Bacon) as IUpgrade),
             Tuple.Create(12, () => new HpPerSize(2, 3, Names.Calcify) as IUpgrade),
             Tuple.Create(9, () => new SizePerSize(1, 6, Names.GET_BUFF) as IUpgrade),
             Tuple.Create(6, () => new ArmorWhenHit(1, 6, Names.Harden, 3) as IUpgrade),
@@ -102,7 +102,7 @@ namespace Swollball.Upgrades
             Tuple.Create(6, () => new ArmorPerArmor(3, 10, Names.Ketones) as IUpgrade),
             Tuple.Create(6, () => new Damage(20, 6, Names.Wagyu) as IUpgrade),
             Tuple.Create(4, () => new SizePerSize(4, 8, Names.GET_SWOLL) as IUpgrade),
-            Tuple.Create(4, () => new HpWhenDamageDone(8, 9, Names.Siphon, 4) as IUpgrade),
+            Tuple.Create(4, () => new HpWhenDamageDone(7, 9, Names.Siphon, 3) as IUpgrade),
             Tuple.Create(3, () => new ArmorWhenHit(8, 10, Names.Fortify, 2) as IUpgrade),
             Tuple.Create(3, () => new CreditWhenHp(1, 10, Names.Modelling, 3) as IUpgrade),
         };
