@@ -26,6 +26,11 @@
         void RemoveUpgrade(Player player);
 
         /// <summary>
+        /// Action performed when another upgrade is purchased - only for ENHANCEMENT tagged upgrades
+        /// </summary>
+        void AnotherUpgradePurchased(IUpgrade upgrade);
+
+        /// <summary>
         /// Action performed when an upgrade is triggered from an increase in stats
         /// </summary>
         /// <param name="ball">The ball which has a stat increase</param>

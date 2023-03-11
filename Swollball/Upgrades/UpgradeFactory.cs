@@ -50,6 +50,7 @@ namespace Swollball.Upgrades
             public const string Siphon = "Siphon";
             public const string Fortify = "Fortify";
             public const string Modelling = "Modelling";
+            public const string Overcharge = "Overcharge";
         }
 
         private static Random Rng = new Random();
@@ -104,6 +105,7 @@ namespace Swollball.Upgrades
             Tuple.Create(4, () => new SizePerSize(4, 8, Names.GET_SWOLL) as IUpgrade),
             Tuple.Create(4, () => new HpWhenDamageDone(7, 9, Names.Siphon, 3) as IUpgrade),
             Tuple.Create(3, () => new ArmorWhenHit(8, 10, Names.Fortify, 2) as IUpgrade),
+            Tuple.Create(4, () => new SpeedEnhancement(2, 6, Names.Overcharge, 4) as IUpgrade),
             Tuple.Create(3, () => new CreditWhenHp(1, 10, Names.Modelling, 3) as IUpgrade),
         };
         
