@@ -42,5 +42,10 @@
         {
             // Does nothing
         }
+
+        public void AnotherUpgradePurchased(IUpgrade upgrade)
+        {
+            // Does nothing
+        }
     }
 }
