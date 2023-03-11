@@ -10,7 +10,7 @@
             this.Tags.Add(UpgradeTags.ENHANCEMENT);
         }
 
-        public override string Description => $"Gain {this.UpgradeAmount} HP when you spend a credit.";
+        public override string Description => $"Gain {this.UpgradeAmount} HP per credit spent on a purchase.";
 
         public override int BorderColor => UpgradeColors.BLACK;
         public override int FillColor => UpgradeColors.PERIWINKLE;
@@ -26,7 +26,7 @@
             base.AnotherUpgradePurchased(upgrade);
             if (this.player != null)
             {
-                this.player.Ball.IncreaseStat(UpgradeTags.HPUPGRADE, upgrade.Cost, 0);
+                this.player.Ball.IncreaseStat(UpgradeTags.HPUPGRADE, upgrade.Cost * this.UpgradeAmount, 0);
             }
         }
     }
