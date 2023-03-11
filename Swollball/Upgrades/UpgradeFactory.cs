@@ -52,6 +52,7 @@ namespace Swollball.Upgrades
             public const string Fortify = "Fortify";
             public const string Modelling = "Modelling";
             public const string Overcharge = "Overcharge";
+            public const string Superbeet = "Superbeet";
         }
 
         private static Random Rng = new Random();
@@ -109,6 +110,7 @@ namespace Swollball.Upgrades
             Tuple.Create(5, () => new ArmorWhenHit(8, 10, Names.Fortify, 2) as IUpgrade),
             Tuple.Create(5, () => new SpeedEnhancement(2, 6, Names.Overcharge, 4) as IUpgrade),
             Tuple.Create(5, () => new CreditWhenHp(1, 10, Names.Modelling, 3) as IUpgrade),
+            Tuple.Create(9, () => new Hp(100, 6, Names.Superbeet) as IUpgrade),
         };
         
         private static Lazy<Func<IUpgrade>[]> Tier1Upgrades = new Lazy<Func<IUpgrade>[]>(() =>
