@@ -15,6 +15,8 @@ UserInfoDB.Init(userDbConnectionString);
 GeneralAuth.ConfigureAuth(builder);
 
 builder.Services.AddSignalR();
+
+// Add lobby singletons
 builder.Services.AddSingleton<Swollball.Lobby>();
 builder.Services.AddRazorPages();
 
@@ -28,6 +30,8 @@ GeneralAuth.ConfigureAuth(app);
 
 app.Logger.LogInformation("Starting up...");
 Swollball.GameHub.RegisterLogger(app.Logger);
+
+// Add hubs
 app.MapHub<Swollball.GameHub>("/swollBallHub");
 
 app.MapRazorPages();
