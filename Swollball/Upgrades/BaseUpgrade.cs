@@ -1,4 +1,6 @@
-﻿namespace Swollball.Upgrades
+﻿using Swollball.PlayerData;
+
+namespace Swollball.Upgrades
 {
     public abstract class BaseUpgrade : IUpgrade
     {
@@ -27,17 +29,17 @@
             this.UpgradeName = name;
         }
 
-        public virtual void PerformUpgrade(Player player)
+        public virtual void PerformUpgrade(SwollballPlayer player)
         {
             player.Ball.AddUpgrade(this);
         }
 
-        public virtual void RemoveUpgrade(Player player)
+        public virtual void RemoveUpgrade(SwollballPlayer player)
         {
             // Do nothing - does not involve selling upgrade
         }
 
-        public virtual void StartNextRound(Player player)
+        public virtual void StartNextRound(SwollballPlayer player)
         {
             // Does nothing
         }

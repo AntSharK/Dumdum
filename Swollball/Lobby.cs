@@ -1,4 +1,4 @@
-﻿using Common;
+﻿using Common.Util;
 
 namespace Swollball
 {
@@ -7,7 +7,7 @@ namespace Swollball
         private const int MAXROOMIDLEMINUTES = 60;
         private const int CLEANUPINTERVAL = 120000;
 
-        public Dictionary<string, GameRoom> Rooms { get; private set; } = new Dictionary<string, GameRoom>();
+        public Dictionary<string, SwollballRoom> Rooms { get; private set; } = new Dictionary<string, SwollballRoom>();
 
         public Lobby()
         {
@@ -15,7 +15,7 @@ namespace Swollball
             var rm = this.CreateRoom("TEST");
         }
 
-        public GameRoom? CreateRoom(string connectionId)
+        public SwollballRoom? CreateRoom(string connectionId)
         {
             const int ROOMIDLENGTH = 5;
             var allKeys = this.Rooms.Keys;
@@ -26,7 +26,7 @@ namespace Swollball
                 return null;
             }
 
-            var newRoom = new GameRoom(roomId, connectionId);
+            var newRoom = new SwollballRoom(roomId, connectionId);
             this.Rooms[roomId] = newRoom;
             return newRoom;
         }

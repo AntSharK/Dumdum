@@ -1,4 +1,6 @@
-﻿namespace Swollball.Upgrades
+﻿using Swollball.PlayerData;
+
+namespace Swollball.Upgrades
 {
     public class ArmorPerArmor : BaseUpgrade
     {
@@ -10,7 +12,7 @@
         public override int BorderColor => UpgradeColors.GREEN;
         public override int FillColor => UpgradeColors.LAVENDER;
 
-        public override void PerformUpgrade(Player player)
+        public override void PerformUpgrade(SwollballPlayer player)
         {
             if (player.Ball.Armor > 0)
             {

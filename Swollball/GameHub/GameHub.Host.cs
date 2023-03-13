@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using Swollball.Bots;
+using Swollball.PlayerData;
 using System.Text.Json;
 
 namespace Swollball
@@ -46,7 +47,7 @@ namespace Swollball
             await Task.WhenAll(roomToStart.Players.Values.Select(player =>
             {
                 return Clients.Client(player.ConnectionId).SendAsync("UpdateState", new Ball[] { player.Ball },
-                    new Player.Score[] { player.PlayerScore },
+                    new PlayerData.Score[] { player.PlayerScore },
                     player.CurrentUpgrades.Values, player.Economy,
                     "" /*No scene to start on, just start the game*/, null /*No transition*/);
             }));
@@ -110,9 +111,9 @@ namespace Swollball
             }
         }
 
-        private async Task EndGame(GameRoom room)
+        private async Task EndGame(SwollballRoom room)
         {
-            room.State = GameRoom.RoomState.TearingDown;
+            room.State = SwollballRoom.RoomState.TearingDown;
 
             // For now, the endgame data is no different from a regular leaderboard update, except dead player data is also sent
             await Clients.Caller.SendAsync("UpdateState", null /*No ball*/,
@@ -132,7 +133,7 @@ namespace Swollball
             await this.UpdateRatings(room);
         }
 
-        private async Task UpdateRatings(GameRoom room)
+        private async Task UpdateRatings(SwollballRoom room)
         {
             var allPlayers = room.Players.Values.Union(room.DeadPlayers);
             var playerEmails = allPlayers
@@ -180,22 +181,22 @@ namespace Swollball
 
             switch(room.State)
             {
-                case GameRoom.RoomState.SettingUp:
+                case SwollballRoom.RoomState.SettingUp:
                     await Clients.Caller.SendAsync("Reconnect_ResumeRoomSetup", room);
                     break;
-                case GameRoom.RoomState.Arena:
+                case SwollballRoom.RoomState.Arena:
                     await Clients.Caller.SendAsync("UpdateState", room.Players.Values.Select(p => p.Ball),
                         null, /*No Leaderboard Data*/
                         null, null /*No Leaderboard Data*/,
                         "BallArena" /*Scene to start on*/, null /*No transition*/);
                     break;
-                case GameRoom.RoomState.Leaderboard:
+                case SwollballRoom.RoomState.Leaderboard:
                     await Clients.Caller.SendAsync("UpdateState", null /*No ball*/,
                         room.Players.Values.Select(s => s.PlayerScore),
                         null, null /*No Upgrade Data*/,
                         "Leaderboard" /*Scene to start on*/, null /*No transition*/);
                     break;
-                case GameRoom.RoomState.TearingDown:
+                case SwollballRoom.RoomState.TearingDown:
                     await Clients.Caller.SendAsync("ShowError", "ROOM HAS FINISHED.");
                     await Clients.Caller.SendAsync("ClearState");
                     break;

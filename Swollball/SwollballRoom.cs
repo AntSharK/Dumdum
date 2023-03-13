@@ -1,23 +1,19 @@
 ﻿using Swollball.Bots;
+using Swollball.PlayerData;
 using Swollball.Upgrades;
+using Common;
 
 namespace Swollball
 {
-    public class GameRoom
+    public class SwollballRoom : GameRoom<SwollballPlayer>
     {
-        public string RoomId { get; private set; }
-        public string ConnectionId { get; set; }
         public int RoundNumber { get; private set; } = 1;
-        public Dictionary<string, Player> Players { get; private set; } = new Dictionary<string, Player>();
-        public List<Player> DeadPlayers { get; private set; } = new List<Player>();
-        public DateTime UpdatedTime { get; private set; } = DateTime.UtcNow;
-        public RoomState State { get; internal set; } = RoomState.SettingUp;
+        public List<SwollballPlayer> DeadPlayers { get; private set; } = new List<SwollballPlayer>();
         public int StartingPoints { get; private set; } = 0;
-
-        public GameRoom(string roomId, string connectionId)
+        public RoomState State { get; internal set; } = RoomState.SettingUp;
+        public SwollballRoom(string roomId, string connectionId)
+            : base(roomId, connectionId)
         {
-            this.RoomId = roomId;
-            this.ConnectionId = connectionId;
 #if DEBUG
             // Insert test players
             var tp = this.CreatePlayer("TESTPLAYER", "ASDF");
@@ -48,15 +44,14 @@ namespace Swollball
 #endif
         }
 
-        public Player? CreatePlayer(string playerName, string connectionId)
+        public override SwollballPlayer? CreatePlayer(string playerName, string connectionId)
         {
-            var newPlayer = new Player(playerName, connectionId, this.RoomId);
-            if (this.Players.ContainsKey(playerName))
+            var newPlayer = new SwollballPlayer(playerName, connectionId, this.RoomId);
+            if (!this.TryAddNewPlayer(newPlayer))
             {
                 return null;
             }
 
-            this.Players[playerName] = newPlayer;
             return newPlayer;
         }
 
@@ -77,7 +72,7 @@ namespace Swollball
             this.UpdatedTime = DateTime.UtcNow;
         }
 
-        public IEnumerable<Player> UpdateRoundEnd(RoundEvent[] roundEvents)
+        public IEnumerable<SwollballPlayer> UpdateRoundEnd(RoundEvent[] roundEvents)
         {
             this.RoundNumber++;
 
@@ -141,23 +136,6 @@ namespace Swollball
             }
 
             return deadPlayers;
-        }
-
-        public override int GetHashCode()
-        {
-            return this.RoomId.GetHashCode();
-        }
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is not GameRoom g)
-            {
-                return false;
-            }
-            else
-            {
-                return g.RoomId == this.RoomId;
-            }
         }
 
         public enum RoomState

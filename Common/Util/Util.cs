@@ -1,4 +1,4 @@
-﻿namespace Common
+﻿namespace Common.Util
 {
     public static class Utils
     {

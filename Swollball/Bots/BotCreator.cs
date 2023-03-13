@@ -1,4 +1,5 @@
-﻿using Swollball.Upgrades;
+﻿using Swollball.PlayerData;
+using Swollball.Upgrades;
 namespace Swollball.Bots
 {
     internal static class BotCreator
@@ -12,7 +13,7 @@ namespace Swollball.Bots
             "VJ", "PEM", "MA", "RAJ", "JU",
         };
 
-        internal static Player? CreateAutomatedPlayer(this GameRoom room, Func<IUpgrade, int>? implementedStrat, Func<Player, int>? tierUpStrat, string botStratString)
+        internal static SwollballPlayer? CreateAutomatedPlayer(this SwollballRoom room, Func<IUpgrade, int>? implementedStrat, Func<SwollballPlayer, int>? tierUpStrat, string botStratString)
         {
             var i = rng.Next(BotNames.Count);
 

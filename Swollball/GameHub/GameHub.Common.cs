@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+using Swollball.PlayerData;
 
 namespace Swollball
 {
@@ -40,7 +41,7 @@ namespace Swollball
             await Clients.Client(player.ConnectionId).SendAsync("ShowError", "You are no longer in the lobby.", true /*Should Reload*/);
         }
 
-        private async Task<(Player?, GameRoom?)> FindPlayerAndRoom(string? userName, string roomId)
+        private async Task<(SwollballPlayer?, SwollballRoom?)> FindPlayerAndRoom(string? userName, string roomId)
         {
             if (!this.GameLobby.Rooms.ContainsKey(roomId))
             {
