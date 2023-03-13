@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Common;
 
 namespace Swollball
 {
@@ -10,13 +6,12 @@ namespace Swollball
     {
         private const int MAXROOMIDLEMINUTES = 60;
         private const int CLEANUPINTERVAL = 120000;
-        private Timer cleanupTimer;
 
         public Dictionary<string, GameRoom> Rooms { get; private set; } = new Dictionary<string, GameRoom>();
 
         public Lobby()
         {
-            this.cleanupTimer = new Timer(this.Cleanup, null /*State*/, CLEANUPINTERVAL, CLEANUPINTERVAL);
+            _ = new Timer(this.Cleanup, null /*State*/, CLEANUPINTERVAL, CLEANUPINTERVAL);
             var rm = this.CreateRoom("TEST");
         }
 
@@ -42,7 +37,7 @@ namespace Swollball
         /// <param name="state">The state object passed in by the timer</param>
         private void Cleanup(object? state)
         {
-            HashSet<string> roomsToDestroy = new HashSet<string>();
+            HashSet<string> roomsToDestroy = new();
             foreach (var room in Rooms.Values)
             {
                 if ((DateTime.UtcNow - room.UpdatedTime).TotalMinutes > MAXROOMIDLEMINUTES)
