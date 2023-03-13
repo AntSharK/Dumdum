@@ -44,15 +44,9 @@ namespace Swollball
 #endif
         }
 
-        public override SwollballPlayer? CreatePlayer(string playerName, string connectionId)
+        protected override SwollballPlayer CreatePlayerInternal(string playerName, string connectionId)
         {
-            var newPlayer = new SwollballPlayer(playerName, connectionId, this.RoomId);
-            if (!this.TryAddNewPlayer(newPlayer))
-            {
-                return null;
-            }
-
-            return newPlayer;
+            return new SwollballPlayer(playerName, connectionId, this.RoomId);
         }
 
         public void StartGame(int startingPoints)

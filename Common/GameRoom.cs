@@ -1,8 +1,8 @@
 ﻿namespace Common
 {
-    public abstract class GameRoom<T> where T : Player
+    public abstract class GameRoom<PlayerType> where PlayerType : Player
     {
-        public Dictionary<string, T> Players { get; private set; } = new Dictionary<string, T>();
+        public Dictionary<string, PlayerType> Players { get; private set; } = new Dictionary<string, PlayerType>();
         public string RoomId { get; private set; }
         public string ConnectionId { get; set; }
         public DateTime UpdatedTime { get; protected set; } = DateTime.UtcNow;
@@ -12,9 +12,21 @@
             this.ConnectionId = connectionId;
         }
 
-        public abstract T? CreatePlayer(string playerName, string connectionId);
+        public PlayerType? CreatePlayer(string playerName, string connectionId)
+        {
+            var newPlayer = this.CreatePlayerInternal(playerName, connectionId);
+            if (this.Players.ContainsKey(playerName))
+            {
+                return null;
+            }
 
-        protected bool TryAddNewPlayer(T newPlayer)
+            this.Players[playerName] = newPlayer;
+            return newPlayer;
+        }
+
+        protected abstract PlayerType CreatePlayerInternal(string playerName, string connectionId);
+
+        protected bool TryAddNewPlayer(PlayerType newPlayer)
         {
             var playerName = newPlayer.Name;
             if (this.Players.ContainsKey(playerName))
@@ -33,7 +45,7 @@
 
         public override bool Equals(object? obj)
         {
-            if (obj is not GameRoom<T> g)
+            if (obj is not GameRoom<PlayerType> g)
             {
                 return false;
             }

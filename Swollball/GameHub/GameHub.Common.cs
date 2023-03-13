@@ -6,7 +6,7 @@ namespace Swollball
 {
     public partial class GameHub : Hub
     {
-        private Lobby GameLobby;
+        private SwollballLobby GameLobby;
         private static ILogger? Logger;
 
         public static void RegisterLogger(ILogger logger)
@@ -14,7 +14,7 @@ namespace Swollball
             Logger = logger;
         }
 
-        public GameHub(Lobby lobby)
+        public GameHub(SwollballLobby lobby)
         {
             
             this.GameLobby = lobby;
