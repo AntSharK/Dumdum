@@ -6,3 +6,5 @@
 *.dll
 /Swollball/bin/
 /Swollball/obj/
+/Common/bin/
+/Common/obj/

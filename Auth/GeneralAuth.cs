@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using Common.Auth;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Swollball.Auth;
+using Swollball;
 using System.Security.Claims;
 
 namespace Dumdum.Auth

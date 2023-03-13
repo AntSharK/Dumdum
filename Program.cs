@@ -1,5 +1,5 @@
 using Dumdum.Auth;
-using Swollball.Auth;
+using Swollball;
 
 var builder = WebApplication.CreateBuilder(args);
 SecretManager.Init(builder);

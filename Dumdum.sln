@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dumdum", "Dumdum.csproj", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swollball", "Swollball\Swollball.csproj", "{8233F958-2B23-41E4-B824-E3D1AA744B44}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{1A71280F-3581-4035-AB34-05F75645A9EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{8233F958-2B23-41E4-B824-E3D1AA744B44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8233F958-2B23-41E4-B824-E3D1AA744B44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8233F958-2B23-41E4-B824-E3D1AA744B44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A71280F-3581-4035-AB34-05F75645A9EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A71280F-3581-4035-AB34-05F75645A9EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A71280F-3581-4035-AB34-05F75645A9EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A71280F-3581-4035-AB34-05F75645A9EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

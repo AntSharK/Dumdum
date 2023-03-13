@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-using Swollball.Auth;
 using Swollball.Bots;
 using System.Text.Json;
 
