@@ -1,6 +1,6 @@
+using Common.Auth;
 using Dumdum.Auth;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Swollball.Auth;
 
 namespace Dumdum.Pages
 {

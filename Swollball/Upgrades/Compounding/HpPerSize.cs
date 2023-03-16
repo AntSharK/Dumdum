@@ -1,4 +1,6 @@
-﻿namespace Swollball.Upgrades
+﻿using Swollball.PlayerData;
+
+namespace Swollball.Upgrades
 {
     public class HpPerSize: BaseUpgrade
     {
@@ -10,7 +12,7 @@
         public override int BorderColor => UpgradeColors.RED;
         public override int FillColor => UpgradeColors.LAVENDER;
 
-        public override void PerformUpgrade(Player player)
+        public override void PerformUpgrade(SwollballPlayer player)
         {
             var hpIncrease = player.Ball.SizeMultiplier / 10;
             player.Ball.IncreaseStat(UpgradeTags.HPUPGRADE, hpIncrease, 0);

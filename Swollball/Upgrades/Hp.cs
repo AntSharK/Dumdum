@@ -1,4 +1,6 @@
-﻿namespace Swollball.Upgrades
+﻿using Swollball.PlayerData;
+
+namespace Swollball.Upgrades
 {
     public class Hp : BaseUpgrade
     {
@@ -10,7 +12,7 @@
         public override string Description => $"HP+{this.UpgradeAmount}";
         public override int BorderColor => UpgradeColors.RED;
 
-        public override void PerformUpgrade(Player player)
+        public override void PerformUpgrade(SwollballPlayer player)
         {
             player.Ball.IncreaseStat(UpgradeTags.HPUPGRADE, this.UpgradeAmount, 0 /*Depth*/);
             base.PerformUpgrade(player);

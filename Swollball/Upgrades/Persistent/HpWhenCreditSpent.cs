@@ -1,8 +1,10 @@
-﻿namespace Swollball.Upgrades
+﻿using Swollball.PlayerData;
+
+namespace Swollball.Upgrades
 {
     public class HpWhenCreditSpent : BasePersistentUpgrade
     {
-        private Player? player;
+        private SwollballPlayer? player;
 
         public HpWhenCreditSpent(int value, int cost, string name, int duration) : base(value, cost, name, duration)
         {
@@ -15,7 +17,7 @@
         public override int BorderColor => UpgradeColors.BLACK;
         public override int FillColor => UpgradeColors.PERIWINKLE;
 
-        public override void PerformUpgrade(Player player)
+        public override void PerformUpgrade(SwollballPlayer player)
         {
             this.player = player; // Store the player
             base.PerformUpgrade(player);

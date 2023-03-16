@@ -1,4 +1,6 @@
-﻿namespace Swollball.Upgrades
+﻿using Swollball.PlayerData;
+
+namespace Swollball.Upgrades
 {
     public class BlankUpgrade : IUpgrade
     {
@@ -23,17 +25,17 @@
 
         int IUpgrade.UpgradeAmount { get; set; } = 0;
 
-        public void PerformUpgrade(Player player)
+        public void PerformUpgrade(SwollballPlayer player)
         {
             // Do nothing
         }
 
-        public void StartNextRound(Player player)
+        public void StartNextRound(SwollballPlayer player)
         {
             // Do nothing
         }
 
-        public void RemoveUpgrade(Player player)
+        public void RemoveUpgrade(SwollballPlayer player)
         {
             // Do nothing
         }

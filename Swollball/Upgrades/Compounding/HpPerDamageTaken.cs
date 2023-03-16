@@ -1,4 +1,6 @@
-﻿namespace Swollball.Upgrades
+﻿using Swollball.PlayerData;
+
+namespace Swollball.Upgrades
 {
     public class HpPerDamageTaken : BaseUpgrade
     {
@@ -10,7 +12,7 @@
         public override int BorderColor => UpgradeColors.RED;
         public override int FillColor => UpgradeColors.LAVENDER;
 
-        public override void PerformUpgrade(Player player)
+        public override void PerformUpgrade(SwollballPlayer player)
         {
             var damageTaken = player.PlayerScore.RoundDamageReceived;
             if (damageTaken > 0)

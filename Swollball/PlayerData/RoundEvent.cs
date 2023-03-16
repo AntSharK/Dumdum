@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Swollball
+namespace Swollball.PlayerData
 {
     /// <summary>
     /// Make sure the properties match up with client-side properties

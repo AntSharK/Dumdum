@@ -1,26 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Common.Util;
 
-namespace Swollball
+namespace Common
 {
-    public class Lobby
+    public abstract class GameLobby<RoomType, PlayerType> 
+        where RoomType : GameRoom<PlayerType>
+        where PlayerType: Player
     {
         private const int MAXROOMIDLEMINUTES = 60;
         private const int CLEANUPINTERVAL = 120000;
-        private Timer cleanupTimer;
 
-        public Dictionary<string, GameRoom> Rooms { get; private set; } = new Dictionary<string, GameRoom>();
+        public Dictionary<string, RoomType> Rooms { get; private set; } = new Dictionary<string, RoomType>();
 
-        public Lobby()
+        public GameLobby()
         {
-            this.cleanupTimer = new Timer(this.Cleanup, null /*State*/, CLEANUPINTERVAL, CLEANUPINTERVAL);
+            _ = new Timer(this.Cleanup, null /*State*/, CLEANUPINTERVAL, CLEANUPINTERVAL);
             var rm = this.CreateRoom("TEST");
         }
 
-        public GameRoom? CreateRoom(string connectionId)
+        public GameRoom<PlayerType>? CreateRoom(string connectionId)
         {
             const int ROOMIDLENGTH = 5;
             var allKeys = this.Rooms.Keys;
@@ -31,10 +28,12 @@ namespace Swollball
                 return null;
             }
 
-            var newRoom = new GameRoom(roomId, connectionId);
+            var newRoom = this.CreateRoomInternal(roomId, connectionId);
             this.Rooms[roomId] = newRoom;
             return newRoom;
         }
+
+        protected abstract RoomType CreateRoomInternal(string roomId, string connectionId);
 
         /// <summary>
         /// The function to cleanup idle rooms
@@ -42,7 +41,7 @@ namespace Swollball
         /// <param name="state">The state object passed in by the timer</param>
         private void Cleanup(object? state)
         {
-            HashSet<string> roomsToDestroy = new HashSet<string>();
+            HashSet<string> roomsToDestroy = new();
             foreach (var room in Rooms.Values)
             {
                 if ((DateTime.UtcNow - room.UpdatedTime).TotalMinutes > MAXROOMIDLEMINUTES)

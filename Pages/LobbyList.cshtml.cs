@@ -7,7 +7,7 @@ namespace Dumdum
     {
         public List<Tuple<string, DateTime, int, int>> Rooms = new List<Tuple<string, DateTime, int, int>>();
 
-        public void OnGet([FromServices] Swollball.Lobby lobby)
+        public void OnGet([FromServices] Swollball.SwollballLobby lobby)
         {
             Rooms = new List<Tuple<string, DateTime, int, int>>();
             foreach (var room in lobby.Rooms.Values)

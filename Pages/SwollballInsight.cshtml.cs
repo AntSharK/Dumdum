@@ -7,10 +7,10 @@ namespace Dumdum.Pages
     public class SwollballInsightModel : PageModel
     {
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        public GameRoom Room;
+        public SwollballRoom Room;
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-        public void OnGet([FromServices] Lobby lobby,
+        public void OnGet([FromServices] SwollballLobby lobby,
             [FromQuery] string roomId)
         {
             if (roomId == null || !lobby.Rooms.ContainsKey(roomId))

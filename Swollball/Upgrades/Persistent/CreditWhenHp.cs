@@ -1,8 +1,10 @@
-﻿namespace Swollball.Upgrades
+﻿using Swollball.PlayerData;
+
+namespace Swollball.Upgrades
 {
     public class CreditWhenHp : BasePersistentUpgrade
     {
-        private Player? player;
+        private SwollballPlayer? player;
 
         public CreditWhenHp(int value, int cost, string name, int duration) : base(value, cost, name, duration)
         {
@@ -26,7 +28,7 @@
             base.Trigger(ball, increasedStat, triggerStatIncrease, triggerUpgradeDepth);
         }
 
-        public override void PerformUpgrade(Player player)
+        public override void PerformUpgrade(SwollballPlayer player)
         {
             this.player = player; // Store the player
             base.PerformUpgrade(player);

@@ -1,5 +1,5 @@
 using Dumdum.Auth;
-using Swollball.Auth;
+using Swollball;
 
 var builder = WebApplication.CreateBuilder(args);
 SecretManager.Init(builder);
@@ -15,7 +15,7 @@ UserInfoDB.Init(userDbConnectionString);
 GeneralAuth.ConfigureAuth(builder);
 
 builder.Services.AddSignalR();
-builder.Services.AddSingleton<Swollball.Lobby>();
+builder.Services.AddSingleton<Swollball.SwollballLobby>();
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
