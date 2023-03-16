@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace Swollball.Auth
+namespace Common.Auth
 {
     public class AuthResult
     {

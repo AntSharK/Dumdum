@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Swollball
+﻿namespace Common.Util
 {
     public static class Utils
     {
-        public static Random Rng = new Random();
+        public static Random Rng { get; } = new();
 
         public static bool IsValidName(string userName, int minLength = 1, int maxLength = 10)
         {
@@ -53,9 +47,7 @@ namespace Swollball
             {
                 n--;
                 int k = Rng.Next(n + 1);
-                T value = list[k];
-                list[k] = list[n];
-                list[n] = value;
+                (list[k], list[n]) = (list[n], list[k]);
             }
         }
     }

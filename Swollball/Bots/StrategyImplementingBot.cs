@@ -1,13 +1,14 @@
-﻿using Swollball.Upgrades;
+﻿using Swollball.PlayerData;
+using Swollball.Upgrades;
 
 namespace Swollball
 {
-    public class StrategyImplementingBot : Player
+    public class StrategyImplementingBot : SwollballPlayer
     {
         private Func<IUpgrade, int> GetUpgradeScore;
-        private Func<Player, int> GetTierUpScore;
+        private Func<SwollballPlayer, int> GetTierUpScore;
 
-        public StrategyImplementingBot(string name, string roomName, Func<IUpgrade, int> upgradeScore, Func<Player, int> tierUpScore)
+        public StrategyImplementingBot(string name, string roomName, Func<IUpgrade, int> upgradeScore, Func<SwollballPlayer, int> tierUpScore)
             : base(name, "TestConnectionId", roomName)
         {
             this.GetUpgradeScore = upgradeScore;

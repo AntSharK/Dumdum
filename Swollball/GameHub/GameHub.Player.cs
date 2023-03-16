@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+using Swollball.PlayerData;
 using Swollball.Upgrades;
 
 namespace Swollball
@@ -31,7 +32,7 @@ namespace Swollball
             }
 
             var room = this.GameLobby.Rooms[roomId];
-            if (room.State != GameRoom.RoomState.SettingUp)
+            if (room.State != SwollballRoom.RoomState.SettingUp)
             {
                 await Clients.Caller.SendAsync("ShowError", "Game has already started.");
                 return;
@@ -64,21 +65,21 @@ namespace Swollball
 
             switch (room.State)
             {
-                case GameRoom.RoomState.SettingUp:
+                case SwollballRoom.RoomState.SettingUp:
                     await Clients.Caller.SendAsync("Reconnect_ResumeWaiting", player.Name, room.RoomId);
                     break;
-                case GameRoom.RoomState.Arena:
-                case GameRoom.RoomState.Leaderboard:
+                case SwollballRoom.RoomState.Arena:
+                case SwollballRoom.RoomState.Leaderboard:
                     // Updates the leaderboard, upgrades, and balls
                     var upgradesToDisplay = player.Economy.CreditsLeft >= 0 ?
                         player.CurrentUpgrades.Values : BlankUpgrade.Instance; // If the player has 0 credits, send blank upgrade data
 
                     await Clients.Caller.SendAsync("UpdateState", new Ball[] { player.Ball },
-                        new Player.Score[] { player.PlayerScore },
+                        new PlayerData.Score[] { player.PlayerScore },
                         upgradesToDisplay, player.Economy,
                         "" /*No scene to start on, just start the game*/, null /*No transition*/);
                     break;
-                case GameRoom.RoomState.TearingDown:
+                case SwollballRoom.RoomState.TearingDown:
                     await Clients.Caller.SendAsync("ShowError", "ROOM HAS FINISHED.");
                     await Clients.Caller.SendAsync("ClearState");
                     break;
@@ -135,7 +136,7 @@ namespace Swollball
             }
         }
 
-        private async Task UpdateUpgrades(Player player)
+        private async Task UpdateUpgrades(SwollballPlayer player)
         {
             var currentUpgrades = player.CurrentUpgrades.Values;
             if (currentUpgrades.Count == 0
@@ -157,7 +158,7 @@ namespace Swollball
 
             // Updates the leaderboard, upgrades, and balls
             await Clients.Caller.SendAsync("UpdateState", new Ball[] { player.Ball },
-                new Player.Score[] { player.PlayerScore },
+                new PlayerData.Score[] { player.PlayerScore },
                 player.CurrentUpgrades.Values, player.Economy,
                 null /*Do not start game*/, null /*No transition*/);
         }

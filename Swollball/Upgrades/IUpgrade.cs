@@ -1,4 +1,6 @@
-﻿namespace Swollball.Upgrades
+﻿using Swollball.PlayerData;
+
+namespace Swollball.Upgrades
 {
     /// <summary>
     /// Many properties are also for sending metadata down to the client
@@ -18,12 +20,12 @@
         /// <summary>
         /// Applies before an upgrade is applied
         /// </summary>
-        void PerformUpgrade(Player player);
+        void PerformUpgrade(SwollballPlayer player);
 
         /// <summary>
         /// Action performed when the upgrade is removed
         /// </summary>
-        void RemoveUpgrade(Player player);
+        void RemoveUpgrade(SwollballPlayer player);
 
         /// <summary>
         /// Action performed when another upgrade is purchased - only for ENHANCEMENT tagged upgrades
@@ -42,6 +44,6 @@
         /// <summary>
         /// Applies just before the next round begins - when new credits are issued
         /// </summary>
-        void StartNextRound(Player player);
+        void StartNextRound(SwollballPlayer player);
     }
 }

@@ -1,18 +1,18 @@
+using Common.Auth;
 using Dumdum.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Swollball;
-using Swollball.Auth;
 
 namespace Dumdum.Pages.Swollball
 {
     public class Swollball_PlayerModel : PageModel
     {
-        private Lobby Lobby;
-        private ILogger<Swollball_PlayerModel> Logger;
+        private readonly SwollballLobby Lobby;
+        private readonly ILogger<Swollball_PlayerModel> Logger;
 
         public Swollball_PlayerModel(ILogger<Swollball_PlayerModel> logger,
-            [FromServices] Lobby lobby)
+            [FromServices] SwollballLobby lobby)
         {
             this.Lobby = lobby;
             this.Logger = logger;

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Swollball;
+using Lobby = Swollball.SwollballLobby;
 
 namespace Dumdum.Pages.Swollball
 {

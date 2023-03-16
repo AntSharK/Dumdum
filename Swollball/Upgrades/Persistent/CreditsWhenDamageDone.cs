@@ -1,4 +1,6 @@
-﻿namespace Swollball.Upgrades
+﻿using Swollball.PlayerData;
+
+namespace Swollball.Upgrades
 {
     public class CreditsWhenDamageDone : BasePersistentUpgrade
     {
@@ -13,7 +15,7 @@
         public override int BorderColor => UpgradeColors.BLACK;
         public override int FillColor => UpgradeColors.PERIWINKLE;
 
-        public override void StartNextRound(Player player)
+        public override void StartNextRound(SwollballPlayer player)
         {
             var creditsGained = player.PlayerScore.RoundDamageDone * this.UpgradeAmount * 0.01;
             if (creditsGained > 0)
