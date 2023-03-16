@@ -9,16 +9,9 @@
     </head>
     <body>
         <div style="text-align:center">
-            <h1 class="display-1">SWOLLBALL</h1>
-            <h4 class="display-4"><a href="Swollball\Swollball_Instructions.html" target="_blank" rel="noopener noreferrer">Instructions</a></h4>
-            <h1>
-                <hr />
-                <a href="Swollball\Swollball_Host">HOST GAME</a>
-                <hr />
-                <a href="Swollball\Swollball_Player">JOIN GAME</a>
-                <hr />
-            </h1>
+            <h1 class="display-1"><a href="\Swollball">SWOLLBALL</a></h1>
         </div>
+        <hr />
         <div style="text-align:right">
             @if (Model.AuthResult != null)
             {
@@ -40,7 +33,6 @@
             }
         </div>
         <h6>
-            <a href="\lobbylist">Lobby List</a><br>
             <a href="\checklogin">User Info</a><br>
         @Model.BuildNumber
         </h6>

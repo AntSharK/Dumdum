@@ -1,13 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Lobby = Swollball.SwollballLobby;
 
-namespace Dumdum
+namespace Dumdum.Pages.Swollball
 {
-    public class LobbyListModel : PageModel
+    public class Swollball_LobbyListModel : PageModel
     {
         public List<Tuple<string, DateTime, int, int>> Rooms = new List<Tuple<string, DateTime, int, int>>();
 
-        public void OnGet([FromServices] Swollball.SwollballLobby lobby)
+        public void OnGet([FromServices] Lobby lobby)
         {
             Rooms = new List<Tuple<string, DateTime, int, int>>();
             foreach (var room in lobby.Rooms.Values)

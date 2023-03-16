@@ -40,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\content\cards\" />
+    <Folder Include="wwwroot\content\Swollball\cards\" />
   </ItemGroup>
 
   <ItemGroup>

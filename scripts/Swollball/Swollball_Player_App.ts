@@ -86,37 +86,37 @@ class EndScreen extends Phaser.Scene {
 
 function LoadCardImages(scene: Phaser.Scene) {
     // Note that the key is the same as the upgrade name
-    scene.load.image('Tofu', '/content/cards/Tofu.png');
-    scene.load.image('Apple', '/content/cards/Apple.png');
-    scene.load.image('Brocolli', '/content/cards/Brocolli2.png');
-    scene.load.image('Milk', '/content/cards/Milk.png');
-    scene.load.image('Bread', '/content/cards/Bread.png');
-    scene.load.image('Bigger', '/content/cards/Bigger.png');
-    scene.load.image('Bulwark', '/content/cards/Bulwark.png');
-    scene.load.image('Feast', '/content/cards/Feast.png');
+    scene.load.image('Tofu', '/content/Swollball/cards/Tofu.png');
+    scene.load.image('Apple', '/content/Swollball/cards/Apple.png');
+    scene.load.image('Brocolli', '/content/Swollball/cards/Brocolli2.png');
+    scene.load.image('Milk', '/content/Swollball/cards/Milk.png');
+    scene.load.image('Bread', '/content/Swollball/cards/Bread.png');
+    scene.load.image('Bigger', '/content/Swollball/cards/Bigger.png');
+    scene.load.image('Bulwark', '/content/Swollball/cards/Bulwark.png');
+    scene.load.image('Feast', '/content/Swollball/cards/Feast.png');
 
-    scene.load.image('Bacon', '/content/cards/Bacon.png');
-    scene.load.image('Calcify', '/content/cards/Calcify.png');
-    scene.load.image('GET BUFF', '/content/cards/GET_BUFF.png');
-    scene.load.image('Harden', '/content/cards/Harden.png');
-    scene.load.image('Impulse', '/content/cards/Impulse.png');
-    scene.load.image('Payday', '/content/cards/Payday.png');
-    scene.load.image('Buffet', '/content/cards/Buffet.png');
-    scene.load.image('Vanguard', '/content/cards/Vanguard.png');
+    scene.load.image('Bacon', '/content/Swollball/cards/Bacon.png');
+    scene.load.image('Calcify', '/content/Swollball/cards/Calcify.png');
+    scene.load.image('GET BUFF', '/content/Swollball/cards/GET_BUFF.png');
+    scene.load.image('Harden', '/content/Swollball/cards/Harden.png');
+    scene.load.image('Impulse', '/content/Swollball/cards/Impulse.png');
+    scene.load.image('Payday', '/content/Swollball/cards/Payday.png');
+    scene.load.image('Buffet', '/content/Swollball/cards/Buffet.png');
+    scene.load.image('Vanguard', '/content/Swollball/cards/Vanguard.png');
 
-    scene.load.image('Giant', '/content/cards/Giant.png');
-    scene.load.image('Banana', '/content/cards/Banana.png');
-    scene.load.image('Regrowth', '/content/cards/Regrowth.png');
-    scene.load.image('BROcolli', '/content/cards/Brocolli.png');
-    scene.load.image('Soy Milk', '/content/cards/SoyMilk.png');
-    scene.load.image('Rice', '/content/cards/Rice.png');
-    scene.load.image('Yoga', '/content/cards/Yoga.png');
-    scene.load.image('Reinforce', '/content/cards/Reinforce.png');
+    scene.load.image('Giant', '/content/Swollball/cards/Giant.png');
+    scene.load.image('Banana', '/content/Swollball/cards/Banana.png');
+    scene.load.image('Regrowth', '/content/Swollball/cards/Regrowth.png');
+    scene.load.image('BROcolli', '/content/Swollball/cards/Brocolli.png');
+    scene.load.image('Soy Milk', '/content/Swollball/cards/SoyMilk.png');
+    scene.load.image('Rice', '/content/Swollball/cards/Rice.png');
+    scene.load.image('Yoga', '/content/Swollball/cards/Yoga.png');
+    scene.load.image('Reinforce', '/content/Swollball/cards/Reinforce.png');
 
-    scene.load.image('Ossify', '/content/cards/Ossify.png');
-    scene.load.image('Ketones', '/content/cards/Bike.png');
-    scene.load.image('Wagyu', '/content/cards/Steak.png');
-    scene.load.image('GET SWOLL', '/content/cards/Swoll.png');
+    scene.load.image('Ossify', '/content/Swollball/cards/Ossify.png');
+    scene.load.image('Ketones', '/content/Swollball/cards/Bike.png');
+    scene.load.image('Wagyu', '/content/Swollball/cards/Steak.png');
+    scene.load.image('GET SWOLL', '/content/Swollball/cards/Swoll.png');
 }
 
 class BallUpgrades extends Phaser.Scene {
@@ -143,9 +143,9 @@ class BallUpgrades extends Phaser.Scene {
             document.getElementById("loadingbar").textContent = "ROOMID: " + sessionRoomId;
         });
 
-        this.load.image('refreshimage', '/content/ui/refreshimage.png');
-        this.load.image('uparrow', '/content/ui/uparrowoverlay.png');
-        this.load.image('credit', '/content/ui/creditoverlay.png');
+        this.load.image('refreshimage', '/content/Swollball/ui/refreshimage.png');
+        this.load.image('uparrow', '/content/Swollball/ui/uparrowoverlay.png');
+        this.load.image('credit', '/content/Swollball/ui/creditoverlay.png');
 
         LoadCardImages(this);
     }
@@ -507,9 +507,9 @@ class BallStats extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('dummyimage', '/content/dummyimage.png');
-        this.load.image('background', '/content/ui/wooden.jpg');
-        this.load.image('sellbutton', '/content/ui/sellbutton.png');
+        this.load.image('dummyimage', '/content/Swollball/dummyimage.png');
+        this.load.image('background', '/content/Swollball/ui/wooden.jpg');
+        this.load.image('sellbutton', '/content/Swollball/ui/sellbutton.png');
 
         LoadCardImages(this);
     }

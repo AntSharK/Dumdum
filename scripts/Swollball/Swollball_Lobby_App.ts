@@ -61,10 +61,10 @@ class BallArena extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('dummyimage', '/content/dummyimage.png');
-        this.load.image('readytext', '/content/ui/readytext.png');
-        this.load.image('fighttext', '/content/ui/fighttext.png');
-        this.load.image('background', '/content/ui/circlearenasand.png');
+        this.load.image('dummyimage', '/content/Swollball/dummyimage.png');
+        this.load.image('readytext', '/content/Swollball/ui/readytext.png');
+        this.load.image('fighttext', '/content/Swollball/ui/fighttext.png');
+        this.load.image('background', '/content/Swollball/ui/circlearenasand.png');
     }
 
     create() {

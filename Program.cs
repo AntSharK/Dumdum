@@ -28,6 +28,8 @@ GeneralAuth.ConfigureAuth(app);
 
 app.Logger.LogInformation("Starting up...");
 Swollball.GameHub.RegisterLogger(app.Logger);
+
+// Add hubs
 app.MapHub<Swollball.GameHub>("/swollBallHub");
 
 app.MapRazorPages();
