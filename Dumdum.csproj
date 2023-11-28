@@ -44,6 +44,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Zombbomb\Zombbomb.csproj" />
     <ProjectReference Include="Swollball\Swollball.csproj" />
   </ItemGroup>
 

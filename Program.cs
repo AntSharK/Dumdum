@@ -15,7 +15,11 @@ UserInfoDB.Init(userDbConnectionString);
 GeneralAuth.ConfigureAuth(builder);
 
 builder.Services.AddSignalR();
+
+// Add game lobbies
 builder.Services.AddSingleton<Swollball.SwollballLobby>();
+// End game lobbies
+
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
@@ -27,10 +31,14 @@ app.UseStaticFiles();
 GeneralAuth.ConfigureAuth(app);
 
 app.Logger.LogInformation("Starting up...");
-Swollball.GameHub.RegisterLogger(app.Logger);
 
-// Add hubs
+// Add logging and hubs for games
+Swollball.GameHub.RegisterLogger(app.Logger);
 app.MapHub<Swollball.GameHub>("/swollBallHub");
+
+Zombbomb.GameHub.RegisterLogger(app.Logger);
+app.MapHub<Zombbomb.GameHub>("/zombBombHub");
+// End game logging and hubs
 
 app.MapRazorPages();
 app.Run();
