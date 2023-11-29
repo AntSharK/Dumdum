@@ -40,6 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\content\Zombbomb\" />
     <Folder Include="wwwroot\content\Swollball\cards\" />
   </ItemGroup>
 
