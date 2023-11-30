@@ -37,6 +37,7 @@ class ZombbombArena extends Phaser.Scene {
     player: Player;
     bullets: Phaser.Physics.Arcade.Group;
     zombies: Phaser.Physics.Arcade.Group;
+    playerGroup: Phaser.Physics.Arcade.Group;
 
     constructor() {
         super({ key: 'ZombbombArena', active: true });
@@ -52,17 +53,35 @@ class ZombbombArena extends Phaser.Scene {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
         this.bullets = this.physics.add.group({
             defaultKey: 'bullet',
-            bounceX: 1,
-            bounceY: 1,
+        });
+
+        this.playerGroup = this.physics.add.group({
+            defaultKey: 'player',
+        });
+
+        this.zombies = this.physics.add.group({
+            defaultKey: 'zombie',
+            immovable: true
         });
 
         this.player = new Player(this);
+        this.playerGroup.add(this.player.playerSprite);
+
+        var zombie = new Zombie(this, 800, 500);
+        this.add.existing(zombie);
+        this.zombies.add(zombie);
+        zombie.setActive(true);
 
         this.physics.add.collider(this.bullets, this.zombies, (body1, body2) => {
-            // TODO: When bullets hit zombies
+            body1.destroy();
+            var zombie = body2 as Zombie;
+            zombie.hitPoints--;
+            if (zombie.hitPoints <= 0) {
+                zombie.destroy();
+            }
         });
 
-        this.physics.add.collider(this.player.playerSprite, this.zombies, (body1, body2) => {
+        this.physics.add.collider(this.playerGroup, this.zombies, (body1, body2) => {
             // TODO: When zombies hit player
         });
 
@@ -197,5 +216,27 @@ class Player {
 
             scene.time.addEvent(new Phaser.Time.TimerEvent({ delay: 400, callback: () => { pb.destroy(); }, callbackScope: this }));
         };
+    }
+}
+
+class Zombie extends Phaser.Physics.Arcade.Sprite{
+    desiredX: integer = 0;
+    desiredY: integer = 0;
+    moveDirection: Phaser.Math.Vector2;
+    desiredRotation: number;
+    rotateLeft: boolean;
+
+    rotationSpeed: number = 0.15;
+    speed: number = 1.5;
+    hitPoints: integer = 10;
+
+    constructor(scene: Phaser.Scene, x: number, y: number) {
+        super(scene, x, y, 'zombie');
+        this.originX = this.width / 2;
+        this.originY = this.height / 2;
+        this.scale = 0.2;
+
+        this.desiredX = this.x;
+        this.desiredY = this.y;
     }
 }
