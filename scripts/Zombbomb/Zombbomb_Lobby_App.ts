@@ -91,8 +91,9 @@ class Player {
     rotateLeft: boolean;
 
     rotationSpeed: number = 0.15;
-    speed: number = 5;
-    fireOrderIssued: boolean;
+    speed: number = 3.5;
+    fireOrderIssued: boolean = false;
+    canFire: boolean = true;
 
     constructor(scene: Phaser.Scene) {
         this.playerSprite = scene.add.sprite(500, 500, 'player');
@@ -119,6 +120,7 @@ class Player {
     }
 
     IssueMove(pointer: any) {
+        this.fireOrderIssued = false;
         this.desiredX = pointer.x;
         this.desiredY = pointer.y;
         this.moveDirection = new Phaser.Math.Vector2(this.desiredX - this.playerSprite.x, this.desiredY - this.playerSprite.y);
@@ -151,8 +153,10 @@ class Player {
                 }
             }
 
-            if (this.fireOrderIssued) {
+            if (this.fireOrderIssued && this.canFire) {
+                this.canFire = false;
                 this.FireStuff(scene);
+                scene.time.addEvent(new Phaser.Time.TimerEvent({ delay: 2000, callback: () => { this.canFire = true; }, callbackScope: this }));
             }
 
             // Move
@@ -189,7 +193,9 @@ class Player {
             bulletDirection.normalize();
             var bulletRotation = Math.atan2(bulletDirection.y, bulletDirection.x);
             pb.setRotation(bulletRotation + Math.PI / 2);
-            pb.setVelocity(bulletDirection.x * 300, bulletDirection.y * 300);
+            pb.setVelocity(bulletDirection.x * 800, bulletDirection.y * 800);
+
+            scene.time.addEvent(new Phaser.Time.TimerEvent({ delay: 400, callback: () => { pb.destroy(); }, callbackScope: this }));
         };
     }
 }
