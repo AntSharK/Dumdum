@@ -35,7 +35,55 @@ GAME SCENES - BALL ARENA
 class ZombbombArena extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
     player: Player;
+    bullets: Phaser.Physics.Arcade.Group;
+    zombies: Phaser.Physics.Arcade.Group;
 
+    constructor() {
+        super({ key: 'ZombbombArena', active: true });
+    }
+
+    preload() {
+        this.load.image('zombie', '/content/Zombbomb/ghost.png');
+        this.load.image('player', '/content/Zombbomb/pacman.png');
+        this.load.image('bullet', '/content/Zombbomb/bullet.png');
+    }
+
+    create() {
+        this.graphics = this.add.graphics({ x: 0, y: 0 });
+        this.bullets = this.physics.add.group({
+            defaultKey: 'bullet',
+            bounceX: 1,
+            bounceY: 1,
+        });
+
+        this.player = new Player(this);
+
+        this.physics.add.collider(this.bullets, this.zombies, (body1, body2) => {
+            // TODO: When bullets hit zombies
+        });
+
+        this.physics.add.collider(this.player.playerSprite, this.zombies, (body1, body2) => {
+            // TODO: When zombies hit player
+        });
+
+        this.input.mouse.disableContextMenu();
+        this.input.on('pointerdown', function (pointer) {
+            if (pointer.rightButtonDown()) {
+                this.player.IssueFiring(pointer);
+            }
+            else {
+                this.player.IssueMove(pointer);
+            }
+        }, this);
+    }
+
+    update() {
+        this.player.Update(this);
+    }
+}
+
+class Player {
+    playerSprite: Phaser.GameObjects.Sprite;
     desiredX: integer = 0;
     desiredY: integer = 0;
     moveDirection: Phaser.Math.Vector2;
@@ -46,95 +94,102 @@ class ZombbombArena extends Phaser.Scene {
     speed: number = 5;
     fireOrderIssued: boolean;
 
-    constructor() {
-        super({ key: 'ZombbombArena', active: true });
+    constructor(scene: Phaser.Scene) {
+        this.playerSprite = scene.add.sprite(500, 500, 'player');
+        this.playerSprite.originX = this.playerSprite.width / 2;
+        this.playerSprite.originY = this.playerSprite.height / 2;
+        this.playerSprite.scale = 0.2;
+
+        this.desiredX = this.playerSprite.x;
+        this.desiredY = this.playerSprite.y;
     }
 
-    preload() {
-        this.load.image('zombie', '/content/Zombbomb/ghost.png');
-        this.load.image('player', '/content/Zombbomb/pacman.png');
+    IssueFiring(pointer: any) {
+        this.desiredX = this.playerSprite.x;
+        this.desiredY = this.playerSprite.y;
+        this.moveDirection = new Phaser.Math.Vector2(pointer.x - this.playerSprite.x, pointer.y - this.playerSprite.y);
+        this.moveDirection.normalize();
+
+        this.desiredRotation = Math.atan2(this.moveDirection.y, this.moveDirection.x);
+        this.rotateLeft = ((this.desiredRotation > this.playerSprite.rotation && this.desiredRotation - this.playerSprite.rotation < Math.PI)
+            || (this.desiredRotation < this.playerSprite.rotation && this.playerSprite.rotation - this.desiredRotation > Math.PI)
+        );
+
+        this.fireOrderIssued = true;
     }
 
-    create() {
-        this.graphics = this.add.graphics({ x: 0, y: 0 });
+    IssueMove(pointer: any) {
+        this.desiredX = pointer.x;
+        this.desiredY = pointer.y;
+        this.moveDirection = new Phaser.Math.Vector2(this.desiredX - this.playerSprite.x, this.desiredY - this.playerSprite.y);
+        this.moveDirection.normalize();
 
-        this.player = this.add.sprite(500, 500, 'player');
-        this.player.originX = this.player.width / 2;
-        this.player.originY = this.player.height / 2;
-        this.player.scale = 0.2;
-
-        this.desiredX = this.player.x;
-        this.desiredY = this.player.y;
-
-        this.input.mouse.disableContextMenu();
-        this.input.on('pointerdown', function (pointer) {
-            if (pointer.rightButtonDown()) {
-                this.desiredX = this.player.x;
-                this.desiredY = this.player.y;
-                this.moveDirection = new Phaser.Math.Vector2(pointer.x - this.player.x, pointer.y - this.player.y);
-                this.moveDirection.normalize();
-
-                this.desiredRotation = Math.atan2(this.moveDirection.y, this.moveDirection.x);
-                this.rotateLeft = ((this.desiredRotation > this.player.rotation && this.desiredRotation - this.player.rotation < Math.PI)
-                    || (this.desiredRotation < this.player.rotation && this.player.rotation - this.desiredRotation > Math.PI)
-                );
-
-                this.fireOrderIssued = true;
-            }
-            else { // Left click or anything else
-                this.desiredX = pointer.x;
-                this.desiredY = pointer.y;
-                this.moveDirection = new Phaser.Math.Vector2(this.desiredX - this.player.x, this.desiredY - this.player.y);
-                this.moveDirection.normalize();
-
-                this.desiredRotation = Math.atan2(this.moveDirection.y, this.moveDirection.x);
-                this.rotateLeft = ((this.desiredRotation > this.player.rotation && this.desiredRotation - this.player.rotation < Math.PI)
-                    || (this.desiredRotation < this.player.rotation && this.player.rotation - this.desiredRotation > Math.PI)
-                );
-            }
-        }, this);
-
-        this.input.on
+        this.desiredRotation = Math.atan2(this.moveDirection.y, this.moveDirection.x);
+        this.rotateLeft = ((this.desiredRotation > this.playerSprite.rotation && this.desiredRotation - this.playerSprite.rotation < Math.PI)
+            || (this.desiredRotation < this.playerSprite.rotation && this.playerSprite.rotation - this.desiredRotation > Math.PI)
+        );
     }
 
-    update() {
-        if (Math.abs(this.desiredRotation - this.player.rotation) > this.rotationSpeed) {
+    Update(scene: ZombbombArena) {
+        // Rotate large amounts
+        if (Math.abs(this.desiredRotation - this.playerSprite.rotation) > this.rotationSpeed) {
             if (this.rotateLeft) {
-                this.player.rotation += this.rotationSpeed;
+                this.playerSprite.rotation += this.rotationSpeed;
             }
             else {
-                this.player.rotation -= this.rotationSpeed;
+                this.playerSprite.rotation -= this.rotationSpeed;
             }
         }
         else {
-            if (Math.abs(this.desiredRotation - this.player.rotation) > 0.05) {
+            // Rotate small amounts
+            if (Math.abs(this.desiredRotation - this.playerSprite.rotation) > 0.05) {
                 if (this.rotateLeft) {
-                    this.player.rotation += 0.035;
+                    this.playerSprite.rotation += 0.035;
                 }
                 else {
-                    this.player.rotation -= 0.035;
+                    this.playerSprite.rotation -= 0.035;
                 }
             }
 
-            if (this.fireOrderIssued) { // TODO: Some stuff for firing - current logic is placeholder
-                this.player.x += this.moveDirection.x * this.speed * 50;
-                this.player.y += this.moveDirection.y * this.speed * 50;
-                this.fireOrderIssued = false;
-                this.desiredX = this.player.x;
-                this.desiredY = this.player.y;
+            if (this.fireOrderIssued) {
+                this.FireStuff(scene);
             }
 
-            if (Math.abs(this.desiredX - this.player.x) > this.speed) {
-                this.player.x += this.moveDirection.x * this.speed;
+            // Move
+            if (Math.abs(this.desiredX - this.playerSprite.x) > this.speed) {
+                this.playerSprite.x += this.moveDirection.x * this.speed;
             }
 
-            if (Math.abs(this.desiredY - this.player.y) > this.speed) {
-                this.player.y += this.moveDirection.y * this.speed;
+            if (Math.abs(this.desiredY - this.playerSprite.y) > this.speed) {
+                this.playerSprite.y += this.moveDirection.y * this.speed;
             }
         }
     }
-}
 
-class Player extends Phaser.GameObjects.Sprite {
+    FireStuff(scene: ZombbombArena) {
+        this.playerSprite.x -= this.moveDirection.x * this.speed * 2;
+        this.playerSprite.y -= this.moveDirection.y * this.speed * 2;
+        this.fireOrderIssued = false;
+        this.desiredX = this.playerSprite.x;
+        this.desiredY = this.playerSprite.y;
 
+        var bullets: Phaser.Physics.Arcade.Sprite[] = [];
+        for (var i = 0; i < 8; i++) {
+            var newBullet = scene.bullets.create(this.playerSprite.x, this.playerSprite.y, scene.bullets.defaultKey) as Phaser.Physics.Arcade.Sprite;
+            newBullet.scale = 0.25;
+            bullets.push(newBullet);
+        }
+
+        Phaser.Actions.PlaceOnCircle(bullets,
+            new Phaser.Geom.Circle(this.playerSprite.x, this.playerSprite.y, this.playerSprite.displayWidth / 4),
+            this.desiredRotation - 0.2,
+            this.desiredRotation + 0.2,);
+        for (let pb of bullets) {
+            var bulletDirection = new Phaser.Math.Vector2(pb.x - this.playerSprite.x, pb.y - this.playerSprite.y);
+            bulletDirection.normalize();
+            var bulletRotation = Math.atan2(bulletDirection.y, bulletDirection.x);
+            pb.setRotation(bulletRotation + Math.PI / 2);
+            pb.setVelocity(bulletDirection.x * 300, bulletDirection.y * 300);
+        };
+    }
 }
