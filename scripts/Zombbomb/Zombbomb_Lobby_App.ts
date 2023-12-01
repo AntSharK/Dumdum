@@ -64,9 +64,6 @@ class ZombbombArena extends Phaser.Scene {
             immovable: true
         });
 
-        this.spawnZombie();
-        this.spawnZombie();
-        this.spawnZombie();
         this.player = new Player(this);
         this.playerGroup.add(this.player.playerSprite);
 
@@ -81,6 +78,7 @@ class ZombbombArena extends Phaser.Scene {
 
         this.physics.add.collider(this.playerGroup, this.zombies, (body1, body2) => {
             // TODO: When zombies hit player
+            body1.destroy();
         });
 
         this.input.mouse.disableContextMenu();
@@ -100,13 +98,15 @@ class ZombbombArena extends Phaser.Scene {
             (<Zombie>b).Update(this);
         });
     }
+}
 
-    spawnZombie() {
-        var zombie = new Zombie(this, Math.random() * 1000 + 200, 50);
-        this.add.existing(zombie);
-        this.zombies.add(zombie);
-        zombie.setActive(true);
-    }
+function spawnZombie(playerId: string, game: Phaser.Game): Zombie {
+    var scene = game.scene.getScene("ZombbombArena") as ZombbombArena;
+    var zombie = new Zombie(scene, Math.random() * 1000 + 200, 50, playerId);
+    scene.add.existing(zombie);
+    scene.zombies.add(zombie);
+    zombie.setActive(true);
+    return zombie;
 }
 
 class Player {
@@ -236,20 +236,22 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
     rotationSpeed: number = 0.05;
     speed: number = 1.5;
     hitPoints: integer = 10;
+    playerId: string;
 
-    constructor(scene: Phaser.Scene, x: number, y: number) {
+    constructor(scene: Phaser.Scene, x: number, y: number, id: string) {
         super(scene, x, y, 'zombie');
+        this.playerId = id;
         this.originX = this.width / 2;
         this.originY = this.height / 2;
         this.scale = 0.2;
 
-        this.desiredX = 500;
-        this.desiredY = 500;
+        this.desiredX = this.x;
+        this.desiredY = this.y;
     }
 
     Update(scene: ZombbombArena) {
         var moveDirection = new Phaser.Math.Vector2(this.desiredX - this.x, this.desiredY - this.y);
-        if (moveDirection.length() < this.speed) {
+        if (moveDirection.length() <= this.speed) {
             return;
         }
         moveDirection.normalize();

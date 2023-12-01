@@ -1,4 +1,8 @@
-﻿var connection = new signalR.HubConnectionBuilder().withUrl("/zombBombHub").build();
+﻿const RoomIdSessionStorageKey = "roomid";
+const UserIdSessionStorageKey = "userid";
+const LeaderBoardDurationStorageKey = "leaderboardduration";
+const RoundDurationStorageKey = "roundduration";
+var connection = new signalR.HubConnectionBuilder().withUrl("/zombBombHub").build();
 
 connection.start().catch(function (err) {
     return console.error(err.toString());
