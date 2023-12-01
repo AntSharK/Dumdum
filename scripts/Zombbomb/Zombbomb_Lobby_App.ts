@@ -64,13 +64,11 @@ class ZombbombArena extends Phaser.Scene {
             immovable: true
         });
 
+        this.spawnZombie();
+        this.spawnZombie();
+        this.spawnZombie();
         this.player = new Player(this);
         this.playerGroup.add(this.player.playerSprite);
-
-        var zombie = new Zombie(this, 800, 500);
-        this.add.existing(zombie);
-        this.zombies.add(zombie);
-        zombie.setActive(true);
 
         this.physics.add.collider(this.bullets, this.zombies, (body1, body2) => {
             body1.destroy();
@@ -101,6 +99,13 @@ class ZombbombArena extends Phaser.Scene {
         this.zombies.children.each(function (b) {
             (<Zombie>b).Update(this);
         });
+    }
+
+    spawnZombie() {
+        var zombie = new Zombie(this, Math.random() * 1000 + 200, 50);
+        this.add.existing(zombie);
+        this.zombies.add(zombie);
+        zombie.setActive(true);
     }
 }
 
@@ -238,12 +243,15 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
         this.originY = this.height / 2;
         this.scale = 0.2;
 
-        this.desiredX = this.x + 500;
-        this.desiredY = this.y + 100;
+        this.desiredX = 500;
+        this.desiredY = 500;
     }
 
     Update(scene: ZombbombArena) {
         var moveDirection = new Phaser.Math.Vector2(this.desiredX - this.x, this.desiredY - this.y);
+        if (moveDirection.length() < this.speed) {
+            return;
+        }
         moveDirection.normalize();
         this.desiredRotation = Math.atan2(moveDirection.y, moveDirection.x);
         this.rotateLeft = ((this.desiredRotation > this.rotation && this.desiredRotation - this.rotation < Math.PI)
