@@ -19,3 +19,7 @@ connection.on("SpawnZombie", function (zombieId) {
         return console.error(err.toString());
     });
 })
+
+connection.on("UpdatePosition", function (zombieId, x, y) {
+    updatePosition(zombieId, x, y, Game.game);
+})

@@ -39,6 +39,8 @@ class ZombbombArena extends Phaser.Scene {
     zombies: Phaser.Physics.Arcade.Group;
     playerGroup: Phaser.Physics.Arcade.Group;
 
+    zombieMap: { [id: string] : Zombie} = {};
+
     constructor() {
         super({ key: 'ZombbombArena', active: true });
     }
@@ -105,8 +107,16 @@ function spawnZombie(playerId: string, game: Phaser.Game): Zombie {
     var zombie = new Zombie(scene, Math.random() * 1000 + 200, 50, playerId);
     scene.add.existing(zombie);
     scene.zombies.add(zombie);
+    scene.zombieMap[playerId] = zombie;
     zombie.setActive(true);
     return zombie;
+}
+
+function updatePosition(playerId: string, x: number, y: number, game: Phaser.Game) {
+    var scene = game.scene.getScene("ZombbombArena") as ZombbombArena;
+    var zombie = scene.zombieMap[playerId] as Zombie;
+    zombie.desiredX = x;
+    zombie.desiredY = y;
 }
 
 class Player {
