@@ -54,11 +54,10 @@ class ZombieControl extends Phaser.Scene {
     update() {
         this.graphics.clear();
 
-        if (this.input.mousePointer.isDown) {
-            var pointerX = this.input.mousePointer.x;
-            var pointerY = this.input.mousePointer.y;
-
-            var center = new Phaser.Math.Vector2(this.game.canvas.width / 2, this.game.canvas.height / 2);
+        if (this.input.activePointer.isDown) {
+            
+            var pointerX = this.input.activePointer.x;
+            var pointerY = this.input.activePointer.y;
             var direction = new Phaser.Math.Vector2(pointerX - this.game.canvas.width / 2, pointerY - this.game.canvas.height / 2);
 
             direction.normalize();
