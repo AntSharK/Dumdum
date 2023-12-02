@@ -26,7 +26,6 @@ function updateServerPosition() {
         yLoc).catch(function (err) {
             return console.error(err.toString());
         });
-    event.preventDefault();
 }
 
 connection.on("ZombieDead", function () {

@@ -247,7 +247,7 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
     rotateLeft: boolean;
 
     rotationSpeed: number = 0.05;
-    speed: number = 1.5;
+    speed: number = 2.1;
     hitPoints: integer = 10;
     playerId: string;
 
