@@ -19,6 +19,8 @@ connection.on("SetPosition", function (x, y) {
     yLoc = y;
 });
 
+//setInterval(updateServerPosition, 100);
+
 function updateServerPosition() {    
     connection.invoke("UpdateServerZombiePosition",
         sessionStorage.getItem(UserIdSessionStorageKey),

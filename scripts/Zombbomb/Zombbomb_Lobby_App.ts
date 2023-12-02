@@ -107,7 +107,7 @@ var destroyZombie: (zombie: Zombie) => {};
 
 function spawnZombie(playerId: string, game: Phaser.Game): Zombie {
     var scene = game.scene.getScene("ZombbombArena") as ZombbombArena;
-    var zombie = new Zombie(scene, Math.random() * 1000 + 200, 50, playerId);
+    var zombie = new Zombie(scene, Math.random() * game.canvas.width * 0.7 + game.canvas.width * 0.15, 50, playerId);
     scene.add.existing(zombie);
     scene.zombies.add(zombie);
     scene.zombieMap[playerId] = zombie;
@@ -130,7 +130,7 @@ class Player {
     desiredRotation: number;
     rotateLeft: boolean;
 
-    rotationSpeed: number = 0.15;
+    rotationSpeed: number = 0.20;
     speed: number = 3.5;
     fireOrderIssued: boolean = false;
     canFire: boolean = true;
@@ -246,10 +246,10 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
     desiredRotation: number = 0;
     rotateLeft: boolean;
 
-    rotationSpeed: number = 0.05;
-    speed: number = 2.1;
-    hitPoints: integer = 10;
+    rotationSpeed: number = 0.15;
+    hitPoints: integer = 5;
     playerId: string;
+    lastUpdateTime: number;
 
     constructor(scene: Phaser.Scene, x: number, y: number, id: string) {
         super(scene, x, y, 'zombie');
@@ -260,11 +260,16 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
 
         this.desiredX = this.x;
         this.desiredY = this.y;
+        this.lastUpdateTime = this.scene.time.now;
     }
 
     Update(scene: ZombbombArena) {
+        var deltaTime = this.scene.time.now - this.lastUpdateTime;
+        this.lastUpdateTime = this.scene.time.now;
+        var speed = 0.2 * deltaTime;
+
         var moveDirection = new Phaser.Math.Vector2(this.desiredX - this.x, this.desiredY - this.y);
-        if (moveDirection.length() <= this.speed) {
+        if (moveDirection.length() <= speed) {
             return;
         }
         moveDirection.normalize();
@@ -293,12 +298,12 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
             }
 
             // Move
-            if (Math.abs(this.desiredX - this.x) > this.speed) {
-                this.x += moveDirection.x * this.speed;
+            if (Math.abs(this.desiredX - this.x) > speed) {
+                this.x += moveDirection.x * speed;
             }
 
-            if (Math.abs(this.desiredY - this.y) > this.speed) {
-                this.y += moveDirection.y * this.speed;
+            if (Math.abs(this.desiredY - this.y) > speed) {
+                this.y += moveDirection.y * speed;
             }
         }
     }

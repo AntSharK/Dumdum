@@ -37,8 +37,8 @@ var updateServerPosition: any;
 GAME SCENES
  * */
 class ZombieControl extends Phaser.Scene {
-    graphics: Phaser.GameObjects.Graphics;
-
+    graphics: Phaser.GameObjects.Graphics;    
+    lastUpdateTime: number;
     constructor() {
         super({ key: 'ZombieControl', active: true });
     }
@@ -47,25 +47,27 @@ class ZombieControl extends Phaser.Scene {
     }
 
     create() {
+        this.lastUpdateTime = this.time.now;
         this.graphics = this.add.graphics({ x: 0, y: 0 });
         this.input.mouse.disableContextMenu();
     }
 
     update() {
+        var deltaTime = this.time.now - this.lastUpdateTime;
+        this.lastUpdateTime = this.time.now;
         this.graphics.clear();
 
-        if (this.input.mousePointer.isDown) {
-            var pointerX = this.input.mousePointer.x;
-            var pointerY = this.input.mousePointer.y;
-
-            var center = new Phaser.Math.Vector2(this.game.canvas.width / 2, this.game.canvas.height / 2);
+        if (this.input.activePointer.isDown) {
+            var pointerX = this.input.activePointer.x;
+            var pointerY = this.input.activePointer.y;
             var direction = new Phaser.Math.Vector2(pointerX - this.game.canvas.width / 2, pointerY - this.game.canvas.height / 2);
 
             direction.normalize();
 
-            // 2.1 is the zombie speed and is consistent everywhere
-            xLoc += direction.x * 2.1;
-            yLoc += direction.y * 2.1;
+            // The zombie speed needs to be the same everywhere
+            const ZOMBIESPEED = 0.2;
+            xLoc += direction.x * ZOMBIESPEED * deltaTime;
+            yLoc += direction.y * ZOMBIESPEED * deltaTime;
             updateServerPosition();
 
             this.graphics.lineStyle(100, 0xff0000);

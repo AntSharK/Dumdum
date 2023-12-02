@@ -4,7 +4,12 @@
 /.vs
 *.pdb
 *.dll
+/Zombbomb/bin/
+/Zombbomb/obj/
 /Swollball/bin/
 /Swollball/obj/
 /Common/bin/
 /Common/obj/
+/Properties/
+ArbiterGames.PublishSettings
+Dumdum.csproj.user
