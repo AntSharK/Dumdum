@@ -65,7 +65,7 @@ class ZombieControl extends Phaser.Scene {
             direction.normalize();
 
             // The zombie speed needs to be the same everywhere
-            const ZOMBIESPEED = 0.4;
+            const ZOMBIESPEED = 0.2;
             xLoc += direction.x * ZOMBIESPEED * deltaTime;
             yLoc += direction.y * ZOMBIESPEED * deltaTime;
             updateServerPosition();

@@ -266,7 +266,7 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
     Update(scene: ZombbombArena) {
         var deltaTime = this.scene.time.now - this.lastUpdateTime;
         this.lastUpdateTime = this.scene.time.now;
-        var speed = 0.4 * deltaTime;
+        var speed = 0.2 * deltaTime;
 
         var moveDirection = new Phaser.Math.Vector2(this.desiredX - this.x, this.desiredY - this.y);
         if (moveDirection.length() <= speed) {
