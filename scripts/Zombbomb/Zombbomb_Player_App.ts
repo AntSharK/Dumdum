@@ -54,17 +54,17 @@ class ZombieControl extends Phaser.Scene {
     update() {
         this.graphics.clear();
 
-        if (this.input.activePointer.isDown) {
-            
+        if (this.input.activePointer.isDown) {            
             var pointerX = this.input.activePointer.x;
             var pointerY = this.input.activePointer.y;
             var direction = new Phaser.Math.Vector2(pointerX - this.game.canvas.width / 2, pointerY - this.game.canvas.height / 2);
 
             direction.normalize();
 
-            // 2.1 is the zombie speed and is consistent everywhere
-            xLoc += direction.x * 2.1;
-            yLoc += direction.y * 2.1;
+            // The zombie speed needs to be the same everywhere
+            const ZOMBIESPEED = 5.5;
+            xLoc += direction.x * ZOMBIESPEED;
+            yLoc += direction.y * ZOMBIESPEED;
             updateServerPosition();
 
             this.graphics.lineStyle(100, 0xff0000);

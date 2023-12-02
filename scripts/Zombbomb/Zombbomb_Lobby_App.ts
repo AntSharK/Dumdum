@@ -130,7 +130,7 @@ class Player {
     desiredRotation: number;
     rotateLeft: boolean;
 
-    rotationSpeed: number = 0.15;
+    rotationSpeed: number = 0.20;
     speed: number = 3.5;
     fireOrderIssued: boolean = false;
     canFire: boolean = true;
@@ -246,9 +246,9 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
     desiredRotation: number = 0;
     rotateLeft: boolean;
 
-    rotationSpeed: number = 0.05;
-    speed: number = 2.1;
-    hitPoints: integer = 10;
+    rotationSpeed: number = 0.15;
+    speed: number = 5.5;
+    hitPoints: integer = 5;
     playerId: string;
 
     constructor(scene: Phaser.Scene, x: number, y: number, id: string) {
