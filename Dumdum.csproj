@@ -40,10 +40,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\content\Zombbomb\" />
     <Folder Include="wwwroot\content\Swollball\cards\" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Zombbomb\Zombbomb.csproj" />
     <ProjectReference Include="Swollball\Swollball.csproj" />
   </ItemGroup>
 

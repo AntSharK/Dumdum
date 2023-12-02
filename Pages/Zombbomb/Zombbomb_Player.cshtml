@@ -1,0 +1,29 @@
+﻿@page
+@model Dumdum.Pages.Zombbomb.Zombbomb_PlayerModel
+@{
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <script src="/lib/signalr/dist/browser/signalr.js"></script>
+        <script src="/phaser/phaser.js"></script>
+        <script src="/js/Zombbomb/Zombbomb_Common.js"></script>
+        <script src="/js/Zombbomb/Zombbomb_Player_App.js"></script>
+        <meta charset="utf-8" />
+        <title>ZOMBBOMB ZOMBIE</title>
+    </head>
+    <body>
+        <div id="pageName" class="display-4" style="text-align:center">JOIN GAME</div>
+        <div class="state" id="joinroom">
+            <div style="text-align:center" class="display-1">
+                <input type="button" id="joinroombutton" value="JOIN" />
+            </div>
+        </div>
+
+    </body>
+    </html>
+    <script src="common.js"></script>
+    <script src="gameplayer.js"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+}
