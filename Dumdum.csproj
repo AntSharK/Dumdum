@@ -10,14 +10,19 @@
   <ItemGroup>
     <Compile Remove="Common\**" />
     <Compile Remove="Swollball\**" />
+	<Compile Remove="Zombbomb\**" />
     <Content Remove="Common\**" />
     <Content Remove="Swollball\**" />
+    <Content Remove="Zombbomb\**" />
     <EmbeddedResource Remove="Common\**" />
     <EmbeddedResource Remove="Swollball\**" />
+	<EmbeddedResource Remove="Zombbomb\**" />
     <None Remove="Common\**" />
     <None Remove="Swollball\**" />
+	<None Remove="Zombbomb\**" />
     <TypeScriptCompile Remove="Common\**" />
     <TypeScriptCompile Remove="Swollball\**" />
+    <TypeScriptCompile Remove="Zombbomb\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,7 +50,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Zombbomb\Zombbomb.csproj" />
+    <ProjectReference Include="Zombbomb\Zombbomb.csproj" />
     <ProjectReference Include="Swollball\Swollball.csproj" />
   </ItemGroup>
 
