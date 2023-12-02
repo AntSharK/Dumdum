@@ -28,3 +28,7 @@ function updateServerPosition() {
         });
     event.preventDefault();
 }
+
+connection.on("ZombieDead", function () {
+    window.location.reload();
+});

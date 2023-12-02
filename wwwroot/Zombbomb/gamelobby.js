@@ -23,3 +23,9 @@ connection.on("SpawnZombie", function (zombieId) {
 connection.on("UpdatePosition", function (zombieId, x, y) {
     updatePosition(zombieId, x, y, Game.game);
 })
+
+function destroyZombie(zombie) {
+    connection.invoke("DestroyZombie", zombie.playerId).catch(function (err) {
+        return console.error(err.toString());
+    });
+}

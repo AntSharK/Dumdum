@@ -74,6 +74,7 @@ class ZombbombArena extends Phaser.Scene {
             var zombie = body2 as Zombie;
             zombie.hitPoints--;
             if (zombie.hitPoints <= 0) {
+                destroyZombie(zombie);
                 zombie.destroy();
             }
         });
@@ -101,6 +102,8 @@ class ZombbombArena extends Phaser.Scene {
         });
     }
 }
+
+var destroyZombie: (zombie: Zombie) => {};
 
 function spawnZombie(playerId: string, game: Phaser.Game): Zombie {
     var scene = game.scene.getScene("ZombbombArena") as ZombbombArena;

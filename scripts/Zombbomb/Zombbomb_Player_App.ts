@@ -34,7 +34,7 @@ var yLoc: number;
 var updateServerPosition: any;
 
 /* 
-GAME SCENES - BALL ARENA
+GAME SCENES
  * */
 class ZombieControl extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
