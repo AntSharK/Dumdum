@@ -31,6 +31,7 @@ class Zombbomb_Player_Game {
 
 var xLoc: number;
 var yLoc: number;
+var needsUpdate: boolean = false;
 var updateServerPosition: any;
 
 /* 
@@ -54,7 +55,8 @@ class ZombieControl extends Phaser.Scene {
     update() {
         this.graphics.clear();
 
-        if (this.input.activePointer.isDown) {            
+        if (this.input.activePointer.isDown) {
+            needsUpdate = true;
             var pointerX = this.input.activePointer.x;
             var pointerY = this.input.activePointer.y;
             var direction = new Phaser.Math.Vector2(pointerX - this.game.canvas.width / 2, pointerY - this.game.canvas.height / 2);
@@ -65,7 +67,6 @@ class ZombieControl extends Phaser.Scene {
             const ZOMBIESPEED = 5.5;
             xLoc += direction.x * ZOMBIESPEED;
             yLoc += direction.y * ZOMBIESPEED;
-            updateServerPosition();
 
             this.graphics.lineStyle(100, 0xff0000);
             this.graphics.lineBetween(pointerX, pointerY, this.game.canvas.width / 2, this.game.canvas.height / 2);

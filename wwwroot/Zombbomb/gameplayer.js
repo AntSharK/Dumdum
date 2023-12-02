@@ -19,13 +19,17 @@ connection.on("SetPosition", function (x, y) {
     yLoc = y;
 });
 
+setInterval(updateServerPosition, 100);
+
 function updateServerPosition() {    
-    connection.invoke("UpdateServerZombiePosition",
-        sessionStorage.getItem(UserIdSessionStorageKey),
-        xLoc,
-        yLoc).catch(function (err) {
-            return console.error(err.toString());
-        });
+    if (needsUpdate) {
+        connection.invoke("UpdateServerZombiePosition",
+            sessionStorage.getItem(UserIdSessionStorageKey),
+            xLoc,
+            yLoc).catch(function (err) {
+                return console.error(err.toString());
+            });
+    }
 }
 
 connection.on("ZombieDead", function () {
