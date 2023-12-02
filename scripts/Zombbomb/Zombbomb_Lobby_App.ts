@@ -107,7 +107,7 @@ var destroyZombie: (zombie: Zombie) => {};
 
 function spawnZombie(playerId: string, game: Phaser.Game): Zombie {
     var scene = game.scene.getScene("ZombbombArena") as ZombbombArena;
-    var zombie = new Zombie(scene, Math.random() * 1000 + 200, 50, playerId);
+    var zombie = new Zombie(scene, Math.random() * game.canvas.width * 0.7 + game.canvas.width * 0.15, 50, playerId);
     scene.add.existing(zombie);
     scene.zombies.add(zombie);
     scene.zombieMap[playerId] = zombie;
