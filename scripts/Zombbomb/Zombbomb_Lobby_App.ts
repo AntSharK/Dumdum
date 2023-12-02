@@ -247,9 +247,9 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
     rotateLeft: boolean;
 
     rotationSpeed: number = 0.15;
-    speed: number = 5.5;
     hitPoints: integer = 5;
     playerId: string;
+    lastUpdateTime: number;
 
     constructor(scene: Phaser.Scene, x: number, y: number, id: string) {
         super(scene, x, y, 'zombie');
@@ -260,11 +260,16 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
 
         this.desiredX = this.x;
         this.desiredY = this.y;
+        this.lastUpdateTime = this.scene.time.now;
     }
 
     Update(scene: ZombbombArena) {
+        var deltaTime = this.scene.time.now - this.lastUpdateTime;
+        this.lastUpdateTime = this.scene.time.now;
+        var speed = 0.4 * deltaTime;
+
         var moveDirection = new Phaser.Math.Vector2(this.desiredX - this.x, this.desiredY - this.y);
-        if (moveDirection.length() <= this.speed) {
+        if (moveDirection.length() <= speed) {
             return;
         }
         moveDirection.normalize();
@@ -293,12 +298,12 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
             }
 
             // Move
-            if (Math.abs(this.desiredX - this.x) > this.speed) {
-                this.x += moveDirection.x * this.speed;
+            if (Math.abs(this.desiredX - this.x) > speed) {
+                this.x += moveDirection.x * speed;
             }
 
-            if (Math.abs(this.desiredY - this.y) > this.speed) {
-                this.y += moveDirection.y * this.speed;
+            if (Math.abs(this.desiredY - this.y) > speed) {
+                this.y += moveDirection.y * speed;
             }
         }
     }
