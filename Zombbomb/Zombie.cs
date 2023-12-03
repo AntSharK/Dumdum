@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Common;
 
 namespace Zombbomb
 {
-    public class Zombie
+    public class Zombie: Player
     {
-        public string PlayerId;
-        public string ConnectionId;
         public double LocationX;
         public double LocationY;
+        public int Color;
+
+        public Zombie(string name, string connectionId, string roomName)
+            : base(name, connectionId, roomName)
+        {
+        }
     }
 }

@@ -18,6 +18,7 @@ builder.Services.AddSignalR();
 
 // Add game lobbies
 builder.Services.AddSingleton<Swollball.SwollballLobby>();
+builder.Services.AddSingleton<Zombbomb.ZombbombLobby>();
 // End game lobbies
 
 builder.Services.AddRazorPages();

@@ -14,7 +14,13 @@
     <body>
         <div id="pageName" class="display-4" style="text-align:center">JOIN GAME</div>
         <div class="state" id="joinroom">
+            <div class="display-4" style="text-align:center">
+                Pick a color:
+                <input type="color" id="colorpicker" value="">
+            </div>
+            <hr />
             <div style="text-align:center" class="display-1">
+                Room ID: <input type="text" id="roomid" maxlength="5" size="5" oninput="this.value = this.value.toUpperCase()" /><br />
                 <input type="button" id="joinroombutton" value="JOIN" />
             </div>
         </div>

@@ -2,14 +2,18 @@
 BUTTON CLICKS
 ***/
 document.getElementById("joinroombutton").addEventListener("click", function (event) {
-    connection.invoke("JoinRoom").catch(function (err) {
+    var roomIdIn = document.getElementById("roomid").value;
+    var colorIn = document.getElementById("colorpicker").value;
+
+    connection.invoke("JoinRoom", roomIdIn, colorIn).catch(function (err) {
         return console.error(err.toString());
     });
     event.preventDefault();
 });
 
-connection.on("BeZombie", function (zombieId) {
+connection.on("BeZombie", function (zombieId, roomId) {
     sessionStorage.setItem(UserIdSessionStorageKey, zombieId);
+    sessionStorage.setItem(RoomIdSessionStorageKey, roomId);
     document.body.innerHTML = "<div id='controlbar' style=\"min-height:20px; height:2vh\"></div><div id='phaserapp' style=\"height:93vh\"></div>";
     Game = new Zombbomb_Player_Game();
 });
@@ -23,6 +27,7 @@ connection.on("SetPosition", function (x, y) {
 
 function updateServerPosition() {    
     connection.invoke("UpdateServerZombiePosition",
+        sessionStorage.getItem(RoomIdSessionStorageKey),
         sessionStorage.getItem(UserIdSessionStorageKey),
         xLoc,
         yLoc).catch(function (err) {
