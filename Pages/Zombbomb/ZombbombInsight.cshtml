@@ -1,0 +1,19 @@
+﻿@page
+@model Dumdum.Pages.ZombbombInsightModel
+
+RoomId: @Model.Room.RoomId
+<br />
+@{        
+    <table border="1">
+        <th>PlayerId</th>
+    @foreach(var player in Model.Room.Players.Values)
+    {
+            <tr>
+                <th>@player.Name</th>
+            </tr>
+            <tr>
+            </tr>
+    }
+    </table>
+    <br />
+}

@@ -1,0 +1,18 @@
+﻿@page
+@model Dumdum.Pages.Zombbomb.Zombbomb_LobbyListModel
+@{
+    <table border="1">
+        <th>Room ID</th>
+        <th>Updated Time</th>
+        <th>Zombie Count</th>
+        @foreach (var room in Model.Rooms)
+        {
+            <tr>
+                <th><a href='/Zombbomb/ZombbombInsight?RoomId=@room.Item1'>@room.Item1</a></th>
+                <th>@room.Item2.ToString()</th>
+                <th>@room.Item3.ToString()</th>
+            </tr>
+        }
+    </table>
+    <br />
+}

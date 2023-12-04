@@ -15,8 +15,7 @@ namespace Swollball
         }
 
         public GameHub(SwollballLobby lobby)
-        {
-            
+        {            
             this.GameLobby = lobby;
         }
 
