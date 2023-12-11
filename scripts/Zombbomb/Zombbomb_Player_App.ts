@@ -31,6 +31,10 @@ class Zombbomb_Player_Game {
 
 var xLoc: number;
 var yLoc: number;
+var leftBound: number;
+var rightBound: number;
+var topBound: number;
+var bottomBound: number;
 var updateServerPosition: any;
 
 /* 
@@ -68,6 +72,12 @@ class ZombieControl extends Phaser.Scene {
             const ZOMBIESPEED = 0.2;
             xLoc += direction.x * ZOMBIESPEED * deltaTime;
             yLoc += direction.y * ZOMBIESPEED * deltaTime;
+
+            if (xLoc < leftBound) { xLoc = leftBound; }
+            if (xLoc > rightBound) { xLoc = rightBound; }
+            if (yLoc > bottomBound) { yLoc = bottomBound; }
+            if (yLoc < topBound) { yLoc = topBound; }
+
             updateServerPosition();
 
             this.graphics.lineStyle(100, 0xff0000);
