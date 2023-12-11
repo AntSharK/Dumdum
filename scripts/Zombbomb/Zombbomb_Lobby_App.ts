@@ -100,10 +100,20 @@ class ZombbombArena extends Phaser.Scene {
         this.zombies.children.each(function (b) {
             (<Zombie>b).Update(this);
         });
+
+        switch (gameState) {
+            case "SettingUp":
+                // Draw the line at the zombie boundary
+                this.graphics.lineBetween(0, 200, 1400, 200);
+                break;
+            default:
+                break;
+        }
     }
 }
 
 var destroyZombie: (zombie: Zombie) => {};
+var gameState: string = "SettingUp"; // Corresponds to Room GameState
 
 function spawnZombie(playerId: string, game: Phaser.Game): Zombie {
     var scene = game.scene.getScene("ZombbombArena") as ZombbombArena;
