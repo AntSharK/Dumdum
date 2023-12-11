@@ -13,7 +13,7 @@ class Zombbomb_Lobby_Game {
                 physics: {
                     default: 'arcade',
                     arcade: {
-                        debug: true
+                        debug: false
                     }
                 },
 
@@ -152,9 +152,9 @@ var destroyZombie: (zombie: Zombie) => {};
 var startRound: any;
 var gameState: string = "SettingUp"; // Corresponds to Room GameState
 
-function spawnZombie(playerId: string, game: Phaser.Game): Zombie {
+function spawnZombie(playerId: string, colorIn: number, game: Phaser.Game): Zombie {
     var scene = game.scene.getScene("ZombbombArena") as ZombbombArena;
-    var zombie = new Zombie(scene, Math.random() * game.canvas.width * 0.7 + game.canvas.width * 0.15, 50, playerId);
+    var zombie = new Zombie(scene, Math.random() * game.canvas.width * 0.7 + game.canvas.width * 0.15, 50, playerId, colorIn);
     scene.add.existing(zombie);
     scene.zombies.add(zombie);
     scene.zombieMap[playerId] = zombie;
@@ -307,17 +307,20 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
     hitPoints: integer = 5;
     playerId: string;
     lastUpdateTime: number;
+    color: number;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, id: string) {
+    constructor(scene: Phaser.Scene, x: number, y: number, id: string, colorIn: number) {
         super(scene, x, y, 'zombie');
         this.playerId = id;
         this.originX = this.width / 2;
         this.originY = this.height / 2;
         this.scale = 0.2;
+        this.color = colorIn;
 
         this.desiredX = this.x;
         this.desiredY = this.y;
         this.lastUpdateTime = this.scene.time.now;
+        this.setTint(0xffffff, 0xffffff, colorIn, colorIn);
     }
 
     Update(scene: ZombbombArena) {
