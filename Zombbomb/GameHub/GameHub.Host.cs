@@ -31,5 +31,13 @@ namespace Zombbomb
 
             await Clients.Client(zombie.ConnectionId).SendAsync("SetPosition", x, y);
         }
+
+        public async Task StartRound(string roomId)
+        {
+            (_, var room) = await this.FindPlayerAndRoom(null, roomId);
+            if (room == null) { return; }
+            await Clients.Group(roomId).SendAsync("SetBounds", 0, 1400, 0, 1024);
+            room.State = ZombbombRoom.RoomState.Arena;
+        }
     }
 }

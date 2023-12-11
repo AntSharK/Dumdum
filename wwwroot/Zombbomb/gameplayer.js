@@ -11,7 +11,12 @@ document.getElementById("joinroombutton").addEventListener("click", function (ev
     event.preventDefault();
 });
 
-connection.on("BeZombie", function (zombieId, roomId) {
+connection.on("BeZombie", function (zombieId, roomId, leftBoundIn, rightBoundIn, topBoundIn, bottomBoundIn) {
+    rightBound = rightBoundIn;
+    leftBound = leftBoundIn;
+    bottomBound = bottomBoundIn;
+    topBound = topBoundIn;
+
     sessionStorage.setItem(UserIdSessionStorageKey, zombieId);
     sessionStorage.setItem(RoomIdSessionStorageKey, roomId);
     document.body.innerHTML = "<div id='controlbar' style=\"min-height:20px; height:2vh\"></div><div id='phaserapp' style=\"height:93vh\"></div>";
@@ -21,6 +26,14 @@ connection.on("BeZombie", function (zombieId, roomId) {
 connection.on("SetPosition", function (x, y) {
     xLoc = x;
     yLoc = y;
+});
+
+
+connection.on("SetBounds", function (leftBoundIn, rightBoundIn, topBoundIn, bottomBoundIn) {
+    rightBound = rightBoundIn;
+    leftBound = leftBoundIn;
+    bottomBound = bottomBoundIn;
+    topBound = topBoundIn;
 });
 
 //setInterval(updateServerPosition, 100);

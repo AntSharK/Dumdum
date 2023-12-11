@@ -26,6 +26,7 @@ namespace Zombbomb
             var zombieId = Utils.GenerateId(10, allKeys);
             if (zombieId != null)
             {
+                await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
                 await SpawnZombie(room, zombieId, colorIn);
             }
         }
@@ -38,7 +39,7 @@ namespace Zombbomb
             zombie.Color = color;
 
             await Clients.Client(room.ConnectionId).SendAsync("SpawnZombie", zombieId);
-            await Clients.Caller.SendAsync("BeZombie", zombieId, room.RoomId);
+            await Clients.Caller.SendAsync("BeZombie", zombieId, room.RoomId, room.ZombieBounds.Left, room.ZombieBounds.Right, room.ZombieBounds.Top, room.ZombieBounds.Bottom);
         }
 
         public async Task UpdateServerZombiePosition(string roomId, string zombieId, double x, double y)
