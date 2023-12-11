@@ -26,6 +26,7 @@ namespace Zombbomb
             var zombieId = Utils.GenerateId(10, allKeys);
             if (zombieId != null)
             {
+                await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
                 await SpawnZombie(room, zombieId, colorIn);
             }
         }

@@ -144,6 +144,7 @@ class ZombbombArena extends Phaser.Scene {
         this.roomCodeText.setVisible(false);
         this.instructionText.setVisible(false);
         this.graphics.clear();
+        startRound();
     }
 }
 

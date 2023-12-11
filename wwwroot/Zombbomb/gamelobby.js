@@ -38,8 +38,8 @@ function destroyZombie(zombie) {
     });
 }
 
-function startRound {
-    connection.invoke("StartRound", sessionStorage.getItem(RoomIdSessionStorageKey).catch(function (err) {
+function startRound() {
+    connection.invoke("StartRound", sessionStorage.getItem(RoomIdSessionStorageKey)).catch(function (err) {
         return console.error(err.toString());
     });
 }
