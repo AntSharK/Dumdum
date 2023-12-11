@@ -37,3 +37,9 @@ function destroyZombie(zombie) {
         return console.error(err.toString());
     });
 }
+
+function startRound {
+    connection.invoke("StartRound", sessionStorage.getItem(RoomIdSessionStorageKey).catch(function (err) {
+        return console.error(err.toString());
+    });
+}
