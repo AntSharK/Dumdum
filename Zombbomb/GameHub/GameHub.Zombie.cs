@@ -16,6 +16,12 @@ namespace Zombbomb
             }
 
             var room = this.GameLobby.Rooms[roomId];
+            if (room.State != ZombbombRoom.RoomState.SettingUp)
+            {
+                await Clients.Caller.SendAsync("ShowError", "Room already started.");
+                return;
+            }
+
             var allKeys = room.Players.Keys;
             var zombieId = Utils.GenerateId(10, allKeys);
             if (zombieId != null)

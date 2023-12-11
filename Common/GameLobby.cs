@@ -14,7 +14,8 @@ namespace Common
         public GameLobby()
         {
             _ = new Timer(this.Cleanup, null /*State*/, CLEANUPINTERVAL, CLEANUPINTERVAL);
-            var rm = this.CreateRoom("TEST");
+            // Code to create a new test room
+            // var rm = this.CreateRoom("TEST");
         }
 
         public GameRoom<PlayerType>? CreateRoom(string connectionId)
