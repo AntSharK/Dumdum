@@ -6,14 +6,14 @@ class Zombbomb_Lobby_Game {
     constructor() {
         this.game = new Phaser.Game(
             {
-                width: "100%",
-                height: "97%",
+                width: 1400, // "100%",
+                height: 1024, //"97%",
                 type: Phaser.AUTO,
 
                 physics: {
                     default: 'arcade',
                     arcade: {
-                        debug: false
+                        debug: true
                     }
                 },
 
@@ -23,7 +23,7 @@ class Zombbomb_Lobby_Game {
                 scale: {
                     parent: "phaserapp",
                     autoCenter: Phaser.Scale.Center.CENTER_BOTH,
-                    //mode: Phaser.Scale.FIT,
+                    mode: Phaser.Scale.FIT,
                 },
             });
     }
