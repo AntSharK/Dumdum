@@ -36,9 +36,9 @@ var rightBound: number;
 var topBound: number;
 var bottomBound: number;
 var updateServerPosition: any;
+var respawnPlayer: any;
 
 function startRespawnTimer(game: Phaser.Game) {
-
     var activeScene = game.scene.getScene("ZombieControl");
     var nextScene = game.scene.getScene("RespawnControl");
     activeScene.scene.switch("RespawnControl");
@@ -79,6 +79,14 @@ class RespawnControl extends Phaser.Scene {
     update() {
         if (!this.canRespawn) {
             this.timeLeftDisplay.text = Math.ceil(this.respawnTimer.getRemainingSeconds()).toString();
+        }
+        else {
+            if (this.input.activePointer.isDown) {
+                this.timeLeftDisplay.setVisible(false);
+
+                //this.scene.switch("ZombieControl");
+                respawnPlayer();
+            }
         }
     }
 

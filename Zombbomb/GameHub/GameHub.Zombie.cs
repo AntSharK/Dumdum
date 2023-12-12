@@ -6,7 +6,7 @@ namespace Zombbomb
 {
     public partial class GameHub
     {
-        public async Task JoinRoom(string roomId, string colorIn)
+        public async Task JoinRoom(string roomId, string colorIn, bool isRespawnEvent)
         {
             Logger.LogInformation("PLAYER JOINS ROOM:{0}.", roomId);
             if (!this.GameLobby.Rooms.ContainsKey(roomId))
@@ -16,7 +16,8 @@ namespace Zombbomb
             }
 
             var room = this.GameLobby.Rooms[roomId];
-            if (room.State != ZombbombRoom.RoomState.SettingUp)
+            if (room.State != ZombbombRoom.RoomState.SettingUp
+                && !isRespawnEvent)
             {
                 await Clients.Caller.SendAsync("ShowError", "Room already started.");
                 return;

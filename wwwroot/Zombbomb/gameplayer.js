@@ -4,8 +4,9 @@ BUTTON CLICKS
 document.getElementById("joinroombutton").addEventListener("click", function (event) {
     var roomIdIn = document.getElementById("roomid").value;
     var colorIn = document.getElementById("colorpicker").value;
+    sessionStorage.setItem(ZombieColorStorageKey, colorIn);
 
-    connection.invoke("JoinRoom", roomIdIn, colorIn).catch(function (err) {
+    connection.invoke("JoinRoom", roomIdIn, colorIn, false).catch(function (err) {
         return console.error(err.toString());
     });
     event.preventDefault();
@@ -36,7 +37,9 @@ connection.on("SetBounds", function (leftBoundIn, rightBoundIn, topBoundIn, bott
     topBound = topBoundIn;
 });
 
-//setInterval(updateServerPosition, 100);
+connection.on("ZombieDead", function () {
+    startRespawnTimer(Game.game);
+});
 
 function updateServerPosition() {    
     connection.invoke("UpdateServerZombiePosition",
@@ -48,6 +51,11 @@ function updateServerPosition() {
         });
 }
 
-connection.on("ZombieDead", function () {
-    startRespawnTimer(Game.game);
-});
+function respawnPlayer() {
+    var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);
+    var color = sessionStorage.getItem(ZombieColorStorageKey);
+
+    connection.invoke("JoinRoom", roomId, color, true).catch(function (err) {
+        return console.error(err.toString());
+    });
+}

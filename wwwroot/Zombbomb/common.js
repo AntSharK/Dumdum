@@ -2,6 +2,8 @@
 const UserIdSessionStorageKey = "userid";
 const LeaderBoardDurationStorageKey = "leaderboardduration";
 const RoundDurationStorageKey = "roundduration";
+const ZombieColorStorageKey = "zombiecolor";
+
 var connection = new signalR.HubConnectionBuilder().withUrl("/zombBombHub").build();
 
 connection.start().catch(function (err) {
