@@ -49,5 +49,5 @@ function updateServerPosition() {
 }
 
 connection.on("ZombieDead", function () {
-    window.location.reload();
+    startRespawnTimer(Game.game);
 });
