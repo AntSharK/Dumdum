@@ -82,9 +82,14 @@ class RespawnControl extends Phaser.Scene {
         }
         else {
             if (this.input.activePointer.isDown) {
+                this.canRespawn = false;
                 this.timeLeftDisplay.setVisible(false);
-
-                //this.scene.switch("ZombieControl");
+                var nextScene = this.game.scene.getScene("ZombieControl");
+                this.scene.switch("ZombieControl");
+                // Only restart scenes if they have run before
+                if (nextScene.time.now > 0) {
+                    nextScene.scene.restart();
+                }
                 respawnPlayer();
             }
         }

@@ -6,7 +6,7 @@ namespace Zombbomb
 {
     public partial class GameHub
     {
-        public async Task JoinRoom(string roomId, string colorIn, bool isRespawnEvent)
+        public async Task JoinRoom(string roomId, string colorIn)
         {
             Logger.LogInformation("PLAYER JOINS ROOM:{0}.", roomId);
             if (!this.GameLobby.Rooms.ContainsKey(roomId))
@@ -16,8 +16,7 @@ namespace Zombbomb
             }
 
             var room = this.GameLobby.Rooms[roomId];
-            if (room.State != ZombbombRoom.RoomState.SettingUp
-                && !isRespawnEvent)
+            if (room.State != ZombbombRoom.RoomState.SettingUp)
             {
                 await Clients.Caller.SendAsync("ShowError", "Room already started.");
                 return;
@@ -28,11 +27,23 @@ namespace Zombbomb
             if (zombieId != null)
             {
                 await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
-                await SpawnZombie(room, zombieId, colorIn);
+                await SpawnZombie(room, zombieId, colorIn, isRespawnEvent: false);
             }
         }
 
-        private async Task SpawnZombie(ZombbombRoom room, string zombieId, string colorIn)
+        public async Task RespawnZombie(string roomId, string zombieId, string colorIn)
+        {
+            if (!this.GameLobby.Rooms.ContainsKey(roomId))
+            {
+                await Clients.Caller.SendAsync("ShowError", "Room not found.");
+                return;
+            }
+
+            var room = this.GameLobby.Rooms[roomId];
+            await SpawnZombie(room, zombieId, colorIn, isRespawnEvent: true);
+        }
+
+        private async Task SpawnZombie(ZombbombRoom room, string zombieId, string colorIn, bool isRespawnEvent)
         {
             var zombie = room.CreatePlayer(zombieId, Context.ConnectionId);
 
@@ -40,7 +51,13 @@ namespace Zombbomb
             zombie.Color = color;
 
             await Clients.Client(room.ConnectionId).SendAsync("SpawnZombie", zombieId);
-            await Clients.Caller.SendAsync("BeZombie", zombieId, room.RoomId, room.ZombieBounds.Left, room.ZombieBounds.Right, room.ZombieBounds.Top, room.ZombieBounds.Bottom);
+            await Clients.Caller.SendAsync("BeZombie", 
+                zombieId, room.RoomId, 
+                room.ZombieBounds.Left, 
+                room.ZombieBounds.Right, 
+                room.ZombieBounds.Top, 
+                room.ZombieBounds.Bottom,
+                isRespawnEvent);
         }
 
         public async Task UpdateServerZombiePosition(string roomId, string zombieId, double x, double y)
