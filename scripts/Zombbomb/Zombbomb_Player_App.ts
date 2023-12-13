@@ -61,7 +61,6 @@ class RespawnControl extends Phaser.Scene {
 
     constructor() {
         super({ key: 'RespawnControl', active: false });
-        this.canRespawn = false;
     }
 
     preload() {
@@ -120,6 +119,10 @@ class ZombieControl extends Phaser.Scene {
 
     update() {
         var deltaTime = this.time.now - this.lastUpdateTime;
+
+        // If deltatime is somehow lagging, don't bother with any input
+        if (deltaTime > 2000) deltaTime = 0;
+
         this.lastUpdateTime = this.time.now;
         this.graphics.clear();
 
