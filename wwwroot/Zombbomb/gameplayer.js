@@ -11,6 +11,16 @@ document.getElementById("joinroombutton").addEventListener("click", function (ev
     event.preventDefault();
 });
 
+document.getElementById("colorpicker").value = GetRandomColor();
+function GetRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
 connection.on("BeZombie", function (zombieId, roomId, leftBoundIn, rightBoundIn, topBoundIn, bottomBoundIn) {
     rightBound = rightBoundIn;
     leftBound = leftBoundIn;
@@ -28,6 +38,9 @@ connection.on("SetPosition", function (x, y) {
     yLoc = y;
 });
 
+connection.on("ZombieDead", function () {
+    window.location.reload();
+});
 
 connection.on("SetBounds", function (leftBoundIn, rightBoundIn, topBoundIn, bottomBoundIn) {
     rightBound = rightBoundIn;
@@ -35,8 +48,6 @@ connection.on("SetBounds", function (leftBoundIn, rightBoundIn, topBoundIn, bott
     bottomBound = bottomBoundIn;
     topBound = topBoundIn;
 });
-
-//setInterval(updateServerPosition, 100);
 
 function updateServerPosition() {    
     connection.invoke("UpdateServerZombiePosition",
@@ -47,7 +58,3 @@ function updateServerPosition() {
             return console.error(err.toString());
         });
 }
-
-connection.on("ZombieDead", function () {
-    window.location.reload();
-});
