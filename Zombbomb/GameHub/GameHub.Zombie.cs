@@ -36,11 +36,9 @@ namespace Zombbomb
             var zombie = room.CreatePlayer(zombieId, Context.ConnectionId);
 
             var color = int.Parse(colorIn.TrimStart('#'), System.Globalization.NumberStyles.HexNumber);
-            
-            // Do some color filtering
             zombie.Color = color;
 
-            await Clients.Client(room.ConnectionId).SendAsync("SpawnZombie", zombieId, color);
+            await Clients.Client(room.ConnectionId).SendAsync("SpawnZombie", zombieId);
             await Clients.Caller.SendAsync("BeZombie", zombieId, room.RoomId, room.ZombieBounds.Left, room.ZombieBounds.Right, room.ZombieBounds.Top, room.ZombieBounds.Bottom);
         }
 
