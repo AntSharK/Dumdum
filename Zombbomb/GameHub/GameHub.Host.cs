@@ -36,7 +36,9 @@ namespace Zombbomb
         {
             (_, var room) = await this.FindPlayerAndRoom(null, roomId);
             if (room == null) { return; }
-            await Clients.Group(roomId).SendAsync("SetBounds", 0, 1400, 0, 1024);
+
+            room.ZombieBounds.Height = 1024;
+            await Clients.Group(roomId).SendAsync("SetBounds", room.ZombieBounds.Left, room.ZombieBounds.Right, room.ZombieBounds.Top, room.ZombieBounds.Bottom);
             room.State = ZombbombRoom.RoomState.Arena;
         }
     }
