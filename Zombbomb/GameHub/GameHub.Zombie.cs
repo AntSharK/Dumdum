@@ -45,8 +45,7 @@ namespace Zombbomb
 
         private async Task SpawnZombie(ZombbombRoom room, string zombieId, string colorIn, bool isRespawnEvent)
         {
-            var zombie = room.CreatePlayer(zombieId, Context.ConnectionId);
-
+            Zombie? zombie = isRespawnEvent ? room.Players[zombieId] : room.CreatePlayer(zombieId, Context.ConnectionId);
             var color = int.Parse(colorIn.TrimStart('#'), System.Globalization.NumberStyles.HexNumber);
             
             // Do some color filtering
@@ -71,7 +70,6 @@ namespace Zombbomb
             (var zombie, var room) = await this.FindPlayerAndRoom(zombieId, roomId);
             if (zombie == null || room == null) { return; }
 
-            room.Players.Remove(zombie.Name);
             await Clients.Client(zombie.ConnectionId).SendAsync("ZombieDead");
         }
     }
