@@ -17,8 +17,8 @@ connection.on("StartGame", function (roomId) {
     Game = new Zombbomb_Lobby_Game();
 });
 
-connection.on("SpawnZombie", function (zombieId) {
-    var newZombie = spawnZombie(zombieId, Game.game);
+connection.on("SpawnZombie", function (zombieId, color) {
+    var newZombie = spawnZombie(zombieId, color, Game.game);
 
     connection.invoke("SetZombiePosition", sessionStorage.getItem(RoomIdSessionStorageKey), zombieId, newZombie.x, newZombie.y).catch(function (err) {
         return console.error(err.toString());
