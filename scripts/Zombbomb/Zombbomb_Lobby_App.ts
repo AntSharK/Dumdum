@@ -42,7 +42,8 @@ class ZombbombArena extends Phaser.Scene {
     roomCodeText: Phaser.GameObjects.Text;
     instructionText: Phaser.GameObjects.Text;
 
-    zombieMap: { [id: string] : Zombie} = {};
+    zombieMap: { [id: string]: Zombie } = {};
+    gameStartTime: number;
 
     constructor() {
         super({ key: 'ZombbombArena', active: true });
@@ -93,7 +94,16 @@ class ZombbombArena extends Phaser.Scene {
         this.physics.add.collider(this.playerGroup, this.zombies, (body1, body2) => {
             switch (gameState) {
                 case "Arena":
+                     // Server-side updates and state update
+                    destroyPlayer();
+                    gameState = "GameOver";
+
+                    // Client-side updates
                     body1.destroy();
+                    this.roomCodeText.setVisible(true);
+
+                    var totalTimeMilliseconds = (this.game.getTime() - this.gameStartTime);
+                    this.roomCodeText.text = "TIME: " + totalTimeMilliseconds.toFixed(0);
                     break;
                 case "SettingUp":
                 default:
@@ -144,11 +154,13 @@ class ZombbombArena extends Phaser.Scene {
         this.roomCodeText.setVisible(false);
         this.instructionText.setVisible(false);
         this.graphics.clear();
+        this.gameStartTime = this.game.getTime();
         startRound();
     }
 }
 
 var destroyZombie: (zombie: Zombie) => {};
+var destroyPlayer: any;
 var startRound: any;
 var gameState: string = "SettingUp"; // Corresponds to Room GameState
 
