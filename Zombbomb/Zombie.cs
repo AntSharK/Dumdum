@@ -7,6 +7,7 @@ namespace Zombbomb
         public double LocationX;
         public double LocationY;
         public int Color;
+        public bool IsDead = false;
 
         public Zombie(string name, string connectionId, string roomName)
             : base(name, connectionId, roomName)

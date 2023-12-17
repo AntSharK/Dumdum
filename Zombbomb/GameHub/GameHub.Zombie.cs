@@ -50,6 +50,7 @@ namespace Zombbomb
             
             // Do some color filtering
             zombie.Color = color;
+            zombie.IsDead = false;
 
             await Clients.Client(room.ConnectionId).SendAsync("SpawnZombie", zombieId, color);
             await Clients.Client(zombie.ConnectionId).SendAsync("BeZombie", zombieId, room.RoomId, room.ZombieBounds.Left, room.ZombieBounds.Right, room.ZombieBounds.Top, room.ZombieBounds.Bottom, isRespawnEvent);
@@ -70,6 +71,7 @@ namespace Zombbomb
             (var zombie, var room) = await this.FindPlayerAndRoom(zombieId, roomId);
             if (zombie == null || room == null) { return; }
 
+            zombie.IsDead = true;
             await Clients.Client(zombie.ConnectionId).SendAsync("ZombieDead");
         }
     }

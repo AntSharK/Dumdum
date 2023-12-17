@@ -30,7 +30,9 @@ namespace Zombbomb
                 room.ResetState();
 
                 // Respawn every zombie
-                await Task.WhenAll(room.Players.Select(p => SpawnZombie(room, p.Key, "#" + p.Value.Color.ToString("X" /*Hexadecimal format*/), true /*isRespawnEvent*/)));
+                await Task.WhenAll(room.Players
+                    .Where(p => !p.Value.IsDead)
+                    .Select(p => SpawnZombie(room, p.Key, "#" + p.Value.Color.ToString("X" /*Hexadecimal format*/), true /*isRespawnEvent*/)));
             }
         }
 

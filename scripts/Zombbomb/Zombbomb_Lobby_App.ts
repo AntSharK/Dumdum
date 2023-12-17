@@ -87,9 +87,9 @@ class ZombbombArena extends Phaser.Scene {
                 default:
                     break;
             }
+
             if (zombie.hitPoints <= 0) {
-                destroyZombie(zombie);
-                zombie.destroy();
+                zombie.KillZombie();
             }
         });
 
@@ -101,9 +101,6 @@ class ZombbombArena extends Phaser.Scene {
 
                     var zombie = body2 as Zombie;
                     zombie.ticksSinceLastContact = 2;
-
-                    // TODO: Destroy the player on contact for now
-                    // player.KillPlayer(this);
                     
                     break;
                 case "SettingUp":
@@ -362,17 +359,28 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
         this.setTint(0xffffff, 0xffffff, colorIn, colorIn);
     }
 
+    KillZombie() {
+        destroyZombie(this);
+        this.destroy();
+    }
+
     CheckPlayerCollision() {
         if (this.ticksSinceLastContact > 0) {
             if (this.lastContactTime < 0) { // First contact
                 this.lastContactTime = this.lastUpdateTime;
             }
             else {
-                const MAXCONTACTTIME = 1000;
+                const MAXCONTACTTIME = 3000;
                 var timeInContact = this.lastUpdateTime - this.lastContactTime;
 
-                if (timeInContact >= MAXCONTACTTIME) { }
+                if (timeInContact >= MAXCONTACTTIME) {
+                    // Destroy the player and the zombie
+                    var arena = this.scene as ZombbombArena;
+                    arena.player.KillPlayer(arena);
+                    this.KillZombie();
+                }
                 else {
+                    // TODO: Gradient from white, not from black
                     var gradient = Phaser.Math.Interpolation.Linear([0, 0xff], timeInContact / MAXCONTACTTIME);
                     var tint = Math.floor(gradient) * 0x010000;
                     this.setTint(tint, tint, this.color, this.color);
