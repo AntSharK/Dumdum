@@ -124,10 +124,7 @@ class ZombbombArena extends Phaser.Scene {
             }
         }, this);
 
-        // Draw setup things
-        var sessionRoomId = sessionStorage.getItem("roomid");
-        this.roomCodeText = this.add.text(200, 300, "CODE: " + sessionRoomId, { color: 'White', fontSize: '144px' });
-        this.instructionText = this.add.text(150, 850, "MOVE HERE TO START", { color: 'White', fontSize: '72px' });
+        this.drawSetupGraphics();
     }
 
     update() {
@@ -135,17 +132,14 @@ class ZombbombArena extends Phaser.Scene {
         this.zombies.children.each(function (b) {
             (<Zombie>b).Update(this);
         });
-
-        switch (gameState) {
-            case "SettingUp":
-                this.drawSetupGraphics();
-                break;
-            default:
-                break;
-        }
     }
 
     drawSetupGraphics() {
+        // Draw setup things
+        var sessionRoomId = sessionStorage.getItem("roomid");
+        this.roomCodeText = this.add.text(200, 300, "CODE: " + sessionRoomId, { color: 'White', fontSize: '144px' });
+        this.instructionText = this.add.text(150, 850, "MOVE HERE TO START", { color: 'White', fontSize: '72px' });
+
         // Draw the line at the zombie boundary
         this.graphics.lineStyle(10, 0x99ff00)
         this.graphics.lineBetween(0, 200, 1400, 200);
