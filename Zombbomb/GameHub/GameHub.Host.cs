@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-using Common.Util;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
 namespace Zombbomb
@@ -29,8 +27,7 @@ namespace Zombbomb
 
             if (room.State == ZombbombRoom.RoomState.GameOver)
             {
-                room.State = ZombbombRoom.RoomState.SettingUp;
-                room.ZombieBounds = new Rectangle(0, 0, 1400, 200); // Note that this should mirror the game width on the client-side
+                room.ResetState();
 
                 // Respawn every zombie
                 await Task.WhenAll(room.Players.Select(p => SpawnZombie(room, p.Key, "#" + p.Value.Color.ToString("X" /*Hexadecimal format*/), true /*isRespawnEvent*/)));
