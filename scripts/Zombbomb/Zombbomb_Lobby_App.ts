@@ -99,8 +99,11 @@ class ZombbombArena extends Phaser.Scene {
                     var player = body1 as Player;
                     player.zombiesInContact++;
 
+                    var zombie = body2 as Zombie;
+                    zombie.ticksSinceLastContact = 2;
+
                     // TODO: Destroy the player on contact for now
-                    player.KillPlayer(this);
+                    // player.KillPlayer(this);
                     
                     break;
                 case "SettingUp":
@@ -342,6 +345,9 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
     lastUpdateTime: number;
     color: number;
 
+    lastContactTime: number = -1;
+    ticksSinceLastContact: number = -1;
+
     constructor(scene: Phaser.Scene, x: number, y: number, id: string, colorIn: number) {
         super(scene, x, y, 'zombie');
         this.playerId = id;
@@ -356,10 +362,42 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
         this.setTint(0xffffff, 0xffffff, colorIn, colorIn);
     }
 
+    CheckPlayerCollision() {
+        if (this.ticksSinceLastContact > 0) {
+            if (this.lastContactTime < 0) { // First contact
+                this.lastContactTime = this.lastUpdateTime;
+            }
+            else {
+                const MAXCONTACTTIME = 1000;
+                var timeInContact = this.lastUpdateTime - this.lastContactTime;
+
+                if (timeInContact >= MAXCONTACTTIME) { }
+                else {
+                    var gradient = Phaser.Math.Interpolation.Linear([0, 0xff], timeInContact / MAXCONTACTTIME);
+                    var tint = Math.floor(gradient) * 0x010000;
+                    this.setTint(tint, tint, this.color, this.color);
+                }
+            }
+
+            // Adjusting speed in contact is problematic - the Player controller client assumes a constant speed
+        }
+        else {
+            if (this.lastContactTime > 0) { // No longer in contact
+                this.setTint(0xffffff, 0xffffff, this.color, this.color);
+            }
+
+            this.lastContactTime = -1;
+        }
+
+        this.ticksSinceLastContact--;
+    }
+
     Update(scene: ZombbombArena) {
         var deltaTime = this.scene.time.now - this.lastUpdateTime;
         this.lastUpdateTime = this.scene.time.now;
         var speed = 0.2 * deltaTime;
+
+        this.CheckPlayerCollision();
 
         var moveDirection = new Phaser.Math.Vector2(this.desiredX - this.x, this.desiredY - this.y);
         if (moveDirection.length() <= speed) {
