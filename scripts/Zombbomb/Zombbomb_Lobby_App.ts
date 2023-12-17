@@ -96,7 +96,9 @@ class ZombbombArena extends Phaser.Scene {
                 case "Arena":
                     var player = body1 as Player;
                     player.zombiesInContact++;
-                    //body1.destroy();
+
+                    // TODO: Destroy the player on contact for now
+                    body1.destroy();
                     break;
                 case "SettingUp":
                 default:
