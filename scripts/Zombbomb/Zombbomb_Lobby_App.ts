@@ -43,6 +43,7 @@ class ZombbombArena extends Phaser.Scene {
     instructionText: Phaser.GameObjects.Text;
 
     zombieMap: { [id: string]: Zombie } = {};
+    restartGameTimer: Phaser.Time.TimerEvent;
     gameStartTime: number;
 
     constructor() {
@@ -102,6 +103,8 @@ class ZombbombArena extends Phaser.Scene {
                     body1.destroy();
                     this.roomCodeText.setVisible(true);
 
+                    this.restartGameTimer = new Phaser.Time.TimerEvent({ delay: 8000, callback: this.restartGame, callbackScope: this });
+                    this.time.addEvent(this.restartGameTimer);
                     var totalTimeMilliseconds = (this.game.getTime() - this.gameStartTime);
                     this.roomCodeText.text = "TIME: " + totalTimeMilliseconds.toFixed(0);
                     break;
@@ -157,9 +160,16 @@ class ZombbombArena extends Phaser.Scene {
         this.gameStartTime = this.game.getTime();
         startRound();
     }
+
+    restartGame() {
+        gameState = "SettingUp";
+        this.scene.restart();
+        resetZombies();
+    }
 }
 
 var destroyZombie: (zombie: Zombie) => {};
+var resetZombies: any;
 var destroyPlayer: any;
 var startRound: any;
 var gameState: string = "SettingUp"; // Corresponds to Room GameState

@@ -21,6 +21,20 @@ namespace Zombbomb
             }
         }
 
+        public async Task ResetHostSession(string roomId)
+        {
+            (_, var room) = await this.FindPlayerAndRoom(null, roomId);
+            if (room == null) { return; }
+
+            if (room.State == ZombbombRoom.RoomState.GameOver)
+            {
+                room.State = ZombbombRoom.RoomState.SettingUp;
+
+                // Respawn every zombie
+                await Task.WhenAll(room.Players.Select(p => SpawnZombie(room, p.Key, p.Value.Color, true /*isRespawnEvent*/)));
+            }
+        }
+
         public async Task SetZombiePosition(string roomId, string zombieId, double x, double y)
         {
             (var zombie, var room) = await this.FindPlayerAndRoom(zombieId, roomId);
