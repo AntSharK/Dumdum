@@ -43,3 +43,15 @@ function startRound() {
         return console.error(err.toString());
     });
 }
+
+function destroyPlayer() {
+    connection.invoke("DestroyPlayer", sessionStorage.getItem(RoomIdSessionStorageKey)).catch(function (err) {
+        return console.error(err.toString());
+    });
+}
+
+function resetZombies() {
+    connection.invoke("ResetHostSession", sessionStorage.getItem(RoomIdSessionStorageKey)).catch(function (err) {
+        return console.error(err.toString());
+    });
+}

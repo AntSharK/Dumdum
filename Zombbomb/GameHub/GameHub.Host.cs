@@ -1,5 +1,4 @@
-﻿using Common.Util;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
 namespace Zombbomb
@@ -18,6 +17,20 @@ namespace Zombbomb
             {
                 Logger.LogWarning("FAILED TO CREATE ROOM.");
                 await Clients.Caller.SendAsync("ShowError", "ERROR CREATING ROOM.");
+            }
+        }
+
+        public async Task ResetHostSession(string roomId)
+        {
+            (_, var room) = await this.FindPlayerAndRoom(null, roomId);
+            if (room == null) { return; }
+
+            if (room.State == ZombbombRoom.RoomState.GameOver)
+            {
+                room.ResetState();
+
+                // Respawn every zombie
+                await Task.WhenAll(room.Players.Select(p => SpawnZombie(room, p.Key, "#" + p.Value.Color.ToString("X" /*Hexadecimal format*/), true /*isRespawnEvent*/)));
             }
         }
 
@@ -40,6 +53,14 @@ namespace Zombbomb
             room.ZombieBounds.Height = 1024;
             await Clients.Group(roomId).SendAsync("SetBounds", room.ZombieBounds.Left, room.ZombieBounds.Right, room.ZombieBounds.Top, room.ZombieBounds.Bottom);
             room.State = ZombbombRoom.RoomState.Arena;
+        }
+
+        public async Task DestroyPlayer(string roomId)
+        {
+            (_, var room) = await this.FindPlayerAndRoom(null, roomId);
+            if (room == null) { return; }
+
+            room.State = ZombbombRoom.RoomState.GameOver;
         }
     }
 }

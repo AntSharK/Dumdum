@@ -42,7 +42,9 @@ class ZombbombArena extends Phaser.Scene {
     roomCodeText: Phaser.GameObjects.Text;
     instructionText: Phaser.GameObjects.Text;
 
-    zombieMap: { [id: string] : Zombie} = {};
+    zombieMap: { [id: string]: Zombie } = {};
+    restartGameTimer: Phaser.Time.TimerEvent;
+    gameStartTime: number;
 
     constructor() {
         super({ key: 'ZombbombArena', active: true });
@@ -98,7 +100,8 @@ class ZombbombArena extends Phaser.Scene {
                     player.zombiesInContact++;
 
                     // TODO: Destroy the player on contact for now
-                    body1.destroy();
+                    player.KillPlayer(this);
+                    
                     break;
                 case "SettingUp":
                 default:
@@ -116,10 +119,7 @@ class ZombbombArena extends Phaser.Scene {
             }
         }, this);
 
-        // Draw setup things
-        var sessionRoomId = sessionStorage.getItem("roomid");
-        this.roomCodeText = this.add.text(200, 300, "CODE: " + sessionRoomId, { color: 'White', fontSize: '144px' });
-        this.instructionText = this.add.text(150, 850, "MOVE HERE TO START", { color: 'White', fontSize: '72px' });
+        this.drawSetupGraphics();
     }
 
     update() {
@@ -127,17 +127,14 @@ class ZombbombArena extends Phaser.Scene {
         this.zombies.children.each(function (b) {
             (<Zombie>b).Update(this);
         });
-
-        switch (gameState) {
-            case "SettingUp":
-                this.drawSetupGraphics();
-                break;
-            default:
-                break;
-        }
     }
 
     drawSetupGraphics() {
+        // Draw setup things
+        var sessionRoomId = sessionStorage.getItem("roomid");
+        this.roomCodeText = this.add.text(200, 300, "CODE: " + sessionRoomId, { color: 'White', fontSize: '144px' });
+        this.instructionText = this.add.text(150, 850, "MOVE HERE TO START", { color: 'White', fontSize: '72px' });
+
         // Draw the line at the zombie boundary
         this.graphics.lineStyle(10, 0x99ff00)
         this.graphics.lineBetween(0, 200, 1400, 200);
@@ -149,11 +146,22 @@ class ZombbombArena extends Phaser.Scene {
         this.roomCodeText.setVisible(false);
         this.instructionText.setVisible(false);
         this.graphics.clear();
+        this.gameStartTime = this.game.getTime();
         startRound();
+    }
+
+    restartGame() {
+        gameState = "SettingUp";
+        this.scene.restart();
+
+        // Delay 100ms so that the client can refresh before server sends messages to respawn zombies
+        setTimeout(resetZombies, 100);
     }
 }
 
 var destroyZombie: (zombie: Zombie) => {};
+var resetZombies: any;
+var destroyPlayer: any;
 var startRound: any;
 var gameState: string = "SettingUp"; // Corresponds to Room GameState
 
@@ -304,6 +312,21 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
             scene.time.addEvent(new Phaser.Time.TimerEvent({ delay: 400, callback: () => { pb.destroy(); }, callbackScope: this }));
         };
+    }
+
+    KillPlayer(scene: ZombbombArena) {
+        // Server-side updates and state update
+        destroyPlayer();
+        gameState = "GameOver";
+
+        // Client-side updates
+        this.destroy();
+        scene.roomCodeText.setVisible(true);
+
+        scene.restartGameTimer = new Phaser.Time.TimerEvent({ delay: 8000, callback: scene.restartGame, callbackScope: scene });
+        scene.time.addEvent(scene.restartGameTimer);
+        var totalTimeMilliseconds = (scene.game.getTime() - scene.gameStartTime);
+        scene.roomCodeText.text = "TIME: " + totalTimeMilliseconds.toFixed(0);
     }
 }
 

@@ -8,13 +8,20 @@ namespace Zombbomb
     /// </summary>
     public class ZombbombRoom : GameRoom<Zombie>
     {
-        public RoomState State { get; internal set; } = RoomState.SettingUp;
+        public RoomState State;
 
-        public Rectangle ZombieBounds = new Rectangle(0, 0, 1400, 200); // Note that this should mirror the game width on the client-side
+        public Rectangle ZombieBounds;
 
         public ZombbombRoom(string roomId, string connectionId)
             : base(roomId, connectionId)
         {
+            this.ResetState();
+        }
+
+        internal void ResetState()
+        {
+            this.State = RoomState.SettingUp;
+            this.ZombieBounds = new Rectangle(0, 0, 1400, 200); // Note that this should mirror the game width on the client-side
         }
 
         protected override Zombie CreatePlayerInternal(string playerName, string connectionId)
