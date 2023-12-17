@@ -164,7 +164,9 @@ class ZombbombArena extends Phaser.Scene {
     restartGame() {
         gameState = "SettingUp";
         this.scene.restart();
-        resetZombies();
+
+        // Delay 100ms so that the client can refresh before server sends messages to respawn zombies
+        setTimeout(resetZombies, 100);
     }
 }
 
