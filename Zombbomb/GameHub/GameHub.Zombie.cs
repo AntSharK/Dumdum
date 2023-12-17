@@ -52,7 +52,7 @@ namespace Zombbomb
             zombie.Color = color;
 
             await Clients.Client(room.ConnectionId).SendAsync("SpawnZombie", zombieId, color);
-            await Clients.Caller.SendAsync("BeZombie", zombieId, room.RoomId, room.ZombieBounds.Left, room.ZombieBounds.Right, room.ZombieBounds.Top, room.ZombieBounds.Bottom, isRespawnEvent);
+            await Clients.Client(zombie.ConnectionId).SendAsync("BeZombie", zombieId, room.RoomId, room.ZombieBounds.Left, room.ZombieBounds.Right, room.ZombieBounds.Top, room.ZombieBounds.Bottom, isRespawnEvent);
         }
 
         public async Task UpdateServerZombiePosition(string roomId, string zombieId, double x, double y)
