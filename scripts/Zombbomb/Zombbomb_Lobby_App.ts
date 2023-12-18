@@ -356,12 +356,16 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
         this.desiredX = this.x;
         this.desiredY = this.y;
         this.lastUpdateTime = this.scene.time.now;
-        this.setTint(0xffffff, 0xffffff, colorIn, colorIn);
+        this.ResetTint();
     }
 
     KillZombie() {
         destroyZombie(this);
         this.destroy();
+    }
+
+    ResetTint() {
+        this.setTint(0xffffff, 0xffffff, this.color, this.color);
     }
 
     CheckPlayerCollision() {
@@ -370,11 +374,11 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
                 this.lastContactTime = this.lastUpdateTime;
             }
             else {
-                const MAXCONTACTTIME = 3000;
+                const MAXCONTACTTIME = 2000;
                 var timeInContact = this.lastUpdateTime - this.lastContactTime;
 
                 if (timeInContact >= MAXCONTACTTIME) {
-                    // Destroy the player and the zombie
+                    // Destroy the player and the zombie after 2 seconds of contact
                     var arena = this.scene as ZombbombArena;
                     arena.player.KillPlayer(arena);
                     this.KillZombie();
@@ -382,7 +386,8 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
                 else {
                     // TODO: Gradient from white, not from black
                     var gradient = Phaser.Math.Interpolation.Linear([0, 0xff], timeInContact / MAXCONTACTTIME);
-                    var tint = Math.floor(gradient) * 0x010000;
+                    var tint = 0xffffff - Math.floor(gradient) * 0x000101;
+                    console.log(tint.toString(16));
                     this.setTint(tint, tint, this.color, this.color);
                 }
             }
@@ -391,7 +396,7 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
         }
         else {
             if (this.lastContactTime > 0) { // No longer in contact
-                this.setTint(0xffffff, 0xffffff, this.color, this.color);
+                this.ResetTint();
             }
 
             this.lastContactTime = -1;
