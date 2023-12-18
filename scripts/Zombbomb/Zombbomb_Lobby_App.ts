@@ -54,6 +54,7 @@ class ZombbombArena extends Phaser.Scene {
         this.load.image('zombie', '/content/Zombbomb/ghost.png');
         this.load.image('player', '/content/Zombbomb/pacman.png');
         this.load.image('bullet', '/content/Zombbomb/bullet.png');
+        this.load.spritesheet('explosion', '/content/Zombbomb/explosionframes.png', { frameWidth: 130, frameHeight: 128 });
     }
 
     create() {
@@ -119,6 +120,17 @@ class ZombbombArena extends Phaser.Scene {
             }
         }, this);
 
+        this.anims.create({
+            key: 'explosion_anim',
+            frames: this.anims.generateFrameNumbers('explosion', { frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24] }),
+            frameRate: 20,
+            repeat: 0
+        })
+        var sp = this.add.sprite(500, 500, 'explosion');
+        sp.play('explosion_anim');
+        sp.on(Phaser.Animations.Events.ANIMATION_COMPLETE, function (anim, frame, gameObject) {
+            gameObject.destroy();
+        });
         this.drawSetupGraphics();
     }
 
@@ -323,6 +335,13 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.destroy();
         scene.roomCodeText.setVisible(true);
 
+        // Explosion animation
+        var sp = scene.add.sprite(500, 500, 'explosion');
+        sp.play('explosion_anim');
+        sp.on(Phaser.Animations.Events.ANIMATION_COMPLETE, function (anim, frame, gameObject) {
+            gameObject.destroy();
+        });
+
         scene.restartGameTimer = new Phaser.Time.TimerEvent({ delay: 8000, callback: scene.restartGame, callbackScope: scene });
         scene.time.addEvent(scene.restartGameTimer);
         var totalTimeMilliseconds = (scene.game.getTime() - scene.gameStartTime);
@@ -365,7 +384,7 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
     }
 
     KillZombie() {
-        destroyZombie(this);
+        destroyZombie(this); // Trigger the server-side update
         this.destroy();
     }
 
