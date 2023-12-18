@@ -126,11 +126,7 @@ class ZombbombArena extends Phaser.Scene {
             frameRate: 20,
             repeat: 0
         })
-        var sp = this.add.sprite(500, 500, 'explosion');
-        sp.play('explosion_anim');
-        sp.on(Phaser.Animations.Events.ANIMATION_COMPLETE, function (anim, frame, gameObject) {
-            gameObject.destroy();
-        });
+
         this.drawSetupGraphics();
     }
 
@@ -335,13 +331,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.destroy();
         scene.roomCodeText.setVisible(true);
 
-        // Explosion animation
-        var sp = scene.add.sprite(500, 500, 'explosion');
-        sp.play('explosion_anim');
-        sp.on(Phaser.Animations.Events.ANIMATION_COMPLETE, function (anim, frame, gameObject) {
-            gameObject.destroy();
-        });
-
         scene.restartGameTimer = new Phaser.Time.TimerEvent({ delay: 8000, callback: scene.restartGame, callbackScope: scene });
         scene.time.addEvent(scene.restartGameTimer);
         var totalTimeMilliseconds = (scene.game.getTime() - scene.gameStartTime);
@@ -406,6 +395,14 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
                     var arena = this.scene as ZombbombArena;
                     arena.player.KillPlayer(arena);
                     this.KillZombie();
+
+                    // Explosion animation
+                    var sp = arena.add.sprite(this.x, this.y + 64, 'explosion');
+                    sp.scale = 2;
+                    sp.play('explosion_anim');
+                    sp.on(Phaser.Animations.Events.ANIMATION_COMPLETE, function (anim, frame, gameObject) {
+                        gameObject.destroy();
+                    });
                 }
                 else {
                     // Fade the whole tint towards 0xff0000
