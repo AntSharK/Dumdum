@@ -75,7 +75,7 @@ class ZombbombArena extends Phaser.Scene {
         this.add.existing(this.player);
         this.playerGroup.add(this.player);
 
-        this.physics.add.collider(this.bullets, this.zombies, (body1, body2) => {
+        this.physics.add.overlap(this.bullets, this.zombies, (body1, body2) => {
             body1.destroy();
             var zombie = body2 as Zombie;
 
@@ -93,7 +93,7 @@ class ZombbombArena extends Phaser.Scene {
             }
         });
 
-        this.physics.add.collider(this.playerGroup, this.zombies, (body1, body2) => {
+        this.physics.add.overlap(this.playerGroup, this.zombies, (body1, body2) => {
             switch (gameState) {
                 case "Arena":
                     var player = body1 as Player;
@@ -300,7 +300,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         }
 
         Phaser.Actions.PlaceOnCircle(bullets,
-            new Phaser.Geom.Circle(this.x, this.y, this.displayWidth / 4),
+            new Phaser.Geom.Circle(this.x, this.y, 5),
             this.desiredRotation - 0.2,
             this.desiredRotation + 0.2,);
         for (let pb of bullets) {
