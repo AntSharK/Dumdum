@@ -254,9 +254,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             }
 
             if (this.fireOrderIssued && this.canFire) {
+                this.setAlpha(0.8);
                 this.canFire = false;
                 this.FireStuff(scene);
-                scene.time.addEvent(new Phaser.Time.TimerEvent({ delay: 2000, callback: () => { this.canFire = true; }, callbackScope: this }));
+                scene.time.addEvent(new Phaser.Time.TimerEvent({ delay: 2000, callback: () => { this.canFire = true; this.setAlpha(1); }, callbackScope: this }));
             }
 
             var modifiedMoveSpeed = this.speed / (this.zombiesInContact + 1);
