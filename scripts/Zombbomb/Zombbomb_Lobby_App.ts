@@ -340,18 +340,23 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
     hitPoints: integer = 5;
     playerId: string;
     lastUpdateTime: number;
-    color: number;
+    color: integer;
+    colorR: integer;
+    colorG: integer;
+    colorB: integer;
 
     lastContactTime: number = -1;
     ticksSinceLastContact: number = -1;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, id: string, colorIn: number) {
+    constructor(scene: Phaser.Scene, x: number, y: number, id: string, colorIn: integer) {
         super(scene, x, y, 'zombie');
         this.playerId = id;
         this.originX = this.width / 2;
         this.originY = this.height / 2;
         this.scale = 0.2;
+
         this.color = colorIn;
+        [this.colorR, this.colorG, this.colorB] = ToRGB(this.color);
 
         this.desiredX = this.x;
         this.desiredY = this.y;
@@ -384,11 +389,18 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
                     this.KillZombie();
                 }
                 else {
-                    // TODO: Gradient from white, not from black
-                    var gradient = Phaser.Math.Interpolation.Linear([0, 0xff], timeInContact / MAXCONTACTTIME);
-                    var tint = 0xffffff - Math.floor(gradient) * 0x000101;
-                    console.log(tint.toString(16));
-                    this.setTint(tint, tint, this.color, this.color);
+                    // Fade the whole tint towards 0xff0000
+                    var topGradient = Phaser.Math.Interpolation.Linear([0, 0xff], timeInContact / MAXCONTACTTIME);
+                    var topTint = 0xffffff - Math.floor(topGradient) * 0x000101;
+
+                    var bottomG = Math.floor(Phaser.Math.Interpolation.Linear([this.colorG, 0], timeInContact / MAXCONTACTTIME));
+                    var bottomB = Math.floor(Phaser.Math.Interpolation.Linear([this.colorB, 0], timeInContact / MAXCONTACTTIME));
+                    var bottomR = Math.floor(Phaser.Math.Interpolation.Linear([this.colorR, 0xff], timeInContact / MAXCONTACTTIME));
+                    var bottomTint = ToNumber(bottomR, bottomG, bottomB);
+
+                    console.log(bottomTint.toString(16));
+
+                    this.setTint(topTint, topTint, bottomTint, bottomTint);
                 }
             }
 
