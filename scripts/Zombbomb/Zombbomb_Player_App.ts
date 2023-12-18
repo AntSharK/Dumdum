@@ -104,6 +104,7 @@ class RespawnControl extends Phaser.Scene {
 class ZombieControl extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;    
     lastUpdateTime: number;
+    zombieColor: number;
     constructor() {
         super({ key: 'ZombieControl', active: true });
     }
@@ -115,6 +116,8 @@ class ZombieControl extends Phaser.Scene {
         this.lastUpdateTime = this.time.now;
         this.graphics = this.add.graphics({ x: 0, y: 0 });
         this.input.mouse.disableContextMenu();
+
+        this.zombieColor = parseInt(sessionStorage.getItem("zombiecolor").substr(1), 16);
     }
 
     update() {
@@ -125,6 +128,10 @@ class ZombieControl extends Phaser.Scene {
 
         this.lastUpdateTime = this.time.now;
         this.graphics.clear();
+
+
+        this.graphics.fillStyle(this.zombieColor);
+        this.graphics.fillCircle(this.game.canvas.width / 2, this.game.canvas.height / 2, 50);
 
         if (this.input.activePointer.isDown) {
             var pointerX = this.input.activePointer.x;
@@ -144,8 +151,7 @@ class ZombieControl extends Phaser.Scene {
             if (yLoc < topBound) { yLoc = topBound; }
 
             updateServerPosition();
-
-            this.graphics.lineStyle(100, 0xff0000);
+            this.graphics.lineStyle(100, this.zombieColor);
             this.graphics.lineBetween(pointerX, pointerY, this.game.canvas.width / 2, this.game.canvas.height / 2);
         }
     }
