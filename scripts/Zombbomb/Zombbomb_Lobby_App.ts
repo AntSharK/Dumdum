@@ -87,9 +87,9 @@ class ZombbombArena extends Phaser.Scene {
                 default:
                     break;
             }
+
             if (zombie.hitPoints <= 0) {
-                destroyZombie(zombie);
-                zombie.destroy();
+                zombie.KillZombie();
             }
         });
 
@@ -99,8 +99,8 @@ class ZombbombArena extends Phaser.Scene {
                     var player = body1 as Player;
                     player.zombiesInContact++;
 
-                    // TODO: Destroy the player on contact for now
-                    player.KillPlayer(this);
+                    var zombie = body2 as Zombie;
+                    zombie.ticksSinceLastContact = 2;
                     
                     break;
                 case "SettingUp":
@@ -340,26 +340,89 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
     hitPoints: integer = 5;
     playerId: string;
     lastUpdateTime: number;
-    color: number;
+    color: integer;
+    colorR: integer;
+    colorG: integer;
+    colorB: integer;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, id: string, colorIn: number) {
+    lastContactTime: number = -1;
+    ticksSinceLastContact: number = -1;
+
+    constructor(scene: Phaser.Scene, x: number, y: number, id: string, colorIn: integer) {
         super(scene, x, y, 'zombie');
         this.playerId = id;
         this.originX = this.width / 2;
         this.originY = this.height / 2;
         this.scale = 0.2;
+
         this.color = colorIn;
+        [this.colorR, this.colorG, this.colorB] = ToRGB(this.color);
 
         this.desiredX = this.x;
         this.desiredY = this.y;
         this.lastUpdateTime = this.scene.time.now;
-        this.setTint(0xffffff, 0xffffff, colorIn, colorIn);
+        this.ResetTint();
+    }
+
+    KillZombie() {
+        destroyZombie(this);
+        this.destroy();
+    }
+
+    ResetTint() {
+        this.setTint(0xffffff, 0xffffff, this.color, this.color);
+    }
+
+    CheckPlayerCollision() {
+        if (this.ticksSinceLastContact > 0) {
+            if (this.lastContactTime < 0) { // First contact
+                this.lastContactTime = this.lastUpdateTime;
+            }
+            else {
+                const MAXCONTACTTIME = 2000;
+                var timeInContact = this.lastUpdateTime - this.lastContactTime;
+
+                if (timeInContact >= MAXCONTACTTIME) {
+                    // Destroy the player and the zombie after 2 seconds of contact
+                    var arena = this.scene as ZombbombArena;
+                    arena.player.KillPlayer(arena);
+                    this.KillZombie();
+                }
+                else {
+                    // Fade the whole tint towards 0xff0000
+                    var topGradient = Phaser.Math.Interpolation.Linear([0, 0xff], timeInContact / MAXCONTACTTIME);
+                    var topTint = 0xffffff - Math.floor(topGradient) * 0x000101;
+
+                    var bottomG = Math.floor(Phaser.Math.Interpolation.Linear([this.colorG, 0], timeInContact / MAXCONTACTTIME));
+                    var bottomB = Math.floor(Phaser.Math.Interpolation.Linear([this.colorB, 0], timeInContact / MAXCONTACTTIME));
+                    var bottomR = Math.floor(Phaser.Math.Interpolation.Linear([this.colorR, 0xff], timeInContact / MAXCONTACTTIME));
+                    var bottomTint = ToNumber(bottomR, bottomG, bottomB);
+
+                    console.log(bottomTint.toString(16));
+
+                    this.setTint(topTint, topTint, bottomTint, bottomTint);
+                }
+            }
+
+            // Adjusting speed in contact is problematic - the Player controller client assumes a constant speed
+        }
+        else {
+            if (this.lastContactTime > 0) { // No longer in contact
+                this.ResetTint();
+            }
+
+            this.lastContactTime = -1;
+        }
+
+        this.ticksSinceLastContact--;
     }
 
     Update(scene: ZombbombArena) {
         var deltaTime = this.scene.time.now - this.lastUpdateTime;
         this.lastUpdateTime = this.scene.time.now;
         var speed = 0.2 * deltaTime;
+
+        this.CheckPlayerCollision();
 
         var moveDirection = new Phaser.Math.Vector2(this.desiredX - this.x, this.desiredY - this.y);
         if (moveDirection.length() <= speed) {
