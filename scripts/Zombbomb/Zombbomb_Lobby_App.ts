@@ -54,6 +54,7 @@ class ZombbombArena extends Phaser.Scene {
         this.load.image('zombie', '/content/Zombbomb/ghost.png');
         this.load.image('player', '/content/Zombbomb/pacman.png');
         this.load.image('bullet', '/content/Zombbomb/bullet.png');
+        this.load.spritesheet('explosion', '/content/Zombbomb/explosionframes.png', { frameWidth: 130, frameHeight: 128 });
     }
 
     create() {
@@ -118,6 +119,13 @@ class ZombbombArena extends Phaser.Scene {
                 this.player.IssueMove(pointer);
             }
         }, this);
+
+        this.anims.create({
+            key: 'explosion_anim',
+            frames: this.anims.generateFrameNumbers('explosion', { frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24] }),
+            frameRate: 20,
+            repeat: 0
+        })
 
         this.drawSetupGraphics();
     }
@@ -365,7 +373,7 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
     }
 
     KillZombie() {
-        destroyZombie(this);
+        destroyZombie(this); // Trigger the server-side update
         this.destroy();
     }
 
@@ -387,6 +395,14 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
                     var arena = this.scene as ZombbombArena;
                     arena.player.KillPlayer(arena);
                     this.KillZombie();
+
+                    // Explosion animation
+                    var sp = arena.add.sprite(this.x, this.y + 64, 'explosion');
+                    sp.scale = 2;
+                    sp.play('explosion_anim');
+                    sp.on(Phaser.Animations.Events.ANIMATION_COMPLETE, function (anim, frame, gameObject) {
+                        gameObject.destroy();
+                    });
                 }
                 else {
                     // Fade the whole tint towards 0xff0000
