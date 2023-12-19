@@ -2,7 +2,12 @@
 BUTTON CLICKS
 ***/
 document.getElementById("createroombutton").addEventListener("click", function (event) {
-    connection.invoke("CreateRoom").catch(function (err) {
+    var explodeTime = document.getElementById("explodetimer").value;
+    var zombieSpeed = document.getElementById("zombiespeed").value;
+    var playerSpeed = document.getElementById("playerspeed").value;
+    var reloadTime = document.getElementById("reloadtime").value;
+    var respawnTime = document.getElementById("respawntime").value;
+    connection.invoke("CreateRoom", explodeTime, zombieSpeed, playerSpeed, reloadTime, respawnTime).catch(function (err) {
         return console.error(err.toString());
     });
     event.preventDefault();
@@ -11,10 +16,15 @@ document.getElementById("createroombutton").addEventListener("click", function (
 /***
 MESSAGES FROM HUB
 ***/
-connection.on("StartGame", function (roomId) {
+connection.on("StartGame", function (roomId, explodeTime, zombieSpeed, playerSpeed, reloadTime) {
     sessionStorage.setItem(RoomIdSessionStorageKey, roomId);
     document.body.innerHTML = "<div id='controlbar' style=\"min-height:20px; height:2vh\"></div><div id='phaserapp' style=\"height:93vh\"></div>";
     Game = new Zombbomb_Lobby_Game();
+    PLAYERSPEED = playerSpeed;
+    ZOMBIESPEED = zombieSpeed;
+    EXPLODETIME = explodeTime;
+    RELOADTIME = reloadTime;
+    RESPAWNTIME = respawnTime;
 });
 
 connection.on("SpawnZombie", function (zombieId, color) {

@@ -12,6 +12,13 @@ namespace Zombbomb
 
         public Rectangle ZombieBounds;
 
+        // Configurations
+        public int ExplodeTime;
+        public double ZombieSpeed;
+        public double PlayerSpeed;
+        public int ReloadTime;
+        public int RespawnTime;
+
         public ZombbombRoom(string roomId, string connectionId)
             : base(roomId, connectionId)
         {
