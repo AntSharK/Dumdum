@@ -5,13 +5,28 @@ namespace Zombbomb
 {
     public partial class GameHub : Hub
     {
-        public async Task CreateRoom()
+        public async Task CreateRoom(string explodeTime, string zombieSpeed, string playerSpeed, string reloadTime, string respawnTime)
         {
             var newRoom = this.GameLobby.CreateRoom(Context.ConnectionId);
+
             if (newRoom != null)
             {
+                int.TryParse(explodeTime, out newRoom.ExplodeTime);
+                double.TryParse(zombieSpeed, out newRoom.ZombieSpeed);
+                double.TryParse(playerSpeed, out newRoom.PlayerSpeed);
+                int.TryParse(reloadTime, out newRoom.ReloadTime);
+                int.TryParse(respawnTime, out newRoom.RespawnTime);
+
+                newRoom.PlayerSpeed = newRoom.PlayerSpeed / 10d;
+                newRoom.ZombieSpeed = newRoom.ZombieSpeed / 200d;
                 Logger.LogInformation("CREATED ROOM ID {0}", newRoom.RoomId);
-                await Clients.Caller.SendAsync("StartGame", newRoom.RoomId);
+                await Clients.Caller.SendAsync("StartGame", 
+                    newRoom.RoomId, 
+                    newRoom.ExplodeTime,
+                    newRoom.ZombieSpeed,
+                    newRoom.PlayerSpeed,
+                    newRoom.ReloadTime,
+                    newRoom.RespawnTime);
             }
             else
             {

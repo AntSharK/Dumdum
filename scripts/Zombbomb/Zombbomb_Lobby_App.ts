@@ -80,7 +80,7 @@ class ZombbombArena extends Phaser.Scene {
             body1.destroy();
             var zombie = body2 as Zombie;
 
-            switch (gameState) {
+            switch (GAMESTATE) {
                 case "Arena":
                     zombie.hitPoints--;
                     break;
@@ -95,7 +95,7 @@ class ZombbombArena extends Phaser.Scene {
         });
 
         this.physics.add.collider(this.playerGroup, this.zombies, (body1, body2) => {
-            switch (gameState) {
+            switch (GAMESTATE) {
                 case "Arena":
                     var player = body1 as Player;
                     player.zombiesInContact++;
@@ -150,7 +150,7 @@ class ZombbombArena extends Phaser.Scene {
     }
 
     startRound() {
-        gameState = "Arena";
+        GAMESTATE = "Arena";
         this.roomCodeText.setVisible(false);
         this.instructionText.setVisible(false);
         this.graphics.clear();
@@ -159,7 +159,7 @@ class ZombbombArena extends Phaser.Scene {
     }
 
     restartGame() {
-        gameState = "SettingUp";
+        GAMESTATE = "SettingUp";
         this.scene.restart();
 
         // Delay 100ms so that the client can refresh before server sends messages to respawn zombies
@@ -171,7 +171,14 @@ var destroyZombie: (zombie: Zombie) => {};
 var resetZombies: any;
 var destroyPlayer: any;
 var startRound: any;
-var gameState: string = "SettingUp"; // Corresponds to Room GameState
+var GAMESTATE: string = "SettingUp"; // Corresponds to Server-side Room GameState
+
+// Configurations from server-side
+var EXPLODETIME: number;
+var ZOMBIESPEED: number;
+var PLAYERSPEED: number;
+var RELOADTIME: number;
+var RESPAWNTIME: number;
 
 function spawnZombie(playerId: string, colorIn: number, game: Phaser.Game): Zombie {
     var scene = game.scene.getScene("ZombbombArena") as ZombbombArena;
@@ -198,7 +205,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     rotateLeft: boolean;
 
     rotationSpeed: number = 0.20;
-    speed: number = 3.5;
     fireOrderIssued: boolean = false;
     canFire: boolean = true;
     zombiesInContact: integer = 0;
@@ -264,10 +270,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             if (this.fireOrderIssued && this.canFire) {
                 this.canFire = false;
                 this.FireStuff(scene);
-                scene.time.addEvent(new Phaser.Time.TimerEvent({ delay: 2000, callback: () => { this.canFire = true; }, callbackScope: this }));
+                scene.time.addEvent(new Phaser.Time.TimerEvent({ delay: RELOADTIME, callback: () => { this.canFire = true; }, callbackScope: this }));
             }
 
-            var modifiedMoveSpeed = this.speed / (this.zombiesInContact + 1);
+            var modifiedMoveSpeed = PLAYERSPEED / (this.zombiesInContact + 1);
 
             // Move
             if (Math.abs(this.desiredX - this.x) > modifiedMoveSpeed) {
@@ -286,7 +292,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     CheckGameStart(scene: ZombbombArena) {
-        if (gameState == "SettingUp") {
+        if (GAMESTATE == "SettingUp") {
             if (this.y > 800) {
                 scene.startRound();
             }
@@ -294,8 +300,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     FireStuff(scene: ZombbombArena) {
-        this.x -= this.moveDirection.x * this.speed * 2;
-        this.y -= this.moveDirection.y * this.speed * 2;
+        this.x -= this.moveDirection.x * PLAYERSPEED * 2;
+        this.y -= this.moveDirection.y * PLAYERSPEED * 2;
         this.fireOrderIssued = false;
         this.desiredX = this.x;
         this.desiredY = this.y;
@@ -325,7 +331,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     KillPlayer(scene: ZombbombArena) {
         // Server-side updates and state update
         destroyPlayer();
-        gameState = "GameOver";
+        GAMESTATE = "GameOver";
 
         // Client-side updates
         this.destroy();
@@ -387,10 +393,9 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
                 this.lastContactTime = this.lastUpdateTime;
             }
             else {
-                const MAXCONTACTTIME = 2000;
                 var timeInContact = this.lastUpdateTime - this.lastContactTime;
 
-                if (timeInContact >= MAXCONTACTTIME) {
+                if (timeInContact >= EXPLODETIME) {
                     // Destroy the player and the zombie after 2 seconds of contact
                     var arena = this.scene as ZombbombArena;
                     arena.player.KillPlayer(arena);
@@ -406,12 +411,12 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
                 }
                 else {
                     // Fade the whole tint towards 0xff0000
-                    var topGradient = Phaser.Math.Interpolation.Linear([0, 0xff], timeInContact / MAXCONTACTTIME);
+                    var topGradient = Phaser.Math.Interpolation.Linear([0, 0xff], timeInContact / EXPLODETIME);
                     var topTint = 0xffffff - Math.floor(topGradient) * 0x000101;
 
-                    var bottomG = Math.floor(Phaser.Math.Interpolation.Linear([this.colorG, 0], timeInContact / MAXCONTACTTIME));
-                    var bottomB = Math.floor(Phaser.Math.Interpolation.Linear([this.colorB, 0], timeInContact / MAXCONTACTTIME));
-                    var bottomR = Math.floor(Phaser.Math.Interpolation.Linear([this.colorR, 0xff], timeInContact / MAXCONTACTTIME));
+                    var bottomG = Math.floor(Phaser.Math.Interpolation.Linear([this.colorG, 0], timeInContact / EXPLODETIME));
+                    var bottomB = Math.floor(Phaser.Math.Interpolation.Linear([this.colorB, 0], timeInContact / EXPLODETIME));
+                    var bottomR = Math.floor(Phaser.Math.Interpolation.Linear([this.colorR, 0xff], timeInContact / EXPLODETIME));
                     var bottomTint = ToNumber(bottomR, bottomG, bottomB);
 
                     console.log(bottomTint.toString(16));
@@ -436,7 +441,7 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
     Update(scene: ZombbombArena) {
         var deltaTime = this.scene.time.now - this.lastUpdateTime;
         this.lastUpdateTime = this.scene.time.now;
-        var speed = 0.2 * deltaTime;
+        var speed = ZOMBIESPEED * deltaTime;
 
         this.CheckPlayerCollision();
 

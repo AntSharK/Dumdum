@@ -18,7 +18,7 @@ namespace Common
             // var rm = this.CreateRoom("TEST");
         }
 
-        public GameRoom<PlayerType>? CreateRoom(string connectionId)
+        public RoomType? CreateRoom(string connectionId)
         {
             const int ROOMIDLENGTH = 5;
             var allKeys = this.Rooms.Keys;

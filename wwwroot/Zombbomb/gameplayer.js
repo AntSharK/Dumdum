@@ -22,11 +22,13 @@ function GetRandomColor() {
     return color;
 }
 
-connection.on("BeZombie", function (zombieId, roomId, leftBoundIn, rightBoundIn, topBoundIn, bottomBoundIn, isRespawnEvent) {
-    rightBound = rightBoundIn;
-    leftBound = leftBoundIn;
-    bottomBound = bottomBoundIn;
-    topBound = topBoundIn;
+connection.on("BeZombie", function (zombieId, roomId, leftBoundIn, rightBoundIn, topBoundIn, bottomBoundIn, zombieSpeed, respawnTime, isRespawnEvent) {
+    RIGHTBOUND = rightBoundIn;
+    LEFTBOUND = leftBoundIn;
+    BOTTOMBOUND = bottomBoundIn;
+    TOPBOUND = topBoundIn;
+    ZOMBIESPEED = zombieSpeed;
+    RESPAWNTIME = respawnTime;
 
     sessionStorage.setItem(UserIdSessionStorageKey, zombieId);
     sessionStorage.setItem(RoomIdSessionStorageKey, roomId);
@@ -37,15 +39,15 @@ connection.on("BeZombie", function (zombieId, roomId, leftBoundIn, rightBoundIn,
 });
 
 connection.on("SetPosition", function (x, y) {
-    xLoc = x;
-    yLoc = y;
+    XLOC = x;
+    YLOC = y;
 });
 
 connection.on("SetBounds", function (leftBoundIn, rightBoundIn, topBoundIn, bottomBoundIn) {
-    rightBound = rightBoundIn;
-    leftBound = leftBoundIn;
-    bottomBound = bottomBoundIn;
-    topBound = topBoundIn;
+    RIGHTBOUND = rightBoundIn;
+    LEFTBOUND = leftBoundIn;
+    BOTTOMBOUND = bottomBoundIn;
+    TOPBOUND = topBoundIn;
 });
 
 connection.on("ZombieDead", function () {
@@ -56,8 +58,8 @@ function updateServerPosition() {
     connection.invoke("UpdateServerZombiePosition",
         sessionStorage.getItem(RoomIdSessionStorageKey),
         sessionStorage.getItem(UserIdSessionStorageKey),
-        xLoc,
-        yLoc).catch(function (err) {
+        XLOC,
+        YLOC).catch(function (err) {
             return console.error(err.toString());
         });
 }
