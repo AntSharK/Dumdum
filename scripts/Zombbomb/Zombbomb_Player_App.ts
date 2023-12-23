@@ -29,14 +29,18 @@ class Zombbomb_Player_Game {
     }
 }
 
-var xLoc: number;
-var yLoc: number;
-var leftBound: number;
-var rightBound: number;
-var topBound: number;
-var bottomBound: number;
 var updateServerPosition: any;
 var respawnPlayer: any;
+
+// Configurations from server-side
+var XLOC: number;
+var YLOC: number;
+var LEFTBOUND: number;
+var RIGHTBOUND: number;
+var TOPBOUND: number;
+var BOTTOMBOUND: number;
+var ZOMBIESPEED: number;
+var RESPAWNTIME: number;
 
 function startRespawnTimer(game: Phaser.Game) {
     var activeScene = game.scene.getScene("ZombieControl");
@@ -70,7 +74,7 @@ class RespawnControl extends Phaser.Scene {
         this.graphics = this.add.graphics({ x: 0, y: 0 });
         this.input.mouse.disableContextMenu();
 
-        this.respawnTimer = new Phaser.Time.TimerEvent({ delay: 5000, callback: this.showRespawnButton, callbackScope: this});
+        this.respawnTimer = new Phaser.Time.TimerEvent({ delay: RESPAWNTIME, callback: this.showRespawnButton, callbackScope: this});
         this.time.addEvent(this.respawnTimer);
         this.timeLeftDisplay = this.add.text(0, 0, "", { color: 'White', fontSize: '50vw' });
     }
@@ -85,6 +89,7 @@ class RespawnControl extends Phaser.Scene {
                 this.timeLeftDisplay.setVisible(false);
                 var nextScene = this.game.scene.getScene("ZombieControl");
                 this.scene.switch("ZombieControl");
+
                 // Only restart scenes if they have run before
                 if (nextScene.time.now > 0) {
                     nextScene.scene.restart();
@@ -141,14 +146,13 @@ class ZombieControl extends Phaser.Scene {
             direction.normalize();
 
             // The zombie speed needs to be the same everywhere
-            const ZOMBIESPEED = 0.2;
-            xLoc += direction.x * ZOMBIESPEED * deltaTime;
-            yLoc += direction.y * ZOMBIESPEED * deltaTime;
+            XLOC += direction.x * ZOMBIESPEED * deltaTime;
+            YLOC += direction.y * ZOMBIESPEED * deltaTime;
 
-            if (xLoc < leftBound) { xLoc = leftBound; }
-            if (xLoc > rightBound) { xLoc = rightBound; }
-            if (yLoc > bottomBound) { yLoc = bottomBound; }
-            if (yLoc < topBound) { yLoc = topBound; }
+            if (XLOC < LEFTBOUND) { XLOC = LEFTBOUND; }
+            if (XLOC > RIGHTBOUND) { XLOC = RIGHTBOUND; }
+            if (YLOC > BOTTOMBOUND) { YLOC = BOTTOMBOUND; }
+            if (YLOC < TOPBOUND) { YLOC = TOPBOUND; }
 
             updateServerPosition();
             this.graphics.lineStyle(100, this.zombieColor);
