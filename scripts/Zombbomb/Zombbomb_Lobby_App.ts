@@ -17,6 +17,10 @@ class Zombbomb_Lobby_Game {
                     }
                 },
 
+                input: {
+                    gamepad: true,
+                },
+
                 scene: [ZombbombArena],
                 backgroundColor: '#000000',
 
@@ -130,11 +134,31 @@ class ZombbombArena extends Phaser.Scene {
         this.drawSetupGraphics();
     }
 
+    addGamepadButtons(scene: ZombbombArena, gamePad: Phaser.Input.Gamepad.Gamepad) {
+
+    }
+
     update() {
         this.player.Update(this);
         this.zombies.children.each(function (b) {
             (<Zombie>b).Update(this);
         });
+
+        // Check gamepad
+        if (this.input.gamepad.total > 0) { 
+            const pads = this.input.gamepad.gamepads;
+            for (let i = 0; i < pads.length; i++) {
+                const pad = pads[i];
+                if (!pad) {
+                    continue;
+                }
+
+                if (pad.A) {
+
+                    console.log("A IS DOWN");
+}
+            }
+        }
     }
 
     drawSetupGraphics() {
