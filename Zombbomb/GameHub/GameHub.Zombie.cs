@@ -1,6 +1,7 @@
 ﻿using Common.Util;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Client;
 
 namespace Zombbomb
 {
@@ -69,8 +70,12 @@ namespace Zombbomb
             (var zombie, var room) = await this.FindPlayerAndRoom(zombieId, roomId);
             if (zombie == null || room == null) { return; }
 
+            // No updates necessary if the zombie is dead
+            if (zombie.IsDead) { return; }
+
             zombie.LocationX = x;
             zombie.LocationY = y;
+
             await Clients.Client(room.ConnectionId).SendAsync("UpdatePosition", zombieId, x, y);
         }
 
