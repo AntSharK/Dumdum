@@ -126,7 +126,7 @@ class ZombbombArena extends Phaser.Scene {
 
         this.anims.create({
             key: 'explosion_anim',
-            frames: this.anims.generateFrameNumbers('explosion', { frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24] }),
+            frames: this.anims.generateFrameNumbers('explosion', { frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19] }),
             frameRate: 20,
             repeat: 0
         })
@@ -140,7 +140,9 @@ class ZombbombArena extends Phaser.Scene {
             (<Zombie>b).Update(this);
         });
 
-        // Check gamepad
+        /* ************
+         * SECTION FOR GAMEPAD
+         * *********** */
         if (this.input.gamepad.total > 0) { 
             const pads = this.input.gamepad.gamepads;
             for (let i = 0; i < pads.length; i++) {
@@ -151,9 +153,19 @@ class ZombbombArena extends Phaser.Scene {
 
                 var directionVector = pad.leftStick;
                 if (directionVector.length() > 0.25) {
-                    directionVector = directionVector.normalize();
-                    var pointToMove = new Phaser.Math.Vector2(this.player.x + directionVector.x * PLAYERSPEED * 2, this.player.y + directionVector.y * PLAYERSPEED * 2);
+                    var normalizedDirectionVector = directionVector.normalize();
+                    var pointToMove = new Phaser.Math.Vector2(this.player.x + normalizedDirectionVector.x * PLAYERSPEED * 3, this.player.y + normalizedDirectionVector.y * PLAYERSPEED * 3);
                     this.player.IssueMoveToPointer(pointToMove);
+                }
+
+                if (pad.A || pad.B || pad.R1 || pad.R2) {
+                    var rot = this.player.rotation;
+                    var xProj = Math.cos(rot);
+                    var yProj = Math.sin(rot);
+                    var pointToFire = new Phaser.Math.Vector2(this.player.x + xProj * PLAYERSPEED * 100, this.player.y + yProj * PLAYERSPEED * 100);
+                    if (this.player.canFire) { 
+                        this.player.IssueFiring(pointToFire);
+                    }
                 }
             }
         }
@@ -280,7 +292,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         }
         else {
             // Rotate small amounts
-            if (Math.abs(this.desiredRotation - this.rotation) > 0.05) {
+            if (Math.abs(this.desiredRotation - this.rotation) > 0.04) {
                 if (this.rotateLeft) {
                     this.rotation += 0.035;
                 }
