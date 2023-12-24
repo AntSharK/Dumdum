@@ -1,7 +1,6 @@
 ﻿using Common.Util;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-using Microsoft.Identity.Client;
 
 namespace Zombbomb
 {
