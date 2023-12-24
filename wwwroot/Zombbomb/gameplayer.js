@@ -41,6 +41,7 @@ connection.on("BeZombie", function (zombieId, roomId, leftBoundIn, rightBoundIn,
 connection.on("SetPosition", function (x, y) {
     XLOC = x;
     YLOC = y;
+    READYFORCONTROL = true; // Only after receiving 'SetPosition' is state synchronized
 });
 
 connection.on("SetBounds", function (leftBoundIn, rightBoundIn, topBoundIn, bottomBoundIn) {

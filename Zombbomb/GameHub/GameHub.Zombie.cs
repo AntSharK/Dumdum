@@ -69,9 +69,6 @@ namespace Zombbomb
             (var zombie, var room) = await this.FindPlayerAndRoom(zombieId, roomId);
             if (zombie == null || room == null) { return; }
 
-            // No updates necessary if the zombie is dead
-            if (zombie.IsDead) { return; }
-
             zombie.LocationX = x;
             zombie.LocationY = y;
 

@@ -41,8 +41,10 @@ var TOPBOUND: number;
 var BOTTOMBOUND: number;
 var ZOMBIESPEED: number;
 var RESPAWNTIME: number;
+var READYFORCONTROL: boolean = false; // This boolean means that the server and client have synchronized and control is ready
 
 function startRespawnTimer(game: Phaser.Game) {
+    READYFORCONTROL = false;
     var activeScene = game.scene.getScene("ZombieControl");
     var nextScene = game.scene.getScene("RespawnControl");
     activeScene.scene.switch("RespawnControl");
@@ -126,6 +128,8 @@ class ZombieControl extends Phaser.Scene {
     }
 
     update() {
+        if (!READYFORCONTROL) return; // Abort if state is not synchronized
+
         var deltaTime = this.time.now - this.lastUpdateTime;
 
         // If deltatime is somehow lagging, don't bother with any input
