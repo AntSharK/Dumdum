@@ -120,7 +120,7 @@ class ZombbombArena extends Phaser.Scene {
                 this.player.IssueFiring(pointer);
             }
             else {
-                this.player.IssueMove(pointer);
+                this.player.IssueMoveToPointer(pointer);
             }
         }, this);
 
@@ -132,10 +132,6 @@ class ZombbombArena extends Phaser.Scene {
         })
 
         this.drawSetupGraphics();
-    }
-
-    addGamepadButtons(scene: ZombbombArena, gamePad: Phaser.Input.Gamepad.Gamepad) {
-
     }
 
     update() {
@@ -153,10 +149,12 @@ class ZombbombArena extends Phaser.Scene {
                     continue;
                 }
 
-                if (pad.A) {
-
-                    console.log("A IS DOWN");
-}
+                var directionVector = pad.leftStick;
+                if (directionVector.length() > 0.25) {
+                    directionVector = directionVector.normalize();
+                    var pointToMove = new Phaser.Math.Vector2(this.player.x + directionVector.x * PLAYERSPEED * 2, this.player.y + directionVector.y * PLAYERSPEED * 2);
+                    this.player.IssueMoveToPointer(pointToMove);
+                }
             }
         }
     }
@@ -257,7 +255,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.fireOrderIssued = true;
     }
 
-    IssueMove(pointer: any) {
+    IssueMoveToPointer(pointer: any) {
         this.fireOrderIssued = false;
         this.desiredX = pointer.x;
         this.desiredY = pointer.y;
