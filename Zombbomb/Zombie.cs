@@ -17,10 +17,6 @@ namespace Zombbomb
         internal void KillZombie()
         {
             this.IsDead = true;
-
-            // Set LocationX and LocationY to negative values to denote that this player is dead
-            this.LocationX = -2000;
-            this.LocationY = -2000;
         }
     }
 }

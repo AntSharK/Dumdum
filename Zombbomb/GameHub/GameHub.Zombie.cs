@@ -47,18 +47,18 @@ namespace Zombbomb
         {
             Zombie? zombie = isRespawnEvent ? room.Players[zombieId] : room.CreatePlayer(zombieId, Context.ConnectionId);
             var color = int.Parse(colorIn.TrimStart('#'), System.Globalization.NumberStyles.HexNumber);
-            
+
             // Do some color filtering
             zombie.Color = color;
             zombie.IsDead = false;
 
             await Clients.Client(room.ConnectionId).SendAsync("SpawnZombie", zombieId, color);
-            await Clients.Client(zombie.ConnectionId).SendAsync("BeZombie", zombieId, 
-                room.RoomId, 
-                room.ZombieBounds.Left, 
-                room.ZombieBounds.Right, 
-                room.ZombieBounds.Top, 
-                room.ZombieBounds.Bottom, 
+            await Clients.Client(zombie.ConnectionId).SendAsync("BeZombie", zombieId,
+                room.RoomId,
+                room.ZombieBounds.Left,
+                room.ZombieBounds.Right,
+                room.ZombieBounds.Top,
+                room.ZombieBounds.Bottom,
                 room.ZombieSpeed,
                 room.RespawnTime,
                 isRespawnEvent);
@@ -69,11 +69,12 @@ namespace Zombbomb
             (var zombie, var room) = await this.FindPlayerAndRoom(zombieId, roomId);
             if (zombie == null || room == null) { return; }
 
-            if (x > 0 && y > 0) // Only update when x and y are positive - negative numbers mean it's not ready
-            {
-                zombie.LocationX = x;
-                zombie.LocationY = y;
-            }
+            // No updates necessary if the zombie is dead
+            if (zombie.IsDead) { return; }
+
+            zombie.LocationX = x;
+            zombie.LocationY = y;
+
             await Clients.Client(room.ConnectionId).SendAsync("UpdatePosition", zombieId, x, y);
         }
 
