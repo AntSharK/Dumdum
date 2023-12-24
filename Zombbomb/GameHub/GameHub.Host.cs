@@ -18,7 +18,7 @@ namespace Zombbomb
                 int.TryParse(respawnTime, out newRoom.RespawnTime);
 
                 newRoom.PlayerSpeed = newRoom.PlayerSpeed / 10d;
-                newRoom.ZombieSpeed = newRoom.ZombieSpeed / 200d;
+                newRoom.ZombieSpeed = newRoom.ZombieSpeed / 167d; // At approximately 60 fps, this should make the speeds equivalent
                 Logger.LogInformation("CREATED ROOM ID {0}", newRoom.RoomId);
                 await Clients.Caller.SendAsync("StartGame", 
                     newRoom.RoomId, 

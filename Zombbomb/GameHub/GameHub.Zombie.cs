@@ -69,8 +69,11 @@ namespace Zombbomb
             (var zombie, var room) = await this.FindPlayerAndRoom(zombieId, roomId);
             if (zombie == null || room == null) { return; }
 
-            zombie.LocationX = x;
-            zombie.LocationY = y;
+            if (x > 0 && y > 0) // Only update when x and y are positive - negative numbers mean it's not ready
+            {
+                zombie.LocationX = x;
+                zombie.LocationY = y;
+            }
             await Clients.Client(room.ConnectionId).SendAsync("UpdatePosition", zombieId, x, y);
         }
 
@@ -79,7 +82,7 @@ namespace Zombbomb
             (var zombie, var room) = await this.FindPlayerAndRoom(zombieId, roomId);
             if (zombie == null || room == null) { return; }
 
-            zombie.IsDead = true;
+            zombie.KillZombie();
             await Clients.Client(zombie.ConnectionId).SendAsync("ZombieDead");
         }
     }
