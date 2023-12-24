@@ -17,6 +17,10 @@ class Zombbomb_Lobby_Game {
                     }
                 },
 
+                input: {
+                    gamepad: true,
+                },
+
                 scene: [ZombbombArena],
                 backgroundColor: '#000000',
 
@@ -116,13 +120,13 @@ class ZombbombArena extends Phaser.Scene {
                 this.player.IssueFiring(pointer);
             }
             else {
-                this.player.IssueMove(pointer);
+                this.player.IssueMoveToPointer(pointer);
             }
         }, this);
 
         this.anims.create({
             key: 'explosion_anim',
-            frames: this.anims.generateFrameNumbers('explosion', { frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24] }),
+            frames: this.anims.generateFrameNumbers('explosion', { frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19] }),
             frameRate: 20,
             repeat: 0
         })
@@ -135,6 +139,36 @@ class ZombbombArena extends Phaser.Scene {
         this.zombies.children.each(function (b) {
             (<Zombie>b).Update(this);
         });
+
+        /* ************
+         * SECTION FOR GAMEPAD
+         * *********** */
+        if (this.input.gamepad.total > 0) { 
+            const pads = this.input.gamepad.gamepads;
+            for (let i = 0; i < pads.length; i++) {
+                const pad = pads[i];
+                if (!pad) {
+                    continue;
+                }
+
+                var directionVector = pad.leftStick;
+                if (directionVector.length() > 0.25) {
+                    var normalizedDirectionVector = directionVector.normalize();
+                    var pointToMove = new Phaser.Math.Vector2(this.player.x + normalizedDirectionVector.x * PLAYERSPEED * 3, this.player.y + normalizedDirectionVector.y * PLAYERSPEED * 3);
+                    this.player.IssueMoveToPointer(pointToMove);
+                }
+
+                if (pad.A || pad.B || pad.R1 || pad.R2) {
+                    var rot = this.player.rotation;
+                    var xProj = Math.cos(rot);
+                    var yProj = Math.sin(rot);
+                    var pointToFire = new Phaser.Math.Vector2(this.player.x + xProj * PLAYERSPEED * 100, this.player.y + yProj * PLAYERSPEED * 100);
+                    if (this.player.canFire) { 
+                        this.player.IssueFiring(pointToFire);
+                    }
+                }
+            }
+        }
     }
 
     drawSetupGraphics() {
@@ -233,7 +267,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.fireOrderIssued = true;
     }
 
-    IssueMove(pointer: any) {
+    IssueMoveToPointer(pointer: any) {
         this.fireOrderIssued = false;
         this.desiredX = pointer.x;
         this.desiredY = pointer.y;
@@ -258,7 +292,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         }
         else {
             // Rotate small amounts
-            if (Math.abs(this.desiredRotation - this.rotation) > 0.05) {
+            if (Math.abs(this.desiredRotation - this.rotation) > 0.04) {
                 if (this.rotateLeft) {
                     this.rotation += 0.035;
                 }
