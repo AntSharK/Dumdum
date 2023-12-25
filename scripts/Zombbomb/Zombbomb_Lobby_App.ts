@@ -52,6 +52,9 @@ class ZombbombArena extends Phaser.Scene {
     gameStartTime: number;
     keyboardDirection: [x: integer, y: integer] = [0, 0];
 
+    depositBoxRightBound: integer = 600;
+    depositBoxTopBound: integer = 864;
+
     constructor() {
         super({ key: 'ZombbombArena', active: true });
     }
@@ -234,11 +237,11 @@ class ZombbombArena extends Phaser.Scene {
     update() {
         this.player.Update(this);
         this.zombies.children.each(function (b) {
-            (<Zombie>b).Update(this);
-        });
+            (<Zombie>b).Update();
+        }, this);
         this.pellets.children.each(function (b) {
-            (<Pellet>b).Update(this);
-        });
+            (<Pellet>b).Update();
+        }, this);
 
         /* ***********
          * KEYBOARD CONTROLS
@@ -301,6 +304,11 @@ class ZombbombArena extends Phaser.Scene {
         this.instructionText.setVisible(false);
         this.graphics.clear();
         this.gameStartTime = this.game.getTime();
+
+        // Draw the star collection box
+        this.add.text(50, 925, "GET 3 STARS", { color: 'White', fontSize: '72px' });
+        this.graphics.lineStyle(10, 0x99ff00)
+        this.graphics.strokeRect(0, this.depositBoxTopBound, this.depositBoxRightBound, 1024 - this.depositBoxTopBound);
         startRound();
     }
 
@@ -502,15 +510,32 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 class Pellet extends Phaser.Physics.Arcade.Sprite {
     attachedThing: Phaser.Physics.Arcade.Sprite = null;
     canAttachToPlayer: boolean = true;
+    arena: ZombbombArena;
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y, 'star');
+        this.arena = scene as ZombbombArena;
         this.originX = this.width / 2;
         this.originY = this.height / 2;
         this.scale = 0.2;
     }
 
-    Update(scene: ZombbombArena) {
+    CheckDeposit() {
+        if (this.x < this.arena.depositBoxRightBound
+            && this.y > this.arena.depositBoxTopBound) {
+            var player = this.attachedThing as Player;
+
+            if (player != null
+                && player.zombiesInContact != undefined) {
+                this.attachedThing = null;
+                this.canAttachToPlayer = false;
+                // TODO: Logic for removing this from player
+            }
+        }
+    }
+
+    Update() {
+        this.CheckDeposit();
         if (this.attachedThing != null) {
             var moveDirection = new Phaser.Math.Vector2(this.attachedThing.x - this.x, this.attachedThing.y - this.y);
             if (moveDirection.length() <= this.attachedThing.width * 0.5 * this.attachedThing.scale) {
@@ -630,7 +655,7 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
         this.ticksSinceLastContact--;
     }
 
-    Update(scene: ZombbombArena) {
+    Update() {
         var deltaTime = this.scene.time.now - this.lastUpdateTime;
         this.lastUpdateTime = this.scene.time.now;
         var speed = ZOMBIESPEED * deltaTime;
