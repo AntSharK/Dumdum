@@ -59,7 +59,8 @@ class ZombbombArena extends Phaser.Scene {
         this.load.image('zombie', '/content/Zombbomb/ghost.png');
         this.load.image('player', '/content/Zombbomb/pacman.png');
         this.load.image('bullet', '/content/Zombbomb/bullet.png');
-        this.load.spritesheet('explosion', '/content/Zombbomb/explosionframes.png', { frameWidth: 130, frameHeight: 128 });
+        this.load.image('star', '/content/Zombbomb/star.png');
+        this.load.spritesheet('explosion', '/content/Zombbomb/explosionframes2.png', { frameWidth: 128, frameHeight: 128 });
     }
 
     create() {
@@ -161,7 +162,7 @@ class ZombbombArena extends Phaser.Scene {
 
         this.anims.create({
             key: 'explosion_anim',
-            frames: this.anims.generateFrameNumbers('explosion', { frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19] }),
+            frames: this.anims.generateFrameNumbers('explosion', { frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] }),
             frameRate: 20,
             repeat: 0
         })
@@ -423,6 +424,36 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         scene.time.addEvent(scene.restartGameTimer);
         var totalTimeMilliseconds = (scene.game.getTime() - scene.gameStartTime);
         scene.roomCodeText.text = "TIME: " + totalTimeMilliseconds.toFixed(0);
+    }
+}
+
+class Pellet extends Phaser.Physics.Arcade.Sprite {
+    attachedThing: Phaser.Physics.Arcade.Sprite;
+    canAttachToPlayer: boolean;
+
+    constructor(scene: Phaser.Scene, x: number, y: number) {
+        super(scene, x, y, 'star');
+        this.originX = this.width / 2;
+        this.originY = this.height / 2;
+        this.scale = 0.2;
+    }
+
+    Update(scene: ZombbombArena) {
+        if (this.attachedThing != null) {
+            var moveDirection = new Phaser.Math.Vector2(this.attachedThing.x - this.x, this.attachedThing.y - this.y);
+            if (moveDirection.length() <= this.attachedThing.width / 2) {
+                return;
+            }
+
+            moveDirection.normalize();
+            if (Math.abs(this.attachedThing.x - this.x) > PLAYERSPEED) {
+                this.x += moveDirection.x * PLAYERSPEED;
+            }
+
+            if (Math.abs(this.attachedThing.y - this.y) > PLAYERSPEED) {
+                this.y += moveDirection.y * PLAYERSPEED;
+            }
+        }
     }
 }
 
