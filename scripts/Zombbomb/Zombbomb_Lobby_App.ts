@@ -41,6 +41,7 @@ class ZombbombArena extends Phaser.Scene {
     player: Player;
     bullets: Phaser.Physics.Arcade.Group;
     zombies: Phaser.Physics.Arcade.Group;
+    pellets: Phaser.Physics.Arcade.Group;
     playerGroup: Phaser.Physics.Arcade.Group;
 
     roomCodeText: Phaser.GameObjects.Text;
@@ -78,9 +79,39 @@ class ZombbombArena extends Phaser.Scene {
             immovable: true
         });
 
+        this.pellets = this.physics.add.group({
+            defaultKey: 'star',
+            immovable: true
+        });
         this.player = new Player(this, this.game.canvas.width / 2, this.game.canvas.height / 2);
         this.add.existing(this.player);
         this.playerGroup.add(this.player);
+
+        // Spawn pellets
+        var testPellet = new Pellet(this, 100, this.game.canvas.height / 2);
+        this.add.existing(testPellet);
+        this.pellets.add(testPellet);
+
+        /* ***********
+         * DEFINE COLLISIONS
+         * ************ */
+        this.physics.add.overlap(this.playerGroup, this.pellets, (body1, body2) => {
+            var pellet = body2 as Pellet;
+            var player = body1 as Player;
+            switch (GAMESTATE) {
+                case "Arena":
+                    if (pellet.attachedThing == null
+                        && pellet.canAttachToPlayer) {
+                        pellet.attachedThing = player;
+                        pellet.canAttachToPlayer = false;
+                        player.attachedPellets.push(pellet);
+                    }
+                    break;
+                case "SettingUp":
+                default:
+                    break;
+            }
+        });
 
         this.physics.add.overlap(this.bullets, this.zombies, (body1, body2) => {
             body1.destroy();
@@ -174,6 +205,9 @@ class ZombbombArena extends Phaser.Scene {
         this.player.Update(this);
         this.zombies.children.each(function (b) {
             (<Zombie>b).Update(this);
+        });
+        this.pellets.children.each(function (b) {
+            (<Pellet>b).Update(this);
         });
 
         /* ***********
@@ -290,6 +324,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     fireOrderIssued: boolean = false;
     canFire: boolean = true;
     zombiesInContact: integer = 0;
+    attachedPellets: Pellet[] = [];
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y, 'player');
@@ -424,12 +459,19 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         scene.time.addEvent(scene.restartGameTimer);
         var totalTimeMilliseconds = (scene.game.getTime() - scene.gameStartTime);
         scene.roomCodeText.text = "TIME: " + totalTimeMilliseconds.toFixed(0);
+
+        this.attachedPellets.forEach(p => {
+            p.attachedThing = null;
+            p.canAttachToPlayer = true;
+        });
+
+        this.attachedPellets = [];
     }
 }
 
 class Pellet extends Phaser.Physics.Arcade.Sprite {
-    attachedThing: Phaser.Physics.Arcade.Sprite;
-    canAttachToPlayer: boolean;
+    attachedThing: Phaser.Physics.Arcade.Sprite = null;
+    canAttachToPlayer: boolean = true;
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y, 'star');
@@ -441,7 +483,7 @@ class Pellet extends Phaser.Physics.Arcade.Sprite {
     Update(scene: ZombbombArena) {
         if (this.attachedThing != null) {
             var moveDirection = new Phaser.Math.Vector2(this.attachedThing.x - this.x, this.attachedThing.y - this.y);
-            if (moveDirection.length() <= this.attachedThing.width / 2) {
+            if (moveDirection.length() <= this.attachedThing.width * 0.5 * this.attachedThing.scale) {
                 return;
             }
 
