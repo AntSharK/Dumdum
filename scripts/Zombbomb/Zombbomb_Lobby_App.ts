@@ -49,6 +49,7 @@ class ZombbombArena extends Phaser.Scene {
     zombieMap: { [id: string]: Zombie } = {};
     restartGameTimer: Phaser.Time.TimerEvent;
     gameStartTime: number;
+    keyboardDirection: [x: integer, y: integer] = [0, 0];
 
     constructor() {
         super({ key: 'ZombbombArena', active: true });
@@ -114,6 +115,9 @@ class ZombbombArena extends Phaser.Scene {
             }
         });
 
+        /* ***********
+         * MOUSE CONTROLS
+         * ************ */
         this.input.mouse.disableContextMenu();
         this.input.on('pointerdown', function (pointer) {
             if (pointer.rightButtonDown()) {
@@ -122,6 +126,37 @@ class ZombbombArena extends Phaser.Scene {
             else {
                 this.player.IssueMoveToPointer(pointer);
             }
+        }, this);
+
+        /* ***********
+         * KEYBOARD CONTROLS
+         * ************ */
+        this.input.keyboard.on('keydown-SPACE', event => {
+            this.fireForward();
+        }, this);
+        this.input.keyboard.on('keydown-RIGHT', event => {
+            this.keyboardDirection[0] = 1;
+        }, this);
+        this.input.keyboard.on('keyup-RIGHT', event => {
+            this.keyboardDirection[0] = 0;
+        }, this);
+        this.input.keyboard.on('keydown-LEFT', event => {
+            this.keyboardDirection[0] = -1;
+        }, this);
+        this.input.keyboard.on('keyup-LEFT', event => {
+            this.keyboardDirection[0] = 0;
+        }, this);
+        this.input.keyboard.on('keydown-UP', event => {
+            this.keyboardDirection[1] = -1;
+        }, this);
+        this.input.keyboard.on('keyup-UP', event => {
+            this.keyboardDirection[1] = 0;
+        }, this);
+        this.input.keyboard.on('keydown-DOWN', event => {
+            this.keyboardDirection[1] = 1;
+        }, this);
+        this.input.keyboard.on('keyup-DOWN', event => {
+            this.keyboardDirection[1] = 0;
         }, this);
 
         this.anims.create({
@@ -140,8 +175,16 @@ class ZombbombArena extends Phaser.Scene {
             (<Zombie>b).Update(this);
         });
 
+        /* ***********
+         * KEYBOARD CONTROLS
+         * ************ */
+        if (this.keyboardDirection[0] != 0 || this.keyboardDirection[1] != 0) {
+            var pointToMove = new Phaser.Math.Vector2(this.player.x + this.keyboardDirection[0] * PLAYERSPEED * 3, this.player.y + this.keyboardDirection[1] * PLAYERSPEED * 3);
+            this.player.IssueMoveToPointer(pointToMove);
+        }
+
         /* ************
-         * SECTION FOR GAMEPAD
+         * GAMEPAD CONTROLS
          * *********** */
         if (this.input.gamepad.total > 0) { 
             const pads = this.input.gamepad.gamepads;
@@ -159,15 +202,19 @@ class ZombbombArena extends Phaser.Scene {
                 }
 
                 if (pad.A || pad.B || pad.R1 || pad.R2) {
-                    var rot = this.player.rotation;
-                    var xProj = Math.cos(rot);
-                    var yProj = Math.sin(rot);
-                    var pointToFire = new Phaser.Math.Vector2(this.player.x + xProj * PLAYERSPEED * 100, this.player.y + yProj * PLAYERSPEED * 100);
-                    if (this.player.canFire) { 
-                        this.player.IssueFiring(pointToFire);
-                    }
+                    this.fireForward();
                 }
             }
+        }
+    }
+
+    fireForward() {
+        var rot = this.player.rotation;
+        var xProj = Math.cos(rot);
+        var yProj = Math.sin(rot);
+        var pointToFire = new Phaser.Math.Vector2(this.player.x + xProj * PLAYERSPEED * 100, this.player.y + yProj * PLAYERSPEED * 100);
+        if (this.player.canFire) {
+            this.player.IssueFiring(pointToFire);
         }
     }
 
