@@ -88,9 +88,18 @@ class ZombbombArena extends Phaser.Scene {
         this.playerGroup.add(this.player);
 
         // Spawn pellets
-        var testPellet = new Pellet(this, 100, this.game.canvas.height / 2);
-        this.add.existing(testPellet);
-        this.pellets.add(testPellet);
+        var pellets: Phaser.Physics.Arcade.Sprite[] = [];
+        for (var i = 0; i < 6; i++) {
+            var newPellet = new Pellet(this, 100, 100);
+            this.pellets.add(newPellet);
+            this.add.existing(newPellet);
+            pellets.push(newPellet);
+        }
+
+        Phaser.Actions.PlaceOnCircle(pellets,
+            new Phaser.Geom.Circle(this.game.canvas.width / 2, this.game.canvas.height / 2, this.game.canvas.width * 0.44),
+            -0.5,
+            0.5);
 
         /* ***********
          * DEFINE COLLISIONS
