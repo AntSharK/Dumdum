@@ -133,7 +133,6 @@ class ZombbombArena extends Phaser.Scene {
             switch (GAMESTATE) {
                 case "Arena":
                     if (pellet.attachedThing == null
-                        && pellet.canAttachToPlayer
                         && zombie.attachedPellets.length < MAXZOMBIEPELLETHOLD) {
                         pellet.attachedThing = zombie;
                         pellet.canAttachToPlayer = false;
@@ -529,7 +528,12 @@ class Pellet extends Phaser.Physics.Arcade.Sprite {
                 && player.zombiesInContact != undefined) {
                 this.attachedThing = null;
                 this.canAttachToPlayer = false;
+
                 // TODO: Logic for removing this from player
+                var index = player.attachedPellets.indexOf(this);
+                if (index > -1) {
+                    player.attachedPellets.splice(index, 1);
+                }
             }
         }
     }
