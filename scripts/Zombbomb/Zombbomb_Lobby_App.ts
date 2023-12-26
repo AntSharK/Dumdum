@@ -300,7 +300,7 @@ class ZombbombArena extends Phaser.Scene {
 
         if (objectivesDeposited >= this.objectivesToWin) {
             // Server-side updates and state update
-            GAMESTATE = "GameOver";
+            endRound();
 
             // Client-side updates
             this.zombies.children.each(function (b) {
@@ -352,7 +352,7 @@ class ZombbombArena extends Phaser.Scene {
 
 var destroyZombie: (zombie: Zombie) => {};
 var resetZombies: any;
-var destroyPlayer: any;
+var endRound: any;
 var startRound: any;
 var GAMESTATE: string = "SettingUp"; // Corresponds to Server-side Room GameState
 
@@ -517,8 +517,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         if (GAMESTATE != "Arena") return; // Only do this if the game is still going on
 
         // Server-side updates and state update
-        destroyPlayer();
-        GAMESTATE = "GameOver";
+        endRound();
 
         // Client-side updates
         this.destroy();

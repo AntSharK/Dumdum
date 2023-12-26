@@ -54,8 +54,9 @@ function startRound() {
     });
 }
 
-function destroyPlayer() {
-    connection.invoke("DestroyPlayer", sessionStorage.getItem(RoomIdSessionStorageKey)).catch(function (err) {
+function endRound() {
+    GAMESTATE = "GameOver";
+    connection.invoke("EndRound", sessionStorage.getItem(RoomIdSessionStorageKey)).catch(function (err) {
         return console.error(err.toString());
     });
 }
