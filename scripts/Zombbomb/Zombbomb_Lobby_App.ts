@@ -54,6 +54,7 @@ class ZombbombArena extends Phaser.Scene {
 
     depositBoxRightBound: integer = 600;
     depositBoxTopBound: integer = 864;
+    objectivesToWin: integer = 3;
 
     constructor() {
         super({ key: 'ZombbombArena', active: true });
@@ -171,7 +172,7 @@ class ZombbombArena extends Phaser.Scene {
 
                     var zombie = body2 as Zombie;
                     zombie.ticksSinceLastContact = 2;
-                    
+
                     break;
                 case "SettingUp":
                 default:
@@ -234,6 +235,7 @@ class ZombbombArena extends Phaser.Scene {
     }
 
     update() {
+        this.checkDeposit();
         this.player.Update(this);
         this.zombies.children.each(function (b) {
             (<Zombie>b).Update();
@@ -253,7 +255,7 @@ class ZombbombArena extends Phaser.Scene {
         /* ************
          * GAMEPAD CONTROLS
          * *********** */
-        if (this.input.gamepad.total > 0) { 
+        if (this.input.gamepad.total > 0) {
             const pads = this.input.gamepad.gamepads;
             for (let i = 0; i < pads.length; i++) {
                 const pad = pads[i];
@@ -285,6 +287,34 @@ class ZombbombArena extends Phaser.Scene {
         }
     }
 
+    checkDeposit() {
+        if (GAMESTATE != "Arena") return; // Only do this if the game is still going on
+
+        var objectivesDeposited = 0;
+        this.pellets.children.each(function (b) {
+            var pellet = b as Pellet;
+            if (pellet.IsInDeposit() && pellet.attachedThing == null) {
+                objectivesDeposited++;
+            }
+        }, this);
+
+        if (objectivesDeposited >= this.objectivesToWin) {
+            // Server-side updates and state update
+            GAMESTATE = "GameOver";
+
+            // Client-side updates
+            this.zombies.children.each(function (b) {
+                (<Zombie>b).KillZombie();
+            }, this);
+            this.roomCodeText.setVisible(true);
+
+            this.restartGameTimer = new Phaser.Time.TimerEvent({ delay: 8000, callback: this.restartGame, callbackScope: this });
+            this.time.addEvent(this.restartGameTimer);
+            var totalTimeMilliseconds = (this.game.getTime() - this.gameStartTime);
+            this.roomCodeText.text = "TIME: " + totalTimeMilliseconds.toFixed(0);
+        }
+    }
+
     drawSetupGraphics() {
         // Draw setup things
         var sessionRoomId = sessionStorage.getItem("roomid");
@@ -305,7 +335,7 @@ class ZombbombArena extends Phaser.Scene {
         this.gameStartTime = this.game.getTime();
 
         // Draw the star collection box
-        this.add.text(50, 925, "GET 3 STARS", { color: 'White', fontSize: '72px' });
+        this.add.text(50, 925, "GET " + this.objectivesToWin + " STARS", { color: 'White', fontSize: '72px' });
         this.graphics.lineStyle(10, 0x99ff00)
         this.graphics.strokeRect(0, this.depositBoxTopBound, this.depositBoxRightBound, 1024 - this.depositBoxTopBound);
         startRound();
@@ -484,6 +514,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     KillPlayer(scene: ZombbombArena) {
+        if (GAMESTATE != "Arena") return; // Only do this if the game is still going on
+
         // Server-side updates and state update
         destroyPlayer();
         GAMESTATE = "GameOver";
@@ -519,9 +551,17 @@ class Pellet extends Phaser.Physics.Arcade.Sprite {
         this.scale = 0.2;
     }
 
-    CheckDeposit() {
+    IsInDeposit(): boolean {
         if (this.x < this.arena.depositBoxRightBound
             && this.y > this.arena.depositBoxTopBound) {
+
+            return true;
+        }
+        return false;
+    }
+
+    CheckDeposit() {
+        if (this.IsInDeposit()) {
             var player = this.attachedThing as Player;
 
             if (player != null
@@ -529,7 +569,6 @@ class Pellet extends Phaser.Physics.Arcade.Sprite {
                 this.attachedThing = null;
                 this.canAttachToPlayer = false;
 
-                // TODO: Logic for removing this from player
                 var index = player.attachedPellets.indexOf(this);
                 if (index > -1) {
                     player.attachedPellets.splice(index, 1);
@@ -558,7 +597,7 @@ class Pellet extends Phaser.Physics.Arcade.Sprite {
     }
 }
 
-class Zombie extends Phaser.Physics.Arcade.Sprite{
+class Zombie extends Phaser.Physics.Arcade.Sprite {
     desiredX: integer = 0;
     desiredY: integer = 0;
     desiredRotation: number = 0;
@@ -639,8 +678,6 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
                     var bottomB = Math.floor(Phaser.Math.Interpolation.Linear([this.colorB, 0], timeInContact / EXPLODETIME));
                     var bottomR = Math.floor(Phaser.Math.Interpolation.Linear([this.colorR, 0xff], timeInContact / EXPLODETIME));
                     var bottomTint = ToNumber(bottomR, bottomG, bottomB);
-
-                    console.log(bottomTint.toString(16));
 
                     this.setTint(topTint, topTint, bottomTint, bottomTint);
                 }
