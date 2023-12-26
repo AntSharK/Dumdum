@@ -62,6 +62,7 @@ function endRound() {
 }
 
 function resetZombies() {
+    GAMESTATE = "SettingUp"; // Only allow for setup phase actions after zombies have respawned
     connection.invoke("ResetHostSession", sessionStorage.getItem(RoomIdSessionStorageKey)).catch(function (err) {
         return console.error(err.toString());
     });
