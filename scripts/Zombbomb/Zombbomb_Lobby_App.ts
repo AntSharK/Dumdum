@@ -41,6 +41,7 @@ class ZombbombArena extends Phaser.Scene {
     player: Player;
     bullets: Phaser.Physics.Arcade.Group;
     zombies: Phaser.Physics.Arcade.Group;
+    pellets: Phaser.Physics.Arcade.Group;
     playerGroup: Phaser.Physics.Arcade.Group;
 
     roomCodeText: Phaser.GameObjects.Text;
@@ -51,6 +52,10 @@ class ZombbombArena extends Phaser.Scene {
     gameStartTime: number;
     keyboardDirection: [x: integer, y: integer] = [0, 0];
 
+    depositBoxRightBound: integer = 600;
+    depositBoxTopBound: integer = 864;
+    objectivesToWin: integer = 3;
+
     constructor() {
         super({ key: 'ZombbombArena', active: true });
     }
@@ -59,7 +64,8 @@ class ZombbombArena extends Phaser.Scene {
         this.load.image('zombie', '/content/Zombbomb/ghost.png');
         this.load.image('player', '/content/Zombbomb/pacman.png');
         this.load.image('bullet', '/content/Zombbomb/bullet.png');
-        this.load.spritesheet('explosion', '/content/Zombbomb/explosionframes.png', { frameWidth: 130, frameHeight: 128 });
+        this.load.image('star', '/content/Zombbomb/star.png');
+        this.load.spritesheet('explosion', '/content/Zombbomb/explosionframes2.png', { frameWidth: 128, frameHeight: 128 });
     }
 
     create() {
@@ -77,9 +83,68 @@ class ZombbombArena extends Phaser.Scene {
             immovable: true
         });
 
+        this.pellets = this.physics.add.group({
+            defaultKey: 'star',
+            immovable: true
+        });
         this.player = new Player(this, this.game.canvas.width / 2, this.game.canvas.height / 2);
         this.add.existing(this.player);
         this.playerGroup.add(this.player);
+
+        // Spawn pellets
+        var pellets: Phaser.Physics.Arcade.Sprite[] = [];
+        for (var i = 0; i < 6; i++) {
+            var newPellet = new Pellet(this, 100, 100);
+            this.pellets.add(newPellet);
+            this.add.existing(newPellet);
+            pellets.push(newPellet);
+        }
+
+        Phaser.Actions.PlaceOnCircle(pellets,
+            new Phaser.Geom.Circle(this.game.canvas.width / 2, this.game.canvas.height / 2, this.game.canvas.width * 0.44),
+            -0.5,
+            0.5);
+
+        /* ***********
+         * DEFINE COLLISIONS
+         * ************ */
+        const MAXPLAYERPELLETHOLD = 1;
+        const MAXZOMBIEPELLETHOLD = 1;
+        this.physics.add.overlap(this.playerGroup, this.pellets, (body1, body2) => {
+            var pellet = body2 as Pellet;
+            var player = body1 as Player;
+            switch (GAMESTATE) {
+                case "Arena":
+                    if (pellet.attachedThing == null
+                        && pellet.canAttachToPlayer
+                        && player.attachedPellets.length < MAXPLAYERPELLETHOLD) {
+                        pellet.attachedThing = player;
+                        pellet.canAttachToPlayer = false;
+                        player.attachedPellets.push(pellet);
+                    }
+                    break;
+                case "SettingUp":
+                default:
+                    break;
+            }
+        });
+        this.physics.add.overlap(this.zombies, this.pellets, (body1, body2) => {
+            var pellet = body2 as Pellet;
+            var zombie = body1 as Zombie;
+            switch (GAMESTATE) {
+                case "Arena":
+                    if (pellet.attachedThing == null
+                        && zombie.attachedPellets.length < MAXZOMBIEPELLETHOLD) {
+                        pellet.attachedThing = zombie;
+                        pellet.canAttachToPlayer = false;
+                        zombie.attachedPellets.push(pellet);
+                    }
+                    break;
+                case "SettingUp":
+                default:
+                    break;
+            }
+        });
 
         this.physics.add.overlap(this.bullets, this.zombies, (body1, body2) => {
             body1.destroy();
@@ -107,7 +172,7 @@ class ZombbombArena extends Phaser.Scene {
 
                     var zombie = body2 as Zombie;
                     zombie.ticksSinceLastContact = 2;
-                    
+
                     break;
                 case "SettingUp":
                 default:
@@ -161,7 +226,7 @@ class ZombbombArena extends Phaser.Scene {
 
         this.anims.create({
             key: 'explosion_anim',
-            frames: this.anims.generateFrameNumbers('explosion', { frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19] }),
+            frames: this.anims.generateFrameNumbers('explosion', { frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] }),
             frameRate: 20,
             repeat: 0
         })
@@ -170,10 +235,14 @@ class ZombbombArena extends Phaser.Scene {
     }
 
     update() {
+        this.checkDeposit();
         this.player.Update(this);
         this.zombies.children.each(function (b) {
-            (<Zombie>b).Update(this);
-        });
+            (<Zombie>b).Update();
+        }, this);
+        this.pellets.children.each(function (b) {
+            (<Pellet>b).Update();
+        }, this);
 
         /* ***********
          * KEYBOARD CONTROLS
@@ -186,7 +255,7 @@ class ZombbombArena extends Phaser.Scene {
         /* ************
          * GAMEPAD CONTROLS
          * *********** */
-        if (this.input.gamepad.total > 0) { 
+        if (this.input.gamepad.total > 0) {
             const pads = this.input.gamepad.gamepads;
             for (let i = 0; i < pads.length; i++) {
                 const pad = pads[i];
@@ -218,6 +287,34 @@ class ZombbombArena extends Phaser.Scene {
         }
     }
 
+    checkDeposit() {
+        if (GAMESTATE != "Arena") return; // Only do this if the game is still going on
+
+        var objectivesDeposited = 0;
+        this.pellets.children.each(function (b) {
+            var pellet = b as Pellet;
+            if (pellet.IsInDeposit() && pellet.attachedThing == null) {
+                objectivesDeposited++;
+            }
+        }, this);
+
+        if (objectivesDeposited >= this.objectivesToWin) {
+            // Server-side updates and state update
+            endRound();
+
+            // Client-side updates
+            this.zombies.children.each(function (b) {
+                (<Zombie>b).KillZombie();
+            }, this);
+            this.roomCodeText.setVisible(true);
+
+            this.restartGameTimer = new Phaser.Time.TimerEvent({ delay: 8000, callback: this.restartGame, callbackScope: this });
+            this.time.addEvent(this.restartGameTimer);
+            var totalTimeMilliseconds = (this.game.getTime() - this.gameStartTime);
+            this.roomCodeText.text = "TIME: " + totalTimeMilliseconds.toFixed(0);
+        }
+    }
+
     drawSetupGraphics() {
         // Draw setup things
         var sessionRoomId = sessionStorage.getItem("roomid");
@@ -236,6 +333,11 @@ class ZombbombArena extends Phaser.Scene {
         this.instructionText.setVisible(false);
         this.graphics.clear();
         this.gameStartTime = this.game.getTime();
+
+        // Draw the star collection box
+        this.add.text(50, 925, "GET " + this.objectivesToWin + " STARS", { color: 'White', fontSize: '72px' });
+        this.graphics.lineStyle(10, 0x99ff00)
+        this.graphics.strokeRect(0, this.depositBoxTopBound, this.depositBoxRightBound, 1024 - this.depositBoxTopBound);
         startRound();
     }
 
@@ -250,7 +352,7 @@ class ZombbombArena extends Phaser.Scene {
 
 var destroyZombie: (zombie: Zombie) => {};
 var resetZombies: any;
-var destroyPlayer: any;
+var endRound: any;
 var startRound: any;
 var GAMESTATE: string = "SettingUp"; // Corresponds to Server-side Room GameState
 
@@ -289,6 +391,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     fireOrderIssued: boolean = false;
     canFire: boolean = true;
     zombiesInContact: integer = 0;
+    attachedPellets: Pellet[] = [];
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y, 'player');
@@ -411,9 +514,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     KillPlayer(scene: ZombbombArena) {
+        if (GAMESTATE != "Arena") return; // Only do this if the game is still going on
+
         // Server-side updates and state update
-        destroyPlayer();
-        GAMESTATE = "GameOver";
+        endRound();
 
         // Client-side updates
         this.destroy();
@@ -423,10 +527,76 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         scene.time.addEvent(scene.restartGameTimer);
         var totalTimeMilliseconds = (scene.game.getTime() - scene.gameStartTime);
         scene.roomCodeText.text = "TIME: " + totalTimeMilliseconds.toFixed(0);
+
+        // Detatch all pellets
+        this.attachedPellets.forEach(p => {
+            p.attachedThing = null;
+            p.canAttachToPlayer = true;
+        });
+        this.attachedPellets = [];
     }
 }
 
-class Zombie extends Phaser.Physics.Arcade.Sprite{
+class Pellet extends Phaser.Physics.Arcade.Sprite {
+    attachedThing: Phaser.Physics.Arcade.Sprite = null;
+    canAttachToPlayer: boolean = true;
+    arena: ZombbombArena;
+
+    constructor(scene: Phaser.Scene, x: number, y: number) {
+        super(scene, x, y, 'star');
+        this.arena = scene as ZombbombArena;
+        this.originX = this.width / 2;
+        this.originY = this.height / 2;
+        this.scale = 0.2;
+    }
+
+    IsInDeposit(): boolean {
+        if (this.x < this.arena.depositBoxRightBound
+            && this.y > this.arena.depositBoxTopBound) {
+
+            return true;
+        }
+        return false;
+    }
+
+    CheckDeposit() {
+        if (this.IsInDeposit()) {
+            var player = this.attachedThing as Player;
+
+            if (player != null
+                && player.zombiesInContact != undefined) {
+                this.attachedThing = null;
+                this.canAttachToPlayer = false;
+
+                var index = player.attachedPellets.indexOf(this);
+                if (index > -1) {
+                    player.attachedPellets.splice(index, 1);
+                }
+            }
+        }
+    }
+
+    Update() {
+        this.CheckDeposit();
+        if (this.attachedThing != null) {
+            var moveDirection = new Phaser.Math.Vector2(this.attachedThing.x - this.x, this.attachedThing.y - this.y);
+            if (moveDirection.length() <= this.attachedThing.width * 0.5 * this.attachedThing.scale) {
+                return;
+            }
+
+            moveDirection.normalize();
+            if (Math.abs(this.attachedThing.x - this.x) > PLAYERSPEED) {
+                this.x += moveDirection.x * PLAYERSPEED;
+            }
+
+            if (Math.abs(this.attachedThing.y - this.y) > PLAYERSPEED) {
+                this.y += moveDirection.y * PLAYERSPEED;
+            }
+        }
+    }
+}
+
+class Zombie extends Phaser.Physics.Arcade.Sprite {
     desiredX: integer = 0;
     desiredY: integer = 0;
     desiredRotation: number = 0;
@@ -443,6 +613,7 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
 
     lastContactTime: number = -1;
     ticksSinceLastContact: number = -1;
+    attachedPellets: Pellet[] = [];
 
     constructor(scene: Phaser.Scene, x: number, y: number, id: string, colorIn: integer) {
         super(scene, x, y, 'zombie');
@@ -461,6 +632,12 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
     }
 
     KillZombie() {
+        this.attachedPellets.forEach(p => {
+            p.attachedThing = null;
+            p.canAttachToPlayer = true;
+        });
+        this.attachedPellets = [];
+
         destroyZombie(this); // Trigger the server-side update
         this.destroy();
     }
@@ -501,8 +678,6 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
                     var bottomR = Math.floor(Phaser.Math.Interpolation.Linear([this.colorR, 0xff], timeInContact / EXPLODETIME));
                     var bottomTint = ToNumber(bottomR, bottomG, bottomB);
 
-                    console.log(bottomTint.toString(16));
-
                     this.setTint(topTint, topTint, bottomTint, bottomTint);
                 }
             }
@@ -520,7 +695,7 @@ class Zombie extends Phaser.Physics.Arcade.Sprite{
         this.ticksSinceLastContact--;
     }
 
-    Update(scene: ZombbombArena) {
+    Update() {
         var deltaTime = this.scene.time.now - this.lastUpdateTime;
         this.lastUpdateTime = this.scene.time.now;
         var speed = ZOMBIESPEED * deltaTime;

@@ -72,7 +72,7 @@ namespace Zombbomb
             room.State = ZombbombRoom.RoomState.Arena;
         }
 
-        public async Task DestroyPlayer(string roomId)
+        public async Task EndRound(string roomId)
         {
             (_, var room) = await this.FindPlayerAndRoom(null, roomId);
             if (room == null) { return; }
