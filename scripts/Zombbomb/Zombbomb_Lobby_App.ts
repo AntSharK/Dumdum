@@ -327,7 +327,7 @@ class ZombbombArena extends Phaser.Scene {
         this.graphics.lineBetween(0, 800, 1400, 800);
     }
 
-    startRound() {
+    startGameRound() {
         GAMESTATE = "Arena";
         this.roomCodeText.setVisible(false);
         this.instructionText.setVisible(false);
@@ -342,11 +342,13 @@ class ZombbombArena extends Phaser.Scene {
     }
 
     restartGame() {
-        GAMESTATE = "SettingUp";
-        this.scene.restart();
+        if (GAMESTATE == "GameOver") {
+            GAMESTATE = "Restarting"; // Client-side only game state, indicating that the game is restarting
+            this.scene.restart();
 
-        // Delay 100ms so that the client can refresh before server sends messages to respawn zombies
-        setTimeout(resetZombies, 100);
+            // Delay 100ms so that the client can refresh before server sends messages to respawn zombies
+            setTimeout(resetZombies, 100);
+        }
     }
 }
 
@@ -479,7 +481,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     CheckGameStart(scene: ZombbombArena) {
         if (GAMESTATE == "SettingUp") {
             if (this.y > 800) {
-                scene.startRound();
+                scene.startGameRound();
             }
         }
     }

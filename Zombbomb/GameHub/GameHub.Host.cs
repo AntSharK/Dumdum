@@ -67,9 +67,8 @@ namespace Zombbomb
             (_, var room) = await this.FindPlayerAndRoom(null, roomId);
             if (room == null) { return; }
 
-            room.ZombieBounds.Height = 1024;
+            room.StartRound();
             await Clients.Group(roomId).SendAsync("SetBounds", room.ZombieBounds.Left, room.ZombieBounds.Right, room.ZombieBounds.Top, room.ZombieBounds.Bottom);
-            room.State = ZombbombRoom.RoomState.Arena;
         }
 
         public async Task EndRound(string roomId)
@@ -77,7 +76,7 @@ namespace Zombbomb
             (_, var room) = await this.FindPlayerAndRoom(null, roomId);
             if (room == null) { return; }
 
-            room.State = ZombbombRoom.RoomState.GameOver;
+            room.EndGame();
         }
     }
 }
