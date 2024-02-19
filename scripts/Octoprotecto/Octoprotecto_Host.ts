@@ -174,11 +174,25 @@ var octoProtecto: Octoprotecto;
 window.onload = () => {
     octoProtecto = new Octoprotecto();
 
+    document.getElementById("hostgamebutton").addEventListener("click", function (event) {
+        var menuElements = document.getElementsByClassName("lobbymenu");
+        [].forEach.call(menuElements, function (element, index, array) {
+            element.hidden = true;
+        });
+
+        document.getElementById("lobbyhostcontent").hidden = false;
+        event.preventDefault();
+    });
+
     document.getElementById("startgamebutton").addEventListener("click", function (event) {
+        var menuElements = document.getElementsByClassName("lobbymenu");
+        [].forEach.call(menuElements, function (element, index, array) {
+            element.hidden = true;
+        });
+
         var activeScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
         activeScene.scene.setActive(true);
         activeScene.startGame();
-        document.getElementById("lobbymenu").hidden = true;
         event.preventDefault();
     });
 };
