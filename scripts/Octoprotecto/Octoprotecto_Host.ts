@@ -22,6 +22,8 @@ class Octoprotecto {
                 mode: Phaser.Scale.ScaleModes.FIT,
                 resizeInterval: 1,
             },
+            disableContextMenu: true,
+            autoFocus: true
         });
     }
 }
