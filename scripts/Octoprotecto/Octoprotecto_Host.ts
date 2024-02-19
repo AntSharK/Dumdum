@@ -38,7 +38,6 @@ class TestScene extends Phaser.Scene {
     bullets: Phaser.Physics.Arcade.Group;
 
     keyboardDirection: [x: integer, y: integer] = [0, 0];
-    fishIndex: integer = 1;
     spawningRect: Phaser.Geom.Rectangle;
 
     preload() {
@@ -142,32 +141,10 @@ class TestScene extends Phaser.Scene {
 
         this.time.addEvent({
             delay: 5000,
-            callback: () => this.spawnFish(5),
+            callback: () => Fish.SpawnFishes(this, 5, this.spawningRect),
             callbackScope: this,
             loop: true
         });
-    }
-
-    spawnFish(numberOfFish: integer) {
-        var spawnAnims: Phaser.GameObjects.Sprite[] = [];
-        for (var i = 0; i < numberOfFish; i++) {
-            var newSpawnAnim = this.add.sprite(0, 0, 'explosion');
-            spawnAnims.push(newSpawnAnim);
-        }
-
-        Phaser.Actions.RandomRectangle(spawnAnims, this.spawningRect);
-        for (let i in spawnAnims) {
-            spawnAnims[i].play('explosion_anim');
-            spawnAnims[i].on(Phaser.Animations.Events.ANIMATION_COMPLETE, function (anim, frame, gameObject) {
-                var fish = new Fish("fish" + this.fishIndex, this, gameObject.x, gameObject.y);
-                this.fishIndex++;
-                this.add.existing(fish);
-                this.fishes.add(fish);
-                Phaser.Math.RandomXY(fish.body.velocity, 50);
-                fish.setCircle(fish.width / 3, fish.originX - fish.width / 3, fish.originY - fish.width / 3);
-                gameObject.destroy();
-            }, this);
-        }
     }
 
     update() {
@@ -184,20 +161,6 @@ class TestScene extends Phaser.Scene {
         }
 
         this.octopus.UpdateOctopus(this.graphics);
-    }
-}
-
-class Fish extends Phaser.Physics.Arcade.Sprite {
-    uniqueName: string;
-    hp: integer = 25;
-    points: number = 1;
-
-    constructor(uniqueName: string, scene: Phaser.Scene, x: number, y: number) {
-        super(scene, x, y, 'fish');
-
-        this.uniqueName = uniqueName;
-        this.originX = this.width / 2;
-        this.originY = this.height / 2;
     }
 }
 
