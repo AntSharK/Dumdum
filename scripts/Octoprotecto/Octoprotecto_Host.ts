@@ -66,7 +66,7 @@ class TestScene extends Phaser.Scene {
             repeat: 0
         })
         /* ***********
-         * KEYBOARD CONTROLS
+         * KEYBOARD CONTROLS - FOR SINGLE PLAYER ONLY
          * ************ */
         this.input.keyboard.on('keydown-RIGHT', event => {
             this.keyboardDirection[0] = 1;
@@ -140,10 +140,10 @@ class TestScene extends Phaser.Scene {
             0x00FFFF);
 
         this.time.addEvent({
-            delay: 5000,
-            callback: () => Fish.SpawnFishes(this, 5, this.spawningRect),
+            delay: 1000,
+            callback: () => Fish.SpawnFishes(this, 5, this.spawningRect, this.fishes, this.octopi),
             callbackScope: this,
-            loop: true
+            loop: true,
         });
     }
 
@@ -151,7 +151,7 @@ class TestScene extends Phaser.Scene {
         this.graphics.clear();
 
         /* ***********
-         * KEYBOARD CONTROLS
+         * KEYBOARD CONTROLS - FOR SINGLE PLAYER ONLY
          * ************ */
         if (this.keyboardDirection[0] != 0 || this.keyboardDirection[1] != 0) {
 
@@ -161,221 +161,6 @@ class TestScene extends Phaser.Scene {
         }
 
         this.octopus.UpdateOctopus(this.graphics);
-    }
-}
-
-class Bullet extends Phaser.Physics.Arcade.Sprite {
-    bulletWeapon: Weapon;
-    target: Fish;
-    moveDirection: Phaser.Math.Vector2;
-    speed: number = 500;
-
-    constructor(weapon: Weapon,
-        bulletPhysicsGroup: Phaser.Physics.Arcade.Group) {
-        super(weapon.scene, weapon.x, weapon.y, 'bullet');
-
-        this.bulletWeapon = weapon;
-        bulletPhysicsGroup.add(this);
-        this.scene.add.existing(this);
-    }
-
-    ApplyHit(fish: Fish) {
-        var sp = this.scene.add.sprite(this.x, this.y, 'explosion');
-        sp.play('explosion_anim');
-        sp.on(Phaser.Animations.Events.ANIMATION_COMPLETE, function (anim, frame, gameObject) {
-            gameObject.destroy();
-        });
-
-        fish.hp--;
-        fish.setAlpha(0.5 + 0.05 * fish.hp);
-        if (fish.hp <= 0) {
-            if (this.bulletWeapon.focusedFish?.uniqueName == fish.uniqueName) {
-                this.bulletWeapon.focusedFish = null;
-            }
-
-            if (fish.uniqueName in this.bulletWeapon.fishesInRange) {
-                delete this.bulletWeapon.fishesInRange[fish.uniqueName];
-            }
-
-            this.bulletWeapon.weaponOwner.points += fish.points;
-            fish.destroy(true);
-        }
-
-        this.destroy(true);
-    }
-
-    FireToFish(focusedFish: Fish, spread: number) {
-        this.moveDirection = new Phaser.Math.Vector2(focusedFish.x - this.x, focusedFish.y - this.y);
-        this.moveDirection.normalize();
-
-        this.setRotation(Math.atan2(this.moveDirection.y, this.moveDirection.x) + Math.random() * spread - spread / 2);
-        this.setVelocity(this.moveDirection.x * this.speed, this.moveDirection.y * this.speed);
-        this.scene.time.addEvent({
-            delay: this.bulletWeapon.range / this.speed * 1000,
-            callback: () => this.destroy(true),
-            callbackScope: this
-        });
-    }
-}
-
-class Weapon extends Phaser.Physics.Arcade.Sprite {
-    weaponOwner: Octopus;
-    offsetX: number = 0;
-    offsetY: number = 0;
-    range: number = 0;
-    spread: number = 0.4;
-
-    fishesInRange: { [id: string]: Fish } = {};
-    focusedFish: Fish;
-    bulletPhysicsGroup: Phaser.Physics.Arcade.Group;
-
-    nextFireTime: number = 0;
-    fireRate: number = 100;
-
-    constructor(octopus: Octopus, offsetX: number, offsetY: number, range: number,
-        weaponsPhysicsGroup: Phaser.Physics.Arcade.Group,
-        bulletPhysicsGroup: Phaser.Physics.Arcade.Group) {
-        super(octopus.scene, octopus.x + offsetX, octopus.y + offsetY, 'fin');
-
-        this.depth = octopus.depth - 0.1;
-        this.setOrigin(0, 0.5);
-        this.setRotation(Math.atan2(-offsetY, -offsetX));
-        //this.setVisible(false);
-
-        this.weaponOwner = octopus;
-        this.offsetX = offsetX;
-        this.offsetY = offsetY;
-        this.range = range;
-
-        weaponsPhysicsGroup.add(this);
-        this.scene.add.existing(this);
-        this.setCircle(range, -range, -range);
-        this.bulletPhysicsGroup = bulletPhysicsGroup;
-    }
-
-    FireWeapon(focusedFish: Fish) {
-        var bullet = new Bullet(this, this.bulletPhysicsGroup);
-        bullet.FireToFish(focusedFish, this.spread);
-    }
-
-    UpdateWeapon(graphics: Phaser.GameObjects.Graphics) {
-        this.setPosition(this.weaponOwner.x + this.offsetX, this.weaponOwner.y + this.offsetY);
-
-        if (this.nextFireTime < this.scene.time.now
-            && this.focusedFish != null
-            && this.focusedFish.active) {
-            this.nextFireTime += this.fireRate;
-            if (this.nextFireTime < this.scene.time.now) {
-                this.nextFireTime = this.scene.time.now + this.fireRate;
-            }
-
-            this.FireWeapon(this.focusedFish);
-        }
-
-        for (let key in this.fishesInRange) {
-            let connectedFish = this.fishesInRange[key];
-            var distance = Phaser.Math.Distance.BetweenPoints(this, connectedFish);
-
-            if (this.focusedFish == null || !this.focusedFish.active) {
-                this.focusedFish = connectedFish;
-            }
-            /* DEBUGGING FOR TARGET ACQUISITION
-            graphics.lineStyle(fishIdx, 0xff0000);
-
-            if (this.focusedFish === connectedFish) {
-                graphics.lineStyle(fishIdx * 3, 0x00ff00);
-            }
-            fishIdx++;
-
-            graphics.lineBetween(this.x, this.y, connectedFish.x, connectedFish.y);
-            */
-
-            if (distance >= this.range + 10) {
-                delete this.fishesInRange[key];
-                if (this.focusedFish?.uniqueName == key) { this.focusedFish = null; }
-            }
-        }
-    }
-}
-
-class Octopus extends Phaser.Physics.Arcade.Sprite {
-    desiredX: integer = 0;
-    desiredY: integer = 0;
-    lastUpdateTime: number;
-    name: string;
-    weapons: Weapon[] = [];
-    speed: number = 0.3; // Expressed as distance covered per millisecond
-    points: number = 0;
-
-    constructor(name: string, scene: Phaser.Scene, x: number, y: number,
-        octopiPhysicsGroup: Phaser.Physics.Arcade.Group,
-        weaponsPhysicsGroup: Phaser.Physics.Arcade.Group,
-        bulletPhysicsGroup: Phaser.Physics.Arcade.Group,
-        tint: number) {
-        super(scene, x, y, 'octopus');
-
-        this.name = name;
-        this.originX = this.width / 2;
-        this.originY = this.height / 2;
-
-        this.desiredX = this.x;
-        this.desiredY = this.y;
-        this.lastUpdateTime = this.scene.time.now;
-
-        var w1 = new Weapon(this, 90, 45, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
-        var w2 = new Weapon(this, -90, 45, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
-        this.weapons.push(w1, w2);
-        var w3 = new Weapon(this, 60, 80, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
-        var w4 = new Weapon(this, -60, 80, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
-        this.weapons.push(w3, w4);
-
-        this.tint = tint;
-        for (let i in this.weapons) {
-            this.weapons[i].tint = tint;
-        }
-
-        scene.add.existing(this);
-        octopiPhysicsGroup.add(this);
-        this.setCircle(125, this.originX - 125, this.originY - 125);
-    }
-
-    UpdateOctopus(graphics: Phaser.GameObjects.Graphics) {
-        this.weapons.forEach(w => w.UpdateWeapon(graphics));
-
-        var deltaTime = this.scene.time.now - this.lastUpdateTime;
-        this.lastUpdateTime = this.scene.time.now;
-        var speed = this.speed * deltaTime;
-
-        var moveDirection = new Phaser.Math.Vector2(this.desiredX - this.x, this.desiredY - this.y);
-        if (moveDirection.length() <= speed) {
-            this.x = this.desiredX;
-            this.y = this.desiredY;
-            return;
-        }
-        moveDirection.normalize();
-
-        // Move
-        if (Math.abs(this.desiredX - this.x) > speed) {
-            this.x += moveDirection.x * speed;
-        }
-
-        if (Math.abs(this.desiredY - this.y) > speed) {
-            this.y += moveDirection.y * speed;
-        }
-
-        // Clamp on bounds
-        if (this.x + this.width / 2 > this.scene.game.canvas.width) {
-            this.x = this.scene.game.canvas.width - this.width / 2;
-        }
-        if (this.x - this.width / 2 < 0) {
-            this.x = this.width / 2;
-        }
-        if (this.y + this.height / 2 > this.scene.game.canvas.height) {
-            this.y = this.scene.game.canvas.height - this.height / 2;
-        }
-        if (this.y - this.height / 2 < 0) {
-            this.y = this.height / 2;
-        }
     }
 }
 
