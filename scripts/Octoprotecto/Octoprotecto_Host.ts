@@ -135,21 +135,24 @@ class BattleArena extends Phaser.Scene {
         });
     }
 
-    startGame() {
-        this.octopus = new Octopus("testOctopus",
-            this,
-            this.game.canvas.width / 2,
-            this.game.canvas.height / 2,
-            this.octopi,
-            this.weapons,
-            this.bullets,
-            0x00FFFF);
+    startGame(soloRun: boolean) {
+        if (soloRun) {
+            this.octopus = new Octopus("testOctopus",
+                this,
+                this.game.canvas.width / 2,
+                this.game.canvas.height / 2,
+                this.octopi,
+                this.weapons,
+                this.bullets,
+                0x00FFFF);
+        }
 
         this.time.addEvent({
-            delay: 1000,
+            delay: 2500,
             callback: () => Fish.SpawnFishes(this, 5, this.spawningRect, this.fishes, this.octopi),
             callbackScope: this,
             loop: true,
+            startAt: 3500
         });
     }
 
@@ -171,28 +174,44 @@ class BattleArena extends Phaser.Scene {
 }
 
 var octoProtecto: Octoprotecto;
+var battleArenaScene: BattleArena;
+
 window.onload = () => {
     octoProtecto = new Octoprotecto();
 
     document.getElementById("hostgamebutton").addEventListener("click", function (event) {
+        battleArenaScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
         var menuElements = document.getElementsByClassName("lobbymenu");
         [].forEach.call(menuElements, function (element, index, array) {
             element.hidden = true;
         });
-
+        battleArenaScene.scene.setActive(true);
         document.getElementById("lobbyhostcontent").hidden = false;
         event.preventDefault();
     });
 
-    document.getElementById("startgamebutton").addEventListener("click", function (event) {
+    document.getElementById("sologamebutton").addEventListener("click", function (event) {
+        battleArenaScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
         var menuElements = document.getElementsByClassName("lobbymenu");
         [].forEach.call(menuElements, function (element, index, array) {
             element.hidden = true;
         });
+        battleArenaScene.scene.setActive(true);
+        battleArenaScene.startGame(true);
+        event.preventDefault();
+    });
 
-        var activeScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
-        activeScene.scene.setActive(true);
-        activeScene.startGame();
+    document.getElementById("startgamebutton").addEventListener("click", function (event) {
+        if (battleArenaScene.octopi.children.size <= 0) {
+            window.alert("No players in game!");
+            return;
+        }
+
+        var menuElements = document.getElementsByClassName("lobbymenu");
+        [].forEach.call(menuElements, function (element, index, array) {
+            element.hidden = true;
+        });
+        battleArenaScene.startGame(false);
         event.preventDefault();
     });
 };
