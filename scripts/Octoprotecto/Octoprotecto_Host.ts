@@ -11,24 +11,24 @@ class Octoprotecto {
                 }
             },
 
-            parent: 'content',
+            parent: 'octoprotectogame',
             width: 1024,
             height: 768,
             backgroundColor: '#FFFFFF',
             transparent: false,
             clearBeforeRender: false,
-            scene: [TestScene],
+            scene: [BattleArena],
             scale: {
                 mode: Phaser.Scale.ScaleModes.FIT,
                 resizeInterval: 1,
             },
             disableContextMenu: true,
-            autoFocus: true
+            autoFocus: true,
         });
     }
 }
 
-class TestScene extends Phaser.Scene {
+class BattleArena extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
     octopus: Octopus;
 
@@ -39,6 +39,10 @@ class TestScene extends Phaser.Scene {
 
     keyboardDirection: [x: integer, y: integer] = [0, 0];
     spawningRect: Phaser.Geom.Rectangle;
+
+    constructor() {
+        super({ key: 'BattleArena', active: false, visible: true });
+    }
 
     preload() {
         this.load.image('ocean', '/content/Octoprotecto/ocean.jpg');
@@ -129,7 +133,9 @@ class TestScene extends Phaser.Scene {
             var fish = body1 as Fish;
             bullet.ApplyHit(fish);
         });
+    }
 
+    startGame() {
         this.octopus = new Octopus("testOctopus",
             this,
             this.game.canvas.width / 2,
@@ -160,10 +166,19 @@ class TestScene extends Phaser.Scene {
             this.octopus.desiredY = this.octopus.y + this.keyboardDirection[1] * this.octopus.speed * 50;
         }
 
-        this.octopus.UpdateOctopus(this.graphics);
+        this.octopus?.UpdateOctopus(this.graphics);
     }
 }
 
+var octoProtecto: Octoprotecto;
 window.onload = () => {
-    var game = new Octoprotecto();
+    octoProtecto = new Octoprotecto();
+
+    document.getElementById("startgamebutton").addEventListener("click", function (event) {
+        var activeScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
+        activeScene.scene.setActive(true);
+        activeScene.startGame();
+        document.getElementById("lobbymenu").hidden = true;
+        event.preventDefault();
+    });
 };

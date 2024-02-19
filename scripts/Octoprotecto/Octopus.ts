@@ -28,6 +28,9 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         var w3 = new Weapon(this, 60, 80, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
         var w4 = new Weapon(this, -60, 80, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
         this.weapons.push(w3, w4);
+        var w5 = new Weapon(this, 20, 95, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
+        var w6 = new Weapon(this, -20, 95, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
+        this.weapons.push(w5, w6);
 
         this.tint = tint;
         for (let i in this.weapons) {
