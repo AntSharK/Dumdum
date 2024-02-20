@@ -1,0 +1,38 @@
+﻿@page
+@model Dumdum.Pages.OctoprotectoModel
+@{
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <script src="/lib/signalr/dist/browser/signalr.js"></script>
+        <script src="/phaser/phaser.js"></script>
+        <!-- Manually piece the dependent pieces together -->
+        <script src="/js/Octoprotecto/Fish.js"></script>
+        <script src="/js/Octoprotecto/Weapon.js"></script>
+        <script src="/js/Octoprotecto/Octopus.js"></script>
+        <script src="/js/Octoprotecto/Octoprotecto_Host.js"></script>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="/OctoProtecto/app.css" type="text/css" />
+        <title>OCTOPROTECTO</title>
+    </head>
+    <body>
+        <div id="content">
+            <div id="octoprotectogame"></div>
+            <div id="lobbymenuinitial" class="display-4 lobbymenu">
+                <input type="button" id="joingamebutton" value="JOIN" />
+                <hr />
+                <input type="button" id="hostgamebutton" value="HOST" />
+                <hr />
+                <input type="button" id="sologamebutton" value="SOLO RUN" />
+            </div>
+
+            <div id="lobbyhostcontent" class="display-4 lobbymenu" hidden="true">
+                <div id="gameidtext">WAITING FOR GAME ID...</div>
+                <input type="button" id="startgamebutton" value="START" />
+            </div>
+        </div>
+    </body>
+    </html>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+}

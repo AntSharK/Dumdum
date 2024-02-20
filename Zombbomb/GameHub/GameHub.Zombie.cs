@@ -48,6 +48,12 @@ namespace Zombbomb
             Zombie? zombie = isRespawnEvent ? room.Players[zombieId] : room.CreatePlayer(zombieId, Context.ConnectionId);
             var color = int.Parse(colorIn.TrimStart('#'), System.Globalization.NumberStyles.HexNumber);
 
+            if (zombie == null)
+            {
+                await Clients.Caller.SendAsync("ShowError", $"Error creating zombie {zombieId}.");
+                return;
+            }
+
             // Do some color filtering
             zombie.Color = color;
             zombie.IsDead = false;
