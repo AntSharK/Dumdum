@@ -2,11 +2,10 @@
 using Microsoft.Extensions.Logging;
 using Swollball.Bots;
 using Swollball.PlayerData;
-using System.Text.Json;
 
 namespace Swollball
 {
-    public partial class GameHub : Hub
+    public partial class GameHub
     {
         public async Task CreateRoom()
         {
@@ -19,7 +18,7 @@ namespace Swollball
             else
             {
                 Logger.LogWarning("FAILED TO CREATE ROOM.");
-                await Clients.Caller.SendAsync("ShowError", "ERROR CREATING ROOM.");
+                await Clients.Caller.SendAsync(this.Message_ShowError, "ERROR CREATING ROOM.");
             }
         }
 
@@ -129,7 +128,7 @@ namespace Swollball
                     string.Join(';', player.Ball.PersistentUpgradeData));
             }
 
-            await Clients.Caller.SendAsync("ClearState"); // For host machine, display last scoreboard and clear state
+            await Clients.Caller.SendAsync(this.Message_ClearState); // For host machine, display last scoreboard and clear state
             await this.UpdateRatings(room);
         }
 
@@ -197,8 +196,8 @@ namespace Swollball
                         "Leaderboard" /*Scene to start on*/, null /*No transition*/);
                     break;
                 case SwollballRoom.RoomState.TearingDown:
-                    await Clients.Caller.SendAsync("ShowError", "ROOM HAS FINISHED.");
-                    await Clients.Caller.SendAsync("ClearState");
+                    await Clients.Caller.SendAsync(this.Message_ShowError, "ROOM HAS FINISHED.");
+                    await Clients.Caller.SendAsync(this.Message_ClearState);
                     break;
 
             }
