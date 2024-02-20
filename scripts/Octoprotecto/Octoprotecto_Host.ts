@@ -175,6 +175,8 @@ class BattleArena extends Phaser.Scene {
 
 var octoProtecto: Octoprotecto;
 var battleArenaScene: BattleArena;
+const RoomIdSessionStorageKey = "roomid";
+const UserIdSessionStorageKey = "userid";
 
 window.onload = () => {
     octoProtecto = new Octoprotecto();
@@ -204,6 +206,12 @@ window.onload = () => {
     document.getElementById("startgamebutton").addEventListener("click", function (event) {
         if (battleArenaScene.octopi.children.size <= 0) {
             window.alert("No players in game!");
+            return;
+        }
+
+        var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);
+        if (roomId == null) {
+            window.alert("Error: No room ID!");
             return;
         }
 
