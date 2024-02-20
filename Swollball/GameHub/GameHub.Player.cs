@@ -5,7 +5,7 @@ using Swollball.Upgrades;
 
 namespace Swollball
 {
-    public partial class GameHub : Hub
+    public partial class GameHub
     {
         public async Task TESTSTART()
         {
@@ -27,21 +27,21 @@ namespace Swollball
             Logger.LogInformation("PLAYER: {1} JOINS ROOM:{0}.", roomId, userName);
             if (!this.GameLobby.Rooms.ContainsKey(roomId))
             {
-                await Clients.Caller.SendAsync("ShowError", "Room not found.");
+                await Clients.Caller.SendAsync(this.Message_ShowError, "Room not found.");
                 return;
             }
 
             var room = this.GameLobby.Rooms[roomId];
             if (room.State != SwollballRoom.RoomState.SettingUp)
             {
-                await Clients.Caller.SendAsync("ShowError", "Game has already started.");
+                await Clients.Caller.SendAsync(this.Message_ShowError, "Game has already started.");
                 return;
             }
 
             var player = room.CreatePlayer(userName, Context.ConnectionId);
             if (player == null)
             {
-                await Clients.Caller.SendAsync("ShowError", "Player could not be created. Pick another name.");
+                await Clients.Caller.SendAsync(this.Message_ShowError, "Player could not be created. Pick another name.");
                 return;
             }
 
@@ -80,8 +80,8 @@ namespace Swollball
                         "" /*No scene to start on, just start the game*/, null /*No transition*/);
                     break;
                 case SwollballRoom.RoomState.TearingDown:
-                    await Clients.Caller.SendAsync("ShowError", "ROOM HAS FINISHED.");
-                    await Clients.Caller.SendAsync("ClearState");
+                    await Clients.Caller.SendAsync(this.Message_ShowError, "ROOM HAS FINISHED.");
+                    await Clients.Caller.SendAsync(this.Message_ClearState);
                     break;
             }
         }
@@ -99,7 +99,7 @@ namespace Swollball
             }
             else
             {
-                await Clients.Caller.SendAsync("ShowError", "You cannot have more than 6 persistent upgrades.");
+                await Clients.Caller.SendAsync(this.Message_ShowError, "You cannot have more than 6 persistent upgrades.");
             }
         }
 

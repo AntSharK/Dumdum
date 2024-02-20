@@ -3,8 +3,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Zombbomb
 {
-    public partial class GameHub : Hub
+    public partial class GameHub: Common.GameHub<ZombbombRoom, Zombie>
     {
+        public GameHub(ZombbombLobby lobby)
+            : base(lobby)
+        {
+        }
+
         public async Task CreateRoom(string explodeTime, string zombieSpeed, string playerSpeed, string reloadTime, string respawnTime)
         {
             var newRoom = this.GameLobby.CreateRoom(Context.ConnectionId);
@@ -31,7 +36,7 @@ namespace Zombbomb
             else
             {
                 Logger.LogWarning("FAILED TO CREATE ROOM.");
-                await Clients.Caller.SendAsync("ShowError", "ERROR CREATING ROOM.");
+                await Clients.Caller.SendAsync(this.Message_ShowError, "ERROR CREATING ROOM.");
             }
         }
 

@@ -1,58 +1,64 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>9d5ac756-1cbc-4478-88fb-2fe27338bcd3</UserSecretsId>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>9d5ac756-1cbc-4478-88fb-2fe27338bcd3</UserSecretsId>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Common\**" />
-    <Compile Remove="Swollball\**" />
-	<Compile Remove="Zombbomb\**" />
-    <Content Remove="Common\**" />
-    <Content Remove="Swollball\**" />
-    <Content Remove="Zombbomb\**" />
-    <EmbeddedResource Remove="Common\**" />
-    <EmbeddedResource Remove="Swollball\**" />
-	<EmbeddedResource Remove="Zombbomb\**" />
-    <None Remove="Common\**" />
-    <None Remove="Swollball\**" />
-	<None Remove="Zombbomb\**" />
-    <TypeScriptCompile Remove="Common\**" />
-    <TypeScriptCompile Remove="Swollball\**" />
-    <TypeScriptCompile Remove="Zombbomb\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Common\**" />
+		<Compile Remove="Swollball\**" />
+		<Compile Remove="Zombbomb\**" />
+		<Compile Remove="Octoprotecto\**" />
+		<Content Remove="Common\**" />
+		<Content Remove="Swollball\**" />
+		<Content Remove="Zombbomb\**" />
+		<Content Remove="Octoprotecto\**" />
+		<EmbeddedResource Remove="Common\**" />
+		<EmbeddedResource Remove="Swollball\**" />
+		<EmbeddedResource Remove="Zombbomb\**" />
+		<EmbeddedResource Remove="Octoprotecto\**" />
+		<None Remove="Common\**" />
+		<None Remove="Swollball\**" />
+		<None Remove="Zombbomb\**" />
+		<None Remove="Octoprotecto\**" />
+		<TypeScriptCompile Remove="Common\**" />
+		<TypeScriptCompile Remove="Swollball\**" />
+		<TypeScriptCompile Remove="Zombbomb\**" />
+		<TypeScriptCompile Remove="Octoprotecto\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
-    <PackageReference Include="Azure.Identity" Version="1.8.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="7.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="7.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
-    <PackageReference Include="Microsoft.Azure.SignalR" Version="1.4.0" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.6.4">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
+		<PackageReference Include="Azure.Identity" Version="1.8.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="7.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="7.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
+		<PackageReference Include="Microsoft.Azure.SignalR" Version="1.4.0" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.6.4">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\content\Octoprotecto\" />
-    <Folder Include="wwwroot\content\Zombbomb\" />
-    <Folder Include="wwwroot\content\Swollball\cards\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="wwwroot\content\Octoprotecto\" />
+		<Folder Include="wwwroot\content\Zombbomb\" />
+		<Folder Include="wwwroot\content\Swollball\cards\" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="Zombbomb\Zombbomb.csproj" />
-    <ProjectReference Include="Swollball\Swollball.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="Zombbomb\Zombbomb.csproj" />
+		<ProjectReference Include="Swollball\Swollball.csproj" />
+		<ProjectReference Include="Octoprotecto\Octoprotecto.csproj" />
+	</ItemGroup>
 
 </Project>

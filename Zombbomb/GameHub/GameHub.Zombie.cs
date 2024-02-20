@@ -11,14 +11,14 @@ namespace Zombbomb
             Logger.LogInformation("PLAYER JOINS ROOM:{0}.", roomId);
             if (!this.GameLobby.Rooms.ContainsKey(roomId))
             {
-                await Clients.Caller.SendAsync("ShowError", "Room not found.");
+                await Clients.Caller.SendAsync(this.Message_ShowError, "Room not found.");
                 return;
             }
 
             var room = this.GameLobby.Rooms[roomId];
             if (room.State != ZombbombRoom.RoomState.SettingUp)
             {
-                await Clients.Caller.SendAsync("ShowError", "Room already started.");
+                await Clients.Caller.SendAsync(this.Message_ShowError, "Room already started.");
                 return;
             }
 
@@ -35,7 +35,7 @@ namespace Zombbomb
         {
             if (!this.GameLobby.Rooms.ContainsKey(roomId))
             {
-                await Clients.Caller.SendAsync("ShowError", "Room not found.");
+                await Clients.Caller.SendAsync(this.Message_ShowError, "Room not found.");
                 return;
             }
 
@@ -50,7 +50,7 @@ namespace Zombbomb
 
             if (zombie == null)
             {
-                await Clients.Caller.SendAsync("ShowError", $"Error creating zombie {zombieId}.");
+                await Clients.Caller.SendAsync(this.Message_ShowError, $"Error creating zombie {zombieId}.");
                 return;
             }
 
