@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swollball", "Swollball\Swol
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csproj", "{1A71280F-3581-4035-AB34-05F75645A9EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zombbomb", "Zombbomb\Zombbomb.csproj", "{DD389030-2277-4952-8D11-A22DFF781F7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zombbomb", "Zombbomb\Zombbomb.csproj", "{DD389030-2277-4952-8D11-A22DFF781F7B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Octoprotecto", "Octoprotecto\Octoprotecto.csproj", "{5AB19E86-53F3-4756-9A5F-317F1967C8A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{DD389030-2277-4952-8D11-A22DFF781F7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD389030-2277-4952-8D11-A22DFF781F7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD389030-2277-4952-8D11-A22DFF781F7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AB19E86-53F3-4756-9A5F-317F1967C8A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AB19E86-53F3-4756-9A5F-317F1967C8A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AB19E86-53F3-4756-9A5F-317F1967C8A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AB19E86-53F3-4756-9A5F-317F1967C8A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
