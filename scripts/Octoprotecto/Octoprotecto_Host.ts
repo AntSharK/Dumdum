@@ -175,11 +175,37 @@ class BattleArena extends Phaser.Scene {
 
 var octoProtecto: Octoprotecto;
 var battleArenaScene: BattleArena;
+
+var signalRconnection: any;
+declare const signalR;
+
 const RoomIdSessionStorageKey = "roomid";
 const UserIdSessionStorageKey = "userid";
 
 window.onload = () => {
     octoProtecto = new Octoprotecto();
+    signalRconnection = new signalR.HubConnectionBuilder().withUrl("/octoprotectoHub").build();
+
+    signalRconnection.start().catch(function (err) {
+        return console.error(err.toString());
+    });
+
+    signalRconnection.on("RoomCreated", function (roomId: string) {
+        sessionStorage.setItem(RoomIdSessionStorageKey, roomId);
+        document.getElementById("gameidtext").textContent = "ROOM ID: " + roomId;
+    });
+
+    signalRconnection.on("ClearState", function () {
+        sessionStorage.removeItem(RoomIdSessionStorageKey);
+        sessionStorage.removeItem(UserIdSessionStorageKey);
+    });
+
+    signalRconnection.on("ShowError", function (errorMessage, shouldReload = false) {
+        window.alert(errorMessage);
+        if (shouldReload) {
+            window.location.reload();
+        }
+    });
 
     document.getElementById("hostgamebutton").addEventListener("click", function (event) {
         battleArenaScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
@@ -189,6 +215,10 @@ window.onload = () => {
         });
         battleArenaScene.scene.setActive(true);
         document.getElementById("lobbyhostcontent").hidden = false;
+        signalRconnection.invoke("CreateRoom").catch(function (err) {
+            return console.error(err.toString());
+        });
+
         event.preventDefault();
     });
 
