@@ -10,7 +10,9 @@
         <script src="/js/Octoprotecto/Fish.js"></script>
         <script src="/js/Octoprotecto/Weapon.js"></script>
         <script src="/js/Octoprotecto/Octopus.js"></script>
+        <script src="/js/Octoprotecto/Octoprotecto_Startmenu.js"></script>
         <script src="/js/Octoprotecto/Octoprotecto_Host.js"></script>
+        <script src="/js/Octoprotecto/Octoprotecto_Controller.js"></script>
         <meta charset="utf-8" />
         <link rel="stylesheet" href="/OctoProtecto/app.css" type="text/css" />
         <title>OCTOPROTECTO</title>
@@ -18,7 +20,7 @@
     <body>
         <div id="content">
             <div id="octoprotectogame"></div>
-            <div id="lobbymenuinitial" class="display-4 lobbymenu">
+            <div id="lobbymenuinitial" class="display-1 lobbymenu">
                 <input type="button" id="joingamebutton" value="JOIN" />
                 <hr />
                 <input type="button" id="hostgamebutton" value="HOST" />
@@ -26,9 +28,21 @@
                 <input type="button" id="sologamebutton" value="SOLO RUN" />
             </div>
 
-            <div id="lobbyhostcontent" class="display-4 lobbymenu" hidden="true">
+            <div id="lobbyhostcontent" class="display-3 lobbymenu" hidden="true">
                 <div id="gameidtext">WAITING FOR GAME ID...</div>
                 <input type="button" id="startgamebutton" value="START" />
+            </div>
+
+            <div id="lobbyjoingamemenu" class="display-1 lobbymenu" hidden="true">
+                COLOR
+                <input type="color" id="colorpicker" value="">
+                <hr />
+                <input type="text" id="roomid" maxlength="5" size="5" placeholder="ROOM ID" oninput="this.value = this.value.toUpperCase()" /><br />
+                <input type="button" id="joinroombutton" value="JOIN" />
+            </div>
+
+            <div id="lobbywaitingforserver" class="display-3 lobbymenu" hidden="true">
+                <div id="waitingmessage">WAITING FOR SERVER...</div>
             </div>
         </div>
     </body>
