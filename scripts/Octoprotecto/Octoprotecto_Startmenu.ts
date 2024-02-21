@@ -52,9 +52,10 @@ window.onload = () => {
 
     document.getElementById("hostgamebutton").addEventListener("click", function (event) {
         hideLobbyMenu();
+
         var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
         battleArenaScene.scene.setActive(true);
-        document.getElementById("lobbyhostcontent").hidden = false;
+
         signalRconnection.invoke("CreateRoom", battleArenaScene.octopiMoveBounds).catch(function (err) {
             return console.error(err.toString());
         });
@@ -89,6 +90,11 @@ window.onload = () => {
         document.getElementById("lobbyjoingamemenu").hidden = false;
     });
 
+    document.getElementById("resetstatebutton").addEventListener("click", function (event) {
+        clearState();
+        window.location.reload();
+    });
+
     document.getElementById("joinroombutton").addEventListener("click", function (event) {
         var roomIdIn = (document.getElementById("roomid") as HTMLInputElement).value;
         var colorIn = (document.getElementById("colorpicker") as HTMLInputElement).value;
@@ -116,14 +122,19 @@ function ConfigureMenuSignalRListening(signalRconnection: any) {
                 return console.error(err.toString());
             });
 
-            sessionStorage.removeItem(RoomIdSessionStorageKey);
-            sessionStorage.removeItem(UserIdSessionStorageKey);
+            clearState();
         }
     })
 
     signalRconnection.on("RoomCreated", function (roomId: string) {
+        hideLobbyMenu();
         sessionStorage.setItem(RoomIdSessionStorageKey, roomId);
         document.getElementById("gameidtext").textContent = "ROOM: " + roomId;
+        document.getElementById("lobbyhostcontent").hidden = false;
+
+        // This might be repetitive - in many cases the scene is already active
+        var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
+        battleArenaScene.scene.setActive(true);
     });
 
     signalRconnection.on("ErrorJoiningRoom", function (errorMessage: string) {
@@ -133,8 +144,7 @@ function ConfigureMenuSignalRListening(signalRconnection: any) {
     });
 
     signalRconnection.on("ClearState", function () {
-        sessionStorage.removeItem(RoomIdSessionStorageKey);
-        sessionStorage.removeItem(UserIdSessionStorageKey);
+        clearState();
     });
 
     signalRconnection.on("ShowError", function (errorMessage, shouldReload = false) {
@@ -155,6 +165,11 @@ function hideLobbyMenu() {
     [].forEach.call(menuElements, function (element, index, array) {
         element.hidden = true;
     });
+}
+
+function clearState() {
+    sessionStorage.removeItem(RoomIdSessionStorageKey);
+    sessionStorage.removeItem(UserIdSessionStorageKey);
 }
 
 function GetRandomColor() {

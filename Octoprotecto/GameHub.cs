@@ -107,6 +107,21 @@ namespace Octoprotecto
             }
 
             // Re-connect the host room
+            if (room.State != OctoprotectoRoom.RoomState.SettingUp)
+            {
+                await Clients.Caller.SendAsync(this.Message_ShowError, $"Room {roomId} has already started. Resuming is not supported.", true /*Refresh on click*/);
+                return;
+            }
+
+            room.ConnectionId = Context.ConnectionId;
+            Logger.LogInformation("Reconnected to Room {0}", room.RoomId);
+            await Clients.Caller.SendAsync("RoomCreated", room.RoomId);
+            foreach (var roomPlayer in room.Players)
+            {
+                var roomOctopus = roomPlayer.Value;
+                var roomPlayerId = roomPlayer.Key;
+                await Clients.Caller.SendAsync("SpawnOctopus", roomPlayerId, roomOctopus.Color, roomOctopus.LocationX, roomOctopus.LocationY, roomOctopus.Speed);
+            }
         }
 
         public async Task UpdateOctopusPosition(string roomId, string playerId, double x, double y)
