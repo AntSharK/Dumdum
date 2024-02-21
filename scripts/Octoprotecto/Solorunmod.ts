@@ -35,7 +35,8 @@ class SoloRun {
         arena.spawnOctopus("SoloPlayer",
             0x00FFFF,
             arena.game.canvas.width / 2,
-            arena.game.canvas.height / 2);
+            arena.game.canvas.height / 2,
+            0.3 /*Default speed*/);
 
         arena.events.on('update', () => SoloRun.ApplyKeyboardControls());
     }

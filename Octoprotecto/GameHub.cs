@@ -75,6 +75,17 @@ namespace Octoprotecto
             room.StartGame();
         }
 
+        public async Task UpdateOctopusPosition(string roomId, string playerId, double x, double y)
+        {
+            (var octopus, var room) = await this.FindPlayerAndRoom(playerId, roomId);
+            if (octopus == null || room == null) { return; }
+
+            octopus.LocationX = x;
+            octopus.LocationY = y;
+
+            await Clients.Client(room.ConnectionId).SendAsync("UpdatePosition", playerId, x, y);
+        }
+
         private async Task CreateNewOctopus(OctoprotectoRoom room, string playerId, string colorIn)
         {
             if (playerId == null)
@@ -96,8 +107,8 @@ namespace Octoprotecto
             octopus.Color = color;
             octopus.SetRandomLocation(room.OctopiMovementBounds);
 
-            await Clients.Caller.SendAsync("InitializeNewPlayer", playerId, room.RoomId, octopus.LocationX, octopus.LocationY, room.OctopiMovementBounds);
-            await Clients.Client(room.ConnectionId).SendAsync("SpawnOctopus", playerId, color, octopus.LocationX, octopus.LocationY);
+            await Clients.Caller.SendAsync("InitializeNewPlayer", playerId, room.RoomId, octopus.LocationX, octopus.LocationY, room.OctopiMovementBounds, octopus.Color, octopus.Speed);
+            await Clients.Client(room.ConnectionId).SendAsync("SpawnOctopus", playerId, color, octopus.LocationX, octopus.LocationY, octopus.Speed);
         }
     }
 }

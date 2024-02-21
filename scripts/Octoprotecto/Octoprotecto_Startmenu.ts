@@ -46,12 +46,13 @@ window.onload = () => {
 
     (document.getElementById("colorpicker") as HTMLInputElement).value = GetRandomColor();
 
-    ConfigureMenuSignalR(signalRconnection);
-    ConfigureControllerSignalR(signalRconnection);
+    ConfigureMenuSignalRListening(signalRconnection);
+    ConfigureControllerSignalRListening(signalRconnection);
+    ConfigureHostSignalRListening(signalRconnection);
 
     document.getElementById("hostgamebutton").addEventListener("click", function (event) {
         hideLobbyMenu();
-        battleArenaScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
+        var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
         battleArenaScene.scene.setActive(true);
         document.getElementById("lobbyhostcontent").hidden = false;
         signalRconnection.invoke("CreateRoom", battleArenaScene.octopiMoveBounds).catch(function (err) {
@@ -61,12 +62,13 @@ window.onload = () => {
 
     document.getElementById("sologamebutton").addEventListener("click", function (event) {
         hideLobbyMenu();
-        battleArenaScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
+        var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
         battleArenaScene.scene.setActive(true);
         battleArenaScene.startGame(true);
     });
 
     document.getElementById("startgamebutton").addEventListener("click", function (event) {
+        var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
         if (battleArenaScene.octopi.children.size <= 0) {
             window.alert("No players in game!");
             return;
@@ -98,7 +100,7 @@ window.onload = () => {
     });
 };
 
-function ConfigureMenuSignalR(signalRconnection: any) {
+function ConfigureMenuSignalRListening(signalRconnection: any) {
     signalRconnection.on("RoomCreated", function (roomId: string) {
         sessionStorage.setItem(RoomIdSessionStorageKey, roomId);
         document.getElementById("gameidtext").textContent = "ROOM: " + roomId;
@@ -122,9 +124,9 @@ function ConfigureMenuSignalR(signalRconnection: any) {
         }
     });
 
-    signalRconnection.on("SpawnOctopus", function (playerId: string, color: number, startX: number, startY: number) {
-        battleArenaScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
-        battleArenaScene.spawnOctopus(playerId, color, startX, startY);
+    signalRconnection.on("SpawnOctopus", function (playerId: string, color: number, startX: number, startY: number, speed: number) {
+        var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
+        battleArenaScene.spawnOctopus(playerId, color, startX, startY, speed);
     })
 }
 

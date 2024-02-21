@@ -99,16 +99,16 @@ class BattleArena extends Phaser.Scene {
         });
     }
 
-    spawnOctopus(playerId: string, playerColor: number, startX: number, startY: number) {
+    spawnOctopus(playerId: string, playerColor: number, startX: number, startY: number, speed: number) {
         var newOctopus = new Octopus(playerId,
             this,
             startX,
             startY,
             this.octopi,
-            this.weapons,
-            this.bullets,
-            playerColor);
+            playerColor,
+            speed);
 
+        newOctopus.AddDefaultWeapons(this.weapons, this.bullets);
         BattleArena.OctopiMap[playerId] = newOctopus;
     }
 
@@ -120,4 +120,14 @@ class BattleArena extends Phaser.Scene {
             octopus.UpdateOctopus(this.graphics);
         }
     }
+}
+
+function ConfigureHostSignalRListening(signalRconnection: any) {
+    signalRconnection.on("UpdatePosition", function (playerId, x, y) {
+        let targetOctopus = BattleArena.OctopiMap[playerId] as Octopus;
+        if (targetOctopus != null) {
+            targetOctopus.desiredX = x;
+            targetOctopus.desiredY = y;
+        }        
+    });
 }

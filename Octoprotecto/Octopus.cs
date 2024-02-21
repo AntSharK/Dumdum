@@ -9,6 +9,7 @@ namespace Octoprotecto
         public double LocationX;
         public double LocationY;
         public int Color;
+        public double Speed = 0.3; // Expressed as distance covered per millisecond
 
         public Octopus(string name, string connectionId, string roomName) 
             : base(name, connectionId, roomName)
