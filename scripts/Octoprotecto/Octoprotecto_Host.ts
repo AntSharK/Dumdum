@@ -1,32 +1,3 @@
-class Octoprotecto {
-    game: Phaser.Game;
-    constructor() {
-        this.game = new Phaser.Game({
-            type: Phaser.AUTO,
-            physics: {
-                default: 'arcade',
-                arcade: {
-                    //debug: true
-                }
-            },
-
-            parent: 'octoprotectogame',
-            width: 1024,
-            height: 768,
-            backgroundColor: '#FFFFFF',
-            transparent: false,
-            clearBeforeRender: false,
-            scene: [BattleArena, Octocontroller],
-            scale: {
-                mode: Phaser.Scale.ScaleModes.FIT,
-                resizeInterval: 1,
-            },
-            disableContextMenu: true,
-            autoFocus: true,
-        });
-    }
-}
-
 class BattleArena extends Phaser.Scene {
     static OctopiMap: { [id: string]: Octopus } = {};
     graphics: Phaser.GameObjects.Graphics;

@@ -8,6 +8,35 @@ declare const signalR;
 const RoomIdSessionStorageKey = "roomid";
 const UserIdSessionStorageKey = "userid";
 
+class Octoprotecto {
+    game: Phaser.Game;
+    constructor() {
+        this.game = new Phaser.Game({
+            type: Phaser.AUTO,
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    //debug: true
+                }
+            },
+
+            parent: 'octoprotectogame',
+            width: 1024,
+            height: 768,
+            backgroundColor: '#FFFFFF',
+            transparent: false,
+            clearBeforeRender: false,
+            scene: [BattleArena, Octocontroller],
+            scale: {
+                mode: Phaser.Scale.ScaleModes.FIT,
+                resizeInterval: 1,
+            },
+            disableContextMenu: true,
+            autoFocus: true,
+        });
+    }
+}
+
 window.onload = () => {
     octoProtecto = new Octoprotecto();
     signalRconnection = new signalR.HubConnectionBuilder().withUrl("/octoprotectoHub").build();

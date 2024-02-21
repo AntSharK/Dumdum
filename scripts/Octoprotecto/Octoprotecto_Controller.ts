@@ -3,7 +3,7 @@ class Octocontroller extends Phaser.Scene {
     lastUpdateTime: number;
     color: number;
     constructor() {
-        super({ key: 'Octocontroller', active: true });
+        super({ key: 'Octocontroller' });
     }
 
     preload() {
@@ -16,6 +16,7 @@ class Octocontroller extends Phaser.Scene {
     }
 
     update() {
+        console.log(this.lastUpdateTime);
     }
 }
 
@@ -24,7 +25,7 @@ function ConfigureControllerSignalR(signalRconnection: any) {
         sessionStorage.setItem(RoomIdSessionStorageKey, roomId);
         sessionStorage.setItem(UserIdSessionStorageKey, playerId);
 
-        // TODO: Initialize controller scene
-        
+        var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena");
+        battleArenaScene.scene.transition({ target: "Octocontroller" });
     });
 }
