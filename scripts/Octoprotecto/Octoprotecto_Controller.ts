@@ -69,32 +69,28 @@ class Octocontroller extends Phaser.Scene {
             });
     }
 
-    SynchronizeProperties(locationX: number, locationY: number, octopiMovementBounds: Phaser.Geom.Rectangle, playerColor: number, speed: number) {
+    SynchronizeProperties(octopiMovementBounds: Phaser.Geom.Rectangle, octopusData: Octopus) {
         this.readyForControl = true;
-        this.color = playerColor;
+        this.color = octopusData.tint;
         this.lastUpdateTime = this.time.now;
         this.bounds = octopiMovementBounds;
-        this.locationX = locationX;
-        this.locationY = locationY;
-        this.speed = speed;
+        this.locationX = octopusData.desiredX;
+        this.locationY = octopusData.desiredY;
+        this.speed = octopusData.speed;
     }
 }
 
 function ConfigureControllerSignalRListening(signalRconnection: any) {
-    signalRconnection.on("InitializeNewPlayer", function (playerId: string,
-        roomId: string,
-        locationX: number,
-        locationY: number,
+    signalRconnection.on("InitializeNewPlayer", function (roomId: string,
         octopiMovementBounds: Phaser.Geom.Rectangle,
-        playerColor: number,
-        speed: number) {
+        octopusData: Octopus) {
         sessionStorage.setItem(RoomIdSessionStorageKey, roomId);
-        sessionStorage.setItem(UserIdSessionStorageKey, playerId);
+        sessionStorage.setItem(UserIdSessionStorageKey, octopusData.name);
 
         hideLobbyMenu();
         var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena");
         battleArenaScene.scene.transition({ target: "Octocontroller" });
         var controllerScene = octoProtecto.game.scene.getScene("Octocontroller") as Octocontroller;
-        controllerScene.SynchronizeProperties(locationX, locationY, octopiMovementBounds, playerColor, speed);
+        controllerScene.SynchronizeProperties(octopiMovementBounds, octopusData);
     });
 }

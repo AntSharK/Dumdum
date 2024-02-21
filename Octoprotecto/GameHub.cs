@@ -102,7 +102,7 @@ namespace Octoprotecto
                 await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
                 await Groups.RemoveFromGroupAsync(octopus.ConnectionId, roomId);
                 octopus.ConnectionId = Context.ConnectionId;
-                await Clients.Caller.SendAsync("InitializeNewPlayer", playerId, room.RoomId, octopus.DesiredX, octopus.DesiredY, room.OctopiMovementBounds, octopus.Tint, octopus.Speed);
+                await Clients.Caller.SendAsync("InitializeNewPlayer", room.RoomId, room.OctopiMovementBounds, octopus);
                 return;
             }
 
@@ -120,7 +120,7 @@ namespace Octoprotecto
             {
                 var roomOctopus = roomPlayer.Value;
                 var roomPlayerId = roomPlayer.Key;
-                await Clients.Caller.SendAsync("SpawnOctopus", octopus);
+                await Clients.Caller.SendAsync("SpawnOctopus", roomOctopus);
             }
         }
 
@@ -156,7 +156,7 @@ namespace Octoprotecto
             octopus.Tint = color;
             octopus.SetRandomLocation(room.OctopiMovementBounds);
 
-            await Clients.Caller.SendAsync("InitializeNewPlayer", playerId, room.RoomId, octopus.DesiredX, octopus.DesiredY, room.OctopiMovementBounds, octopus.Tint, octopus.Speed);
+            await Clients.Caller.SendAsync("InitializeNewPlayer", room.RoomId, room.OctopiMovementBounds, octopus);
             await Clients.Client(room.ConnectionId).SendAsync("SpawnOctopus", octopus);
         }
     }
