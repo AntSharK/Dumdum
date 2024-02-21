@@ -99,18 +99,18 @@ class BattleArena extends Phaser.Scene {
         });
     }
 
-    spawnOctopus(playerId: string, playerColor: number, startX: number, startY: number, speed: number) {
-        var newOctopus = new Octopus(playerId,
+    spawnOctopus(octopusData: Octopus) {
+        var newOctopus = new Octopus(octopusData.name,
             this,
-            startX,
-            startY,
+            octopusData.desiredX,
+            octopusData.desiredY,
             this.octopi,
             this.weapons,
             this.bullets,
-            playerColor,
-            speed);
+            octopusData.tint,
+            octopusData.speed);
 
-        BattleArena.OctopiMap[playerId] = newOctopus;
+        BattleArena.OctopiMap[octopusData.name] = newOctopus;
     }
 
     update() {

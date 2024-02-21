@@ -102,7 +102,7 @@ namespace Octoprotecto
                 await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
                 await Groups.RemoveFromGroupAsync(octopus.ConnectionId, roomId);
                 octopus.ConnectionId = Context.ConnectionId;
-                await Clients.Caller.SendAsync("InitializeNewPlayer", playerId, room.RoomId, octopus.LocationX, octopus.LocationY, room.OctopiMovementBounds, octopus.Color, octopus.Speed);
+                await Clients.Caller.SendAsync("InitializeNewPlayer", room.RoomId, room.OctopiMovementBounds, octopus);
                 return;
             }
 
@@ -120,7 +120,7 @@ namespace Octoprotecto
             {
                 var roomOctopus = roomPlayer.Value;
                 var roomPlayerId = roomPlayer.Key;
-                await Clients.Caller.SendAsync("SpawnOctopus", roomPlayerId, roomOctopus.Color, roomOctopus.LocationX, roomOctopus.LocationY, roomOctopus.Speed);
+                await Clients.Caller.SendAsync("SpawnOctopus", roomOctopus);
             }
         }
 
@@ -129,8 +129,8 @@ namespace Octoprotecto
             (var octopus, var room) = await this.FindPlayerAndRoom(playerId, roomId);
             if (octopus == null || room == null) { return; }
 
-            octopus.LocationX = x;
-            octopus.LocationY = y;
+            octopus.DesiredX = x;
+            octopus.DesiredY = y;
 
             await Clients.Client(room.ConnectionId).SendAsync("UpdatePosition", playerId, x, y);
         }
@@ -153,11 +153,11 @@ namespace Octoprotecto
 
             // Set additional fields
             var color = int.Parse(colorIn.TrimStart('#'), System.Globalization.NumberStyles.HexNumber);
-            octopus.Color = color;
+            octopus.Tint = color;
             octopus.SetRandomLocation(room.OctopiMovementBounds);
 
-            await Clients.Caller.SendAsync("InitializeNewPlayer", playerId, room.RoomId, octopus.LocationX, octopus.LocationY, room.OctopiMovementBounds, octopus.Color, octopus.Speed);
-            await Clients.Client(room.ConnectionId).SendAsync("SpawnOctopus", playerId, color, octopus.LocationX, octopus.LocationY, octopus.Speed);
+            await Clients.Caller.SendAsync("InitializeNewPlayer", room.RoomId, room.OctopiMovementBounds, octopus);
+            await Clients.Client(room.ConnectionId).SendAsync("SpawnOctopus", octopus);
         }
     }
 }

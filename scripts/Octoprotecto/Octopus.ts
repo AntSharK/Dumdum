@@ -1,3 +1,4 @@
+// Note that all properties are auto-deserialized from the corresponding server-side class
 class Octopus extends Phaser.Physics.Arcade.Sprite {
     desiredX: integer = 0;
     desiredY: integer = 0;
