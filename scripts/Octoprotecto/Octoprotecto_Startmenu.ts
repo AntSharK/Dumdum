@@ -38,17 +38,17 @@ class Octoprotecto {
 }
 
 window.onload = () => {
-    octoProtecto = new Octoprotecto();
     signalRconnection = new signalR.HubConnectionBuilder().withUrl("/octoprotectoHub").build();
     signalRconnection.start().catch(function (err) {
         return console.error(err.toString());
     });
 
-    (document.getElementById("colorpicker") as HTMLInputElement).value = GetRandomColor();
-
     ConfigureMenuSignalRListening(signalRconnection);
     ConfigureControllerSignalRListening(signalRconnection);
     ConfigureHostSignalRListening(signalRconnection);
+
+    octoProtecto = new Octoprotecto();
+    (document.getElementById("colorpicker") as HTMLInputElement).value = GetRandomColor();
 
     document.getElementById("hostgamebutton").addEventListener("click", function (event) {
         hideLobbyMenu();
@@ -101,6 +101,26 @@ window.onload = () => {
 };
 
 function ConfigureMenuSignalRListening(signalRconnection: any) {
+    signalRconnection.on("ConnectionEstablished", function () {
+        // Once SignalR connection is established, check if this is a session that needs reconnection
+        var existingRoomId = sessionStorage.getItem(RoomIdSessionStorageKey);
+        var existingUserId = sessionStorage.getItem(UserIdSessionStorageKey);
+        if (existingRoomId != null) {
+            // Hide UI elements
+            hideLobbyMenu();
+            document.getElementById("lobbywaitingforserver").hidden = false;
+            document.getElementById("waitingmessage").textContent = "RECONNECTING TO ROOM: " + existingRoomId;
+
+            // Try once to re-connect to server
+            signalRconnection.invoke("Reconnect", existingRoomId, existingUserId).catch(function (err) {
+                return console.error(err.toString());
+            });
+
+            sessionStorage.removeItem(RoomIdSessionStorageKey);
+            sessionStorage.removeItem(UserIdSessionStorageKey);
+        }
+    })
+
     signalRconnection.on("RoomCreated", function (roomId: string) {
         sessionStorage.setItem(RoomIdSessionStorageKey, roomId);
         document.getElementById("gameidtext").textContent = "ROOM: " + roomId;
