@@ -34,14 +34,14 @@ namespace Octoprotecto
             Logger.LogInformation("PLAYER JOINS ROOM:{0}.", roomId);
             if (!this.GameLobby.Rooms.ContainsKey(roomId))
             {
-                await Clients.Caller.SendAsync("ErrorJoiningRoom", "Room not found.");
+                await Clients.Caller.SendAsync("ErrorJoiningRoom", $"Room {roomId} not found.");
                 return;
             }
 
             var room = this.GameLobby.Rooms[roomId];
             if (room.State != OctoprotectoRoom.RoomState.SettingUp)
             {
-                await Clients.Caller.SendAsync("ErrorJoiningRoom", "Room already started.");
+                await Clients.Caller.SendAsync("ErrorJoiningRoom", $"Room {roomId} already started.");
                 return;
             }
 
@@ -61,18 +61,67 @@ namespace Octoprotecto
         {
             if (!this.GameLobby.Rooms.ContainsKey(roomId))
             {
-                await Clients.Caller.SendAsync(this.Message_ShowError, "Room not found.");
+                await Clients.Caller.SendAsync(this.Message_ShowError, $"Room {roomId} not found.");
                 return;
             }
 
             var room = this.GameLobby.Rooms[roomId];
             if (room.State != OctoprotectoRoom.RoomState.SettingUp)
             {
-                await Clients.Caller.SendAsync(this.Message_ShowError, "Room already started.");
+                await Clients.Caller.SendAsync(this.Message_ShowError, $"Room {roomId} already started.");
                 return;
             }
 
             room.StartGame();
+        }
+
+        public override async Task OnConnectedAsync()
+        {
+            await Clients.Caller.SendAsync("ConnectionEstablished");
+            await base.OnConnectedAsync();
+        }
+
+        public async Task Reconnect(string roomId, string playerId)
+        {
+            (var octopus, var room) = await this.FindPlayerAndRoom(playerId, roomId);
+            if (room == null)
+            {
+                await Clients.Caller.SendAsync(this.Message_ShowError, $"Room {roomId} not found.", true /*Refresh on click*/);
+                return;
+            }
+
+            if (playerId != null)
+            {
+                if (octopus == null)
+                {
+                    await Clients.Caller.SendAsync(this.Message_ShowError, $"Player {playerId} not found.", true /*Refresh on click*/);
+                    return;
+                }
+
+                // Re-connect a player
+                await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
+                await Groups.RemoveFromGroupAsync(octopus.ConnectionId, roomId);
+                octopus.ConnectionId = Context.ConnectionId;
+                await Clients.Caller.SendAsync("InitializeNewPlayer", playerId, room.RoomId, octopus.LocationX, octopus.LocationY, room.OctopiMovementBounds, octopus.Color, octopus.Speed);
+                return;
+            }
+
+            // Re-connect the host room
+            if (room.State != OctoprotectoRoom.RoomState.SettingUp)
+            {
+                await Clients.Caller.SendAsync(this.Message_ShowError, $"Room {roomId} has already started. Resuming is not supported.", true /*Refresh on click*/);
+                return;
+            }
+
+            room.ConnectionId = Context.ConnectionId;
+            Logger.LogInformation("Reconnected to Room {0}", room.RoomId);
+            await Clients.Caller.SendAsync("RoomCreated", room.RoomId);
+            foreach (var roomPlayer in room.Players)
+            {
+                var roomOctopus = roomPlayer.Value;
+                var roomPlayerId = roomPlayer.Key;
+                await Clients.Caller.SendAsync("SpawnOctopus", roomPlayerId, roomOctopus.Color, roomOctopus.LocationX, roomOctopus.LocationY, roomOctopus.Speed);
+            }
         }
 
         public async Task UpdateOctopusPosition(string roomId, string playerId, double x, double y)
@@ -98,7 +147,7 @@ namespace Octoprotecto
 
             if (octopus == null)
             {
-                await Clients.Caller.SendAsync(this.Message_ShowError, $"Unable to create player {playerId}.");
+                await Clients.Caller.SendAsync(this.Message_ShowError, $"Unable to create player.");
                 return;
             }
 
