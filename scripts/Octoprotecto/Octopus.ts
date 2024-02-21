@@ -6,10 +6,11 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     weapons: Weapon[] = [];
     speed: number = 0.3; // Expressed as distance covered per millisecond
     points: number = 0;
-    tint: number = 0xffffff;
 
     constructor(name: string, scene: Phaser.Scene, x: number, y: number,
         octopiPhysicsGroup: Phaser.Physics.Arcade.Group,
+        weaponsPhysicsGroup: Phaser.Physics.Arcade.Group,
+        bulletPhysicsGroup: Phaser.Physics.Arcade.Group,
         tint: number,
         speed: number) {
         super(scene, x, y, 'octopus');
@@ -21,18 +22,9 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         this.desiredX = this.x;
         this.desiredY = this.y;
         this.lastUpdateTime = this.scene.time.now;
-
-        this.tint = tint;
         this.speed = speed;
 
-        scene.add.existing(this);
-        octopiPhysicsGroup.add(this);
-        this.setCircle(125, this.originX - 125, this.originY - 125);
         this.setDepth(octopiPhysicsGroup.getLength());
-    }
-
-    AddDefaultWeapons(weaponsPhysicsGroup: Phaser.Physics.Arcade.Group,
-        bulletPhysicsGroup: Phaser.Physics.Arcade.Group) {
         var w1 = new Weapon(this, 90, 45, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
         var w2 = new Weapon(this, -90, 45, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
         this.weapons.push(w1, w2);
@@ -42,9 +34,15 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         var w5 = new Weapon(this, 20, 95, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
         var w6 = new Weapon(this, -20, 95, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
         this.weapons.push(w5, w6);
+
+        this.tint = tint;
         for (let i in this.weapons) {
-            this.weapons[i].tint = this.tint;
+            this.weapons[i].tint = tint;
         }
+
+        scene.add.existing(this);
+        octopiPhysicsGroup.add(this);
+        this.setCircle(125, this.originX - 125, this.originY - 125);
     }
 
     UpdateOctopus(graphics: Phaser.GameObjects.Graphics) {

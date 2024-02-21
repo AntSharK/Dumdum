@@ -105,10 +105,11 @@ class BattleArena extends Phaser.Scene {
             startX,
             startY,
             this.octopi,
+            this.weapons,
+            this.bullets,
             playerColor,
             speed);
 
-        newOctopus.AddDefaultWeapons(this.weapons, this.bullets);
         BattleArena.OctopiMap[playerId] = newOctopus;
     }
 
