@@ -11,7 +11,8 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         octopiPhysicsGroup: Phaser.Physics.Arcade.Group,
         weaponsPhysicsGroup: Phaser.Physics.Arcade.Group,
         bulletPhysicsGroup: Phaser.Physics.Arcade.Group,
-        tint: number) {
+        tint: number,
+        speed: number) {
         super(scene, x, y, 'octopus');
 
         this.name = name;
@@ -21,7 +22,9 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         this.desiredX = this.x;
         this.desiredY = this.y;
         this.lastUpdateTime = this.scene.time.now;
+        this.speed = speed;
 
+        this.setDepth(octopiPhysicsGroup.getLength());
         var w1 = new Weapon(this, 90, 45, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
         var w2 = new Weapon(this, -90, 45, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
         this.weapons.push(w1, w2);

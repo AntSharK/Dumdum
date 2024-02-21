@@ -1,44 +1,13 @@
-class Octoprotecto {
-
-    game: Phaser.Game;
-    constructor() {
-        this.game = new Phaser.Game({
-            type: Phaser.AUTO,
-            physics: {
-                default: 'arcade',
-                arcade: {
-                    //debug: true
-                }
-            },
-
-            parent: 'octoprotectogame',
-            width: 1024,
-            height: 768,
-            backgroundColor: '#FFFFFF',
-            transparent: false,
-            clearBeforeRender: false,
-            scene: [BattleArena],
-            scale: {
-                mode: Phaser.Scale.ScaleModes.FIT,
-                resizeInterval: 1,
-            },
-            disableContextMenu: true,
-            autoFocus: true,
-        });
-    }
-}
-
 class BattleArena extends Phaser.Scene {
+    static OctopiMap: { [id: string]: Octopus } = {};
     graphics: Phaser.GameObjects.Graphics;
-    octopus: Octopus;
+    spawningRect: Phaser.Geom.Rectangle;
+    octopiMoveBounds: Phaser.Geom.Rectangle;
 
     fishes: Phaser.Physics.Arcade.Group;
     octopi: Phaser.Physics.Arcade.Group;
     weapons: Phaser.Physics.Arcade.Group;
     bullets: Phaser.Physics.Arcade.Group;
-
-    keyboardDirection: [x: integer, y: integer] = [0, 0];
-    spawningRect: Phaser.Geom.Rectangle;
 
     constructor() {
         super({ key: 'BattleArena', active: false, visible: true });
@@ -62,6 +31,8 @@ class BattleArena extends Phaser.Scene {
         background.displayHeight = this.game.canvas.height;
         background.depth = -1;
         this.spawningRect = new Phaser.Geom.Rectangle(50, 50, this.game.canvas.width - 100, this.game.canvas.height - 100);
+        var octopusImage = this.textures.get("octopus").getSourceImage();
+        this.octopiMoveBounds = new Phaser.Geom.Rectangle(octopusImage.width / 2, octopusImage.height / 2, this.game.canvas.width - octopusImage.width, this.game.canvas.height - octopusImage.height);
 
         this.anims.create({
             key: 'explosion_anim',
@@ -69,33 +40,6 @@ class BattleArena extends Phaser.Scene {
             frameRate: 20,
             repeat: 0
         })
-        /* ***********
-         * KEYBOARD CONTROLS - FOR SINGLE PLAYER ONLY
-         * ************ */
-        this.input.keyboard.on('keydown-RIGHT', event => {
-            this.keyboardDirection[0] = 1;
-        }, this);
-        this.input.keyboard.on('keyup-RIGHT', event => {
-            this.keyboardDirection[0] = 0;
-        }, this);
-        this.input.keyboard.on('keydown-LEFT', event => {
-            this.keyboardDirection[0] = -1;
-        }, this);
-        this.input.keyboard.on('keyup-LEFT', event => {
-            this.keyboardDirection[0] = 0;
-        }, this);
-        this.input.keyboard.on('keydown-UP', event => {
-            this.keyboardDirection[1] = -1;
-        }, this);
-        this.input.keyboard.on('keyup-UP', event => {
-            this.keyboardDirection[1] = 0;
-        }, this);
-        this.input.keyboard.on('keydown-DOWN', event => {
-            this.keyboardDirection[1] = 1;
-        }, this);
-        this.input.keyboard.on('keyup-DOWN', event => {
-            this.keyboardDirection[1] = 0;
-        }, this);
 
         this.octopi = this.physics.add.group({
             defaultKey: 'octopus',
@@ -137,14 +81,8 @@ class BattleArena extends Phaser.Scene {
 
     startGame(soloRun: boolean) {
         if (soloRun) {
-            this.octopus = new Octopus("testOctopus",
-                this,
-                this.game.canvas.width / 2,
-                this.game.canvas.height / 2,
-                this.octopi,
-                this.weapons,
-                this.bullets,
-                0x00FFFF);
+            SoloRun.ConfigureKeyboard(this);
+            SoloRun.SoloRunStart(this);
         }
 
         this.time.addEvent({
@@ -154,72 +92,43 @@ class BattleArena extends Phaser.Scene {
             loop: true,
             startAt: 3500
         });
+
+        var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);
+        signalRconnection.invoke("StartRoom", roomId).catch(function (err) {
+            return console.error(err.toString());
+        });
+    }
+
+    spawnOctopus(playerId: string, playerColor: number, startX: number, startY: number, speed: number) {
+        var newOctopus = new Octopus(playerId,
+            this,
+            startX,
+            startY,
+            this.octopi,
+            this.weapons,
+            this.bullets,
+            playerColor,
+            speed);
+
+        BattleArena.OctopiMap[playerId] = newOctopus;
     }
 
     update() {
         this.graphics.clear();
 
-        /* ***********
-         * KEYBOARD CONTROLS - FOR SINGLE PLAYER ONLY
-         * ************ */
-        if (this.keyboardDirection[0] != 0 || this.keyboardDirection[1] != 0) {
-
-            // Ideally, running at 30FPS, we'll have to move at least OCTOPUSSPEED * 33 per update cycle since it's 33ms per cycle
-            this.octopus.desiredX = this.octopus.x + this.keyboardDirection[0] * this.octopus.speed * 50;
-            this.octopus.desiredY = this.octopus.y + this.keyboardDirection[1] * this.octopus.speed * 50;
+        for (let key in BattleArena.OctopiMap) {
+            let octopus = BattleArena.OctopiMap[key];
+            octopus.UpdateOctopus(this.graphics);
         }
-
-        this.octopus?.UpdateOctopus(this.graphics);
     }
 }
 
-var octoProtecto: Octoprotecto;
-var battleArenaScene: BattleArena;
-const RoomIdSessionStorageKey = "roomid";
-const UserIdSessionStorageKey = "userid";
-
-window.onload = () => {
-    octoProtecto = new Octoprotecto();
-
-    document.getElementById("hostgamebutton").addEventListener("click", function (event) {
-        battleArenaScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
-        var menuElements = document.getElementsByClassName("lobbymenu");
-        [].forEach.call(menuElements, function (element, index, array) {
-            element.hidden = true;
-        });
-        battleArenaScene.scene.setActive(true);
-        document.getElementById("lobbyhostcontent").hidden = false;
-        event.preventDefault();
+function ConfigureHostSignalRListening(signalRconnection: any) {
+    signalRconnection.on("UpdatePosition", function (playerId, x, y) {
+        let targetOctopus = BattleArena.OctopiMap[playerId] as Octopus;
+        if (targetOctopus != null) {
+            targetOctopus.desiredX = x;
+            targetOctopus.desiredY = y;
+        }        
     });
-
-    document.getElementById("sologamebutton").addEventListener("click", function (event) {
-        battleArenaScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
-        var menuElements = document.getElementsByClassName("lobbymenu");
-        [].forEach.call(menuElements, function (element, index, array) {
-            element.hidden = true;
-        });
-        battleArenaScene.scene.setActive(true);
-        battleArenaScene.startGame(true);
-        event.preventDefault();
-    });
-
-    document.getElementById("startgamebutton").addEventListener("click", function (event) {
-        if (battleArenaScene.octopi.children.size <= 0) {
-            window.alert("No players in game!");
-            return;
-        }
-
-        var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);
-        if (roomId == null) {
-            window.alert("Error: No room ID!");
-            return;
-        }
-
-        var menuElements = document.getElementsByClassName("lobbymenu");
-        [].forEach.call(menuElements, function (element, index, array) {
-            element.hidden = true;
-        });
-        battleArenaScene.startGame(false);
-        event.preventDefault();
-    });
-};
+}

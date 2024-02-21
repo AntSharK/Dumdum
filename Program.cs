@@ -1,5 +1,4 @@
 using Dumdum.Auth;
-using Swollball;
 
 var builder = WebApplication.CreateBuilder(args);
 SecretManager.Init(builder);
@@ -9,7 +8,7 @@ Password={1};
 Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False", 
 SecretManager.GetSecret("AntsharkBackendUsername", builder),
 SecretManager.GetSecret("AntsharkBackendPassword", builder));
-UserInfoDB.Init(userDbConnectionString);
+Swollball.UserInfoDB.Init(userDbConnectionString);
 
 // Configure Auth in Builder
 GeneralAuth.ConfigureAuth(builder);
@@ -19,6 +18,7 @@ builder.Services.AddSignalR();
 // Add game lobbies
 builder.Services.AddSingleton<Swollball.SwollballLobby>();
 builder.Services.AddSingleton<Zombbomb.ZombbombLobby>();
+builder.Services.AddSingleton<Octoprotecto.OctoprotectoLobby>();
 // End game lobbies
 
 builder.Services.AddRazorPages();
@@ -39,6 +39,9 @@ app.MapHub<Swollball.GameHub>("/swollBallHub");
 
 Zombbomb.GameHub.RegisterLogger(app.Logger);
 app.MapHub<Zombbomb.GameHub>("/zombBombHub");
+
+Octoprotecto.GameHub.RegisterLogger(app.Logger);
+app.MapHub<Octoprotecto.GameHub>("/octoprotectoHub");
 // End game logging and hubs
 
 app.MapRazorPages();
