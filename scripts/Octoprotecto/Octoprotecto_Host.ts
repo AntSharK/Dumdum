@@ -16,7 +16,7 @@ class Octoprotecto {
             backgroundColor: '#FFFFFF',
             transparent: false,
             clearBeforeRender: false,
-            scene: [BattleArena],
+            scene: [BattleArena, Octocontroller],
             scale: {
                 mode: Phaser.Scale.ScaleModes.FIT,
                 resizeInterval: 1,
@@ -28,11 +28,9 @@ class Octoprotecto {
 }
 
 class BattleArena extends Phaser.Scene {
+    static OctopiMap: { [id: string]: Octopus } = {};
     graphics: Phaser.GameObjects.Graphics;
-    octopiMap: { [id: string]: Octopus } = {};
-    soloRun: boolean = false;
     spawningRect: Phaser.Geom.Rectangle;
-    keyboardDirection: [x: integer, y: integer] = [0, 0];
     octopiMoveBounds: Phaser.Geom.Rectangle;
 
     fishes: Phaser.Physics.Arcade.Group;
@@ -71,33 +69,6 @@ class BattleArena extends Phaser.Scene {
             frameRate: 20,
             repeat: 0
         })
-        /* ***********
-         * KEYBOARD CONTROLS - FOR SINGLE PLAYER ONLY
-         * ************ */
-        this.input.keyboard.on('keydown-RIGHT', event => {
-            this.keyboardDirection[0] = 1;
-        }, this);
-        this.input.keyboard.on('keyup-RIGHT', event => {
-            this.keyboardDirection[0] = 0;
-        }, this);
-        this.input.keyboard.on('keydown-LEFT', event => {
-            this.keyboardDirection[0] = -1;
-        }, this);
-        this.input.keyboard.on('keyup-LEFT', event => {
-            this.keyboardDirection[0] = 0;
-        }, this);
-        this.input.keyboard.on('keydown-UP', event => {
-            this.keyboardDirection[1] = -1;
-        }, this);
-        this.input.keyboard.on('keyup-UP', event => {
-            this.keyboardDirection[1] = 0;
-        }, this);
-        this.input.keyboard.on('keydown-DOWN', event => {
-            this.keyboardDirection[1] = 1;
-        }, this);
-        this.input.keyboard.on('keyup-DOWN', event => {
-            this.keyboardDirection[1] = 0;
-        }, this);
 
         this.octopi = this.physics.add.group({
             defaultKey: 'octopus',
@@ -139,11 +110,8 @@ class BattleArena extends Phaser.Scene {
 
     startGame(soloRun: boolean) {
         if (soloRun) {
-            this.soloRun = true;
-            this.spawnOctopus("SoloPlayer",
-                0x00FFFF,
-                this.game.canvas.width / 2,
-                this.game.canvas.height / 2);
+            SoloRun.ConfigureKeyboard(this);
+            SoloRun.SoloRunStart(this);
         }
 
         this.time.addEvent({
@@ -170,29 +138,14 @@ class BattleArena extends Phaser.Scene {
             this.bullets,
             playerColor);
 
-        this.octopiMap[playerId] = newOctopus;
+        BattleArena.OctopiMap[playerId] = newOctopus;
     }
 
     update() {
         this.graphics.clear();
 
-        /* ***********
-         * KEYBOARD CONTROLS - FOR SINGLE PLAYER ONLY
-         * ************ */
-        if (this.soloRun
-            && (this.keyboardDirection[0] != 0 || this.keyboardDirection[1] != 0)) {
-
-            for (let key in this.octopiMap) {
-                let soloOctopus = this.octopiMap[key];
-
-                // Ideally, running at 30FPS, we'll have to move at least OCTOPUSSPEED * 33 per update cycle since it's 33ms per cycle
-                soloOctopus.desiredX = soloOctopus.x + this.keyboardDirection[0] * soloOctopus.speed * 50;
-                soloOctopus.desiredY = soloOctopus.y + this.keyboardDirection[1] * soloOctopus.speed * 50;
-            }
-        }
-
-        for (let key in this.octopiMap) {
-            let octopus = this.octopiMap[key];
+        for (let key in BattleArena.OctopiMap) {
+            let octopus = BattleArena.OctopiMap[key];
             octopus.UpdateOctopus(this.graphics);
         }
     }
