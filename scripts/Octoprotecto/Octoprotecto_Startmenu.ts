@@ -156,9 +156,9 @@ function ConfigureMenuSignalRListening(signalRconnection: any) {
         }
     });
 
-    signalRconnection.on("SpawnOctopus", function (playerId: string, color: number, startX: number, startY: number, speed: number) {
+    signalRconnection.on("SpawnOctopus", function (octopus: Octopus) {
         var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
-        battleArenaScene.spawnOctopus(playerId, color, startX, startY, speed);
+        battleArenaScene.spawnOctopus(octopus);
     })
 }
 
