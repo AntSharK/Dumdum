@@ -30,6 +30,8 @@ class Octoprotecto {
             scale: {
                 mode: Phaser.Scale.ScaleModes.FIT,
                 resizeInterval: 1,
+                expandParent: true,
+                autoCenter: 1
             },
             disableContextMenu: true,
             autoFocus: true,

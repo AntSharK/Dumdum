@@ -19,6 +19,8 @@ class Octocontroller extends Phaser.Scene {
         this.lastUpdateTime = this.time.now;
         this.graphics = this.add.graphics({ x: 0, y: 0 });
         this.input.mouse.disableContextMenu();
+        this.scale.setGameSize(window.innerWidth, window.innerHeight);
+        this.scale.refresh();
     }
 
     update() {
