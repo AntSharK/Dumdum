@@ -22,7 +22,7 @@
     <body>
         <div id="content">
             <div id="octoprotectogame"></div>
-            <div id="lobbymenuinitial" class="display-1 lobbymenu">
+            <div id="lobbymenuinitial" class="display-1 lobbymenu" @(string.IsNullOrEmpty(Model.RoomId) ? "" : "hidden='true'")>
                 <input type="button" id="joingamebutton" value="JOIN" />
                 <hr />
                 <input type="button" id="hostgamebutton" value="HOST" />
@@ -31,15 +31,16 @@
             </div>
 
             <div id="lobbyhostcontent" class="display-3 lobbymenu" hidden="true">
+                <input type="button" id="generatelinkbutton" value="GET LINK" onclick="GenerateLink()" class="display-5" />
                 <div id="gameidtext">WAITING FOR GAME ID...</div>
                 <input type="button" id="startgamebutton" value="START" />
             </div>
 
-            <div id="lobbyjoingamemenu" class="display-1 lobbymenu" hidden="true">
+            <div id="lobbyjoingamemenu" class="display-1 lobbymenu" @(string.IsNullOrEmpty(Model.RoomId) ? "hidden='true'" : ""))>
                 COLOR
                 <input type="color" id="colorpicker" value="">
                 <hr />
-                <input type="text" id="roomid" maxlength="5" size="5" placeholder="ROOM ID" oninput="this.value = this.value.toUpperCase()" /><br />
+                <input type="text" id="roomid" maxlength="5" size="5" placeholder="ROOM ID" oninput="this.value = this.value.toUpperCase()" value="@Model.RoomId" /><br />
                 <input type="button" id="joinroombutton" value="JOIN" />
             </div>
 

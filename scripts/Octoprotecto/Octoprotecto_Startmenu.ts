@@ -131,7 +131,7 @@ function ConfigureMenuSignalRListening(signalRconnection: any) {
     signalRconnection.on("RoomCreated", function (roomId: string) {
         hideLobbyMenu();
         sessionStorage.setItem(RoomIdSessionStorageKey, roomId);
-        document.getElementById("gameidtext").textContent = "ROOM: " + roomId;
+        document.getElementById("gameidtext").textContent = "" + roomId;
         document.getElementById("lobbyhostcontent").hidden = false;
 
         // This might be repetitive - in many cases the scene is already active
@@ -181,4 +181,10 @@ function GetRandomColor() {
         color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
+}
+function GenerateLink() {
+    var sessionRoomId = sessionStorage.getItem(RoomIdSessionStorageKey);
+    var baseUrl = window.location.origin;
+    var joinRoomUrl = baseUrl + "/Octoprotecto?JoinRoomId=" + sessionRoomId;
+    window.prompt("Copy to clipboard: Ctrl+C, Enter", joinRoomUrl);
 }
