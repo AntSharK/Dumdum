@@ -50,6 +50,13 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         this.setCircle(this.width / 2, this.originX - this.width / 2, this.originY - this.width / 2);
     }
 
+    FinishRound(): void {
+        this.weapons.forEach(w => {
+            w.fishesInRange = {};
+            w.focusedFish = null;
+        });
+    }
+
     // Just handles the octopus' end of taking damage
     TakeDamage(damage: number) {
         this.hitPoints = this.hitPoints - damage;
@@ -57,7 +64,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         if (this.hitPoints <= 0) {
             this.setActive(false);
             // TODO: Broadcast to server and controllers
-            console.log("TODO: Broadcast something to client.");
+            console.log("TODO: Broadcast something to controller.");
             return;
         }
 
