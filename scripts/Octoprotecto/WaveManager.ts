@@ -8,7 +8,7 @@ function StartWave(arena: BattleArena) {
                 baseInterval = baseInterval - 50;
                 arena.time.addEvent({
                     delay: i,
-                    callback: () => Fish.SpawnFishes(arena, playerCount * 4, arena.spawningRect, arena.fishes, arena.octopi),
+                    callback: () => Fish.SpawnFishes(arena, playerCount * 4, arena.spawningRect, arena.fishes, arena.octopi, "starfish"),
                     callbackScope: arena,
                     loop: false,
                     repeat: 0,

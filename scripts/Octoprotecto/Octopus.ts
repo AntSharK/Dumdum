@@ -5,7 +5,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     lastUpdateTime: number;
     name: string;
     weapons: Weapon[] = [];
-    speed: number = 0.3; // Expressed as distance covered per millisecond
+    speed: number = 0.1497; // Expressed as distance covered per millisecond
     points: number = 0;
     hitPoints: number = 1000;
     maxHitPoints: number = 1000;

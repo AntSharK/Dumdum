@@ -39,7 +39,7 @@ class SoloRun {
             desiredX: arena.game.canvas.width / 2,
             desiredY: arena.game.canvas.height / 2,
             tint: 0x00FFFF,
-            speed: 0.3
+            speed: 0.1497
         };
 
         arena.spawnOctopus(octopusData as Octopus);

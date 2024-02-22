@@ -13,17 +13,21 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
-    constructor(uniqueName: string, scene: Phaser.Scene, x: number, y: number) {
+    Setup(scene: BattleArena) { }
+
+    constructor(uniqueName: string, scene: BattleArena, x: number, y: number) {
         super(scene, x, y, 'fish');
 
         this.uniqueName = uniqueName;
         this.originX = this.width / 2;
         this.originY = this.height / 2;
+        this.Setup(scene);
     }
 
-    static SpawnFishes(scene: Phaser.Scene, numberOfFish: integer, spawningRect: Phaser.Geom.Rectangle,
+    static SpawnFishes(scene: BattleArena, numberOfFish: integer, spawningRect: Phaser.Geom.Rectangle,
         fishPhysicsGroup: Phaser.Physics.Arcade.Group,
-        octopusPhysicsGroup: Phaser.Physics.Arcade.Group) {
+        octopusPhysicsGroup: Phaser.Physics.Arcade.Group,
+        fishType: string) {
         var spawnAnims: Phaser.GameObjects.Sprite[] = [];
         for (var i = 0; i < numberOfFish; i++) {
             var newSpawnAnim = scene.add.sprite(0, 0, 'explosion');
@@ -34,15 +38,16 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
         for (let i in spawnAnims) {
             spawnAnims[i].play('explosion_anim');
             spawnAnims[i].on(Phaser.Animations.Events.ANIMATION_COMPLETE, function (anim, frame, gameObject: Phaser.GameObjects.Sprite) {
-                Fish.SpawnOneFish(gameObject.scene, gameObject.x, gameObject.y, fishPhysicsGroup, octopusPhysicsGroup);
+                Fish.SpawnOneFish(scene, gameObject.x, gameObject.y, fishPhysicsGroup, octopusPhysicsGroup, fishType);
                 gameObject.destroy();
             }, this);
         }
     }
 
-    static SpawnOneFish(scene: Phaser.Scene, x: number, y: number,
+    static SpawnOneFish(scene: BattleArena, x: number, y: number,
         fishPhysicsGroup: Phaser.Physics.Arcade.Group,
-        octopusPhysicsGroup: Phaser.Physics.Arcade.Group) {
+        octopusPhysicsGroup: Phaser.Physics.Arcade.Group,
+        fishType: string) {
 
         // Check with every existing octopus location before spawning - don't spawn on top of octopi
         var allowSpawn = true;
@@ -55,8 +60,13 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
         }, this);
 
         if (!allowSpawn) { return; }
+        var fish: Fish;
+        switch (fishType) {
+            case "starfish":
+                fish = new Fish("fish" + Fish.NumberOfFish, scene, x, y);
+                break;
+        }
 
-        var fish = new Fish("fish" + Fish.NumberOfFish, scene, x, y);
         Fish.NumberOfFish++;
         scene.add.existing(fish);
         fishPhysicsGroup.add(fish);
