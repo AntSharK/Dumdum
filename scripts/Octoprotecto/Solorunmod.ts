@@ -30,20 +30,19 @@ class SoloRun {
         }, this);
     }
 
-    // Copy of Arena Spawning logic
     static SoloRunStart(arena: BattleArena) {
         SoloRun.Enabled = true;
-        var newOctopus = new Octopus("SoloPlayer",
-            arena,
-            arena.game.canvas.width / 2,
-            arena.game.canvas.height / 2,
-            arena.octopi,
-            arena.weapons,
-            arena.bullets,
-            0x00FFFF,
-            0.3 /*Default speed*/);
 
-        BattleArena.OctopiMap[newOctopus.name] = newOctopus;
+        // Create an object with the same properties as Octopus
+        var octopusData = {
+            name: "SoloPlayer",
+            desiredX: arena.game.canvas.width / 2,
+            desiredY: arena.game.canvas.height / 2,
+            tint: 0x00FFFF,
+            speed: 0.3
+        };
+
+        arena.spawnOctopus(octopusData as Octopus);
         arena.events.on('update', () => SoloRun.ApplyKeyboardControls());
     }
 
