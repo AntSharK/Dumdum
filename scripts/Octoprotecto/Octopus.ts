@@ -51,6 +51,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     // Just handles the octopus' end of taking damage
     TakeDamage(damage: number) {
         this.hitPoints = this.hitPoints - damage;
+
         if (this.hitPoints <= 0) {
             this.setActive(false);
             console.log("TODO: Broadcast something to client.");
@@ -60,24 +61,36 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         // TODO: Invulnerability and flashing time
     }
 
+    FadeOut(deltaTime: number) {
+        const FADERATE = 0.003; // Expressed as a rate per millisecond
+        var newAlpha = this.alpha - FADERATE * deltaTime;
+        this.setAlpha(newAlpha);
+        this.weapons.forEach(w => w.setAlpha(newAlpha));
+
+        // Cleanup
+        if (newAlpha <= 0) {
+            delete BattleArena.OctopiMap[this.name];
+            this.destroy();
+            this.weapons.forEach(w => w.destroy());
+        }
+
+        return;
+    }
+
+    DrawDamageCircle(graphics: Phaser.GameObjects.Graphics) {
+        if (this.active) {
+            graphics.setDepth(this.depth + 0.1);
+            graphics.fillStyle(0xFF0000, Phaser.Math.Interpolation.QuadraticBezier(this.hitPoints / this.maxHitPoints, 0.5, 0.2, 0));
+            graphics.fillCircle(this.x, this.y, this.width * 0.45);
+        }
+    }
+
     UpdateOctopus(graphics: Phaser.GameObjects.Graphics) {
         var deltaTime = this.scene.time.now - this.lastUpdateTime;
         this.lastUpdateTime = this.scene.time.now;
 
-        // For inactivity, just fade this out
-        const FADERATE = 0.0001; // Expressed as a rate per millisecond
         if (!this.active) {
-            var newAlpha = this.alpha - FADERATE * deltaTime;
-            this.setAlpha(newAlpha);
-            this.weapons.forEach(w => w.setAlpha(newAlpha));
-
-            // Cleanup
-            if (newAlpha <= 0) {
-                delete BattleArena.OctopiMap[this.name];
-                this.destroy();
-                this.weapons.forEach(w => w.destroy());
-            }
-
+            this.FadeOut(deltaTime);
             return;
         }
 
@@ -91,6 +104,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
             this.y = this.desiredY;
             return;
         }
+
         moveDirection.normalize();
 
         // Move

@@ -125,6 +125,7 @@ class BattleArena extends Phaser.Scene {
         for (let key in BattleArena.OctopiMap) {
             let octopus = BattleArena.OctopiMap[key];
             octopus.UpdateOctopus(this.graphics);
+            octopus.DrawDamageCircle(this.graphics);
         }
     }
 }
