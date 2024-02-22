@@ -108,9 +108,9 @@ class BattleArena extends Phaser.Scene {
     }
 
     finishRound() {
-        this.currentRound++;
         this.roundTimer = null;
-        this.timeLeftDisplay.text = "";
+        this.timeLeftDisplay.text = "WAVE " + this.currentRound + " FINISHED";
+        this.currentRound++;
 
         this.octopi.children.each(c => (c as Octopus).FinishRound());
         this.fishes.children.each(c => c.destroy());

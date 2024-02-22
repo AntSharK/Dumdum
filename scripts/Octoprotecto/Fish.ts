@@ -49,7 +49,7 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
         octopusPhysicsGroup.children.each(c => {
             var octo = c as Octopus;
             var d = Phaser.Math.Distance.Between(octo.body.center.x, octo.body.center.y, x, y);
-            if (octo.active && d < octo.body.radius) {
+            if (octo.active && d < octo.body.radius * 1.25) {
                 allowSpawn = false;
             };
         }, this);
