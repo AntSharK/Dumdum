@@ -100,7 +100,7 @@ class BattleArena extends Phaser.Scene {
         });
 
         var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);
-        signalRconnection.invoke("StartRoom", roomId).catch(function (err) {
+        signalRconnection.invoke("StartRoom", roomId, soloRun).catch(function (err) {
             return console.error(err.toString());
         });
     }
@@ -125,7 +125,12 @@ class BattleArena extends Phaser.Scene {
         for (let key in BattleArena.OctopiMap) {
             let octopus = BattleArena.OctopiMap[key];
             octopus.UpdateOctopus(this.graphics);
-            octopus.DrawDamageCircle(this.graphics);
+            if (octopus.invulnerable) {
+                octopus.DrawFlash(this.graphics);
+            }
+            else {
+                octopus.DrawDamageCircle(this.graphics);
+            }
         }
     }
 }

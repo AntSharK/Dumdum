@@ -1,12 +1,15 @@
 class Fish extends Phaser.Physics.Arcade.Sprite {
     uniqueName: string;
-    hp: integer = 50;
+    hitPoints: integer = 100;
+    maxHitPoints: integer = 100;
     points: number = 1;
+    damage: integer = 50;
     static NumberOfFish: integer = 0;
 
     HitOctopus(octopus: Octopus) {
-        if (octopus.active) {
-            octopus.TakeDamage(25);
+        if (octopus.active
+            && !octopus.invulnerable) {
+            octopus.TakeDamage(this.damage);
         }
     }
 

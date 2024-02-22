@@ -9,6 +9,8 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     points: number = 0;
     hitPoints: number = 1000;
     maxHitPoints: number = 1000;
+    lastHitTime: number = -1000;
+    invulnerable: boolean = false;
 
     constructor(name: string, scene: Phaser.Scene, x: number, y: number,
         octopiPhysicsGroup: Phaser.Physics.Arcade.Group,
@@ -54,11 +56,35 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
 
         if (this.hitPoints <= 0) {
             this.setActive(false);
+            // TODO: Broadcast to server and controllers
             console.log("TODO: Broadcast something to client.");
             return;
         }
 
-        // TODO: Invulnerability and flashing time
+        this.invulnerable = true;
+        this.lastHitTime = this.scene.time.now;
+    }
+
+    DrawFlash(graphics: Phaser.GameObjects.Graphics) {
+        const FLASHTIME = 300; // This is the same as invulnerability time
+        const FLASHINTERVAL = 70;
+        const FLASHCHECK = 150;
+        if (graphics.scene.time.now - this.lastHitTime > FLASHTIME) {
+            this.invulnerable = false;
+            return;
+        }
+        // Transparency is according to the bezier curve - 50% hp is 50% transparency
+        var colorAlpha = Phaser.Math.Interpolation.QuadraticBezier(this.hitPoints / this.maxHitPoints, 1.0, 0.6, 0.25);
+
+        graphics.setDepth(this.depth + 0.2);
+        if ((graphics.scene.time.now - this.lastHitTime) % FLASHCHECK <= FLASHINTERVAL) {
+            graphics.fillStyle(0xFF0000, colorAlpha);
+        }
+        else {
+            graphics.fillStyle(0xFFFFFF, colorAlpha);
+        }
+
+        graphics.fillCircle(this.x, this.y, this.body.radius);
     }
 
     FadeOut(deltaTime: number) {
@@ -81,7 +107,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         if (this.active) {
             graphics.setDepth(this.depth + 0.1);
             graphics.fillStyle(0xFF0000, Phaser.Math.Interpolation.QuadraticBezier(this.hitPoints / this.maxHitPoints, 0.5, 0.2, 0));
-            graphics.fillCircle(this.x, this.y, this.width * 0.45);
+            graphics.fillCircle(this.x, this.y, this.body.radius * 0.9);
         }
     }
 
