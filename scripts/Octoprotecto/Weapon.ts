@@ -3,6 +3,7 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
     target: Fish;
     moveDirection: Phaser.Math.Vector2;
     speed: number = 500;
+    damage: number = 15;
 
     constructor(weapon: Weapon,
         bulletPhysicsGroup: Phaser.Physics.Arcade.Group) {
@@ -20,9 +21,9 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
             gameObject.destroy();
         });
 
-        fish.hp--;
-        fish.setAlpha(0.5 + 0.05 * fish.hp);
-        if (fish.hp <= 0) {
+        fish.hitPoints = fish.hitPoints - this.damage;
+        fish.setAlpha(Phaser.Math.Interpolation.Linear([1, 0.5], fish.hitPoints / fish.maxHitPoints));
+        if (fish.hitPoints <= 0) {
             if (this.bulletWeapon.focusedFish?.uniqueName == fish.uniqueName) {
                 this.bulletWeapon.focusedFish = null;
             }

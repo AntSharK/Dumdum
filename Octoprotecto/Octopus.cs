@@ -12,7 +12,7 @@ namespace Octoprotecto
         public double DesiredX { get; set; }
         public double DesiredY { get; set; }
         public int Tint { get; set; }
-        public double Speed { get; set; } = 0.3; // Expressed as distance covered per millisecond
+        public double Speed { get; set; } = 0.1497; // Expressed as distance covered per millisecond
 
         public Octopus(string name, string connectionId, string roomName) 
             : base(name, connectionId, roomName)

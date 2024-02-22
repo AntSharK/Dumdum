@@ -9,6 +9,10 @@ class BattleArena extends Phaser.Scene {
     weapons: Phaser.Physics.Arcade.Group;
     bullets: Phaser.Physics.Arcade.Group;
 
+    roundTimer: Phaser.Time.TimerEvent;
+    timeLeftDisplay: Phaser.GameObjects.Text;
+    currentRound: integer = 1;
+
     constructor() {
         super({ key: 'BattleArena', active: false, visible: true });
     }
@@ -77,6 +81,15 @@ class BattleArena extends Phaser.Scene {
             var fish = body1 as Fish;
             bullet.ApplyHit(fish);
         });
+
+        this.physics.add.overlap(this.fishes, this.octopi, (body1, body2) => {
+            var octopus = body2 as Octopus;
+            var fish = body1 as Fish;
+            fish.HitOctopus(octopus);
+        });
+
+        // Initialize timer
+        this.timeLeftDisplay = this.add.text(0, 0, "", { color: 'Red', fontSize: '600%' });
     }
 
     startGame(soloRun: boolean) {
@@ -85,18 +98,25 @@ class BattleArena extends Phaser.Scene {
             SoloRun.SoloRunStart(this);
         }
 
-        this.time.addEvent({
-            delay: 2500,
-            callback: () => Fish.SpawnFishes(this, 5, this.spawningRect, this.fishes, this.octopi),
-            callbackScope: this,
-            loop: true,
-            startAt: 3500
-        });
-
+        StartWave(this);
         var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);
-        signalRconnection.invoke("StartRoom", roomId).catch(function (err) {
+        signalRconnection.invoke("StartRoom", roomId, soloRun).catch(function (err) {
             return console.error(err.toString());
         });
+
+        this.time.addEvent(this.roundTimer);
+    }
+
+    finishRound() {
+        this.roundTimer = null;
+        this.timeLeftDisplay.text = "WAVE " + this.currentRound + " FINISHED";
+        this.currentRound++;
+
+        this.octopi.children.each(c => (c as Octopus).FinishRound());
+        this.fishes.children.each(c => c.destroy());
+
+        // TODO: Send server a message to trigger next round
+        console.log("TODO: Broadcast something to server.");
     }
 
     spawnOctopus(octopusData: Octopus) {
@@ -115,10 +135,19 @@ class BattleArena extends Phaser.Scene {
 
     update() {
         this.graphics.clear();
+        if (this.roundTimer != null) {
+            this.timeLeftDisplay.text = Math.ceil(this.roundTimer.getRemainingSeconds()).toString();
+        }
 
         for (let key in BattleArena.OctopiMap) {
             let octopus = BattleArena.OctopiMap[key];
             octopus.UpdateOctopus(this.graphics);
+            if (octopus.invulnerable) {
+                octopus.DrawFlash(this.graphics);
+            }
+            else {
+                octopus.DrawDamageCircle(this.graphics);
+            }
         }
     }
 }
