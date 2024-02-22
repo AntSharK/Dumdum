@@ -77,6 +77,12 @@ class BattleArena extends Phaser.Scene {
             var fish = body1 as Fish;
             bullet.ApplyHit(fish);
         });
+
+        this.physics.add.overlap(this.fishes, this.octopi, (body1, body2) => {
+            var octopus = body2 as Octopus;
+            var fish = body1 as Fish;
+            fish.HitOctopus(octopus);
+        });
     }
 
     startGame(soloRun: boolean) {

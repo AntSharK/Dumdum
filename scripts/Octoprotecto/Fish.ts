@@ -1,9 +1,14 @@
-var NumberOfFish: integer = 0;
-
 class Fish extends Phaser.Physics.Arcade.Sprite {
     uniqueName: string;
-    hp: integer = 5;
+    hp: integer = 50;
     points: number = 1;
+    static NumberOfFish: integer = 0;
+
+    HitOctopus(octopus: Octopus) {
+        if (octopus.active) {
+            octopus.TakeDamage(25);
+        }
+    }
 
     constructor(uniqueName: string, scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y, 'fish');
@@ -41,15 +46,15 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
         octopusPhysicsGroup.children.each(c => {
             var octo = c as Octopus;
             var d = Phaser.Math.Distance.Between(octo.body.center.x, octo.body.center.y, x, y);
-            if (d < octo.body.radius) {
+            if (octo.active && d < octo.body.radius) {
                 allowSpawn = false;
             };
         }, this);
 
         if (!allowSpawn) { return; }
 
-        var fish = new Fish("fish" + NumberOfFish, scene, x, y);
-        NumberOfFish++;
+        var fish = new Fish("fish" + Fish.NumberOfFish, scene, x, y);
+        Fish.NumberOfFish++;
         scene.add.existing(fish);
         fishPhysicsGroup.add(fish);
         Phaser.Math.RandomXY(fish.body.velocity, 50);

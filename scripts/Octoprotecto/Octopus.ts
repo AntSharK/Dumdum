@@ -7,6 +7,8 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     weapons: Weapon[] = [];
     speed: number = 0.3; // Expressed as distance covered per millisecond
     points: number = 0;
+    hitPoints: number = 1000;
+    maxHitPoints: number = 1000;
 
     constructor(name: string, scene: Phaser.Scene, x: number, y: number,
         octopiPhysicsGroup: Phaser.Physics.Arcade.Group,
@@ -43,14 +45,44 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
 
         scene.add.existing(this);
         octopiPhysicsGroup.add(this);
-        this.setCircle(125, this.originX - 125, this.originY - 125);
+        this.setCircle(this.width / 2, this.originX - this.width / 2, this.originY - this.width / 2);
+    }
+
+    // Just handles the octopus' end of taking damage
+    TakeDamage(damage: number) {
+        this.hitPoints = this.hitPoints - damage;
+        if (this.hitPoints <= 0) {
+            this.setActive(false);
+            console.log("TODO: Broadcast something to client.");
+            return;
+        }
+
+        // TODO: Invulnerability and flashing time
     }
 
     UpdateOctopus(graphics: Phaser.GameObjects.Graphics) {
-        this.weapons.forEach(w => w.UpdateWeapon(graphics));
-
         var deltaTime = this.scene.time.now - this.lastUpdateTime;
         this.lastUpdateTime = this.scene.time.now;
+
+        // For inactivity, just fade this out
+        const FADERATE = 0.0001; // Expressed as a rate per millisecond
+        if (!this.active) {
+            var newAlpha = this.alpha - FADERATE * deltaTime;
+            this.setAlpha(newAlpha);
+            this.weapons.forEach(w => w.setAlpha(newAlpha));
+
+            // Cleanup
+            if (newAlpha <= 0) {
+                delete BattleArena.OctopiMap[this.name];
+                this.destroy();
+                this.weapons.forEach(w => w.destroy());
+            }
+
+            return;
+        }
+
+        this.weapons.forEach(w => w.UpdateWeapon(graphics));
+
         var speed = this.speed * deltaTime;
 
         var moveDirection = new Phaser.Math.Vector2(this.desiredX - this.x, this.desiredY - this.y);
