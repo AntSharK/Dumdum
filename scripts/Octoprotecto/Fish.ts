@@ -4,7 +4,9 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
     maxHitPoints: integer = 100;
     points: number = 1;
     damage: integer = 100;
+    speed: number = 50;
     static NumberOfFish: integer = 0;
+    updateFish = () => { };
 
     HitOctopus(octopus: Octopus) {
         if (octopus.active
@@ -26,8 +28,8 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
 
     Setup(scene: BattleArena) { }
 
-    constructor(uniqueName: string, scene: BattleArena, x: number, y: number) {
-        super(scene, x, y, 'fish');
+    constructor(uniqueName: string, scene: BattleArena, x: number, y: number, imageName: string) {
+        super(scene, x, y, imageName);
 
         this.uniqueName = uniqueName;
         this.originX = this.width / 2;
@@ -74,14 +76,44 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
         var fish: Fish;
         switch (fishType) {
             case "starfish":
-                fish = new Fish("fish" + Fish.NumberOfFish, scene, x, y);
+                fish = new Fish("fish" + Fish.NumberOfFish, scene, x, y, "fish");
+                break;
+            case "homingfish":
+                fish = new HomingFish("fish" + Fish.NumberOfFish, scene, x, y, "homingfish");
                 break;
         }
 
         Fish.NumberOfFish++;
         scene.add.existing(fish);
         fishPhysicsGroup.add(fish);
-        Phaser.Math.RandomXY(fish.body.velocity, 50);
+        Phaser.Math.RandomXY(fish.body.velocity, fish.speed);
         fish.setCircle(fish.width / 3, fish.originX - fish.width / 3, fish.originY - fish.width / 3);
+    }
+}
+
+class HomingFish extends Fish {
+    homingTarget: Octopus;
+
+    override Setup(scene: BattleArena) {
+        super.Setup(scene);
+        this.speed = 55;
+
+        var minDistance = 3000;
+        for (let key in BattleArena.OctopiMap) {
+            var octopus = BattleArena.OctopiMap[key];
+            var distance = Phaser.Math.Distance.BetweenPoints(this, octopus);
+            if (distance < minDistance) {
+                minDistance = distance;
+                this.homingTarget = octopus;
+            }
+        }
+
+        this.updateFish = () => {
+            if (this.homingTarget != null) {
+                var moveDirection = new Phaser.Math.Vector2(this.homingTarget.x - this.x, this.homingTarget.y - this.y);
+                moveDirection.normalize();
+                this.setVelocity(moveDirection.x * this.speed, moveDirection.y * this.speed);
+            }
+        }
     }
 }
