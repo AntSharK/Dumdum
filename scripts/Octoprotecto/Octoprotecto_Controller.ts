@@ -66,6 +66,8 @@ class Octocontroller extends Phaser.Scene {
                     sessionStorage.getItem(UserIdSessionStorageKey)).catch(function (err) {
                         return console.error(err.toString());
                     });
+
+                this.state = ControllerState.WaitingForSync;
             }
         }
     }
