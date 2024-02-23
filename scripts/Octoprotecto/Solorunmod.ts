@@ -34,16 +34,23 @@ class SoloRun {
         SoloRun.Enabled = true;
 
         // Create an object with the same properties as Octopus
-        var octopusData = {
-            name: "SoloPlayer",
-            desiredX: arena.game.canvas.width / 2,
-            desiredY: arena.game.canvas.height / 2,
-            tint: 0x00FFFF,
-            speed: 0.1497
-        };
+        var octopusData = new Octopus("SoloPlayer",
+            arena,
+            arena.game.canvas.width / 2,
+            arena.game.canvas.height / 2,
+            0x00FFFF,
+            0.1497,
+            20,
+            998);
 
-        arena.spawnOctopus(octopusData as Octopus);
+        arena.spawnOctopus(octopusData);
         arena.events.on('update', () => SoloRun.ApplyKeyboardControls());
+
+        signalRconnection.on("OctopusDeathNotification", function (totalPoints: integer, pointsToRespawn: integer) {
+            clearState();
+            window.alert("Unable to respawn in solo mode.");
+            window.location.reload();
+        });
     }
 
     static ApplyKeyboardControls() {

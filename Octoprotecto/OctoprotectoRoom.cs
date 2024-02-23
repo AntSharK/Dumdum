@@ -27,6 +27,7 @@ namespace Octoprotecto
         {
             SettingUp,
             Arena,
+            Upgrading,
             GameOver,
             TearingDown,
         }

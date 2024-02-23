@@ -3,7 +3,7 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
     target: Fish;
     moveDirection: Phaser.Math.Vector2;
     speed: number = 500;
-    damage: number = 15;
+    damage: number = 19;
 
     constructor(weapon: Weapon,
         bulletPhysicsGroup: Phaser.Physics.Arcade.Group) {
@@ -21,19 +21,9 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
             gameObject.destroy();
         });
 
-        fish.hitPoints = fish.hitPoints - this.damage;
-        fish.setAlpha(Phaser.Math.Interpolation.Linear([1, 0.5], fish.hitPoints / fish.maxHitPoints));
+        fish.TakeDamage(this.damage);
         if (fish.hitPoints <= 0) {
-            if (this.bulletWeapon.focusedFish?.uniqueName == fish.uniqueName) {
-                this.bulletWeapon.focusedFish = null;
-            }
-
-            if (fish.uniqueName in this.bulletWeapon.fishesInRange) {
-                delete this.bulletWeapon.fishesInRange[fish.uniqueName];
-            }
-
             this.bulletWeapon.weaponOwner.points += fish.points;
-            fish.destroy(true);
         }
 
         this.destroy(true);
@@ -95,6 +85,12 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
     UpdateWeapon(graphics: Phaser.GameObjects.Graphics) {
         this.setPosition(this.weaponOwner.x + this.offsetX, this.weaponOwner.y + this.offsetY);
 
+        // If the focused fish is dead, nullify it
+        if (this.focusedFish != null
+            && !this.focusedFish.active) {
+            this.focusedFish = null;
+        }
+
         if (this.nextFireTime < this.scene.time.now
             && this.focusedFish != null
             && this.focusedFish.active) {
@@ -108,6 +104,11 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
 
         for (let key in this.fishesInRange) {
             let connectedFish = this.fishesInRange[key];
+            if (!connectedFish.active) {
+                delete this.fishesInRange[key];
+                continue;
+            }
+
             var distance = Phaser.Math.Distance.BetweenPoints(this, connectedFish);
 
             if (this.focusedFish == null || !this.focusedFish.active) {
