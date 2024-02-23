@@ -75,7 +75,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         if (this.hitPoints <= 0) {
             this.setActive(false);
 
-            var roomId = (document.getElementById("roomid") as HTMLInputElement).value;
+            var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);
             signalRconnection.invoke("HostOctopusDeath", roomId, this.name, this.points).catch(function (err) {
                 return console.error(err.toString());
             });

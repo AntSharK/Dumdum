@@ -3,7 +3,7 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
     hitPoints: integer = 1000;
     maxHitPoints: integer = 1000;
     points: number = 1;
-    damage: integer = 50;
+    damage: integer = 500;
     static NumberOfFish: integer = 0;
 
     HitOctopus(octopus: Octopus) {

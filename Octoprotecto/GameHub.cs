@@ -160,8 +160,25 @@ namespace Octoprotecto
             octopus.TotalDeaths++;
             octopus.IsActive = false;
 
-            var costToRespawn = 50 + octopus.TotalDeaths * 10;
-            await Clients.Client(octopus.ConnectionId).SendAsync("OctopusDeathNotification", octopus.Points, costToRespawn);
+            await Clients.Client(octopus.ConnectionId).SendAsync("OctopusDeathNotification", octopus.Points, octopus.GetRespawnCost());
+        }
+
+        public async Task TriggerOctopusRespawn(string roomId, string playerId)
+        {
+            (var octopus, var room) = await this.FindPlayerAndRoom(playerId, roomId);
+            if (octopus == null || room == null) { return; }
+
+            if (room.State != OctoprotectoRoom.RoomState.Arena) { return; }
+
+            var respawnCost = octopus.GetRespawnCost();
+            if (octopus.Points < respawnCost)
+            {
+                return;
+            }
+
+            octopus.Points = octopus.Points - respawnCost;
+            await Clients.Client(room.ConnectionId).SendAsync("SpawnOctopus", octopus);
+            await Clients.Client(octopus.ConnectionId).SendAsync("OctopusRespawn", room.OctopiMovementBounds, octopus);
         }
 
         private async Task CreateNewOctopus(OctoprotectoRoom room, string playerId, string colorIn)
