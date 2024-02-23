@@ -1,6 +1,6 @@
 class Fish extends Phaser.Physics.Arcade.Sprite {
     uniqueName: string;
-    hitPoints: integer = 100;
+    hitPoints: integer = 1000;
     maxHitPoints: integer = 100;
     points: number = 1;
     damage: integer = 100;
