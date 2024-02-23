@@ -21,11 +21,9 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
             gameObject.destroy();
         });
 
-        fish.hitPoints = fish.hitPoints - this.damage;
-        fish.setAlpha(Phaser.Math.Interpolation.Linear([1, 0.5], fish.hitPoints / fish.maxHitPoints));
+        fish.TakeDamage(this.damage);
         if (fish.hitPoints <= 0) {
             this.bulletWeapon.weaponOwner.points += fish.points;
-            fish.destroy(true);
         }
 
         this.destroy(true);

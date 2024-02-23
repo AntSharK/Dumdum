@@ -90,6 +90,9 @@ class BattleArena extends Phaser.Scene {
 
         // Initialize timer
         this.timeLeftDisplay = this.add.text(0, 0, "", { color: 'Red', fontSize: '600%' });
+        
+        // Spawn stuff for testing purposes 
+        Fish.SpawnFishes(this, 40, this.spawningRect, this.fishes, this.octopi, "starfish");
     }
 
     startGame(soloRun: boolean) {
@@ -131,6 +134,14 @@ class BattleArena extends Phaser.Scene {
             octopusData.speed);
 
         BattleArena.OctopiMap[octopusData.name] = newOctopus;
+
+        // Destroy any existing enemies in the spawning radius
+        this.fishes.children.each(f => {
+            var distance = Phaser.Math.Distance.BetweenPoints(f as Fish, newOctopus);
+            if (distance < newOctopus.body.radius * 2) {
+                (f as Fish).TakeDamage(99999); // Do a lot of damage on spawn
+            }
+        })
     }
 
     update() {
