@@ -69,6 +69,7 @@ namespace Octoprotecto
                     return;
                 }
 
+                await Clients.Caller.SendAsync("RoomCreated", newRoom.RoomId);
                 newRoom.CreatePlayer("SoloPlayer", Context.ConnectionId);
                 newRoom.StartGame();
                 return;

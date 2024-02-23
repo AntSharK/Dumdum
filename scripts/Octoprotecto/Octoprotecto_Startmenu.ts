@@ -131,12 +131,17 @@ function ConfigureMenuSignalRListening(signalRconnection: any) {
     signalRconnection.on("RoomCreated", function (roomId: string) {
         hideLobbyMenu();
         sessionStorage.setItem(RoomIdSessionStorageKey, roomId);
-        document.getElementById("gameidtext").textContent = "" + roomId;
-        document.getElementById("lobbyhostcontent").hidden = false;
 
         // This might be repetitive - in many cases the scene is already active
         var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
         battleArenaScene.scene.setActive(true);
+
+        document.getElementById("gameidtext").textContent = "" + roomId;
+
+        // There are cases where the room creation on the server-side happens after the client has started the game (e.g. solo runs)
+        if (battleArenaScene.roundTimer == null) { 
+            document.getElementById("lobbyhostcontent").hidden = false;
+        }
     });
 
     signalRconnection.on("ErrorJoiningRoom", function (errorMessage: string) {
