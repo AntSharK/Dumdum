@@ -7,17 +7,44 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     weapons: Weapon[] = [];
     speed: number = 0.1497; // Expressed as distance covered per millisecond
     points: number = 0;
-    hitPoints: number = 1000;
-    maxHitPoints: number = 1000;
+    hitPoints: number = 998;
+    maxHitPoints: number = 998;
     lastHitTime: number = -1000;
     invulnerable: boolean = false;
 
-    constructor(name: string, scene: Phaser.Scene, x: number, y: number,
+    placeInScene(scene: Phaser.Scene,
         octopiPhysicsGroup: Phaser.Physics.Arcade.Group,
         weaponsPhysicsGroup: Phaser.Physics.Arcade.Group,
         bulletPhysicsGroup: Phaser.Physics.Arcade.Group,
+        tint: number
+    ) {
+        this.setDepth(octopiPhysicsGroup.getLength());
+
+        // TODO: Weapons will have to be constructed from server-side data
+        var w1 = new Weapon(this, 90, 45, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
+        var w2 = new Weapon(this, -90, 45, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
+        this.weapons.push(w1, w2);
+        var w3 = new Weapon(this, 60, 80, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
+        var w4 = new Weapon(this, -60, 80, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
+        this.weapons.push(w3, w4);
+        var w5 = new Weapon(this, 20, 95, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
+        var w6 = new Weapon(this, -20, 95, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
+        this.weapons.push(w5, w6);
+
+        for (let i in this.weapons) {
+            this.weapons[i].tint = tint;
+        }
+
+        scene.add.existing(this);
+        octopiPhysicsGroup.add(this);
+        this.setCircle(this.width / 2, this.originX - this.width / 2, this.originY - this.width / 2);
+    }
+
+    constructor(name: string, scene: Phaser.Scene, x: number, y: number,
         tint: number,
-        speed: number) {
+        speed: number,
+        points: number,
+        maxHitPoints: number) {
         super(scene, x, y, 'octopus');
 
         this.name = name;
@@ -29,25 +56,9 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         this.lastUpdateTime = this.scene.time.now;
         this.speed = speed;
 
-        this.setDepth(octopiPhysicsGroup.getLength());
-        var w1 = new Weapon(this, 90, 45, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
-        var w2 = new Weapon(this, -90, 45, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
-        this.weapons.push(w1, w2);
-        var w3 = new Weapon(this, 60, 80, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
-        var w4 = new Weapon(this, -60, 80, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
-        this.weapons.push(w3, w4);
-        var w5 = new Weapon(this, 20, 95, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
-        var w6 = new Weapon(this, -20, 95, 225, weaponsPhysicsGroup, bulletPhysicsGroup);
-        this.weapons.push(w5, w6);
-
         this.tint = tint;
-        for (let i in this.weapons) {
-            this.weapons[i].tint = tint;
-        }
-
-        scene.add.existing(this);
-        octopiPhysicsGroup.add(this);
-        this.setCircle(this.width / 2, this.originX - this.width / 2, this.originY - this.width / 2);
+        this.points = points;
+        this.maxHitPoints = maxHitPoints;
     }
 
     FinishRound(): void {
@@ -63,8 +74,12 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
 
         if (this.hitPoints <= 0) {
             this.setActive(false);
-            // TODO: Broadcast to server and controllers
-            console.log("TODO: Broadcast something to controller.");
+
+            var roomId = (document.getElementById("roomid") as HTMLInputElement).value;
+            signalRconnection.invoke("HostOctopusDeath", roomId, this.name, this.points).catch(function (err) {
+                return console.error(err.toString());
+            });
+            
             return;
         }
 

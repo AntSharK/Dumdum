@@ -2,11 +2,18 @@ class Octocontroller extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
     lastUpdateTime: number;
     color: number;
-    readyForControl: boolean = false; // This boolean means that the server and client have synchronized and control is ready
     bounds: Phaser.Geom.Rectangle;
     locationX: number;
     locationY: number;
     speed: number;
+
+    state: ControllerState = ControllerState.WaitingForSync;
+
+    totalPoints: integer = 0;
+    pointsToRespawn: integer = 0;
+
+    respawnTimer: Phaser.Time.TimerEvent;
+    respawnDisplay: Phaser.GameObjects.Text;
 
     constructor() {
         super({ key: 'Octocontroller' });
@@ -21,10 +28,11 @@ class Octocontroller extends Phaser.Scene {
         this.input.mouse.disableContextMenu();
         this.scale.setGameSize(window.innerWidth, window.innerHeight);
         this.scale.refresh();
+        this.respawnDisplay = this.add.text(0, 0, "", { color: 'White', fontSize: '20vw' });
     }
 
     update() {
-        if (!this.readyForControl) return; // Abort if state is not synchronized
+        if (this.state == ControllerState.WaitingForSync) return; // Abort if state is not synchronized
 
         var deltaTime = this.time.now - this.lastUpdateTime;
 
@@ -33,8 +41,45 @@ class Octocontroller extends Phaser.Scene {
         if (deltaTime > MAXDELTATIME) deltaTime = 0;
 
         this.lastUpdateTime = this.time.now;
-        this.graphics.clear();
 
+        if (this.state == ControllerState.Movement) {
+            this.HandleMovementInput(deltaTime);
+            return;
+        }
+
+        if (this.state == ControllerState.WaitingForRespawn) {
+            this.respawnDisplay.text = "RESPAWN IN: " + Math.ceil(this.respawnTimer.getRemainingSeconds()).toString();
+            return;
+        }
+
+        if (this.state == ControllerState.ReadyToRespawn) {
+            this.HandleRespawnInput();
+            return;
+        }
+    }
+
+    HandleRespawnInput() {
+        if (this.input.activePointer.isDown) {
+            if (this.pointsToRespawn > this.totalPoints) {
+                window.alert("Not enough points to respawn!");
+            }
+            else {
+                // TODO: Trigger server-side respawn
+            }
+        }
+    }
+
+    ReadyForRespawn() {
+        if (this.state == ControllerState.WaitingForRespawn) {
+            this.state = ControllerState.ReadyToRespawn;
+
+            // TODO: Pre-compute respawn cost
+            this.respawnDisplay.text = "CLICK TO RESPAWN. COST: " + this.pointsToRespawn + "/" + this.totalPoints;
+        }
+    }
+
+    HandleMovementInput(deltaTime: number) {
+        this.graphics.clear();
         this.graphics.fillStyle(this.color);
         this.graphics.fillCircle(this.game.canvas.width / 2, this.game.canvas.height / 2, 50);
 
@@ -69,8 +114,8 @@ class Octocontroller extends Phaser.Scene {
             });
     }
 
-    SynchronizeProperties(octopiMovementBounds: Phaser.Geom.Rectangle, octopusData: Octopus) {
-        this.readyForControl = true;
+    ReadyForMovement(octopiMovementBounds: Phaser.Geom.Rectangle, octopusData: Octopus) {
+        this.state = ControllerState.Movement;
         this.color = octopusData.tint;
         this.lastUpdateTime = this.time.now;
         this.bounds = octopiMovementBounds;
@@ -91,6 +136,29 @@ function ConfigureControllerSignalRListening(signalRconnection: any) {
         var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena");
         battleArenaScene.scene.transition({ target: "Octocontroller" });
         var controllerScene = octoProtecto.game.scene.getScene("Octocontroller") as Octocontroller;
-        controllerScene.SynchronizeProperties(octopiMovementBounds, octopusData);
+        controllerScene.ReadyForMovement(octopiMovementBounds, octopusData);
     });
+
+    signalRconnection.on("OctopusDeathNotification", function (totalPoints: integer, pointsToRespawn: integer) {      
+        var controllerScene = octoProtecto.game.scene.getScene("Octocontroller") as Octocontroller;
+        controllerScene.state = ControllerState.WaitingForRespawn;
+        controllerScene.totalPoints = totalPoints;
+        controllerScene.pointsToRespawn = pointsToRespawn;
+
+        controllerScene.respawnTimer = new Phaser.Time.TimerEvent({ delay: 5000, callback: () => controllerScene.ReadyForRespawn(), callbackScope: controllerScene });
+        controllerScene.time.addEvent(this.respawnTimer);
+    });
+
+    // TODO: This event is not yet coded on the server-side
+    signalRconnection.on("OctopusRespawn", function (octopiMovementBounds: Phaser.Geom.Rectangle, octopusData: Octopus) {
+        var controllerScene = octoProtecto.game.scene.getScene("Octocontroller") as Octocontroller;
+        controllerScene.ReadyForMovement(octopiMovementBounds, octopusData);
+    });
+}
+
+enum ControllerState {
+    WaitingForSync,
+    Movement,
+    WaitingForRespawn,
+    ReadyToRespawn
 }

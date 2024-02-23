@@ -119,7 +119,7 @@ class BattleArena extends Phaser.Scene {
         this.fishes.children.each(c => c.destroy());
 
         // TODO: Send server a message to trigger next round
-        console.log("TODO: Broadcast something to server.");
+        console.log("TODO: Broadcast something to server for the round ending.");
     }
 
     spawnOctopus(octopusData: Octopus) {
@@ -127,12 +127,12 @@ class BattleArena extends Phaser.Scene {
             this,
             octopusData.desiredX,
             octopusData.desiredY,
-            this.octopi,
-            this.weapons,
-            this.bullets,
             octopusData.tint,
-            octopusData.speed);
+            octopusData.speed,
+            octopusData.points,
+            octopusData.maxHitPoints);
 
+        newOctopus.placeInScene(this, this.octopi, this.weapons, this.bullets, octopusData.tint);
         BattleArena.OctopiMap[octopusData.name] = newOctopus;
 
         // Destroy any existing enemies in the spawning radius

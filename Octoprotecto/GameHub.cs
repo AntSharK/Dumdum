@@ -63,6 +63,12 @@ namespace Octoprotecto
                 && string.IsNullOrEmpty(roomId))
             {
                 var newRoom = this.GameLobby.CreateRoom(Context.ConnectionId);
+                if (newRoom == null)
+                {
+                    await Clients.Caller.SendAsync(this.Message_ShowError, $"Room {roomId} cannot be started.");
+                    return;
+                }
+
                 newRoom.CreatePlayer("SoloPlayer", Context.ConnectionId);
                 newRoom.StartGame();
                 return;
@@ -138,10 +144,24 @@ namespace Octoprotecto
             (var octopus, var room) = await this.FindPlayerAndRoom(playerId, roomId);
             if (octopus == null || room == null) { return; }
 
+            if (!octopus.IsActive) { return; }
             octopus.DesiredX = x;
             octopus.DesiredY = y;
 
             await Clients.Client(room.ConnectionId).SendAsync("UpdatePosition", playerId, x, y);
+        }
+
+        public async Task HostOctopusDeath(string roomId, string playerId, int playerPoints)
+        {
+            (var octopus, var room) = await this.FindPlayerAndRoom(playerId, roomId);
+            if (octopus == null || room == null) { return; }
+
+            octopus.Points = playerPoints;
+            octopus.TotalDeaths++;
+            octopus.IsActive = false;
+
+            var costToRespawn = 50 + octopus.TotalDeaths * 10;
+            await Clients.Client(octopus.ConnectionId).SendAsync("OctopusDeathNotification", octopus.Points, costToRespawn);
         }
 
         private async Task CreateNewOctopus(OctoprotectoRoom room, string playerId, string colorIn)
