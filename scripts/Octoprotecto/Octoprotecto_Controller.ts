@@ -179,7 +179,7 @@ function ConfigureControllerSignalRListening(signalRconnection: any) {
     signalRconnection.on("LossNotification", function () {
         var controllerScene = octoProtecto.game.scene.getScene("Octocontroller") as Octocontroller;
         controllerScene.respawnDisplay.setVisible(false);
-        controllerScene.add.text(0, 0, "LOST AT WAVE " + this.currentRound, { color: 'White', fontSize: '5vw' });
+        controllerScene.add.text(0, 0, "YOU LOSE", { color: 'White', fontSize: '5vw' });
         controllerScene.state = ControllerState.WaitingForSync;
         controllerScene.scene.setActive(false);
         clearState();

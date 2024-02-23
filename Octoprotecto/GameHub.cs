@@ -170,11 +170,7 @@ namespace Octoprotecto
             (_, var room) = await this.FindPlayerAndRoom(null, roomId);
             if  (room == null) { return; }
 
-           // await Clients.Group(room.ConnectionId).SendAsync("LossNotification");
-            foreach (var c in room.Players)
-            {
-                await Clients.Client(c.Value.ConnectionId).SendAsync("LossNotification");
-            }
+            await Clients.Group(room.RoomId).SendAsync("LossNotification");
             room.EndGame();
         }
     }
