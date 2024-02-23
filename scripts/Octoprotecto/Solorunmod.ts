@@ -40,7 +40,7 @@ class SoloRun {
             arena.game.canvas.height / 2,
             0x00FFFF,
             0.1497,
-            0,
+            20,
             998);
 
         arena.spawnOctopus(octopusData);

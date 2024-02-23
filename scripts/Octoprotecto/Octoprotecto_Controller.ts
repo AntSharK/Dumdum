@@ -150,8 +150,9 @@ function ConfigureControllerSignalRListening(signalRconnection: any) {
         controllerScene.totalPoints = totalPoints;
         controllerScene.pointsToRespawn = pointsToRespawn;
 
+        const RESPAWNTIME = 3000;
         controllerScene.graphics.clear();
-        controllerScene.respawnTimer = new Phaser.Time.TimerEvent({ delay: 5000, callback: () => controllerScene.ReadyForRespawn(), callbackScope: controllerScene });
+        controllerScene.respawnTimer = new Phaser.Time.TimerEvent({ delay: RESPAWNTIME, callback: () => controllerScene.ReadyForRespawn(), callbackScope: controllerScene });
         controllerScene.time.addEvent(controllerScene.respawnTimer);
     });
 

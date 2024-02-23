@@ -177,6 +177,8 @@ namespace Octoprotecto
             }
 
             octopus.Points = octopus.Points - respawnCost;
+            octopus.IsActive = true;
+
             await Clients.Client(room.ConnectionId).SendAsync("SpawnOctopus", octopus);
             await Clients.Client(octopus.ConnectionId).SendAsync("OctopusRespawn", room.OctopiMovementBounds, octopus);
         }

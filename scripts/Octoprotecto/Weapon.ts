@@ -3,7 +3,7 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
     target: Fish;
     moveDirection: Phaser.Math.Vector2;
     speed: number = 500;
-    damage: number = 15;
+    damage: number = 19;
 
     constructor(weapon: Weapon,
         bulletPhysicsGroup: Phaser.Physics.Arcade.Group) {
