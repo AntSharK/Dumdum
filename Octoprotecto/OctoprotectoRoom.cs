@@ -23,13 +23,17 @@ namespace Octoprotecto
             this.State = RoomState.Arena;
         }
 
+        internal void EndGame()
+        {
+            this.State = RoomState.GameOver;
+        }
+
         public enum RoomState
         {
             SettingUp,
             Arena,
             Upgrading,
             GameOver,
-            TearingDown,
         }
     }
 }

@@ -46,11 +46,12 @@ class SoloRun {
         arena.spawnOctopus(octopusData);
         arena.events.on('update', () => SoloRun.ApplyKeyboardControls());
 
+        /* Old logic to reload in solo mode is overwritten by general logic to end game when no one is alive
         signalRconnection.on("OctopusDeathNotification", function (totalPoints: integer, pointsToRespawn: integer) {
             clearState();
             window.alert("Unable to respawn in solo mode.");
             window.location.reload();
-        });
+        }); */
     }
 
     static ApplyKeyboardControls() {

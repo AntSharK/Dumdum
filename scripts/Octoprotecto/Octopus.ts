@@ -74,7 +74,6 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
 
         if (this.hitPoints <= 0) {
             this.setActive(false);
-
             var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);
 
             signalRconnection.invoke("HostOctopusDeath", roomId, this.name, this.points).catch(function (err) {
@@ -118,6 +117,8 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
 
         // Cleanup
         if (newAlpha <= 0) {
+            (this.scene as BattleArena).CheckForLoss();
+
             delete BattleArena.OctopiMap[this.name];
             this.destroy();
             this.weapons.forEach(w => w.destroy());

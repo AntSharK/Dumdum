@@ -163,5 +163,14 @@ namespace Octoprotecto
             await Clients.Client(room.ConnectionId).SendAsync("SpawnOctopus", octopus);
             await Clients.Client(octopus.ConnectionId).SendAsync("OctopusRespawn", room.OctopiMovementBounds, octopus);
         }
+
+        public async Task TriggerLoss(string roomId)
+        {
+            (_, var room) = await this.FindPlayerAndRoom(null, roomId);
+            if  (room == null) { return; }
+
+            await Clients.Group(room.RoomId).SendAsync("LossNotification");
+            room.EndGame();
+        }
     }
 }

@@ -161,6 +161,22 @@ class BattleArena extends Phaser.Scene {
             }
         }
     }
+
+    CheckForLoss(): boolean {
+        var activeOctopi = this.octopi.countActive(true);
+        if (activeOctopi > 0) { return false; }
+
+        var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);
+        signalRconnection.invoke("TriggerLoss", roomId).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+        this.add.text(0, 0, "LOST AT WAVE " + this.currentRound, { color: 'White', fontSize: '5vw' });
+        this.scene.setActive(false);
+        clearState();
+        setTimeout(() => window.location.reload(), 10000);
+        return true;
+    }
 }
 
 function ConfigureHostSignalRListening(signalRconnection: any) {
