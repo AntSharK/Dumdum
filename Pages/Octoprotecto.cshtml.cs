@@ -5,8 +5,8 @@ namespace Dumdum.Pages
 {
     public class OctoprotectoModel : PageModel
     {
-        public string RoomId { get; private set; }
-        public async Task OnGet([FromQuery] string JoinRoomId)
+        public string? RoomId { get; private set; }
+        public void OnGet([FromQuery] string JoinRoomId)
         {
             if (JoinRoomId != null)
             {

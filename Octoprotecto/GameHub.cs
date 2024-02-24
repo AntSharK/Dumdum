@@ -97,7 +97,7 @@ namespace Octoprotecto
                 return;
             }
 
-            if (room.State == OctoprotectoRoom.RoomState.GameOver || room.State == OctoprotectoRoom.RoomState.TearingDown)
+            if (room.State == OctoprotectoRoom.RoomState.GameOver)
             {
                 await Clients.Caller.SendAsync(this.Message_ShowError, $"Room {roomId} has concluded.", true /*Refresh on click*/);
                 return;

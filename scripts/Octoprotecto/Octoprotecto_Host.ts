@@ -21,6 +21,7 @@ class BattleArena extends Phaser.Scene {
         this.load.image('ocean', '/content/Octoprotecto/ocean.jpg');
         this.load.image('octopus', '/content/Octoprotecto/ghost.png');
         this.load.image('fish', '/content/Octoprotecto/star.png');
+        this.load.image('homingfish', '/content/Octoprotecto/pacman.png');
         this.load.image('dummy', '/content/Octoprotecto/dummy.png');
         this.load.image('bullet', '/content/Octoprotecto/bullet.png');
         this.load.image('fin', '/content/Octoprotecto/fin.png');
@@ -160,6 +161,10 @@ class BattleArena extends Phaser.Scene {
                 octopus.DrawDamageCircle(this.graphics);
             }
         }
+
+        this.fishes.children.each(f => {
+            (f as Fish).updateFish();
+        }, this);
     }
 
     CheckForLoss(): boolean {

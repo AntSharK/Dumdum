@@ -14,6 +14,15 @@ function StartWave(arena: BattleArena) {
                     repeat: 0,
                 });
             }
+            for (var i = 3000; i < roundDuration - 6000; i = i + 3000) {
+                arena.time.addEvent({
+                    delay: i,
+                    callback: () => Fish.SpawnFishes(arena, playerCount * 2, arena.spawningRect, arena.fishes, arena.octopi, "homingfish"),
+                    callbackScope: arena,
+                    loop: false,
+                    repeat: 0,
+                });
+            }
             break;
         default:
             console.log("Round " + arena.currentRound + " not yet created.");
