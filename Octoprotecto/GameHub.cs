@@ -97,6 +97,12 @@ namespace Octoprotecto
                 return;
             }
 
+            if (room.State == OctoprotectoRoom.RoomState.GameOver || room.State == OctoprotectoRoom.RoomState.TearingDown)
+            {
+                await Clients.Caller.SendAsync(this.Message_ShowError, $"Room {roomId} has concluded.", true /*Refresh on click*/);
+                return;
+            }
+
             if (playerId != null)
             {
                 if (octopus == null)
@@ -135,7 +141,7 @@ namespace Octoprotecto
             octopus.TotalDeaths++;
             octopus.IsActive = false;
 
-            await Clients.Client(octopus.ConnectionId).SendAsync("OctopusDeathNotification", octopus.Points, octopus.GetRespawnCost());
+            await Clients.Client(octopus.ConnectionId).SendAsync("OctopusDeathNotification", octopus.Points, octopus.GetRespawnCost() /*Don't pass in IDs*/);
         }
 
         public async Task TriggerOctopusRespawn(string roomId, string playerId)
