@@ -61,13 +61,14 @@ class Octocontroller extends Phaser.Scene {
     HandleRespawnInput() {
         if (this.input.activePointer.isDown) {
             if (this.pointsToRespawn <= this.totalPoints) {
+                this.respawnDisplay.setVisible(false);
+                this.state = ControllerState.WaitingForSync;
+
                 signalRconnection.invoke("TriggerOctopusRespawn",
                     sessionStorage.getItem(RoomIdSessionStorageKey),
                     sessionStorage.getItem(UserIdSessionStorageKey)).catch(function (err) {
                         return console.error(err.toString());
                     });
-
-                this.state = ControllerState.WaitingForSync;
             }
         }
     }
@@ -160,6 +161,7 @@ function ConfigureControllerSignalRListening(signalRconnection: any) {
 
         var controllerScene = octoProtecto.game.scene.getScene("Octocontroller") as Octocontroller;
         controllerScene.state = ControllerState.WaitingForRespawn;
+        controllerScene.respawnDisplay.setVisible(true);
         controllerScene.totalPoints = totalPoints;
         controllerScene.pointsToRespawn = pointsToRespawn;
 
