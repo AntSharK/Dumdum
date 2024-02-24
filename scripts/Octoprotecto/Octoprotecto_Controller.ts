@@ -61,13 +61,14 @@ class Octocontroller extends Phaser.Scene {
     HandleRespawnInput() {
         if (this.input.activePointer.isDown) {
             if (this.pointsToRespawn <= this.totalPoints) {
+                this.respawnDisplay.setVisible(false);
+                this.state = ControllerState.WaitingForSync;
+
                 signalRconnection.invoke("TriggerOctopusRespawn",
                     sessionStorage.getItem(RoomIdSessionStorageKey),
                     sessionStorage.getItem(UserIdSessionStorageKey)).catch(function (err) {
                         return console.error(err.toString());
                     });
-
-                this.state = ControllerState.WaitingForSync;
             }
         }
     }
@@ -146,9 +147,21 @@ function ConfigureControllerSignalRListening(signalRconnection: any) {
         controllerScene.ReadyForMovement(octopiMovementBounds, octopusData);
     });
 
-    signalRconnection.on("OctopusDeathNotification", function (totalPoints: integer, pointsToRespawn: integer) {      
+    signalRconnection.on("OctopusDeathNotification", function (totalPoints: integer, pointsToRespawn: integer,
+        roomId: string, playerId: string) {  
+
+        // The Room ID and player ID are only passed in when this is from a reconnect event
+        if (roomId != null && playerId != null) {
+            sessionStorage.setItem(RoomIdSessionStorageKey, roomId);
+            sessionStorage.setItem(UserIdSessionStorageKey, playerId);
+            hideLobbyMenu();
+            var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena");
+            battleArenaScene.scene.transition({ target: "Octocontroller" });
+        }
+
         var controllerScene = octoProtecto.game.scene.getScene("Octocontroller") as Octocontroller;
         controllerScene.state = ControllerState.WaitingForRespawn;
+        controllerScene.respawnDisplay.setVisible(true);
         controllerScene.totalPoints = totalPoints;
         controllerScene.pointsToRespawn = pointsToRespawn;
 
