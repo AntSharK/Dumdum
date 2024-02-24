@@ -1,0 +1,57 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
+
+namespace Octoprotecto
+{
+    public partial class GameHub
+    {
+        private async Task CreateNewOctopus(OctoprotectoRoom room, string playerId, string colorIn)
+        {
+            if (playerId == null)
+            {
+                await Clients.Caller.SendAsync(this.Message_ShowError, $"Invalid ID provided.");
+                return;
+            }
+
+            var octopus = room.CreatePlayer(playerId, Context.ConnectionId);
+
+            if (octopus == null)
+            {
+                await Clients.Caller.SendAsync(this.Message_ShowError, $"Unable to create player.");
+                return;
+            }
+
+            // Set additional fields
+            var color = int.Parse(colorIn.TrimStart('#'), System.Globalization.NumberStyles.HexNumber);
+            octopus.Tint = color;
+            octopus.SetRandomLocation(room.OctopiMovementBounds);
+
+            await Clients.Caller.SendAsync("InitializeNewPlayer", room.RoomId, room.OctopiMovementBounds, octopus);
+            await Clients.Client(room.ConnectionId).SendAsync("SpawnOctopus", octopus);
+        }
+
+        // Error when joining room - special message to reset the menu state
+        private async Task JoinRoomError(string message)
+        {
+            await Clients.Caller.SendAsync("ErrorJoiningRoom", message);
+        }
+
+        private async Task StartSoloRun(string roomId)
+        {
+            var newRoom = this.GameLobby.CreateRoom(Context.ConnectionId);
+            if (newRoom == null)
+            {
+                await Clients.Caller.SendAsync(this.Message_ShowError, $"Room {roomId} cannot be started.");
+                return;
+            }
+
+            await Clients.Caller.SendAsync("RoomCreated", newRoom.RoomId);
+            newRoom.CreatePlayer("SoloPlayer", Context.ConnectionId);
+            newRoom.StartGame();
+        }
+    }
+}
