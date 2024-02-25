@@ -10,6 +10,7 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
         this.bulletWeapon = weapon;
         bulletPhysicsGroup.add(this);
         this.scene.add.existing(this);
+        this.setDepth(FISHDEPTH);
     }
 
     ApplyHit(fish: Fish) {
