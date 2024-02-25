@@ -32,6 +32,14 @@ class SoloRun {
 
     static SoloRunStart(arena: BattleArena) {
         SoloRun.Enabled = true;
+        var startingWeapons = [
+            { range: 500, spread: 0.4, projectileDamage: 19, projectileSpeed: 500, fireRate: 200 },
+            { range: 500, spread: 0.4, projectileDamage: 19, projectileSpeed: 500, fireRate: 200 },
+            { range: 500, spread: 0.4, projectileDamage: 19, projectileSpeed: 500, fireRate: 200 },
+            { range: 500, spread: 0.4, projectileDamage: 19, projectileSpeed: 500, fireRate: 200 },
+            { range: 500, spread: 0.4, projectileDamage: 19, projectileSpeed: 500, fireRate: 200 },
+            { range: 500, spread: 0.4, projectileDamage: 19, projectileSpeed: 500, fireRate: 200 },
+        ];
 
         // Create an object with the same properties as Octopus
         var octopusData = new Octopus("SoloPlayer",
@@ -41,7 +49,8 @@ class SoloRun {
             0x00FFFF,
             0.1497,
             20,
-            998, null /*PLACEHOLDER*/);
+            998,
+            startingWeapons as Weapon[]);
 
         arena.spawnOctopus(octopusData);
         arena.events.on('update', () => SoloRun.ApplyKeyboardControls());

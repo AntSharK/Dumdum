@@ -17,20 +17,14 @@ namespace Octoprotecto
         public int Points { get; set; } = 20;
         public int TotalDeaths { get; set; } = 0;
         public bool IsActive { get; set; } = true;
-
-        private List<Weapon> weaponsList = new List<Weapon>();
-
-        // ONLY FOR RETRIEVAL
-        public Weapon[] Weapons { get =>
-                this.weaponsList.ToArray();
-        }
+        public List<Weapon> Weapons { get; } = new List<Weapon>();
 
         public Octopus(string name, string connectionId, string roomName) 
             : base(name, connectionId, roomName)
         {
             for (int i = 0; i < 6; i++)
             {
-                this.weaponsList.Add(new Weapon());
+                this.Weapons.Add(new Weapon());
             }
         }
 
