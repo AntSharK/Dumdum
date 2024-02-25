@@ -28,9 +28,16 @@ namespace Octoprotecto
             this.State = RoomState.GameOver;
         }
 
-        internal void FinishRound()
+        internal void FinishRound(IDictionary<string, int> pointsPerOctopus)
         {
             this.State = RoomState.Upgrading;
+            foreach (var entry in pointsPerOctopus)
+            {
+                if (this.Players.ContainsKey(entry.Key))
+                {
+                    this.Players[entry.Key].Points = entry.Value;
+                }
+            }
         }
 
         public enum RoomState

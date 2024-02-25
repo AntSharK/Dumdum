@@ -175,7 +175,7 @@ namespace Octoprotecto
             room.EndGame();
         }
 
-        public async Task FinishRound(string roomId, object pointsPerOctopus)
+        public async Task FinishRound(string roomId, IDictionary<string, int> pointsPerOctopus)
         {
             (_, var room) = await this.FindPlayerAndRoom(null, roomId);
             if (room == null)
@@ -184,7 +184,7 @@ namespace Octoprotecto
                 return;
             }
 
-            room.FinishRound();
+            room.FinishRound(pointsPerOctopus);
             await Task.WhenAll(room.Players.Values.Select(s => { return Clients.Client(s.ConnectionId).SendAsync("UpdateUpgrade", s); }));
         }
     }
