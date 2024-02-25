@@ -34,6 +34,7 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
         this.uniqueName = uniqueName;
         this.originX = this.width / 2;
         this.originY = this.height / 2;
+        this.setDepth(100);
         this.Setup(scene);
     }
 

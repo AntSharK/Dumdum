@@ -2,8 +2,6 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
     bulletWeapon: Weapon;
     target: Fish;
     moveDirection: Phaser.Math.Vector2;
-    speed: number = 500;
-    damage: number = 19;
 
     constructor(weapon: Weapon,
         bulletPhysicsGroup: Phaser.Physics.Arcade.Group) {
@@ -21,7 +19,7 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
             gameObject.destroy();
         });
 
-        fish.TakeDamage(this.damage);
+        fish.TakeDamage(this.bulletWeapon.projectileDamage);
         if (fish.hitPoints <= 0) {
             this.bulletWeapon.weaponOwner.points += fish.points;
         }
@@ -34,9 +32,9 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
         this.moveDirection.normalize();
 
         this.setRotation(Math.atan2(this.moveDirection.y, this.moveDirection.x) + Math.random() * spread - spread / 2);
-        this.setVelocity(this.moveDirection.x * this.speed, this.moveDirection.y * this.speed);
+        this.setVelocity(this.moveDirection.x * this.bulletWeapon.projectileSpeed, this.moveDirection.y * this.bulletWeapon.projectileSpeed);
         this.scene.time.addEvent({
-            delay: this.bulletWeapon.range / this.speed * 1000,
+            delay: this.bulletWeapon.range / this.bulletWeapon.projectileSpeed * 1000,
             callback: () => this.destroy(true),
             callbackScope: this
         });
@@ -50,6 +48,9 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
     range: number = 0;
     spread: number = 0.4;
 
+    projectileDamage: number = 19;
+    projectileSpeed: number = 500;
+
     fishesInRange: { [id: string]: Fish } = {};
     focusedFish: Fish;
     bulletPhysicsGroup: Phaser.Physics.Arcade.Group;
@@ -57,9 +58,16 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
     nextFireTime: number = 0;
     fireRate: number = 100;
 
-    constructor(octopus: Octopus, offsetX: number, offsetY: number, range: number,
-        weaponsPhysicsGroup: Phaser.Physics.Arcade.Group,
-        bulletPhysicsGroup: Phaser.Physics.Arcade.Group) {
+    placeInScene(weaponsPhysicsGroup: Phaser.Physics.Arcade.Group,
+        bulletPhysicsGroup: Phaser.Physics.Arcade.Group,
+    ) {
+        weaponsPhysicsGroup.add(this);
+        this.scene.add.existing(this);
+        this.setCircle(this.range, -this.range, -this.range);
+        this.bulletPhysicsGroup = bulletPhysicsGroup;
+    }
+
+    constructor(octopus: Octopus, offsetX: number, offsetY: number, range: number) {
         super(octopus.scene, octopus.x + offsetX, octopus.y + offsetY, 'fin');
 
         this.depth = octopus.depth - 0.1;
@@ -70,11 +78,6 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
         this.offsetX = offsetX;
         this.offsetY = offsetY;
         this.range = range;
-
-        weaponsPhysicsGroup.add(this);
-        this.scene.add.existing(this);
-        this.setCircle(range, -range, -range);
-        this.bulletPhysicsGroup = bulletPhysicsGroup;
     }
 
     FireWeapon(focusedFish: Fish) {
