@@ -56,7 +56,11 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
             this.weapons.push(newWeapon);
         })
 
-        Phaser.Actions.PlaceOnCircle(this.weapons, new Phaser.Geom.Circle(this.x, this.y, this.width), 0.3, Math.PI - 0.3);
+        // Add a dummy element to handle off-by-one placement
+        var offByOne = new Weapon(this, 0, 0, 0, 0, 0);
+        this.weapons.unshift(offByOne);
+        Phaser.Actions.PlaceOnCircle(this.weapons, new Phaser.Geom.Circle(this.x, this.y, this.width), 0, Math.PI);
+        this.weapons.shift();
     }
 
     FinishRound(): void {
