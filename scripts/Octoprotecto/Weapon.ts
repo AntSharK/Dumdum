@@ -65,19 +65,30 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
         this.scene.add.existing(this);
         this.setCircle(this.range, -this.range, -this.range);
         this.bulletPhysicsGroup = bulletPhysicsGroup;
+
+        this.offsetX = this.x - this.weaponOwner.x;
+        this.offsetY = this.y - this.weaponOwner.y;
+        this.setRotation(Math.atan2(-this.offsetY, -this.offsetX));
     }
 
-    constructor(octopus: Octopus, offsetX: number, offsetY: number, range: number) {
-        super(octopus.scene, octopus.x + offsetX, octopus.y + offsetY, 'fin');
+    constructor(octopus: Octopus,
+        range: number,
+        spread: number,
+        projectileDamage: number,
+        projectileSpeed: number,
+        fireRate: number) {
+        super(octopus.scene, octopus.x, octopus.y, 'fin');
 
         this.depth = octopus.depth - 0.1;
         this.setOrigin(0, 0.5);
-        this.setRotation(Math.atan2(-offsetY, -offsetX));
 
         this.weaponOwner = octopus;
-        this.offsetX = offsetX;
-        this.offsetY = offsetY;
+
         this.range = range;
+        this.spread = spread;
+        this.projectileDamage = projectileDamage;
+        this.projectileSpeed = projectileSpeed;
+        this.fireRate = fireRate;
     }
 
     FireWeapon(focusedFish: Fish) {

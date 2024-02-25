@@ -41,7 +41,7 @@ class SoloRun {
             0x00FFFF,
             0.1497,
             20,
-            998);
+            998, null /*PLACEHOLDER*/);
 
         arena.spawnOctopus(octopusData);
         arena.events.on('update', () => SoloRun.ApplyKeyboardControls());

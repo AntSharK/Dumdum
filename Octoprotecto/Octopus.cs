@@ -18,9 +18,20 @@ namespace Octoprotecto
         public int TotalDeaths { get; set; } = 0;
         public bool IsActive { get; set; } = true;
 
+        private List<Weapon> weaponsList = new List<Weapon>();
+
+        // ONLY FOR RETRIEVAL
+        public Weapon[] Weapons { get =>
+                this.weaponsList.ToArray();
+        }
+
         public Octopus(string name, string connectionId, string roomName) 
             : base(name, connectionId, roomName)
         {
+            for (int i = 0; i < 6; i++)
+            {
+                this.weaponsList.Add(new Weapon());
+            }
         }
 
         internal void SetRandomLocation(Rectangle octopiMovementBounds)

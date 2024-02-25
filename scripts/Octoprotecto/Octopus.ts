@@ -19,27 +19,11 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         tint: number
     ) {
         this.setDepth(octopiPhysicsGroup.getLength());
-
-        // TODO: Weapons will have to be constructed from server-side data
-        var w1 = new Weapon(this, 90, 45, 225);
-        w1.placeInScene(weaponsPhysicsGroup, bulletPhysicsGroup);
-        var w2 = new Weapon(this, -90, 45, 225);
-        w2.placeInScene(weaponsPhysicsGroup, bulletPhysicsGroup);
-        this.weapons.push(w1, w2);
-        var w3 = new Weapon(this, 60, 80, 225);
-        w3.placeInScene(weaponsPhysicsGroup, bulletPhysicsGroup);
-        var w4 = new Weapon(this, -60, 80, 225);
-        w4.placeInScene(weaponsPhysicsGroup, bulletPhysicsGroup);
-        this.weapons.push(w3, w4);
-        var w5 = new Weapon(this, 20, 95, 225);
-        w5.placeInScene(weaponsPhysicsGroup, bulletPhysicsGroup);
-        var w6 = new Weapon(this, -20, 95, 225);
-        w6.placeInScene(weaponsPhysicsGroup, bulletPhysicsGroup);
-        this.weapons.push(w5, w6);
-
-        for (let i in this.weapons) {
-            this.weapons[i].tint = tint;
-        }
+        
+        this.weapons.forEach(w => {
+            w.placeInScene(weaponsPhysicsGroup, bulletPhysicsGroup);
+            w.tint = tint;
+        });
 
         scene.add.existing(this);
         octopiPhysicsGroup.add(this);
@@ -50,7 +34,8 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         tint: number,
         speed: number,
         points: number,
-        maxHitPoints: number) {
+        maxHitPoints: number,
+        weaponData: Weapon[]) {
         super(scene, x, y, 'octopus');
 
         this.name = name;
@@ -65,6 +50,14 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         this.tint = tint;
         this.points = points;
         this.maxHitPoints = maxHitPoints;
+
+        weaponData.forEach(w => {
+            var newWeapon = new Weapon(this, w.range, w.spread, w.projectileDamage, w.projectileSpeed, w.fireRate);
+            this.weapons.push(newWeapon);
+        })
+
+        // TODO: Proper circle
+        Phaser.Actions.PlaceOnCircle(this.weapons, new Phaser.Geom.Circle(this.x, this.y, this.width), 2, Math.PI * 2 - 2);
     }
 
     FinishRound(): void {
