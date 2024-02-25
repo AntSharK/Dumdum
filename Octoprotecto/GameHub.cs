@@ -1,4 +1,6 @@
 ﻿using System.Drawing;
+using System.Reflection.Metadata.Ecma335;
+using Common;
 using Common.Util;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
@@ -171,6 +173,19 @@ namespace Octoprotecto
 
             await Clients.Group(room.RoomId).SendAsync("LossNotification");
             room.EndGame();
+        }
+
+        public async Task FinishRound(string roomId, object pointsPerOctopus)
+        {
+            (_, var room) = await this.FindPlayerAndRoom(null, roomId);
+            if (room == null)
+            {
+                await Clients.Caller.SendAsync(this.Message_ShowError, $"Room {roomId} not found.");
+                return;
+            }
+
+            room.FinishRound();
+            await Task.WhenAll(room.Players.Values.Select(s => { return Clients.Client(s.ConnectionId).SendAsync("UpdateUpgrade", s); }));
         }
     }
 }

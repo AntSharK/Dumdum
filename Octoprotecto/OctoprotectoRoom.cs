@@ -28,6 +28,11 @@ namespace Octoprotecto
             this.State = RoomState.GameOver;
         }
 
+        internal void FinishRound()
+        {
+            this.State = RoomState.Upgrading;
+        }
+
         public enum RoomState
         {
             SettingUp,

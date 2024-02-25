@@ -185,6 +185,26 @@ function ConfigureControllerSignalRListening(signalRconnection: any) {
         clearState();
         setTimeout(() => window.location.reload(), 10000);
     });
+
+    signalRconnection.on("UpdateUpgrade", function (octopusData: Octopus,
+        roomId: string, playerId: string) {
+
+        // The Room ID and player ID are only passed in when this is from a reconnect event
+        if (roomId != null && playerId != null) {
+            sessionStorage.setItem(RoomIdSessionStorageKey, roomId);
+            sessionStorage.setItem(UserIdSessionStorageKey, playerId);
+            hideLobbyMenu();
+            var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena");
+            battleArenaScene.scene.transition({ target: "Upgradescreen" });
+        }
+
+        var controllerScene = octoProtecto.game.scene.getScene("Octocontroller") as Octocontroller;
+        controllerScene.state = ControllerState.WaitingForSync;
+        controllerScene.scene.transition({ target: "Upgradescreen" });
+
+        var upgradeScene = octoProtecto.game.scene.getScene("Upgradescreen") as Upgradescreen;
+        upgradeScene.LoadOctopus(octopusData);
+    })
 }
 
 enum ControllerState {
@@ -192,4 +212,55 @@ enum ControllerState {
     Movement,
     WaitingForRespawn,
     ReadyToRespawn
+}
+
+class Upgradescreen extends Phaser.Scene {
+    graphics: Phaser.GameObjects.Graphics;
+    OctopusData: Octopus;
+    MainBody: Phaser.GameObjects.Image;
+    Tentacles: Phaser.GameObjects.Image[] = [];
+
+    constructor() {
+        super({ key: 'Upgradescreen' });
+    }
+
+    preload() {
+    }
+
+    create() {
+        this.graphics = this.add.graphics({ x: 0, y: 0 });
+        this.input.mouse.disableContextMenu();
+        this.scale.setGameSize(window.innerWidth, window.innerHeight);
+        this.scale.refresh();
+    }
+
+    update() {
+    }
+
+    LoadOctopus(octopusData: Octopus) {
+        // Loading of data is independent of the actual sprite
+        this.OctopusData = new Octopus(octopusData.name,
+            this,
+            this.game.canvas.width / 2,
+            this.game.canvas.height / 2,
+            octopusData.tint,
+            octopusData.speed,
+            octopusData.points,
+            octopusData.maxHitPoints,
+            octopusData.weapons);
+
+        this.graphics.clear();
+        this.MainBody = this.add.image(this.game.canvas.width / 2, this.game.canvas.height / 2, "octopus");
+
+        this.OctopusData.weapons.forEach(w => {
+            this.Tentacles.push(this.add.image(this.game.canvas.width / 2, this.game.canvas.height / 2, "fin"));
+        })
+
+        // Add a dummy element to handle off-by-one placement
+        var offByOne = this.add.image(this.game.canvas.width / 2, this.game.canvas.height / 2, "fin");
+        this.Tentacles.unshift(offByOne);
+        Phaser.Actions.PlaceOnCircle(this.Tentacles, new Phaser.Geom.Circle(this.game.canvas.width / 2, this.game.canvas.height / 2, this.MainBody.width), 0, Math.PI);
+        this.Tentacles.shift();
+        offByOne.destroy();
+    }
 }

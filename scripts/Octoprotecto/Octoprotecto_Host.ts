@@ -116,11 +116,19 @@ class BattleArena extends Phaser.Scene {
         this.timeLeftDisplay.text = "WAVE " + this.currentRound + " FINISHED";
         this.currentRound++;
 
-        this.octopi.children.each(c => (c as Octopus).FinishRound());
+        var pointsPerOctopus: { [id: string]: number } = {};
+        for (let key in BattleArena.OctopiMap) {
+            let octopus = BattleArena.OctopiMap[key];
+            octopus.FinishRound();
+            pointsPerOctopus[key] = octopus.points;
+        }
         this.fishes.children.each(c => c.destroy());
 
-        // TODO: Send server a message to trigger next round
-        console.log("TODO: Broadcast something to server for the round ending.");
+        var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);        
+        signalRconnection.invoke("FinishRound", roomId, pointsPerOctopus).catch(function (err) {
+            return console.error(err.toString());
+        });
+
     }
 
     spawnOctopus(octopusData: Octopus) {

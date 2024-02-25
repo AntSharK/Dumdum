@@ -26,7 +26,7 @@ class Octoprotecto {
             backgroundColor: '#FFFFFF',
             transparent: false,
             clearBeforeRender: false,
-            scene: [BattleArena, Octocontroller],
+            scene: [BattleArena, Octocontroller, Upgradescreen],
             scale: {
                 mode: Phaser.Scale.ScaleModes.FIT,
                 resizeInterval: 1,

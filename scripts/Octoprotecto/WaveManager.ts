@@ -1,10 +1,11 @@
 function StartWave(arena: BattleArena) {
     var playerCount = arena.octopi.getLength();
-    var roundDuration = 30000 + arena.currentRound * 4000;
+    //var roundDuration = 30000 + arena.currentRound * 4000;
+    var roundDuration = 3000;
     switch (arena.currentRound) {
         case 1:
             var baseInterval = 2400;
-            for (var i = 3500; i < roundDuration - 6000; i = i + baseInterval) {
+            for (var i = 3500; i < roundDuration - 3000; i = i + baseInterval) {
                 baseInterval = baseInterval - 50;
                 arena.time.addEvent({
                     delay: i,
