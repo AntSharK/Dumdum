@@ -219,6 +219,7 @@ class Upgradescreen extends Phaser.Scene {
     OctopusData: Octopus;
     MainBody: Phaser.GameObjects.Image;
     Tentacles: Phaser.GameObjects.Image[] = [];
+    UIScale: number = 2;
 
     constructor() {
         super({ key: 'Upgradescreen' });
@@ -251,6 +252,8 @@ class Upgradescreen extends Phaser.Scene {
 
         this.graphics.clear();
         this.MainBody = this.add.image(this.game.canvas.width / 2, this.game.canvas.height / 2, "octopus");
+        this.MainBody.tint = this.OctopusData.tint;
+        this.MainBody.setScale(this.UIScale);
 
         this.OctopusData.weapons.forEach(w => {
             this.Tentacles.push(this.add.image(this.game.canvas.width / 2, this.game.canvas.height / 2, "fin"));
@@ -259,8 +262,17 @@ class Upgradescreen extends Phaser.Scene {
         // Add a dummy element to handle off-by-one placement
         var offByOne = this.add.image(this.game.canvas.width / 2, this.game.canvas.height / 2, "fin");
         this.Tentacles.unshift(offByOne);
-        Phaser.Actions.PlaceOnCircle(this.Tentacles, new Phaser.Geom.Circle(this.game.canvas.width / 2, this.game.canvas.height / 2, this.MainBody.width), 0, Math.PI);
+        Phaser.Actions.PlaceOnCircle(this.Tentacles, new Phaser.Geom.Circle(this.game.canvas.width / 2, this.game.canvas.height / 2, this.MainBody.displayWidth), 0, Math.PI);
+        
         this.Tentacles.shift();
         offByOne.destroy();
+
+        this.Tentacles.forEach(t => {
+            let offsetX = t.x - this.MainBody.x;
+            let offsetY = t.y - this.MainBody.y;
+            t.setRotation(Math.atan2(-offsetY, -offsetX));
+            t.setScale(this.UIScale);
+            t.tint = this.OctopusData.tint;
+        })
     }
 }
