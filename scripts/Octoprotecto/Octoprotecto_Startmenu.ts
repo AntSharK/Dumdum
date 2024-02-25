@@ -54,6 +54,7 @@ window.onload = () => {
 
     document.getElementById("hostgamebutton").addEventListener("click", function (event) {
         hideLobbyMenu();
+        document.getElementById("lobbywaitingforserver").hidden = false;
 
         var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
         battleArenaScene.scene.setActive(true);

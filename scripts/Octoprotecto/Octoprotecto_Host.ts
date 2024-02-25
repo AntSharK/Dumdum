@@ -162,7 +162,7 @@ class BattleArena extends Phaser.Scene {
             }
         }
 
-        this.fishes.children.each(f => {
+        this.fishes.children?.each(f => {
             (f as Fish).updateFish();
         }, this);
     }
