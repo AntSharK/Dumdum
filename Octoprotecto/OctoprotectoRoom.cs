@@ -38,6 +38,11 @@ namespace Octoprotecto
                     this.Players[entry.Key].Points = entry.Value;
                 }
             }
+
+            foreach (var item in Players.Values)
+            {
+                item.IsActive = false;
+            }
         }
 
         public enum RoomState

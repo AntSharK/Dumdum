@@ -75,7 +75,14 @@ namespace Octoprotecto
                     }
                     return;
                 case OctoprotectoRoom.RoomState.Upgrading:
-                    await Clients.Caller.SendAsync("UpdateUpgrade", octopus, room.RoomId, octopus.Name);
+                    if (octopus.IsActive)
+                    {
+                        await Clients.Caller.SendAsync("InitializeNewPlayer", room.RoomId, room.OctopiMovementBounds, octopus);
+                    }
+                    else
+                    {
+                        await Clients.Caller.SendAsync("UpdateUpgrade", octopus, room.RoomId, octopus.Name);
+                    }
                     return;
                 default:
                     await Clients.Caller.SendAsync(this.Message_ShowError, $"Room {room.RoomId} is not in a state that supports reconnecting.", true /*Refresh on click*/);

@@ -256,7 +256,6 @@ class Upgradescreen extends Phaser.Scene {
 
             if (this.selectedImage.name == image.name) {
                 this.selectedImage = null;
-                hideUpgradeMenu();
                 document.getElementById("upgrademenutopleft").hidden = false;
                 var table = document.getElementById("upgrademenutopright") as HTMLTableElement;
                 table.innerHTML = "";
@@ -265,9 +264,6 @@ class Upgradescreen extends Phaser.Scene {
         }
 
         if (image.name == Upgradescreen.MAINBODYNAME) {
-            hideUpgradeMenu();
-            document.getElementById("upgrademenutopleft").hidden = false;
-            document.getElementById("upgrademenutopright").hidden = false;
             this.selectedImage = image;
             image.tint = 0xFFFFFF;
 
@@ -284,9 +280,6 @@ class Upgradescreen extends Phaser.Scene {
 
         if (image.name in this.WeaponMap) {
             var selectedWeapon = this.WeaponMap[image.name];
-            hideUpgradeMenu();
-            document.getElementById("upgrademenutopleft").hidden = false;
-            document.getElementById("upgrademenutopright").hidden = false;
             this.selectedImage = image;
             image.tint = 0xFFFFFF;
 
@@ -309,8 +302,7 @@ class Upgradescreen extends Phaser.Scene {
     }
 
     DrawDisplayElements(octopusData: Octopus) {
-        hideUpgradeMenu();
-        document.getElementById("upgrademenutopleft").hidden = false
+        setUpgradeMenuHidden(false);
         document.getElementById("upgrademenutopleft").textContent = "POINTS:" + octopusData.points;
     }
 
@@ -385,9 +377,9 @@ class Upgradescreen extends Phaser.Scene {
     }
 }
 
-function hideUpgradeMenu() {
+function setUpgradeMenuHidden(hidden: boolean) {
     var menuElements = document.getElementsByClassName("upgrademenu");
     [].forEach.call(menuElements, function (element, index, array) {
-        element.hidden = true;
+        element.hidden = hidden;
     });
 }
