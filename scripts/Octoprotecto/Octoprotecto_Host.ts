@@ -107,8 +107,6 @@ class BattleArena extends Phaser.Scene {
         signalRconnection.invoke("StartRoom", roomId, soloRun).catch(function (err) {
             return console.error(err.toString());
         });
-
-        this.time.addEvent(this.roundTimer);
     }
 
     finishRound() {
@@ -218,6 +216,13 @@ function ConfigureHostSignalRListening(signalRconnection: any) {
             targetOctopus.desiredY = y;
         }        
     });
+
+    signalRconnection.on("StartNextRound", function () {
+        var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
+        hideLobbyMenu();
+        hideGameNotifications();
+        StartWave(battleArenaScene);
+    })
 }
 
 function hideGameNotifications() {

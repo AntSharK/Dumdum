@@ -199,7 +199,12 @@ namespace Octoprotecto
             await Clients.Client(room.ConnectionId).SendAsync("SpawnOctopus", octopus);
             await Clients.Client(octopus.ConnectionId).SendAsync("OctopusRespawn", room.OctopiMovementBounds, octopus);
 
-            // TODO: If all the octopi have respawned, trigger the next round
+            // If all the octopi have respawned, trigger the next round
+            if (room.Players.Values.Count(c => !c.IsActive) <= 0)
+            {
+                await Clients.Client(room.ConnectionId).SendAsync("StartNextRound");
+                room.StartGame();
+            }
         }
     }
 }
