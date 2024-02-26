@@ -45,3 +45,11 @@
     top: 2%;
     left: 2%;
 }
+
+.displaytopright {
+    top: 20%;
+    left: 70%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    border: 1px solid;
+}

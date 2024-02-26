@@ -249,22 +249,47 @@ class Upgradescreen extends Phaser.Scene {
         if (image?.name == null) { return; }
 
         if (image.name == Upgradescreen.MAINBODYNAME) {
-            window.alert("Clicked main body");
+            hideUpgradeMenu();
+            document.getElementById("upgrademenutopleft").hidden = false
+            document.getElementById("upgrademenutopright").hidden = false
+
+            var table = document.getElementById("upgrademenutopright") as HTMLTableElement;
+            table.innerHTML = "";
+            let row = table.insertRow(0);
+            row.insertCell(0).textContent = "" + this.OctopusData.speed;
+            row.insertCell(0).textContent = "SPEED"
+            row = table.insertRow(0);
+            row.insertCell(0).textContent = "" + this.OctopusData.maxHitPoints;
+            row.insertCell(0).textContent = "MAX-HP"
             return;
         }
 
         if (image.name in this.WeaponMap) {
             var selectedWeapon = this.WeaponMap[image.name];
-            window.alert("Clicked fin" + image.name);
-        }
-    }
+            hideUpgradeMenu();
+            document.getElementById("upgrademenutopleft").hidden = false
+            document.getElementById("upgrademenutopright").hidden = false
 
-    onMainBodyClick() {
+            var table = document.getElementById("upgrademenutopright") as HTMLTableElement;
+            table.innerHTML = "";
+            let row = table.insertRow(0);
+            row.insertCell(0).textContent = "" + selectedWeapon.spread;
+            row.insertCell(0).textContent = "SPREAD"
+            row = table.insertRow(0);
+            row.insertCell(0).textContent = "" + selectedWeapon.fireRate;
+            row.insertCell(0).textContent = "COOLDOWN"
+            row = table.insertRow(0);
+            row.insertCell(0).textContent = "" + selectedWeapon.projectileSpeed;
+            row.insertCell(0).textContent = "SPEED"
+            row = table.insertRow(0);
+            row.insertCell(0).textContent = "" + selectedWeapon.projectileDamage;
+            row.insertCell(0).textContent = "DAMAGE"
+            return;
+        }
     }
 
     DrawDisplayElements(octopusData: Octopus) {
         hideUpgradeMenu();
-
         document.getElementById("upgrademenutopleft").hidden = false
         document.getElementById("upgrademenutopleft").textContent = "POINTS:" + octopusData.points;
     }
