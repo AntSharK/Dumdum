@@ -217,7 +217,6 @@ enum ControllerState {
 class Upgradescreen extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
     OctopusData: Octopus;
-    PointsText: Phaser.GameObjects.Text;
     MainBody: Phaser.GameObjects.Image;
     Tentacles: Phaser.GameObjects.Image[] = [];
     UIScale: number = 3;
@@ -239,20 +238,15 @@ class Upgradescreen extends Phaser.Scene {
     update() {
     }
 
-    LoadOctopus(octopusData: Octopus) {
-        // Loading of data is independent of the actual sprites being displayed
-        this.OctopusData = new Octopus(octopusData.name,
-            this,
-            this.game.canvas.width / 2,
-            this.game.canvas.height / 2,
-            octopusData.tint,
-            octopusData.speed,
-            octopusData.points,
-            octopusData.maxHitPoints,
-            octopusData.weapons);
+    DrawDisplayElements(octopusData: Octopus) {
+        hideUpgradeMenu();
 
+        document.getElementById("upgrademenutopleft").hidden = false
+        document.getElementById("upgrademenutopleft").textContent = "POINTS:" + octopusData.points;
+    }
+
+    DrawOctopus(octopusData: Octopus) {
         this.graphics.clear();
-        if (this.PointsText != null) { this.PointsText.destroy(); }
         if (this.MainBody != null) { this.MainBody.destroy(); }
         this.Tentacles.forEach(t => {
             t.destroy();
@@ -276,7 +270,7 @@ class Upgradescreen extends Phaser.Scene {
         var offByOne = this.add.image(this.game.canvas.width / 2, this.game.canvas.height / 2, "fin");
         this.Tentacles.unshift(offByOne);
         Phaser.Actions.PlaceOnCircle(this.Tentacles, new Phaser.Geom.Circle(this.game.canvas.width / 2, this.game.canvas.height / 2, this.MainBody.displayWidth), 0, Math.PI);
-        
+
         this.Tentacles.shift();
         offByOne.destroy();
 
@@ -285,7 +279,28 @@ class Upgradescreen extends Phaser.Scene {
             let offsetY = t.y - this.MainBody.y;
             t.setRotation(Math.atan2(-offsetY, -offsetX));
         })
-
-        this.PointsText = this.add.text(0, 0, octopusData.points + " Points", { color: 'White', fontSize: '7vw' });
     }
+
+    LoadOctopus(octopusData: Octopus) {
+        // Loading of data is independent of the actual sprites being displayed
+        this.OctopusData = new Octopus(octopusData.name,
+            this,
+            this.game.canvas.width / 2,
+            this.game.canvas.height / 2,
+            octopusData.tint,
+            octopusData.speed,
+            octopusData.points,
+            octopusData.maxHitPoints,
+            octopusData.weapons);
+
+        this.DrawOctopus(octopusData);
+        this.DrawDisplayElements(octopusData);
+    }
+}
+
+function hideUpgradeMenu() {
+    var menuElements = document.getElementsByClassName("upgrademenu");
+    [].forEach.call(menuElements, function (element, index, array) {
+        element.hidden = true;
+    });
 }

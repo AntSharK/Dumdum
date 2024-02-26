@@ -33,3 +33,15 @@
     background-color: rgba(255,255,255,0.5);
     text-align: center;
 }
+
+.upgrademenu {
+    position: absolute;
+    z-index: 4;
+    background-color: rgba(255,255,255,0.5);
+    text-align: center;
+}
+
+.displaytopleft {
+    top: 2%;
+    left: 2%;
+}
