@@ -187,5 +187,19 @@ namespace Octoprotecto
             room.FinishRound(pointsPerOctopus);
             await Task.WhenAll(room.Players.Values.Select(s => { return Clients.Client(s.ConnectionId).SendAsync("UpdateUpgrade", s); }));
         }
+
+        public async Task UpgradeDone(string roomId, string playerId)
+        {
+            (var octopus, var room) = await this.FindPlayerAndRoom(playerId, roomId);
+            if (octopus == null || room == null) { return; }
+
+            if (room.State != OctoprotectoRoom.RoomState.Upgrading) { return; }
+
+            octopus.IsActive = true;
+            await Clients.Client(room.ConnectionId).SendAsync("SpawnOctopus", octopus);
+            await Clients.Client(octopus.ConnectionId).SendAsync("OctopusRespawn", room.OctopiMovementBounds, octopus);
+
+            // TODO: If all the octopi have respawned, trigger the next round
+        }
     }
 }

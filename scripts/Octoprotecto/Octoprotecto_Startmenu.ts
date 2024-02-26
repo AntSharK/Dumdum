@@ -107,6 +107,20 @@ window.onload = () => {
             return console.error(err.toString());
         });
     });
+
+    document.getElementById("upgradefinishedbutton").addEventListener("click", function (event) {
+        var existingRoomId = sessionStorage.getItem(RoomIdSessionStorageKey);
+        var existingUserId = sessionStorage.getItem(UserIdSessionStorageKey);
+        hideLobbyMenu();
+        setUpgradeMenuHidden(true);
+        document.getElementById("lobbywaitingforserver").hidden = false;
+        signalRconnection.invoke("UpgradeDone", existingRoomId, existingUserId).catch(function (err) {
+            return console.error(err.toString());
+        });
+        
+        var controllerScene = octoProtecto.game.scene.getScene("Octocontroller") as Octocontroller;
+        controllerScene.state = ControllerState.WaitingForSync;
+    });
 };
 
 function ConfigureMenuSignalRListening(signalRconnection: any) {
