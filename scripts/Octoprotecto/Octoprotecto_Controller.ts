@@ -233,9 +233,29 @@ class Upgradescreen extends Phaser.Scene {
         this.input.mouse.disableContextMenu();
         this.scale.setGameSize(window.innerWidth, window.innerHeight);
         this.scale.refresh();
+
+        this.input.on("gameobjectdown", this.onObjectClick, this)
+        this.input.setTopOnly(true);
     }
 
     update() {
+    }
+
+    onObjectClick(pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
+        var image = gameObject as Phaser.GameObjects.Image;
+        if (image?.texture?.key == 'octopus') {
+            this.onMainBodyClick();
+            return;
+        }
+
+        if (image?.texture?.key == 'fin') {
+            window.alert("Clicked fin");
+            return;
+        }
+    }
+
+    onMainBodyClick() {
+        window.alert("Clicked main body");
     }
 
     DrawDisplayElements(octopusData: Octopus) {
@@ -257,12 +277,21 @@ class Upgradescreen extends Phaser.Scene {
         this.MainBody.tint = octopusData.tint;
         this.MainBody.setScale(this.UIScale);
 
+        this.MainBody.setInteractive(
+            { hitArea: new Phaser.Geom.Circle(this.game.canvas.width / 2, this.game.canvas.height / 2, this.MainBody.displayWidth / 2)
+        });
+
         this.OctopusData.weapons.forEach(w => {
             var newTentacle = this.add.image(this.game.canvas.width / 2, this.game.canvas.height / 2, "fin");
             newTentacle.setOrigin(0, 0.5);
             newTentacle.setDepth(this.MainBody.depth - 1);
             newTentacle.setScale(this.UIScale);
             newTentacle.tint = octopusData.tint;
+
+            newTentacle.setInteractive({
+                pixelPerfect: true
+            });
+
             this.Tentacles.push(newTentacle);
         })
 
