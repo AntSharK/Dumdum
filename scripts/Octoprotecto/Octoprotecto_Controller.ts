@@ -221,6 +221,9 @@ class Upgradescreen extends Phaser.Scene {
     Tentacles: Phaser.GameObjects.Image[] = [];
     WeaponMap: { [id: string]: Weapon } = {}; // Keeps track of a mapping from image.name to weapon data
     UIScale: number = 3;
+    OriginalTint: number = 0;
+
+    selectedImage: Phaser.GameObjects.Image;
 
     static MAINBODYNAME = "MAINOCTOPUSBODY";
 
@@ -248,10 +251,25 @@ class Upgradescreen extends Phaser.Scene {
         var image = gameObject as Phaser.GameObjects.Image;
         if (image?.name == null) { return; }
 
+        if (this.selectedImage != null) {
+            this.selectedImage.tint = this.OriginalTint;
+
+            if (this.selectedImage.name == image.name) {
+                this.selectedImage = null;
+                hideUpgradeMenu();
+                document.getElementById("upgrademenutopleft").hidden = false;
+                var table = document.getElementById("upgrademenutopright") as HTMLTableElement;
+                table.innerHTML = "";
+                return;
+            }
+        }
+
         if (image.name == Upgradescreen.MAINBODYNAME) {
             hideUpgradeMenu();
-            document.getElementById("upgrademenutopleft").hidden = false
-            document.getElementById("upgrademenutopright").hidden = false
+            document.getElementById("upgrademenutopleft").hidden = false;
+            document.getElementById("upgrademenutopright").hidden = false;
+            this.selectedImage = image;
+            image.tint = 0xFFFFFF;
 
             var table = document.getElementById("upgrademenutopright") as HTMLTableElement;
             table.innerHTML = "";
@@ -267,8 +285,10 @@ class Upgradescreen extends Phaser.Scene {
         if (image.name in this.WeaponMap) {
             var selectedWeapon = this.WeaponMap[image.name];
             hideUpgradeMenu();
-            document.getElementById("upgrademenutopleft").hidden = false
-            document.getElementById("upgrademenutopright").hidden = false
+            document.getElementById("upgrademenutopleft").hidden = false;
+            document.getElementById("upgrademenutopright").hidden = false;
+            this.selectedImage = image;
+            image.tint = 0xFFFFFF;
 
             var table = document.getElementById("upgrademenutopright") as HTMLTableElement;
             table.innerHTML = "";
@@ -356,6 +376,7 @@ class Upgradescreen extends Phaser.Scene {
             octopusData.maxHitPoints,
             octopusData.weapons);
 
+        this.OriginalTint = octopusData.tint;
         this.DrawOctopus(octopusData);
         this.DrawDisplayElements(octopusData);
     }
