@@ -53,3 +53,10 @@
     transform: translate(-50%, -50%);
     border: 1px solid;
 }
+
+.displaybottom {
+    top: 90%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
