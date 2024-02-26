@@ -113,7 +113,13 @@ class BattleArena extends Phaser.Scene {
 
     finishRound() {
         this.roundTimer = null;
-        this.timeLeftDisplay.text = "WAVE " + this.currentRound + " FINISHED";
+        this.timeLeftDisplay.text = "ROUND " + this.currentRound + " FINISHED";
+
+        // Display HTML UI elements
+        hideGameNotifications();
+        document.getElementById("gamenotificationmessage").hidden = false;
+        document.getElementById("gamenotificationmessage").textContent = "ROUND " + this.currentRound + " FINISHED";
+
         this.currentRound++;
 
         var pointsPerOctopus: { [id: string]: number } = {};
@@ -177,6 +183,11 @@ class BattleArena extends Phaser.Scene {
     }
 
     CheckForLoss(): boolean {
+        // If there is no roundtimer, then the game is not in arena mode
+        if (this.roundTimer == null) {
+            return;
+        }
+
         var activeOctopi = this.octopi.countActive(true);
         if (activeOctopi > 0) { return false; }
 
@@ -186,6 +197,12 @@ class BattleArena extends Phaser.Scene {
         });
 
         this.add.text(0, 0, "LOST AT WAVE " + this.currentRound, { color: 'White', fontSize: '5vw' });
+
+        // Display HTML UI elements
+        hideGameNotifications();
+        document.getElementById("gamenotificationmessage").hidden = false
+        document.getElementById("gamenotificationmessage").textContent = "LOST AT WAVE " + this.currentRound;
+
         this.scene.setActive(false);
         clearState();
         setTimeout(() => window.location.reload(), 10000);
@@ -200,5 +217,12 @@ function ConfigureHostSignalRListening(signalRconnection: any) {
             targetOctopus.desiredX = x;
             targetOctopus.desiredY = y;
         }        
+    });
+}
+
+function hideGameNotifications() {
+    var menuElements = document.getElementsByClassName("gamenotification");
+    [].forEach.call(menuElements, function (element, index, array) {
+        element.hidden = true;
     });
 }
