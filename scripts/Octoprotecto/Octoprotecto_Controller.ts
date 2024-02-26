@@ -172,6 +172,11 @@ function ConfigureControllerSignalRListening(signalRconnection: any) {
     });
 
     signalRconnection.on("OctopusRespawn", function (octopiMovementBounds: Phaser.Geom.Rectangle, octopusData: Octopus) {
+        // Respawn events can also be triggered when coming from the upgrade screen
+        var upgradeScene = octoProtecto.game.scene.getScene("Upgradescreen") as Upgradescreen;
+        upgradeScene.scene.transition({ target: "Octocontroller" });
+        hideLobbyMenu();
+
         var controllerScene = octoProtecto.game.scene.getScene("Octocontroller") as Octocontroller;
         controllerScene.ReadyForMovement(octopiMovementBounds, octopusData);
     });
