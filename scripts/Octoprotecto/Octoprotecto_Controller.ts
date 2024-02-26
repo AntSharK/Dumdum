@@ -219,7 +219,10 @@ class Upgradescreen extends Phaser.Scene {
     OctopusData: Octopus;
     MainBody: Phaser.GameObjects.Image;
     Tentacles: Phaser.GameObjects.Image[] = [];
+    WeaponMap: { [id: string]: Weapon } = {}; // Keeps track of a mapping from image.name to weapon data
     UIScale: number = 3;
+
+    static MAINBODYNAME = "MAINOCTOPUSBODY";
 
     constructor() {
         super({ key: 'Upgradescreen' });
@@ -243,19 +246,20 @@ class Upgradescreen extends Phaser.Scene {
 
     onObjectClick(pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
         var image = gameObject as Phaser.GameObjects.Image;
-        if (image?.texture?.key == 'octopus') {
-            this.onMainBodyClick();
+        if (image?.name == null) { return; }
+
+        if (image.name == Upgradescreen.MAINBODYNAME) {
+            window.alert("Clicked main body");
             return;
         }
 
-        if (image?.texture?.key == 'fin') {
-            window.alert("Clicked fin");
-            return;
+        if (image.name in this.WeaponMap) {
+            var selectedWeapon = this.WeaponMap[image.name];
+            window.alert("Clicked fin" + image.name);
         }
     }
 
     onMainBodyClick() {
-        window.alert("Clicked main body");
     }
 
     DrawDisplayElements(octopusData: Octopus) {
@@ -272,11 +276,14 @@ class Upgradescreen extends Phaser.Scene {
             t.destroy();
         })
         this.Tentacles = [];
+        this.WeaponMap = {};
 
         this.MainBody = this.add.image(this.game.canvas.width / 2, this.game.canvas.height / 2, "octopus");
         this.MainBody.tint = octopusData.tint;
         this.MainBody.setScale(this.UIScale);
 
+        // Names are used for determining which object has been clicked
+        this.MainBody.setName(Upgradescreen.MAINBODYNAME);
         this.MainBody.setInteractive(
             { hitArea: new Phaser.Geom.Circle(this.game.canvas.width / 2, this.game.canvas.height / 2, this.MainBody.displayWidth / 2)
         });
@@ -288,11 +295,13 @@ class Upgradescreen extends Phaser.Scene {
             newTentacle.setScale(this.UIScale);
             newTentacle.tint = octopusData.tint;
 
+            newTentacle.setName("TENTACLE" + this.Tentacles.length);
             newTentacle.setInteractive({
                 pixelPerfect: true
             });
 
             this.Tentacles.push(newTentacle);
+            this.WeaponMap[newTentacle.name] = w;
         })
 
         // Add a dummy element to handle off-by-one placement
