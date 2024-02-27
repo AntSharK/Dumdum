@@ -4,6 +4,7 @@ namespace Octoprotecto
 {
     public abstract class WeaponUpgrade
     {
+        public string Name { get; set; }
         public abstract string DisplayName { get; }
         public abstract string Description { get; }
 

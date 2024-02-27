@@ -381,7 +381,8 @@ class Upgradescreen extends Phaser.Scene {
             octopusData.speed,
             octopusData.points,
             octopusData.maxHitPoints,
-            octopusData.weapons);
+            octopusData.luck,
+            octopusData.weapons,);
 
         this.OriginalTint = octopusData.tint;
         this.DrawOctopus(octopusData);

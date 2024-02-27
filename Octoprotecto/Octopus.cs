@@ -16,6 +16,7 @@ namespace Octoprotecto
         public int MaxHitPoints { get; set; } = 998;
         public int Points { get; set; } = 20;
         public int TotalDeaths { get; set; } = 0;
+        public int Luck { get; set; } = 0;
         public bool IsActive { get; set; } = true;
         public List<Weapon> Weapons { get; } = new List<Weapon>();
 

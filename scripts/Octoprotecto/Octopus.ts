@@ -8,6 +8,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     speed: number = 0.1497; // Expressed as distance covered per millisecond
     points: number = 20;
     hitPoints: number = 998;
+    luck: number = 0;
     maxHitPoints: number = 998;
     lastHitTime: number = -1000;
     invulnerable: boolean = false;
@@ -35,6 +36,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         speed: number,
         points: number,
         maxHitPoints: number,
+        luck: number,
         weaponData: Weapon[]) {
         super(scene, x, y, 'octopus');
 
@@ -50,6 +52,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         this.tint = tint;
         this.points = points;
         this.maxHitPoints = maxHitPoints;
+        this.luck = luck;
 
         weaponData.forEach(w => {
             var newWeapon = new Weapon(this, w.range, w.spread, w.projectileDamage, w.projectileSpeed, w.fireRate);

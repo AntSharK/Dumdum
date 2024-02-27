@@ -144,6 +144,7 @@ class BattleArena extends Phaser.Scene {
             octopusData.speed,
             octopusData.points,
             octopusData.maxHitPoints,
+            octopusData.luck,
             octopusData.weapons);
 
         newOctopus.placeInScene(this, this.octopi, this.weapons, this.bullets, octopusData.tint);
