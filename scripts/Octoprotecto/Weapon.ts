@@ -47,8 +47,8 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
 class WeaponUpgrade {
     borderColor: number;
     cost: number;
-    description: number;
-    displayName: number;
+    description: string;
+    displayName: string;
     fillColor: number;
 }
 
