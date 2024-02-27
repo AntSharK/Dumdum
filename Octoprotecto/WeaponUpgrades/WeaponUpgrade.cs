@@ -4,7 +4,7 @@ namespace Octoprotecto
 {
     public abstract class WeaponUpgrade
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = "Default";
         public abstract string DisplayName { get; }
         public abstract string Description { get; }
 
@@ -22,7 +22,7 @@ namespace Octoprotecto
             }
         }
 
-        public virtual void ApplyPostUpgrade(Weapon weapon)
+        protected virtual void ApplyPostUpgrade(Weapon weapon)
         {
             // Do nothing
         }

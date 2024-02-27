@@ -62,5 +62,26 @@ namespace Octoprotecto
             this.RefreshCost = 1;
             this.Points = this.Points + 10;
         }
+
+        internal bool TryPurchaseWeaponUpgrade(string upgradeId)
+        {
+            foreach (var weapon in this.Weapons)
+            {
+                foreach (var upgrade in weapon.PurchasableUpgrades)
+                {
+                    if (upgrade.Key == upgradeId)
+                    {
+                        if (this.Points >= upgrade.Value.Cost)
+                        {
+                            this.Points = this.Points - upgrade.Value.Cost;
+                            upgrade.Value.ApplyUpgrade(weapon);
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
     }
 }
