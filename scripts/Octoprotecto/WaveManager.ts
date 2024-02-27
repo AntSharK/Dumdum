@@ -3,7 +3,7 @@ function StartWave(arena: BattleArena) {
     var roundDuration = 30000 + arena.currentRound * 4000;
     switch (arena.currentRound) {
         case 1:
-            var baseInterval = 2400;
+            var baseInterval = 3400;
             for (var i = 3500; i < roundDuration - 3000; i = i + baseInterval) {
                 baseInterval = baseInterval - 50;
                 arena.time.addEvent({
@@ -14,7 +14,7 @@ function StartWave(arena: BattleArena) {
                     repeat: 0,
                 });
             }
-            for (var i = 3000; i < roundDuration - 6000; i = i + 3000) {
+            for (var i = 3000; i < roundDuration - 6000; i = i + 5000) {
                 arena.time.addEvent({
                     delay: i,
                     callback: () => Fish.SpawnFishes(arena, playerCount * 1, arena.spawningRect, arena.fishes, arena.octopi, "homingfish", 1),
