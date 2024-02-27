@@ -100,10 +100,10 @@ class Upgradescreen extends Phaser.Scene {
             }
 
             row = table.insertRow(0);
-            row.insertCell(0).textContent = "" + selectedWeapon.spread;
-            row.insertCell(0).textContent = "" + selectedWeapon.fireRate;
-            row.insertCell(0).textContent = "" + selectedWeapon.projectileSpeed;
-            row.insertCell(0).textContent = "" + selectedWeapon.projectileDamage;
+            row.insertCell(0).textContent = "" + Math.round(selectedWeapon.spread * 100) / 100;
+            row.insertCell(0).textContent = "" + Math.round(selectedWeapon.fireRate * 100) / 100;
+            row.insertCell(0).textContent = "" + Math.round(selectedWeapon.projectileSpeed * 100) / 100;
+            row.insertCell(0).textContent = "" + Math.round(selectedWeapon.projectileDamage * 100) / 100;
             row = table.insertRow(0);
             let cell = row.insertCell(0);
             cell.textContent = "ACC";
