@@ -83,6 +83,9 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
             case "homingfish":
                 fish = new HomingFish("fish" + Fish.NumberOfFish, scene, x, y, "homingfish");
                 break;
+            default:
+                window.alert("FISHTYPE " + fishType + " NOT SUPPORTED.");
+                return;
         }
 
         Fish.NumberOfFish++;

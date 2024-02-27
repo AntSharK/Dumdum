@@ -95,6 +95,7 @@ namespace Octoprotecto
             if (room.State != OctoprotectoRoom.RoomState.SettingUp)
             {
                 await Clients.Caller.SendAsync(this.Message_ShowError, $"Room {room.RoomId} has already started. Resuming is not supported.", true /*Refresh on click*/);
+                room.EndGame(); // Since reconnecting isn't possible, end the game
                 return;
             }
 

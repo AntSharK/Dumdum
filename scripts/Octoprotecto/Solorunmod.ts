@@ -3,6 +3,22 @@ class SoloRun {
     static KeyboardDirection: [x: integer, y: integer] = [0, 0];
     static Enabled: boolean = false;
 
+    static ConfigureDebug(scene: BattleArena) {
+        scene.input.keyboard.on('keydown-Q', event => {
+            Fish.SpawnFishes(scene, 1, scene.spawningRect, scene.fishes, scene.octopi, "starfish");
+        }, scene);
+        scene.input.keyboard.on('keydown-W', event => {
+            Fish.SpawnFishes(scene, 1, scene.spawningRect, scene.fishes, scene.octopi, "homingfish");
+        }, scene);
+
+        scene.input.keyboard.on('keydown-Z', event => {
+            for (let key in BattleArena.OctopiMap) {
+                let octopus = BattleArena.OctopiMap[key];
+                octopus.TakeDamage(100);
+            }
+        }, this);
+    }
+
     static ConfigureKeyboard(scene: Phaser.Scene) {
         scene.input.keyboard.on('keydown-RIGHT', event => {
             SoloRun.KeyboardDirection[0] = 1;
