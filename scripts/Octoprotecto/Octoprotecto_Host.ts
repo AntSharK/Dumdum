@@ -107,20 +107,32 @@ class BattleArena extends Phaser.Scene {
         signalRconnection.invoke("StartRoom", roomId, soloRun).catch(function (err) {
             return console.error(err.toString());
         });
-
-        this.time.addEvent(this.roundTimer);
     }
 
     finishRound() {
         this.roundTimer = null;
-        this.timeLeftDisplay.text = "WAVE " + this.currentRound + " FINISHED";
+        this.timeLeftDisplay.text = "ROUND " + this.currentRound + " FINISHED";
+
+        // Display HTML UI elements
+        hideGameNotifications();
+        document.getElementById("gamenotificationmessage").hidden = false;
+        document.getElementById("gamenotificationmessage").textContent = "ROUND " + this.currentRound + " FINISHED";
+
         this.currentRound++;
 
-        this.octopi.children.each(c => (c as Octopus).FinishRound());
+        var pointsPerOctopus: { [id: string]: number } = {};
+        for (let key in BattleArena.OctopiMap) {
+            let octopus = BattleArena.OctopiMap[key];
+            octopus.FinishRound();
+            pointsPerOctopus[key] = octopus.points;
+        }
         this.fishes.children.each(c => c.destroy());
 
-        // TODO: Send server a message to trigger next round
-        console.log("TODO: Broadcast something to server for the round ending.");
+        var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);        
+        signalRconnection.invoke("FinishRound", roomId, pointsPerOctopus).catch(function (err) {
+            return console.error(err.toString());
+        });
+
     }
 
     spawnOctopus(octopusData: Octopus) {
@@ -169,6 +181,11 @@ class BattleArena extends Phaser.Scene {
     }
 
     CheckForLoss(): boolean {
+        // If there is no roundtimer, then the game is not in arena mode
+        if (this.roundTimer == null) {
+            return;
+        }
+
         var activeOctopi = this.octopi.countActive(true);
         if (activeOctopi > 0) { return false; }
 
@@ -178,6 +195,12 @@ class BattleArena extends Phaser.Scene {
         });
 
         this.add.text(0, 0, "LOST AT WAVE " + this.currentRound, { color: 'White', fontSize: '5vw' });
+
+        // Display HTML UI elements
+        hideGameNotifications();
+        document.getElementById("gamenotificationmessage").hidden = false
+        document.getElementById("gamenotificationmessage").textContent = "LOST AT WAVE " + this.currentRound;
+
         this.scene.setActive(false);
         clearState();
         setTimeout(() => window.location.reload(), 10000);
@@ -192,5 +215,19 @@ function ConfigureHostSignalRListening(signalRconnection: any) {
             targetOctopus.desiredX = x;
             targetOctopus.desiredY = y;
         }        
+    });
+
+    signalRconnection.on("StartNextRound", function () {
+        var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
+        hideLobbyMenu();
+        hideGameNotifications();
+        StartWave(battleArenaScene);
+    })
+}
+
+function hideGameNotifications() {
+    var menuElements = document.getElementsByClassName("gamenotification");
+    [].forEach.call(menuElements, function (element, index, array) {
+        element.hidden = true;
     });
 }

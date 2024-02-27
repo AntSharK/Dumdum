@@ -172,5 +172,37 @@ namespace Octoprotecto
             await Clients.Group(room.RoomId).SendAsync("LossNotification");
             room.EndGame();
         }
+
+        public async Task FinishRound(string roomId, IDictionary<string, int> pointsPerOctopus)
+        {
+            (_, var room) = await this.FindPlayerAndRoom(null, roomId);
+            if (room == null)
+            {
+                await Clients.Caller.SendAsync(this.Message_ShowError, $"Room {roomId} not found.");
+                return;
+            }
+
+            room.FinishRound(pointsPerOctopus);
+            await Task.WhenAll(room.Players.Values.Select(s => { return Clients.Client(s.ConnectionId).SendAsync("UpdateUpgrade", s); }));
+        }
+
+        public async Task UpgradeDone(string roomId, string playerId)
+        {
+            (var octopus, var room) = await this.FindPlayerAndRoom(playerId, roomId);
+            if (octopus == null || room == null) { return; }
+
+            if (room.State != OctoprotectoRoom.RoomState.Upgrading) { return; }
+
+            octopus.IsActive = true;
+            await Clients.Client(room.ConnectionId).SendAsync("SpawnOctopus", octopus);
+            await Clients.Client(octopus.ConnectionId).SendAsync("OctopusRespawn", room.OctopiMovementBounds, octopus);
+
+            // If all the octopi have respawned, trigger the next round
+            if (room.Players.Values.Count(c => !c.IsActive) <= 0)
+            {
+                await Clients.Client(room.ConnectionId).SendAsync("StartNextRound");
+                room.StartGame();
+            }
+        }
     }
 }

@@ -68,6 +68,9 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
             w.fishesInRange = {};
             w.focusedFish = null;
         });
+
+        // SetActive false immediately causes this to start fading out
+        this.setActive(false);
     }
 
     // Just handles the octopus' end of taking damage

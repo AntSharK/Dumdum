@@ -115,6 +115,10 @@ class HomingFish extends Fish {
                 var moveDirection = new Phaser.Math.Vector2(this.homingTarget.x - this.x, this.homingTarget.y - this.y);
                 moveDirection.normalize();
                 this.setVelocity(moveDirection.x * this.speed, moveDirection.y * this.speed);
+
+                if (!this.homingTarget.active) {
+                    this.homingTarget = null;
+                }
             }
         }
     }

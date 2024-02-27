@@ -33,12 +33,12 @@ class SoloRun {
     static SoloRunStart(arena: BattleArena) {
         SoloRun.Enabled = true;
         var startingWeapons = [
-            { range: 500, spread: 0.4, projectileDamage: 19, projectileSpeed: 500, fireRate: 200 },
-            { range: 500, spread: 0.4, projectileDamage: 19, projectileSpeed: 500, fireRate: 200 },
-            { range: 500, spread: 0.4, projectileDamage: 19, projectileSpeed: 500, fireRate: 200 },
-            { range: 500, spread: 0.4, projectileDamage: 19, projectileSpeed: 500, fireRate: 200 },
-            { range: 500, spread: 0.4, projectileDamage: 19, projectileSpeed: 500, fireRate: 200 },
-            { range: 500, spread: 0.4, projectileDamage: 19, projectileSpeed: 500, fireRate: 200 },
+            { range: 225, spread: 0.4, projectileDamage: 19, projectileSpeed: 500, fireRate: 200 },
+            { range: 225, spread: 0.4, projectileDamage: 19, projectileSpeed: 500, fireRate: 200 },
+            { range: 225, spread: 0.4, projectileDamage: 19, projectileSpeed: 500, fireRate: 200 },
+            { range: 225, spread: 0.4, projectileDamage: 19, projectileSpeed: 500, fireRate: 200 },
+            { range: 225, spread: 0.4, projectileDamage: 19, projectileSpeed: 500, fireRate: 200 },
+            { range: 225, spread: 0.4, projectileDamage: 19, projectileSpeed: 500, fireRate: 200 },
         ];
 
         // Create an object with the same properties as Octopus

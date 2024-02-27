@@ -172,6 +172,11 @@ function ConfigureControllerSignalRListening(signalRconnection: any) {
     });
 
     signalRconnection.on("OctopusRespawn", function (octopiMovementBounds: Phaser.Geom.Rectangle, octopusData: Octopus) {
+        // Respawn events can also be triggered when coming from the upgrade screen
+        var upgradeScene = octoProtecto.game.scene.getScene("Upgradescreen") as Upgradescreen;
+        upgradeScene.scene.transition({ target: "Octocontroller" });
+        hideLobbyMenu();
+
         var controllerScene = octoProtecto.game.scene.getScene("Octocontroller") as Octocontroller;
         controllerScene.ReadyForMovement(octopiMovementBounds, octopusData);
     });
@@ -185,6 +190,26 @@ function ConfigureControllerSignalRListening(signalRconnection: any) {
         clearState();
         setTimeout(() => window.location.reload(), 10000);
     });
+
+    signalRconnection.on("UpdateUpgrade", function (octopusData: Octopus,
+        roomId: string, playerId: string) {
+
+        // The Room ID and player ID are only passed in when this is from a reconnect event
+        if (roomId != null && playerId != null) {
+            sessionStorage.setItem(RoomIdSessionStorageKey, roomId);
+            sessionStorage.setItem(UserIdSessionStorageKey, playerId);
+            hideLobbyMenu();
+            var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena");
+            battleArenaScene.scene.transition({ target: "Upgradescreen" });
+        }
+
+        var controllerScene = octoProtecto.game.scene.getScene("Octocontroller") as Octocontroller;
+        controllerScene.state = ControllerState.WaitingForSync;
+        controllerScene.scene.transition({ target: "Upgradescreen" });
+
+        var upgradeScene = octoProtecto.game.scene.getScene("Upgradescreen") as Upgradescreen;
+        upgradeScene.LoadOctopus(octopusData);
+    })
 }
 
 enum ControllerState {
@@ -192,4 +217,174 @@ enum ControllerState {
     Movement,
     WaitingForRespawn,
     ReadyToRespawn
+}
+
+class Upgradescreen extends Phaser.Scene {
+    graphics: Phaser.GameObjects.Graphics;
+    OctopusData: Octopus;
+    MainBody: Phaser.GameObjects.Image;
+    Tentacles: Phaser.GameObjects.Image[] = [];
+    WeaponMap: { [id: string]: Weapon } = {}; // Keeps track of a mapping from image.name to weapon data
+    UIScale: number = 3;
+    OriginalTint: number = 0;
+
+    selectedImage: Phaser.GameObjects.Image;
+
+    static MAINBODYNAME = "MAINOCTOPUSBODY";
+
+    constructor() {
+        super({ key: 'Upgradescreen' });
+    }
+
+    preload() {
+    }
+
+    create() {
+        this.graphics = this.add.graphics({ x: 0, y: 0 });
+        this.input.mouse.disableContextMenu();
+        this.scale.setGameSize(window.innerWidth, window.innerHeight);
+        this.scale.refresh();
+
+        this.input.on("gameobjectdown", this.onObjectClick, this)
+        this.input.setTopOnly(true);
+    }
+
+    update() {
+    }
+
+    onObjectClick(pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
+        var image = gameObject as Phaser.GameObjects.Image;
+        if (image?.name == null) { return; }
+
+        if (this.selectedImage != null) {
+            this.selectedImage.tint = this.OriginalTint;
+
+            if (this.selectedImage.name == image.name) {
+                this.selectedImage = null;
+                document.getElementById("upgrademenutopleft").hidden = false;
+                var table = document.getElementById("upgrademenutopright") as HTMLTableElement;
+                table.innerHTML = "";
+                return;
+            }
+        }
+
+        if (image.name == Upgradescreen.MAINBODYNAME) {
+            this.selectedImage = image;
+            image.tint = 0xFFFFFF;
+
+            var table = document.getElementById("upgrademenutopright") as HTMLTableElement;
+            table.innerHTML = "";
+            let row = table.insertRow(0);
+            row.insertCell(0).textContent = "" + this.OctopusData.speed;
+            row.insertCell(0).textContent = "SPEED"
+            row = table.insertRow(0);
+            row.insertCell(0).textContent = "" + this.OctopusData.maxHitPoints;
+            row.insertCell(0).textContent = "MAX-HP"
+            return;
+        }
+
+        if (image.name in this.WeaponMap) {
+            var selectedWeapon = this.WeaponMap[image.name];
+            this.selectedImage = image;
+            image.tint = 0xFFFFFF;
+
+            var table = document.getElementById("upgrademenutopright") as HTMLTableElement;
+            table.innerHTML = "";
+            let row = table.insertRow(0);
+            row.insertCell(0).textContent = "" + selectedWeapon.spread;
+            row.insertCell(0).textContent = "SPREAD"
+            row = table.insertRow(0);
+            row.insertCell(0).textContent = "" + selectedWeapon.fireRate;
+            row.insertCell(0).textContent = "COOLDOWN"
+            row = table.insertRow(0);
+            row.insertCell(0).textContent = "" + selectedWeapon.projectileSpeed;
+            row.insertCell(0).textContent = "SPEED"
+            row = table.insertRow(0);
+            row.insertCell(0).textContent = "" + selectedWeapon.projectileDamage;
+            row.insertCell(0).textContent = "DAMAGE"
+            return;
+        }
+    }
+
+    DrawDisplayElements(octopusData: Octopus) {
+        setUpgradeMenuHidden(false);
+        document.getElementById("upgrademenutopleft").textContent = "POINTS:" + octopusData.points;
+    }
+
+    DrawOctopus(octopusData: Octopus) {
+        this.graphics.clear();
+        if (this.MainBody != null) { this.MainBody.destroy(); }
+        this.Tentacles.forEach(t => {
+            t.destroy();
+        })
+        this.Tentacles = [];
+        this.WeaponMap = {};
+
+        this.MainBody = this.add.image(this.game.canvas.width / 2, this.game.canvas.height / 2, "octopus");
+        this.MainBody.tint = octopusData.tint;
+        this.MainBody.setScale(this.UIScale);
+
+        // Names are used for determining which object has been clicked
+        this.MainBody.setName(Upgradescreen.MAINBODYNAME);
+        this.MainBody.setInteractive({
+            pixelPerfect: true
+        });
+        /*this.MainBody.setInteractive({
+            hitArea: new Phaser.Geom.Circle(this.game.canvas.width / 2, this.game.canvas.height / 2, this.MainBody.displayWidth / 3)
+        }, Phaser.Geom.Circle.Contains);*/
+
+        this.OctopusData.weapons.forEach(w => {
+            var newTentacle = this.add.image(this.game.canvas.width / 2, this.game.canvas.height / 2, "fin");
+            newTentacle.setOrigin(0, 0.5);
+            newTentacle.setDepth(this.MainBody.depth - 1);
+            newTentacle.setScale(this.UIScale);
+            newTentacle.tint = octopusData.tint;
+
+            newTentacle.setName("TENTACLE" + this.Tentacles.length);
+            newTentacle.setInteractive({
+                pixelPerfect: true
+            });
+
+            this.Tentacles.push(newTentacle);
+            this.WeaponMap[newTentacle.name] = w;
+        })
+
+        // Add a dummy element to handle off-by-one placement
+        var offByOne = this.add.image(this.game.canvas.width / 2, this.game.canvas.height / 2, "fin");
+        this.Tentacles.unshift(offByOne);
+        Phaser.Actions.PlaceOnCircle(this.Tentacles, new Phaser.Geom.Circle(this.game.canvas.width / 2, this.game.canvas.height / 2, this.MainBody.displayWidth), 0, Math.PI);
+
+        this.Tentacles.shift();
+        offByOne.destroy();
+
+        this.Tentacles.forEach(t => {
+            let offsetX = t.x - this.MainBody.x;
+            let offsetY = t.y - this.MainBody.y;
+            t.setRotation(Math.atan2(-offsetY, -offsetX));
+        })
+    }
+
+    LoadOctopus(octopusData: Octopus) {
+        // Loading of data is independent of the actual sprites being displayed
+        this.OctopusData = new Octopus(octopusData.name,
+            this,
+            this.game.canvas.width / 2,
+            this.game.canvas.height / 2,
+            octopusData.tint,
+            octopusData.speed,
+            octopusData.points,
+            octopusData.maxHitPoints,
+            octopusData.weapons);
+
+        this.OriginalTint = octopusData.tint;
+        this.DrawOctopus(octopusData);
+        this.DrawDisplayElements(octopusData);
+    }
+}
+
+function setUpgradeMenuHidden(hidden: boolean) {
+    var menuElements = document.getElementsByClassName("upgrademenu");
+    [].forEach.call(menuElements, function (element, index, array) {
+        element.hidden = hidden;
+    });
 }

@@ -22,3 +22,41 @@
     background-color: rgba(255,255,255,0.5);
     text-align: center;
 }
+
+.gamenotification {
+    position: absolute;
+    z-index: 4;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    background-color: rgba(255,255,255,0.5);
+    text-align: center;
+}
+
+.upgrademenu {
+    position: absolute;
+    z-index: 4;
+    background-color: rgba(255,255,255,0.5);
+    text-align: center;
+}
+
+.displaytopleft {
+    top: 2%;
+    left: 2%;
+}
+
+.displaytopright {
+    top: 20%;
+    left: 70%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    border: 1px solid;
+}
+
+.displaybottom {
+    top: 90%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
