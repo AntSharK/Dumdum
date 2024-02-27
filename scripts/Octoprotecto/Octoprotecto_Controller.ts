@@ -278,8 +278,12 @@ class Upgradescreen extends Phaser.Scene {
             row.insertCell(0).textContent = "" + this.OctopusData.speed;
             row.insertCell(0).textContent = "" + this.OctopusData.maxHitPoints;
             row = table.insertRow(0);
-            row.insertCell(0).textContent = "SPD"
-            row.insertCell(0).textContent = "HP"
+            let cell = row.insertCell(0);
+            cell.textContent = "SPD";
+            cell.title = "The speed of your octopus.";
+            cell = row.insertCell(0);
+            cell.textContent = "HP";
+            cell.title = "The maximum number of hit points your octopus has.";
             return;
         }
 
@@ -296,10 +300,18 @@ class Upgradescreen extends Phaser.Scene {
             row.insertCell(0).textContent = "" + selectedWeapon.projectileSpeed;
             row.insertCell(0).textContent = "" + selectedWeapon.projectileDamage;
             row = table.insertRow(0);
-            row.insertCell(0).textContent = "ACC"
-            row.insertCell(0).textContent = "CD"
-            row.insertCell(0).textContent = "SPD"
-            row.insertCell(0).textContent = "DMG"
+            let cell = row.insertCell(0);
+            cell.textContent = "ACC";
+            cell.title = "Accuracy is the total spread of projectiles launched. A smaller value means more precision.";
+            cell = row.insertCell(0);
+            cell.textContent = "CD";
+            cell.title = "Cooldown is the interval between firing. A lower cooldown means a higher rate of fire.";
+            cell = row.insertCell(0);
+            cell.textContent = "SPD";
+            cell.title = "Speed is the speed of the projectile.";
+            cell = row.insertCell(0);
+            cell.textContent = "DMG";
+            cell.title = "Damage is the damage done to enemies when the projectile hits them.";
             return;
         }
     }
