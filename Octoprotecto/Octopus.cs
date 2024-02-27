@@ -22,7 +22,8 @@ namespace Octoprotecto
         public Octopus(string name, string connectionId, string roomName) 
             : base(name, connectionId, roomName)
         {
-            for (int i = 0; i < 6; i++)
+            const int STARTINGWEAPONCOUNT = 4;
+            for (int i = 0; i < STARTINGWEAPONCOUNT; i++)
             {
                 this.Weapons.Add(new Weapon(name + i));
             }

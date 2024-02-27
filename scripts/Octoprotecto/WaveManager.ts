@@ -8,7 +8,7 @@ function StartWave(arena: BattleArena) {
                 baseInterval = baseInterval - 50;
                 arena.time.addEvent({
                     delay: i,
-                    callback: () => Fish.SpawnFishes(arena, playerCount * 4, arena.spawningRect, arena.fishes, arena.octopi, "starfish"),
+                    callback: () => Fish.SpawnFishes(arena, playerCount * 3, arena.spawningRect, arena.fishes, arena.octopi, "starfish", 1),
                     callbackScope: arena,
                     loop: false,
                     repeat: 0,
@@ -17,7 +17,7 @@ function StartWave(arena: BattleArena) {
             for (var i = 3000; i < roundDuration - 6000; i = i + 3000) {
                 arena.time.addEvent({
                     delay: i,
-                    callback: () => Fish.SpawnFishes(arena, playerCount * 2, arena.spawningRect, arena.fishes, arena.octopi, "homingfish"),
+                    callback: () => Fish.SpawnFishes(arena, playerCount * 1, arena.spawningRect, arena.fishes, arena.octopi, "homingfish", 1),
                     callbackScope: arena,
                     loop: false,
                     repeat: 0,
@@ -31,7 +31,7 @@ function StartWave(arena: BattleArena) {
                 baseInterval = baseInterval * 0.98;
                 arena.time.addEvent({
                     delay: i,
-                    callback: () => Fish.SpawnFishes(arena, playerCount * 4, arena.spawningRect, arena.fishes, arena.octopi, "starfish"),
+                    callback: () => Fish.SpawnFishes(arena, playerCount * 4, arena.spawningRect, arena.fishes, arena.octopi, "starfish", 1),
                     callbackScope: arena,
                     loop: false,
                     repeat: 0,
