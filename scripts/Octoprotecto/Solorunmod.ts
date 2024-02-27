@@ -6,10 +6,10 @@ class SoloRun {
     static ConfigureDebug(scene: BattleArena) {
         // Spawn enemies
         scene.input.keyboard.on('keydown-Q', event => {
-            Fish.SpawnFishes(scene, 1, scene.spawningRect, scene.fishes, scene.octopi, "starfish");
+            Fish.SpawnFishes(scene, 1, scene.spawningRect, scene.fishes, scene.octopi, "starfish", 1);
         }, scene);
         scene.input.keyboard.on('keydown-W', event => {
-            Fish.SpawnFishes(scene, 1, scene.spawningRect, scene.fishes, scene.octopi, "homingfish");
+            Fish.SpawnFishes(scene, 1, scene.spawningRect, scene.fishes, scene.octopi, "homingfish", 1);
         }, scene);
 
         // Take damage

@@ -3,7 +3,7 @@
     public class Weapon
     {
         public double FireRate { get; set; } = 1000; // Milliseconds between shots
-        public float Spread { get; set; } = 1.4f; // Total radians - equally spread in both directions
+        public double Spread { get; set; } = 1.4; // Total radians - equally spread in both directions
         public double Range { get; set; } = 225;
         public double ProjectileDamage { get; set; } = 19;
         public double ProjectileSpeed { get; set; } = 350; // Units per second

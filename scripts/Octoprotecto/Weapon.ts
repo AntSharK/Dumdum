@@ -30,9 +30,10 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
 
     FireToFish(focusedFish: Fish, spread: number) {
         this.moveDirection = new Phaser.Math.Vector2(focusedFish.x - this.x, focusedFish.y - this.y);
+        this.moveDirection.rotate(Math.random() * spread - spread / 2);
         this.moveDirection.normalize();
 
-        this.setRotation(Math.atan2(this.moveDirection.y, this.moveDirection.x) + Math.random() * spread - spread / 2);
+        this.setRotation(Math.atan2(this.moveDirection.y, this.moveDirection.x));
         this.setVelocity(this.moveDirection.x * this.bulletWeapon.projectileSpeed, this.moveDirection.y * this.bulletWeapon.projectileSpeed);
         this.scene.time.addEvent({
             delay: this.bulletWeapon.range / this.bulletWeapon.projectileSpeed * 1000,

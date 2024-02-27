@@ -339,9 +339,6 @@ class Upgradescreen extends Phaser.Scene {
         this.MainBody.setInteractive({
             pixelPerfect: true
         });
-        /*this.MainBody.setInteractive({
-            hitArea: new Phaser.Geom.Circle(this.game.canvas.width / 2, this.game.canvas.height / 2, this.MainBody.displayWidth / 3)
-        }, Phaser.Geom.Circle.Contains);*/
 
         this.OctopusData.weapons.forEach(w => {
             var newTentacle = this.add.image(this.game.canvas.width / 2, this.game.canvas.height / 2, "fin");
