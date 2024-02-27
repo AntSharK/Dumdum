@@ -91,9 +91,9 @@ class BattleArena extends Phaser.Scene {
 
         // Initialize timer
         this.timeLeftDisplay = this.add.text(0, 0, "", { color: 'Red', fontSize: '3vw' });
-        
-        // Spawn stuff for testing purposes 
-        // Fish.SpawnFishes(this, 40, this.spawningRect, this.fishes, this.octopi, "starfish");
+
+        // DEBUG MODE THINGS - comment out in real cases
+        SoloRun.ConfigureDebug(this);
     }
 
     startGame(soloRun: boolean) {

@@ -64,6 +64,7 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
     ) {
         weaponsPhysicsGroup.add(this);
         this.scene.add.existing(this);
+        this.depth = this.weaponOwner.depth - 0.1;
         this.setCircle(this.range, -this.range, -this.range);
         this.bulletPhysicsGroup = bulletPhysicsGroup;
 
@@ -80,7 +81,6 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
         fireRate: number) {
         super(octopus.scene, octopus.x, octopus.y, 'fin');
 
-        this.depth = octopus.depth - 0.01;
         this.setOrigin(0, 0.5);
 
         this.weaponOwner = octopus;
