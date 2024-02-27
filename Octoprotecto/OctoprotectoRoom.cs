@@ -39,9 +39,9 @@ namespace Octoprotecto
                 }
             }
 
-            foreach (var item in Players.Values)
+            foreach (var player in Players.Values)
             {
-                item.IsActive = false;
+                player.IsActive = false;
             }
         }
 
