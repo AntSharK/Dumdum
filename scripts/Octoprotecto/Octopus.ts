@@ -53,6 +53,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
 
         weaponData.forEach(w => {
             var newWeapon = new Weapon(this, w.range, w.spread, w.projectileDamage, w.projectileSpeed, w.fireRate);
+            newWeapon.name = w.name;
             this.weapons.push(newWeapon);
         })
 

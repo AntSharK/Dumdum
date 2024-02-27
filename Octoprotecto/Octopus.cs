@@ -24,7 +24,7 @@ namespace Octoprotecto
         {
             for (int i = 0; i < 6; i++)
             {
-                this.Weapons.Add(new Weapon());
+                this.Weapons.Add(new Weapon(name + i));
             }
         }
 

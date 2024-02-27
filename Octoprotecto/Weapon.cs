@@ -7,7 +7,14 @@
         public double Range { get; set; } = 225;
         public double ProjectileDamage { get; set; } = 19;
         public double ProjectileSpeed { get; set; } = 500; // Units per second
-        public List<WeaponUpgrade> Upgrades { get; } = new List<WeaponUpgrade>();
+        public Dictionary<string, WeaponUpgrade> Upgrades { get; } = new Dictionary<string, WeaponUpgrade>();
+        public Dictionary<string, WeaponUpgrade> PurchasableUpgrades { get; } = new Dictionary<string, WeaponUpgrade>();
+        public string Name { get; private set; }
+
+        public Weapon(string weaponName)
+        {
+            this.Name = weaponName;
+        }
     }
 
     public class WeaponUpgrade
