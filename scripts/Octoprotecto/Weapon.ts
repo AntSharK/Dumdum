@@ -69,7 +69,7 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
     nextFireTime: number = 0;
     fireRate: number = 100;
 
-    purchaseableUpgrades: { [id: string]: WeaponUpgrade } = {};
+    purchasableUpgrades: { [id: string]: WeaponUpgrade } = {};
 
     placeInScene(weaponsPhysicsGroup: Phaser.Physics.Arcade.Group,
         bulletPhysicsGroup: Phaser.Physics.Arcade.Group,
@@ -85,12 +85,25 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
         this.setRotation(Math.atan2(-this.offsetY, -this.offsetX));
     }
 
+    static FromData(weaponData: Weapon, octopus: Octopus): Weapon {
+        return new Weapon(octopus,
+            weaponData.range,
+            weaponData.spread,
+            weaponData.projectileDamage,
+            weaponData.projectileSpeed,
+            weaponData.fireRate,
+            weaponData.name,
+            weaponData.purchasableUpgrades);
+    }
+
     constructor(octopus: Octopus,
         range: number,
         spread: number,
         projectileDamage: number,
         projectileSpeed: number,
-        fireRate: number) {
+        fireRate: number,
+        name: string,
+        purchaseableUpgrades: { [id: string]: WeaponUpgrade }) {
         super(octopus.scene, octopus.x, octopus.y, 'fin');
 
         this.setOrigin(0, 0.5);
@@ -102,6 +115,9 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
         this.projectileDamage = projectileDamage;
         this.projectileSpeed = projectileSpeed;
         this.fireRate = fireRate;
+
+        this.name = name;
+        this.purchasableUpgrades = purchaseableUpgrades;
     }
 
     FireWeapon(focusedFish: Fish) {
