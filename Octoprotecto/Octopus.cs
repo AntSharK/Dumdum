@@ -60,6 +60,7 @@ namespace Octoprotecto
             this.IsActive = false;
             this.GenerateNewUpgrades();
             this.RefreshCost = 1;
+            this.Points = this.Points + 10;
         }
     }
 }

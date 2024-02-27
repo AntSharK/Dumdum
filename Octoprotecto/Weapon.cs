@@ -50,10 +50,10 @@ namespace Octoprotecto
         private void GenerateBaseUpgrades(int numberOfUpgrades)
         {
             var possibleUpgrades = new List<WeaponUpgrade>() {
+                new StatUpgrade(WeaponStat.Cooldown),
                 new StatUpgrade(WeaponStat.ProjectileSpeed),
                 new StatUpgrade(WeaponStat.ProjectileSpread),
                 new StatUpgrade(WeaponStat.Damage),
-                new StatUpgrade(WeaponStat.Cooldown),
             };
 
             for(var i = 4; i > numberOfUpgrades; i--)
@@ -61,11 +61,13 @@ namespace Octoprotecto
                 possibleUpgrades.RemoveAt(Utils.Rng.Next(possibleUpgrades.Count - 1));
             }
 
+            const int UPGRADEBASECOST = 5;
+            const int UPGRADEINCREMENTCOST = 1;
             foreach (var upgrade in possibleUpgrades)
             {
                 this.UpgradesCreated++;
                 upgrade.Name = this.Name + this.UpgradesCreated;
-                upgrade.Cost = 10 + this.UpgradesApplied;
+                upgrade.Cost = UPGRADEBASECOST + this.UpgradesApplied * UPGRADEINCREMENTCOST;
 
                 this.PurchasableUpgrades.Add(upgrade.Name, upgrade);
             }

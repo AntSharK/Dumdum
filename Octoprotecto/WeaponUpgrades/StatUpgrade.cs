@@ -3,7 +3,7 @@
     internal class StatUpgrade : WeaponUpgrade
     {
         private string displayName;
-        public override string DisplayName => this.displayName
+        public override string DisplayName => this.displayName;
 
         public override string Description => "Improves Stats";
         private WeaponStat statUpgraded;

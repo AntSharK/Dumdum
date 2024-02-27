@@ -230,11 +230,6 @@ class Upgradescreen extends Phaser.Scene {
 
     selectedImage: Phaser.GameObjects.Image;
 
-    upgradeButtonSpeed: HTMLButtonElement;
-    upgradeButtonSpread: HTMLButtonElement;
-    upgradeButtonDamage: HTMLButtonElement;
-    upgradeButtonCooldown: HTMLButtonElement;
-
     static MAINBODYNAME = "MAINOCTOPUSBODY";
 
     constructor() {
@@ -298,37 +293,32 @@ class Upgradescreen extends Phaser.Scene {
             this.selectedImage = image;
             image.tint = 0xFFFFFF;
 
-            this.upgradeButtonSpread = null;
-            this.upgradeButtonCooldown = null;
-            this.upgradeButtonDamage = null;
-            this.upgradeButtonSpeed = null;
+            var table = document.getElementById("upgrademenustatsdisplay") as HTMLTableElement;
+            table.innerHTML = "";
+            let row = table.insertRow(0);
+            let speedButtonRow = row.insertCell(0);
+            let spreadButtonRow = row.insertCell(0);
+            let damageButtonRow = row.insertCell(0);
+            let cooldownButtonRow = row.insertCell(0);
 
             for (let key in selectedWeapon.purchasableUpgrades) {
                 var upgrade = selectedWeapon.purchasableUpgrades[key];
 
                 switch (upgrade.displayName) {
                     case "Speed+":
-                        this.upgradeButtonSpeed = this.CreateUpgradeButton(key, upgrade);
+                        this.ConfigureUpgradeButton(speedButtonRow, key, upgrade);
                         break;
                     case "Damage+":
-                        this.upgradeButtonDamage = this.CreateUpgradeButton(key, upgrade);
+                        this.ConfigureUpgradeButton(spreadButtonRow, key, upgrade);
                         break;
                     case "Accuracy+":
-                        this.upgradeButtonSpread = this.CreateUpgradeButton(key, upgrade);
+                        this.ConfigureUpgradeButton(damageButtonRow, key, upgrade);
                         break;
                     case "FireRate+":
-                        this.upgradeButtonCooldown = this.CreateUpgradeButton(key, upgrade);
+                        this.ConfigureUpgradeButton(cooldownButtonRow, key, upgrade);
                         break;
                 }
             }
-
-            var table = document.getElementById("upgrademenustatsdisplay") as HTMLTableElement;
-            table.innerHTML = "";
-            let row = table.insertRow(0);
-            this.upgradeButtonSpread != null ? row.insertCell(0).appendChild(this.upgradeButtonSpread) : row.insertCell(0);
-            this.upgradeButtonSpeed != null ? row.insertCell(0).appendChild(this.upgradeButtonSpeed) : row.insertCell(0);
-            this.upgradeButtonDamage != null ? row.insertCell(0).appendChild(this.upgradeButtonDamage) : row.insertCell(0);
-            this.upgradeButtonCooldown != null ? row.insertCell(0).appendChild(this.upgradeButtonCooldown) : row.insertCell(0);
 
             row = table.insertRow(0);
             row.insertCell(0).textContent = "" + selectedWeapon.spread;
@@ -416,20 +406,17 @@ class Upgradescreen extends Phaser.Scene {
         this.DrawDisplayElements(octopusData);
     }
 
-    CreateUpgradeButton(upgradeId: string, upgrade: WeaponUpgrade): HTMLButtonElement {
-        var unusedButton = document.createElement("button");
-        let button = document.createElement("button");
-        button.textContent = "" + upgrade.cost;
-        button.setAttribute("serverId", upgradeId);
+    ConfigureUpgradeButton(row: HTMLTableCellElement, upgradeId: string, upgrade: WeaponUpgrade) {
+        row.textContent = "" + upgrade.cost;
+        row.setAttribute("serverId", upgradeId);
 
         if (upgrade.cost > this.OctopusData.points) {
-            button.setAttribute("color", "Red");
+            row.style.backgroundColor = "red";
         }
         else {
-            button.onclick = purchaseWeaponUpgrade;
+            row.style.backgroundColor = "green";
+            row.onclick = purchaseWeaponUpgrade;
         }
-
-        return button;
     }
 }
 
