@@ -90,7 +90,7 @@ class BattleArena extends Phaser.Scene {
         });
 
         // Initialize timer
-        this.timeLeftDisplay = this.add.text(0, 0, "", { color: 'Red', fontSize: '3vw' });
+        this.timeLeftDisplay = this.add.text(0, 0, "", { color: 'Red', fontSize: '5vw' });
 
         // DEBUG MODE THINGS - comment out in real cases
         SoloRun.ConfigureDebug(this);

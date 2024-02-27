@@ -41,17 +41,15 @@
     text-align: center;
 }
 
-.displaytopleft {
-    top: 2%;
-    left: 2%;
-}
-
-.displaytopright {
-    top: 20%;
-    left: 70%;
+.displaytop {
+    top: 15%;
+    left: 50%;
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
-    border: 1px solid;
+}
+
+table, th, td {
+    border: 1px solid black;
 }
 
 .displaybottomleft {
@@ -59,4 +57,11 @@
     left: 2%;
     -ms-transform: translate(0%, -50%);
     transform: translate(0%, -50%);
+}
+
+.displaybottomright {
+    top: 90%;
+    left: 85%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
 }
