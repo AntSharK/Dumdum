@@ -9,6 +9,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     points: number = 20;
     hitPoints: number = 998;
     luck: number = 0;
+    armor: number = 0;
     maxHitPoints: number = 998;
     lastHitTime: number = -1000;
     invulnerable: boolean = false;
@@ -31,12 +32,27 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         this.setCircle(this.width / 2, this.originX - this.width / 2, this.originY - this.width / 2);
     }
 
+    static FromData(octopusData: Octopus, scene: Phaser.Scene): Octopus {
+        return new Octopus(octopusData.name,
+            scene,
+            octopusData.desiredX,
+            octopusData.desiredY,
+            octopusData.tint,
+            octopusData.speed,
+            octopusData.points,
+            octopusData.maxHitPoints,
+            octopusData.luck,
+            octopusData.armor,
+            octopusData.weapons);
+    }
+
     constructor(name: string, scene: Phaser.Scene, x: number, y: number,
         tint: number,
         speed: number,
         points: number,
         maxHitPoints: number,
         luck: number,
+        armor: number,
         weaponData: Weapon[]) {
         super(scene, x, y, 'octopus');
 

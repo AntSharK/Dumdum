@@ -373,16 +373,7 @@ class Upgradescreen extends Phaser.Scene {
 
     LoadOctopus(octopusData: Octopus) {
         // Loading of data is independent of the actual sprites being displayed
-        this.OctopusData = new Octopus(octopusData.name,
-            this,
-            this.game.canvas.width / 2,
-            this.game.canvas.height / 2,
-            octopusData.tint,
-            octopusData.speed,
-            octopusData.points,
-            octopusData.maxHitPoints,
-            octopusData.luck,
-            octopusData.weapons,);
+        this.OctopusData = Octopus.FromData(octopusData, this);
 
         this.OriginalTint = octopusData.tint;
         this.DrawOctopus(octopusData);

@@ -43,6 +43,8 @@ namespace Octoprotecto
             }
 
             this.GenerateBaseUpgrades(numberOfBaseUpgrades);
+
+            // TODO: Generate augmentations, not just stat upgrades
         }
 
         private void GenerateBaseUpgrades(int numberOfUpgrades)

@@ -72,6 +72,7 @@ class SoloRun {
             20,
             998,
             0,
+            0,
             startingWeapons as Weapon[]);
 
         arena.spawnOctopus(octopusData);
