@@ -58,7 +58,7 @@ namespace Octoprotecto
 
             for(var i = 4; i > numberOfUpgrades; i--)
             {
-                possibleUpgrades.RemoveAt(Utils.Rng.Next(possibleUpgrades.Count - 1));
+                possibleUpgrades.RemoveAt(Utils.Rng.Next(possibleUpgrades.Count));
             }
 
             const int UPGRADEBASECOST = 5;
