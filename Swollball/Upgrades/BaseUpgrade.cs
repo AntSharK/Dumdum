@@ -1,4 +1,5 @@
-﻿using Swollball.PlayerData;
+﻿using Common.Util;
+using Swollball.PlayerData;
 
 namespace Swollball.Upgrades
 {
@@ -12,7 +13,7 @@ namespace Swollball.Upgrades
 
         public abstract int BorderColor { get; }
 
-        public virtual int FillColor { get; } = UpgradeColors.WHITE;
+        public virtual int FillColor { get; } = Colors.WHITE;
 
         public int Cost { get; }
 

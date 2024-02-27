@@ -1,4 +1,5 @@
-﻿using Swollball.PlayerData;
+﻿using Common.Util;
+using Swollball.PlayerData;
 
 namespace Swollball.Upgrades
 {
@@ -9,8 +10,8 @@ namespace Swollball.Upgrades
         }
 
         public override string Description => $"Armor+{this.UpgradeAmount} for every 10 armor you have.";
-        public override int BorderColor => UpgradeColors.GREEN;
-        public override int FillColor => UpgradeColors.LAVENDER;
+        public override int BorderColor => Colors.GREEN;
+        public override int FillColor => Colors.LAVENDER;
 
         public override void PerformUpgrade(SwollballPlayer player)
         {

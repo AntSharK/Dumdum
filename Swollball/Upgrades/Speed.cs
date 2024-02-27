@@ -1,4 +1,5 @@
-﻿using Swollball.PlayerData;
+﻿using Common.Util;
+using Swollball.PlayerData;
 
 namespace Swollball.Upgrades
 {
@@ -10,7 +11,7 @@ namespace Swollball.Upgrades
         }
 
         public override string Description => $"Speed+{this.UpgradeAmount}";
-        public override int BorderColor => UpgradeColors.BLUE;
+        public override int BorderColor => Colors.BLUE;
 
         public override void PerformUpgrade(SwollballPlayer player)
         {

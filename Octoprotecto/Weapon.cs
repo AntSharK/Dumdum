@@ -11,14 +11,12 @@
         public Dictionary<string, WeaponUpgrade> PurchasableUpgrades { get; } = new Dictionary<string, WeaponUpgrade>();
         public string Name { get; private set; }
 
+        public double UpgradesCreated = 0;
+        public double UpgradesApplied = 0;
+
         public Weapon(string weaponName)
         {
             this.Name = weaponName;
         }
-    }
-
-    public class WeaponUpgrade
-    {
-        public string Name { get; set; } = "Default";
     }
 }

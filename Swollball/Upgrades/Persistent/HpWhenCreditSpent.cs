@@ -1,4 +1,5 @@
-﻿using Swollball.PlayerData;
+﻿using Common.Util;
+using Swollball.PlayerData;
 
 namespace Swollball.Upgrades
 {
@@ -14,8 +15,8 @@ namespace Swollball.Upgrades
 
         public override string Description => $"Gain {this.UpgradeAmount} HP per credit spent on a purchase.";
 
-        public override int BorderColor => UpgradeColors.BLACK;
-        public override int FillColor => UpgradeColors.PERIWINKLE;
+        public override int BorderColor => Colors.BLACK;
+        public override int FillColor => Colors.PERIWINKLE;
 
         public override void PerformUpgrade(SwollballPlayer player)
         {
