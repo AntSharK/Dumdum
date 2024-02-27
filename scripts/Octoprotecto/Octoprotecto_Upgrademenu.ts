@@ -9,6 +9,7 @@ class Upgradescreen extends Phaser.Scene {
 
     selectedImage: Phaser.GameObjects.Image;
 
+    DataSynchronized: boolean = true;
     static MAINBODYNAME = "MAINOCTOPUSBODY";
 
     constructor() {
@@ -32,6 +33,10 @@ class Upgradescreen extends Phaser.Scene {
     }
 
     onObjectClick(pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
+        if (!this.DataSynchronized) {
+            return;
+        }
+
         var image = gameObject as Phaser.GameObjects.Image;
         if (image?.name == null) { return; }
 
@@ -65,8 +70,7 @@ class Upgradescreen extends Phaser.Scene {
             cell.title = "The maximum number of hit points your octopus has.";
             return;
         }
-
-        // TODO: Selected weapon should also show upgrades available
+        
         if (image.name in this.WeaponMap) {
             var selectedWeapon = this.WeaponMap[image.name];
             this.selectedImage = image;
@@ -135,6 +139,8 @@ class Upgradescreen extends Phaser.Scene {
         this.Tentacles = [];
         this.WeaponMap = {};
 
+        var imageToSelect: Phaser.GameObjects.Image = null;
+
         this.MainBody = this.add.image(this.game.canvas.width / 2, this.game.canvas.height / 2, "octopus");
         this.MainBody.tint = octopusData.tint;
         this.MainBody.setScale(this.UIScale);
@@ -144,6 +150,12 @@ class Upgradescreen extends Phaser.Scene {
         this.MainBody.setInteractive({
             pixelPerfect: true
         });
+
+        // Transfer over selected image data
+        if (this.selectedImage != null && this.selectedImage.name == this.MainBody.name) {
+            imageToSelect = this.MainBody;
+            this.selectedImage = null;
+        };
 
         this.OctopusData.weapons.forEach(w => {
             var newTentacle = this.add.image(this.game.canvas.width / 2, this.game.canvas.height / 2, "fin");
@@ -155,10 +167,15 @@ class Upgradescreen extends Phaser.Scene {
             newTentacle.setName("TENTACLE" + this.Tentacles.length);
             newTentacle.setInteractive({
                 pixelPerfect: true
-            });
+            }); 
 
             this.Tentacles.push(newTentacle);
             this.WeaponMap[newTentacle.name] = w;
+
+            if (this.selectedImage != null && this.selectedImage.name == newTentacle.name) {
+                imageToSelect = newTentacle;
+                this.selectedImage = null;
+            };
         })
 
         // Add a dummy element to handle off-by-one placement
@@ -174,6 +191,11 @@ class Upgradescreen extends Phaser.Scene {
             let offsetY = t.y - this.MainBody.y;
             t.setRotation(Math.atan2(-offsetY, -offsetX));
         })
+
+        // Restore the clicked image
+        if (imageToSelect != null) {
+            this.onObjectClick(null, imageToSelect);
+        }
     }
 
     LoadOctopus(octopusData: Octopus) {
@@ -181,6 +203,7 @@ class Upgradescreen extends Phaser.Scene {
         this.OctopusData = Octopus.FromData(octopusData, this);
 
         this.OriginalTint = octopusData.tint;
+        this.DataSynchronized = true;
         this.DrawOctopus(octopusData);
         this.DrawDisplayElements(octopusData);
     }
@@ -203,15 +226,17 @@ function purchaseWeaponUpgrade(ev: MouseEvent) {
     var serverId = (ev.target as HTMLElement).getAttribute("serverId");
 
     // TODO: Add a refresh button
-    // TODO: Clear UI and wait for response
-    // TODO: Restore original state of clicked thing
 
+    setUpgradeMenuHidden(true);
     signalRconnection.invoke("PurchaseWeaponUpgrade",
         sessionStorage.getItem(RoomIdSessionStorageKey),
         sessionStorage.getItem(UserIdSessionStorageKey),
         serverId).catch(function (err) {
             return console.error(err.toString());
         });
+
+    var upgradeScene = octoProtecto.game.scene.getScene("Upgradescreen") as Upgradescreen;
+    upgradeScene.DataSynchronized = false;
 
     ev.preventDefault();
     ev.stopPropagation();
