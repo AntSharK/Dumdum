@@ -41,7 +41,7 @@ namespace Octoprotecto
 
             foreach (var player in Players.Values)
             {
-                player.IsActive = false;
+                player.NextRound();
             }
         }
 

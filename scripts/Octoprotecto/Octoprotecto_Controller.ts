@@ -287,6 +287,7 @@ class Upgradescreen extends Phaser.Scene {
             return;
         }
 
+        // TODO: Selected weapon should also show upgrades available
         if (image.name in this.WeaponMap) {
             var selectedWeapon = this.WeaponMap[image.name];
             this.selectedImage = image;

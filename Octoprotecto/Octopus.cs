@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Numerics;
 using Common;
 using Common.Util;
 
@@ -20,6 +21,7 @@ namespace Octoprotecto
         public int Armor { get; set; } = 0;
         public bool IsActive { get; set; } = true;
         public List<Weapon> Weapons { get; } = new List<Weapon>();
+        public int RefreshCost = 1;
 
         public Octopus(string name, string connectionId, string roomName) 
             : base(name, connectionId, roomName)
@@ -40,6 +42,24 @@ namespace Octoprotecto
         internal int GetRespawnCost()
         {
             return 10 + this.TotalDeaths * 5;
+        }
+
+        internal void GenerateNewUpgrades()
+        {
+            this.RefreshCost = this.RefreshCost * 2;
+            foreach(var weapon in this.Weapons)
+            {
+                weapon.GenerateUpgrades(this.Luck);
+            }
+
+            // TODO: Generate upgrades for main body
+        }
+
+        internal void NextRound()
+        {
+            this.IsActive = false;
+            this.GenerateNewUpgrades();
+            this.RefreshCost = 1;
         }
     }
 }

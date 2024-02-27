@@ -2,7 +2,23 @@
 {
     internal class StatUpgrade : WeaponUpgrade
     {
-        public override string DisplayName => "Improve Stats";
+        public override string DisplayName { get {
+                switch (this.statUpgraded)
+                {
+
+                    case WeaponStat.ProjectileSpeed:
+                        return "Speed+";
+                    case WeaponStat.ProjectileSpread:
+                        return "Accuracy+";
+                    case WeaponStat.Damage:
+                        return "Damage+";
+                    case WeaponStat.Cooldown:
+                        return "FireRate+";
+                    default:
+                        return "Unknown";
+                }
+            } 
+        }
         public override string Description => "Improves Stats";
         private WeaponStat statUpgraded;
 
