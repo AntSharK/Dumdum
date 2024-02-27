@@ -12,6 +12,6 @@
 
     public class WeaponUpgrade
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = "Default";
     }
 }
