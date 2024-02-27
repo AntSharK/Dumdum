@@ -81,7 +81,7 @@ class Octocontroller extends Phaser.Scene {
                 this.respawnDisplay.text = "CLICK TO RESPAWN. COST: " + this.pointsToRespawn + "/" + this.totalPoints;
             }
             else {
-                this.respawnDisplay.text = "NOT ENOUGH POINTS. COST: " + this.pointsToRespawn + "/" + this.totalPoints;
+                this.respawnDisplay.text = "UNABLE TO RESPAWN. COST: " + this.pointsToRespawn + "/" + this.totalPoints;
             }
         }
     }
@@ -261,8 +261,8 @@ class Upgradescreen extends Phaser.Scene {
 
             if (this.selectedImage.name == image.name) {
                 this.selectedImage = null;
-                document.getElementById("upgrademenutopleft").hidden = false;
-                var table = document.getElementById("upgrademenutopright") as HTMLTableElement;
+                document.getElementById("upgrademenupointsdisplay").hidden = false;
+                var table = document.getElementById("upgrademenustatsdisplay") as HTMLTableElement;
                 table.innerHTML = "";
                 return;
             }
@@ -272,14 +272,14 @@ class Upgradescreen extends Phaser.Scene {
             this.selectedImage = image;
             image.tint = 0xFFFFFF;
 
-            var table = document.getElementById("upgrademenutopright") as HTMLTableElement;
+            var table = document.getElementById("upgrademenustatsdisplay") as HTMLTableElement;
             table.innerHTML = "";
             let row = table.insertRow(0);
             row.insertCell(0).textContent = "" + this.OctopusData.speed;
-            row.insertCell(0).textContent = "SPEED"
-            row = table.insertRow(0);
             row.insertCell(0).textContent = "" + this.OctopusData.maxHitPoints;
-            row.insertCell(0).textContent = "MAX-HP"
+            row = table.insertRow(0);
+            row.insertCell(0).textContent = "SPD"
+            row.insertCell(0).textContent = "HP"
             return;
         }
 
@@ -288,27 +288,25 @@ class Upgradescreen extends Phaser.Scene {
             this.selectedImage = image;
             image.tint = 0xFFFFFF;
 
-            var table = document.getElementById("upgrademenutopright") as HTMLTableElement;
+            var table = document.getElementById("upgrademenustatsdisplay") as HTMLTableElement;
             table.innerHTML = "";
             let row = table.insertRow(0);
             row.insertCell(0).textContent = "" + selectedWeapon.spread;
-            row.insertCell(0).textContent = "SPREAD"
-            row = table.insertRow(0);
             row.insertCell(0).textContent = "" + selectedWeapon.fireRate;
-            row.insertCell(0).textContent = "COOLDOWN"
-            row = table.insertRow(0);
             row.insertCell(0).textContent = "" + selectedWeapon.projectileSpeed;
-            row.insertCell(0).textContent = "SPEED"
-            row = table.insertRow(0);
             row.insertCell(0).textContent = "" + selectedWeapon.projectileDamage;
-            row.insertCell(0).textContent = "DAMAGE"
+            row = table.insertRow(0);
+            row.insertCell(0).textContent = "ACC"
+            row.insertCell(0).textContent = "CD"
+            row.insertCell(0).textContent = "SPD"
+            row.insertCell(0).textContent = "DMG"
             return;
         }
     }
 
     DrawDisplayElements(octopusData: Octopus) {
         setUpgradeMenuHidden(false);
-        document.getElementById("upgrademenutopleft").textContent = "POINTS:" + octopusData.points;
+        document.getElementById("upgrademenupointsdisplay").textContent = "$" + octopusData.points;
     }
 
     DrawOctopus(octopusData: Octopus) {

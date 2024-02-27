@@ -4,6 +4,7 @@ class SoloRun {
     static Enabled: boolean = false;
 
     static ConfigureDebug(scene: BattleArena) {
+        // Spawn enemies
         scene.input.keyboard.on('keydown-Q', event => {
             Fish.SpawnFishes(scene, 1, scene.spawningRect, scene.fishes, scene.octopi, "starfish");
         }, scene);
@@ -11,11 +12,17 @@ class SoloRun {
             Fish.SpawnFishes(scene, 1, scene.spawningRect, scene.fishes, scene.octopi, "homingfish");
         }, scene);
 
+        // Take damage
         scene.input.keyboard.on('keydown-Z', event => {
             for (let key in BattleArena.OctopiMap) {
                 let octopus = BattleArena.OctopiMap[key];
                 octopus.TakeDamage(100);
             }
+        }, this);
+
+        // Run down the clock
+        scene.input.keyboard.on('keydown-X', event => {
+            scene.roundTimer.elapsed += 5000;
         }, this);
     }
 
