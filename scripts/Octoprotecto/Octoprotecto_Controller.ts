@@ -239,11 +239,6 @@ class Upgradescreen extends Phaser.Scene {
 
     constructor() {
         super({ key: 'Upgradescreen' });
-
-        this.upgradeButtonSpread = new HTMLButtonElement();
-        this.upgradeButtonSpeed = new HTMLButtonElement();
-        this.upgradeButtonDamage = new HTMLButtonElement();
-        this.upgradeButtonCooldown = new HTMLButtonElement();
     }
 
     preload() {
@@ -303,31 +298,27 @@ class Upgradescreen extends Phaser.Scene {
             this.selectedImage = image;
             image.tint = 0xFFFFFF;
 
-            this.upgradeButtonCooldown.textContent = "";
-            this.upgradeButtonDamage.textContent = "";
-            this.upgradeButtonSpeed.textContent = "";
-            this.upgradeButtonSpread.textContent = "";
+            this.upgradeButtonSpread = null;
+            this.upgradeButtonCooldown = null;
+            this.upgradeButtonDamage = null;
+            this.upgradeButtonSpeed = null;
+
             for (let key in selectedWeapon.purchasableUpgrades) {
                 var upgrade = selectedWeapon.purchasableUpgrades[key];
-                var button: HTMLButtonElement;
+
                 switch (upgrade.displayName) {
                     case "Speed+":
-                        button = this.upgradeButtonSpeed;
+                        this.upgradeButtonSpeed = this.CreateUpgradeButton(key, upgrade);
                         break;
                     case "Damage+":
-                        button = this.upgradeButtonDamage;
+                        this.upgradeButtonDamage = this.CreateUpgradeButton(key, upgrade);
                         break;
                     case "Accuracy+":
-                        button = this.upgradeButtonSpread;
+                        this.upgradeButtonSpread = this.CreateUpgradeButton(key, upgrade);
                         break;
                     case "FireRate+":
-                        button = this.upgradeButtonCooldown;
+                        this.upgradeButtonCooldown = this.CreateUpgradeButton(key, upgrade);
                         break;
-                }
-
-                if (button != null) {
-                    button.textContent = "" + upgrade.cost;
-                    button.onclick = () => purchaseWeaponUpgrade(key, upgrade, this.OctopusData);
                 }
             }
 
@@ -424,16 +415,29 @@ class Upgradescreen extends Phaser.Scene {
         this.DrawOctopus(octopusData);
         this.DrawDisplayElements(octopusData);
     }
+
+    CreateUpgradeButton(upgradeId: string, upgrade: WeaponUpgrade): HTMLButtonElement {
+        var unusedButton = document.createElement("button");
+        let button = document.createElement("button");
+        button.textContent = "" + upgrade.cost;
+        button.setAttribute("serverId", upgradeId);
+
+        if (upgrade.cost > this.OctopusData.points) {
+            button.setAttribute("color", "Red");
+        }
+        else {
+            button.onclick = purchaseWeaponUpgrade;
+        }
+
+        return button;
+    }
 }
 
-function purchaseWeaponUpgrade(key: string, upgrade: WeaponUpgrade, octopusData: Octopus) {
-    if (octopusData.points < upgrade.cost) {
-        return;
-
-        // TODO: Actually just mark the button as red
-    }
-
-
+function purchaseWeaponUpgrade(ev: MouseEvent) {
+    var serverId = (ev.target as HTMLElement).getAttribute("serverId");
+    ev.preventDefault();
+    ev.stopPropagation();
+    return;
 }
 
 function setUpgradeMenuHidden(hidden: boolean) {
