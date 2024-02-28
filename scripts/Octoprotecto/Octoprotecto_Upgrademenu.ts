@@ -104,12 +104,25 @@ class Upgradescreen extends Phaser.Scene {
             }
 
             row = table.insertRow(0);
+            let refreshButtonRow = row.insertCell(0);
+            refreshButtonRow.textContent = "$" + this.OctopusData.refreshCost;
+            if (this.OctopusData.refreshCost > this.OctopusData.points) {
+                refreshButtonRow.style.backgroundColor = "red";
+            }
+            else {
+                refreshButtonRow.style.backgroundColor = "green";
+                refreshButtonRow.onclick = purchaseWeaponUpgrade;
+            }
+
             row.insertCell(0).textContent = "" + Math.round(selectedWeapon.spread * 100) / 100;
             row.insertCell(0).textContent = "" + Math.round(selectedWeapon.fireRate * 100) / 100;
             row.insertCell(0).textContent = "" + Math.round(selectedWeapon.projectileSpeed * 100) / 100;
             row.insertCell(0).textContent = "" + Math.round(selectedWeapon.projectileDamage * 100) / 100;
             row = table.insertRow(0);
             let cell = row.insertCell(0);
+            cell.textContent = ">>";
+            cell.title = "Refreshing will change the available purchaseable upgrades everywhere.";
+            cell = row.insertCell(0);
             cell.textContent = "ACC";
             cell.title = "Accuracy is the total spread of projectiles launched. A smaller value means more precision.";
             cell = row.insertCell(0);
@@ -225,8 +238,6 @@ class Upgradescreen extends Phaser.Scene {
 function purchaseWeaponUpgrade(ev: MouseEvent) {
     var serverId = (ev.target as HTMLElement).getAttribute("serverId");
 
-    // TODO: Add a refresh button
-
     setUpgradeMenuHidden(true);
     signalRconnection.invoke("PurchaseWeaponUpgrade",
         sessionStorage.getItem(RoomIdSessionStorageKey),
@@ -247,4 +258,26 @@ function setUpgradeMenuHidden(hidden: boolean) {
     [].forEach.call(menuElements, function (element, index, array) {
         element.hidden = hidden;
     });
+}
+
+function ConfigureUpgradeMenuSignalRListening(signalRconnection: any) {   
+    signalRconnection.on("UpdateUpgrade", function (octopusData: Octopus,
+        roomId: string, playerId: string) {
+
+        // The Room ID and player ID are only passed in when this is from a reconnect event
+        if (roomId != null && playerId != null) {
+            sessionStorage.setItem(RoomIdSessionStorageKey, roomId);
+            sessionStorage.setItem(UserIdSessionStorageKey, playerId);
+            hideLobbyMenu();
+            var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena");
+            battleArenaScene.scene.transition({ target: "Upgradescreen" });
+        }
+
+        var controllerScene = octoProtecto.game.scene.getScene("Octocontroller") as Octocontroller;
+        controllerScene.state = ControllerState.WaitingForSync;
+        controllerScene.scene.transition({ target: "Upgradescreen" });
+
+        var upgradeScene = octoProtecto.game.scene.getScene("Upgradescreen") as Upgradescreen;
+        upgradeScene.LoadOctopus(octopusData);
+    })
 }

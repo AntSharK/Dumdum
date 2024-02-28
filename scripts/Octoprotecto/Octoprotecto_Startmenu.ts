@@ -47,6 +47,7 @@ window.onload = () => {
 
     ConfigureMenuSignalRListening(signalRconnection);
     ConfigureControllerSignalRListening(signalRconnection);
+    ConfigureUpgradeMenuSignalRListening(signalRconnection);
     ConfigureHostSignalRListening(signalRconnection);
 
     octoProtecto = new Octoprotecto();

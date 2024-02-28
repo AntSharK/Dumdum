@@ -211,7 +211,13 @@ namespace Octoprotecto
             if (octopus == null || room == null) { return; }
 
             if (room.State != OctoprotectoRoom.RoomState.Upgrading) { return; }
-            if (octopus.TryPurchaseWeaponUpgrade(upgradeId))
+
+            // A null upgrade ID is sent to refresh upgrades
+            if (upgradeId == null)
+            {
+                this.RefreshUpgrades(octopus);
+            }
+            else if (octopus.TryPurchaseWeaponUpgrade(upgradeId))
             {
                 octopus.GenerateNewUpgrades();
             }
