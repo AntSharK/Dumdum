@@ -56,19 +56,15 @@ namespace Octoprotecto
                 new StatUpgrade(WeaponStat.Damage),
             };
 
-            for(var i = 4; i > numberOfUpgrades; i--)
+            for(var i = possibleUpgrades.Count; i > numberOfUpgrades; i--)
             {
                 possibleUpgrades.RemoveAt(Utils.Rng.Next(possibleUpgrades.Count));
             }
 
-            const int UPGRADEBASECOST = 5;
-            const int UPGRADEINCREMENTCOST = 1;
             foreach (var upgrade in possibleUpgrades)
             {
                 this.UpgradesCreated++;
-                upgrade.Name = this.Name + this.UpgradesCreated;
-                upgrade.Cost = UPGRADEBASECOST + this.UpgradesApplied * UPGRADEINCREMENTCOST;
-
+                upgrade.ReadWeaponProperties(this);
                 this.PurchasableUpgrades.Add(upgrade.Name, upgrade);
             }
         }

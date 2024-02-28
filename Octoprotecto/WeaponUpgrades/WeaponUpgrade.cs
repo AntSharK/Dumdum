@@ -22,6 +22,16 @@ namespace Octoprotecto
             }
         }
 
+        // Sets the cost and the name
+        public virtual void ReadWeaponProperties(Weapon weapon)
+        {
+            const int UPGRADEBASECOST = 5;
+            const int UPGRADEINCREMENTCOST = 1;
+
+            this.Name = weapon.Name + weapon.UpgradesCreated;
+            this.Cost = UPGRADEBASECOST + weapon.UpgradesApplied * UPGRADEINCREMENTCOST;
+        }
+
         protected virtual void ApplyPostUpgrade(Weapon weapon)
         {
             // Do nothing
