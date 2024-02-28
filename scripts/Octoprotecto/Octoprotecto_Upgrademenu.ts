@@ -192,9 +192,6 @@ class Upgradescreen extends Phaser.Scene {
             t.setRotation(Math.atan2(-offsetY, -offsetX));
         })
 
-        // Unselect on loading to restore a default state
-        this.selectedImage = null;
-
         // Restore the clicked image
         if (imageToSelect != null) {
             this.onObjectClick(null, imageToSelect);
