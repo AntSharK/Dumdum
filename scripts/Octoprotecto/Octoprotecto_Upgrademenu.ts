@@ -52,6 +52,7 @@ class Upgradescreen extends Phaser.Scene {
             }
         }
 
+        // For mainbody upgrades
         if (image.name == Upgradescreen.MAINBODYNAME) {
             this.selectedImage = image;
             image.tint = 0xFFFFFF;
@@ -59,18 +60,23 @@ class Upgradescreen extends Phaser.Scene {
             var table = document.getElementById("upgrademenustatsdisplay") as HTMLTableElement;
             table.innerHTML = "";
             let row = table.insertRow(0);
+            row.insertCell(0).textContent = "" + this.OctopusData.armor;
             row.insertCell(0).textContent = "" + this.OctopusData.speed;
             row.insertCell(0).textContent = "" + this.OctopusData.maxHitPoints;
             row = table.insertRow(0);
             let cell = row.insertCell(0);
-            cell.textContent = "SPD";
-            cell.title = "The speed of your octopus.";
+            cell.textContent = "AMR";
+            cell.title = "Each point of armor reduces damage taken from a single hit.";
             cell = row.insertCell(0);
             cell.textContent = "HP";
             cell.title = "The maximum number of hit points your octopus has.";
+            cell = row.insertCell(0);
+            cell.textContent = "SPD";
+            cell.title = "The speed of your octopus.";
             return;
         }
-        
+
+        // For weapon upgrades
         if (image.name in this.WeaponMap) {
             var selectedWeapon = this.WeaponMap[image.name];
             this.selectedImage = image;
