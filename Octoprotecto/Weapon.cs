@@ -41,13 +41,6 @@ namespace Octoprotecto
                 }
             }
 
-            this.GenerateBaseUpgrades(numberOfBaseUpgrades);
-
-            // TODO: Generate augmentations, not just stat upgrades
-        }
-
-        private void GenerateBaseUpgrades(int numberOfUpgrades)
-        {
             var possibleUpgrades = new List<Upgrade<Weapon>>() {
                 new WeaponStatUpgrade(WeaponStat.Cooldown),
                 new WeaponStatUpgrade(WeaponStat.ProjectileSpeed),
@@ -55,17 +48,8 @@ namespace Octoprotecto
                 new WeaponStatUpgrade(WeaponStat.Damage),
             };
 
-            for(var i = possibleUpgrades.Count; i > numberOfUpgrades; i--)
-            {
-                possibleUpgrades.RemoveAt(Utils.Rng.Next(possibleUpgrades.Count));
-            }
-
-            foreach (var upgrade in possibleUpgrades)
-            {
-                this.UpgradesCreated++;
-                upgrade.ReadWeaponProperties(this);
-                this.PurchasableUpgrades.Add(upgrade.Name, upgrade);
-            }
+            Upgrade<Weapon>.GenerateBaseUpgrades(possibleUpgrades, numberOfBaseUpgrades, this);
+            // TODO: Generate augmentations, not just stat upgrades
         }
     }
 }

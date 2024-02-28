@@ -27,5 +27,20 @@ namespace Octoprotecto
             this.Name = target.Name + this.UpgradeName + target.UpgradesCreated;
             this.Cost = this.UpgradeBaseCost + target.UpgradesApplied * this.UpgradeIncrementCost;
         }
+
+        internal static void GenerateBaseUpgrades(List<Upgrade<TargetType>> possibleUpgrades, int numberOfUpgrades, TargetType target)
+        {
+            for (var i = possibleUpgrades.Count; i > numberOfUpgrades; i--)
+            {
+                possibleUpgrades.RemoveAt(Utils.Rng.Next(possibleUpgrades.Count));
+            }
+
+            foreach (var upgrade in possibleUpgrades)
+            {
+                target.UpgradesCreated++;
+                upgrade.ReadWeaponProperties(target);
+                target.PurchasableUpgrades.Add(upgrade.Name, upgrade);
+            }
+        }
     }
 }

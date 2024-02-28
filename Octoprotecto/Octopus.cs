@@ -58,6 +58,28 @@ namespace Octoprotecto
 
             // TODO: Generate upgrades for main body
             this.PurchasableUpgrades.Clear();
+            var numberOfBaseUpgrades = 1;
+            if (this.Luck > -5)
+            {
+                var randomSeed = Utils.Rng.Next(this.Luck + 30);
+                if (randomSeed >= 80)
+                {
+                    numberOfBaseUpgrades = 3;
+                }
+                else if (randomSeed >= 25)
+                {
+                    numberOfBaseUpgrades = 2;
+                }
+            }
+
+            var possibleUpgrades = new List<Upgrade<Octopus>>() {
+                new BodyStatUpgrade(BodyStat.Armor),
+                new BodyStatUpgrade(BodyStat.Speed),
+                new BodyStatUpgrade(BodyStat.MaxHp),
+            };
+
+            Upgrade<Octopus>.GenerateBaseUpgrades(possibleUpgrades, numberOfBaseUpgrades, this);
+            // TODO: Generate augmentations, not just stat upgrades
         }
 
         internal void NextRound()
