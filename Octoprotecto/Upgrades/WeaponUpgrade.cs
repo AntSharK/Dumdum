@@ -2,7 +2,7 @@
 
 namespace Octoprotecto
 {
-    public abstract class WeaponUpgrade
+    public abstract class Upgrade<TargetType> where TargetType : IUpgradeTracker<Upgrade<TargetType>>
     {
         public string Name { get; set; } = "Default";
         public abstract string DisplayName { get; }
@@ -12,29 +12,19 @@ namespace Octoprotecto
 
         public virtual int FillColor { get; } = Colors.WHITE;
         public virtual int Cost { get; set; } = 0;
+        public abstract int UpgradeBaseCost { get; }
+        public abstract int UpgradeIncrementCost { get; }
 
-        public virtual void ApplyUpgrade(Weapon weapon)
+        public virtual void ApplyUpgrade(TargetType target)
         {
-            weapon.UpgradesApplied++;
-            foreach (var trackedUpgrade in weapon.TrackedUpgrades)
-            {
-                trackedUpgrade.ApplyPostUpgrade(weapon);
-            }
+            target.UpgradesApplied++;
         }
 
         // Sets the cost and the name
-        public virtual void ReadWeaponProperties(Weapon weapon)
+        public virtual void ReadWeaponProperties(TargetType target)
         {
-            const int UPGRADEBASECOST = 5;
-            const int UPGRADEINCREMENTCOST = 1;
-
-            this.Name = weapon.Name + weapon.UpgradesCreated;
-            this.Cost = UPGRADEBASECOST + weapon.UpgradesApplied * UPGRADEINCREMENTCOST;
-        }
-
-        protected virtual void ApplyPostUpgrade(Weapon weapon)
-        {
-            // Do nothing
+            this.Name = target.Name + target.UpgradesCreated;
+            this.Cost = this.UpgradeBaseCost + target.UpgradesApplied * this.UpgradeIncrementCost;
         }
     }
 }

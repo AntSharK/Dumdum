@@ -2,19 +2,19 @@
 
 namespace Octoprotecto
 {
-    public class Weapon
+    public class Weapon : IUpgradeTracker<Upgrade<Weapon>>
     {
         public double FireRate { get; set; } = 1000; // Milliseconds between shots
         public double Spread { get; set; } = 1.4; // Total radians - equally spread in both directions
         public double Range { get; set; } = 225;
         public double ProjectileDamage { get; set; } = 19;
         public double ProjectileSpeed { get; set; } = 350; // Units per second
-        public List<WeaponUpgrade> TrackedUpgrades { get; } = new List<WeaponUpgrade>();
-        public Dictionary<string, WeaponUpgrade> PurchasableUpgrades { get; } = new Dictionary<string, WeaponUpgrade>();
+        public List<Upgrade<Weapon>> TrackedUpgrades { get; } = new List<Upgrade<Weapon>>();
+        public Dictionary<string, Upgrade<Weapon>> PurchasableUpgrades { get; } = new Dictionary<string, Upgrade<Weapon>>();
         public string Name { get; private set; }
 
-        public int UpgradesCreated = 0;
-        public int UpgradesApplied = 0;
+        public int UpgradesCreated { get; set; } = 0;
+        public int UpgradesApplied { get; set; } = 0;
 
         public Weapon(string weaponName)
         {
@@ -48,7 +48,7 @@ namespace Octoprotecto
 
         private void GenerateBaseUpgrades(int numberOfUpgrades)
         {
-            var possibleUpgrades = new List<WeaponUpgrade>() {
+            var possibleUpgrades = new List<Upgrade<Weapon>>() {
                 new StatUpgrade(WeaponStat.Cooldown),
                 new StatUpgrade(WeaponStat.ProjectileSpeed),
                 new StatUpgrade(WeaponStat.ProjectileSpread),
