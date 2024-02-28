@@ -190,26 +190,6 @@ function ConfigureControllerSignalRListening(signalRconnection: any) {
         clearState();
         setTimeout(() => window.location.reload(), 10000);
     });
-
-    signalRconnection.on("UpdateUpgrade", function (octopusData: Octopus,
-        roomId: string, playerId: string) {
-
-        // The Room ID and player ID are only passed in when this is from a reconnect event
-        if (roomId != null && playerId != null) {
-            sessionStorage.setItem(RoomIdSessionStorageKey, roomId);
-            sessionStorage.setItem(UserIdSessionStorageKey, playerId);
-            hideLobbyMenu();
-            var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena");
-            battleArenaScene.scene.transition({ target: "Upgradescreen" });
-        }
-
-        var controllerScene = octoProtecto.game.scene.getScene("Octocontroller") as Octocontroller;
-        controllerScene.state = ControllerState.WaitingForSync;
-        controllerScene.scene.transition({ target: "Upgradescreen" });
-
-        var upgradeScene = octoProtecto.game.scene.getScene("Upgradescreen") as Upgradescreen;
-        upgradeScene.LoadOctopus(octopusData);
-    })
 }
 
 enum ControllerState {

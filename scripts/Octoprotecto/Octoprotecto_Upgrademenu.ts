@@ -192,6 +192,9 @@ class Upgradescreen extends Phaser.Scene {
             t.setRotation(Math.atan2(-offsetY, -offsetX));
         })
 
+        // Unselect on loading to restore a default state
+        this.selectedImage = null;
+
         // Restore the clicked image
         if (imageToSelect != null) {
             this.onObjectClick(null, imageToSelect);
@@ -247,4 +250,27 @@ function setUpgradeMenuHidden(hidden: boolean) {
     [].forEach.call(menuElements, function (element, index, array) {
         element.hidden = hidden;
     });
+}
+
+function ConfigureUpgradeMenuSignalRListening(signalRconnection: any) {   
+
+    signalRconnection.on("UpdateUpgrade", function (octopusData: Octopus,
+        roomId: string, playerId: string) {
+
+        // The Room ID and player ID are only passed in when this is from a reconnect event
+        if (roomId != null && playerId != null) {
+            sessionStorage.setItem(RoomIdSessionStorageKey, roomId);
+            sessionStorage.setItem(UserIdSessionStorageKey, playerId);
+            hideLobbyMenu();
+            var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena");
+            battleArenaScene.scene.transition({ target: "Upgradescreen" });
+        }
+
+        var controllerScene = octoProtecto.game.scene.getScene("Octocontroller") as Octocontroller;
+        controllerScene.state = ControllerState.WaitingForSync;
+        controllerScene.scene.transition({ target: "Upgradescreen" });
+
+        var upgradeScene = octoProtecto.game.scene.getScene("Upgradescreen") as Upgradescreen;
+        upgradeScene.LoadOctopus(octopusData);
+    })
 }
