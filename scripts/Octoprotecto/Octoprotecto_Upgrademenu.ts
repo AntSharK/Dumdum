@@ -60,12 +60,44 @@ class Upgradescreen extends Phaser.Scene {
             var table = document.getElementById("upgrademenustatsdisplay") as HTMLTableElement;
             table.innerHTML = "";
             let row = table.insertRow(0);
-            row.insertCell(0).textContent = "" + this.OctopusData.armor;
-            row.insertCell(0).textContent = "" + this.OctopusData.speed;
-            row.insertCell(0).textContent = "" + this.OctopusData.maxHitPoints;
+
+            let armorButtonRow = row.insertCell(0);
+            let playerspeedButtonRow = row.insertCell(0);
+            let maxhpButtonRow = row.insertCell(0);
+
+            for (let key in this.OctopusData.purchasableUpgrades) {
+                var upgrade = this.OctopusData.purchasableUpgrades[key];
+
+                switch (upgrade.displayName) {
+                    case "Armor+":
+                        this.ConfigureUpgradeButton(armorButtonRow, key, upgrade);
+                        break;
+                    case "Playerspeed+":
+                        this.ConfigureUpgradeButton(playerspeedButtonRow, key, upgrade);
+                        break;
+                    case "Maxhp+":
+                        this.ConfigureUpgradeButton(maxhpButtonRow, key, upgrade);
+                        break;
+                }
+            }
+
+            row = table.insertRow(0);
+            let refreshButtonRow = row.insertCell(0);
+            refreshButtonRow.textContent = "$" + this.OctopusData.refreshCost;
+            if (this.OctopusData.refreshCost > this.OctopusData.points) {
+                refreshButtonRow.style.backgroundColor = "red";
+            }
+            else {
+                refreshButtonRow.style.backgroundColor = "green";
+                refreshButtonRow.onclick = purchaseUpgrade;
+            }
+
+            row.insertCell(0).textContent = "" + Math.round(this.OctopusData.armor * 100)/100;
+            row.insertCell(0).textContent = "" + Math.round(this.OctopusData.speed * 10000)/100;
+            row.insertCell(0).textContent = "" + Math.round(this.OctopusData.maxHitPoints * 100)/100;
             row = table.insertRow(0);
             let cell = row.insertCell(0);
-            cell.textContent = "AMR";
+            cell.textContent = "ARM";
             cell.title = "Each point of armor reduces damage taken from a single hit.";
             cell = row.insertCell(0);
             cell.textContent = "HP";
@@ -117,7 +149,7 @@ class Upgradescreen extends Phaser.Scene {
             }
             else {
                 refreshButtonRow.style.backgroundColor = "green";
-                refreshButtonRow.onclick = purchaseWeaponUpgrade;
+                refreshButtonRow.onclick = purchaseUpgrade;
             }
 
             row.insertCell(0).textContent = "" + Math.round(selectedWeapon.spread * 100) / 100;
@@ -236,16 +268,16 @@ class Upgradescreen extends Phaser.Scene {
         }
         else {
             row.style.backgroundColor = "green";
-            row.onclick = purchaseWeaponUpgrade;
+            row.onclick = purchaseUpgrade;
         }
     }
 }
 
-function purchaseWeaponUpgrade(ev: MouseEvent) {
+function purchaseUpgrade(ev: MouseEvent) {
     var serverId = (ev.target as HTMLElement).getAttribute("serverId");
 
     setUpgradeMenuHidden(true);
-    signalRconnection.invoke("PurchaseWeaponUpgrade",
+    signalRconnection.invoke("PurchaseUpgrade",
         sessionStorage.getItem(RoomIdSessionStorageKey),
         sessionStorage.getItem(UserIdSessionStorageKey),
         serverId).catch(function (err) {

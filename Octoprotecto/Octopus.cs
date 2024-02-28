@@ -113,5 +113,21 @@ namespace Octoprotecto
 
             return false;
         }
+
+        internal bool TryPurchaseBodyUpgrade(string upgradeId)
+        {
+            if (this.PurchasableUpgrades.ContainsKey(upgradeId))
+            {
+                var upgrade = this.PurchasableUpgrades[upgradeId];
+                if (this.Points >= upgrade.Cost)
+                {
+                    this.Points = this.Points - upgrade.Cost;
+                    upgrade.ApplyUpgrade(this);
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

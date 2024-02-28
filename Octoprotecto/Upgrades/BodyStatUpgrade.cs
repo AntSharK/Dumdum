@@ -20,7 +20,7 @@
                     this.displayName = "Armor+";
                     break;
                 case BodyStat.Speed:
-                    this.displayName = "Speed+";
+                    this.displayName = "Playerspeed+";
                     break;
                 case BodyStat.MaxHp:
                     this.displayName = "Maxhp+";
