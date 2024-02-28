@@ -63,6 +63,7 @@ class SoloRun {
         ];
 
         // Create an object with the same properties as Octopus
+        /* Commenting out - solo mode is currently disabled
         var octopusData = new Octopus("SoloPlayer",
             arena,
             arena.game.canvas.width / 2,
@@ -77,6 +78,7 @@ class SoloRun {
 
         arena.spawnOctopus(octopusData);
         arena.events.on('update', () => SoloRun.ApplyKeyboardControls());
+        */
 
         /* Old logic to reload in solo mode is overwritten by general logic to end game when no one is alive
         signalRconnection.on("OctopusDeathNotification", function (totalPoints: integer, pointsToRespawn: integer) {

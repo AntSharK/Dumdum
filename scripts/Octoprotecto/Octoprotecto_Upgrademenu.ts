@@ -79,6 +79,17 @@ class Upgradescreen extends Phaser.Scene {
             var table = document.getElementById("upgrademenustatsdisplay") as HTMLTableElement;
             table.innerHTML = "";
             let row = table.insertRow(0);
+
+            let refreshButtonRow = row.insertCell(0);
+            refreshButtonRow.textContent = "$" + this.OctopusData.refreshCost;
+            if (this.OctopusData.refreshCost > this.OctopusData.points) {
+                refreshButtonRow.style.backgroundColor = "red";
+            }
+            else {
+                refreshButtonRow.style.backgroundColor = "green";
+                refreshButtonRow.onclick = purchaseWeaponUpgrade;
+            }
+
             let spreadButtonRow = row.insertCell(0);
             let cooldownButtonRow = row.insertCell(0);
             let speedButtonRow = row.insertCell(0);
@@ -110,6 +121,10 @@ class Upgradescreen extends Phaser.Scene {
             row.insertCell(0).textContent = "" + Math.round(selectedWeapon.projectileDamage * 100) / 100;
             row = table.insertRow(0);
             let cell = row.insertCell(0);
+
+            cell.textContent = ">>";
+            cell = row.insertCell(0);
+            cell.title = "Refreshing will change the available purchaseable upgrades everywhere.";
             cell.textContent = "ACC";
             cell.title = "Accuracy is the total spread of projectiles launched. A smaller value means more precision.";
             cell = row.insertCell(0);
@@ -225,8 +240,6 @@ class Upgradescreen extends Phaser.Scene {
 function purchaseWeaponUpgrade(ev: MouseEvent) {
     var serverId = (ev.target as HTMLElement).getAttribute("serverId");
 
-    // TODO: Add a refresh button
-
     setUpgradeMenuHidden(true);
     signalRconnection.invoke("PurchaseWeaponUpgrade",
         sessionStorage.getItem(RoomIdSessionStorageKey),
@@ -250,7 +263,6 @@ function setUpgradeMenuHidden(hidden: boolean) {
 }
 
 function ConfigureUpgradeMenuSignalRListening(signalRconnection: any) {   
-
     signalRconnection.on("UpdateUpgrade", function (octopusData: Octopus,
         roomId: string, playerId: string) {
 

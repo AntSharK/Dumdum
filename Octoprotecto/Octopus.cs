@@ -20,7 +20,7 @@ namespace Octoprotecto
         public int Armor { get; set; } = 0;
         public bool IsActive { get; set; } = true;
         public List<Weapon> Weapons { get; } = new List<Weapon>();
-        public int RefreshCost = 1;
+        public int RefreshCost { get; set; } = 1;
 
         public Octopus(string name, string connectionId, string roomName) 
             : base(name, connectionId, roomName)
@@ -40,12 +40,13 @@ namespace Octoprotecto
 
         internal int GetRespawnCost()
         {
-            return 10 + this.TotalDeaths * 5;
+            const int BASERESPAWNCOST = 10;
+            const int INCREMENTALRESPAWNCOST = 5;
+            return BASERESPAWNCOST + this.TotalDeaths * INCREMENTALRESPAWNCOST;
         }
 
         internal void GenerateNewUpgrades()
         {
-            this.RefreshCost = this.RefreshCost * 2;
             foreach(var weapon in this.Weapons)
             {
                 weapon.GenerateUpgrades(this.Luck);
@@ -56,10 +57,13 @@ namespace Octoprotecto
 
         internal void NextRound()
         {
+            const int BASEREFRESHCOST = 1;
+            const int POINTSPERROUND = 10;
+
             this.IsActive = false;
             this.GenerateNewUpgrades();
-            this.RefreshCost = 1;
-            this.Points = this.Points + 10;
+            this.RefreshCost = BASEREFRESHCOST;
+            this.Points = this.Points + POINTSPERROUND;
         }
 
         internal bool TryPurchaseWeaponUpgrade(string upgradeId)
