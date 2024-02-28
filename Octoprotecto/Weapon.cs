@@ -49,10 +49,10 @@ namespace Octoprotecto
         private void GenerateBaseUpgrades(int numberOfUpgrades)
         {
             var possibleUpgrades = new List<Upgrade<Weapon>>() {
-                new StatUpgrade(WeaponStat.Cooldown),
-                new StatUpgrade(WeaponStat.ProjectileSpeed),
-                new StatUpgrade(WeaponStat.ProjectileSpread),
-                new StatUpgrade(WeaponStat.Damage),
+                new WeaponStatUpgrade(WeaponStat.Cooldown),
+                new WeaponStatUpgrade(WeaponStat.ProjectileSpeed),
+                new WeaponStatUpgrade(WeaponStat.ProjectileSpread),
+                new WeaponStatUpgrade(WeaponStat.Damage),
             };
 
             for(var i = possibleUpgrades.Count; i > numberOfUpgrades; i--)

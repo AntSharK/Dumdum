@@ -1,6 +1,6 @@
 ﻿namespace Octoprotecto
 {
-    internal class StatUpgrade : Upgrade<Weapon>
+    internal class WeaponStatUpgrade : Upgrade<Weapon>
     {
         private string displayName;
         public override string DisplayName => this.displayName;
@@ -13,7 +13,7 @@
 
         private WeaponStat statUpgraded;
 
-        public StatUpgrade(WeaponStat stat)
+        public WeaponStatUpgrade(WeaponStat stat)
         {
             this.statUpgraded = stat;
             switch (this.statUpgraded)
