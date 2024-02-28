@@ -1,4 +1,4 @@
-﻿namespace Octoprotecto.WeaponUpgrades
+﻿namespace Octoprotecto
 {
     internal class StatUpgrade : WeaponUpgrade
     {
