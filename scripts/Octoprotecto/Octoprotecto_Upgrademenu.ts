@@ -100,11 +100,11 @@ class Upgradescreen extends Phaser.Scene {
             cell.textContent = "ARM";
             cell.title = "Each point of armor reduces damage taken from a single hit.";
             cell = row.insertCell(0);
-            cell.textContent = "HP";
-            cell.title = "The maximum number of hit points your octopus has.";
-            cell = row.insertCell(0);
             cell.textContent = "SPD";
             cell.title = "The speed of your octopus.";
+            cell = row.insertCell(0);
+            cell.textContent = "HP";
+            cell.title = "The maximum number of hit points your octopus has.";
             return;
         }
 
