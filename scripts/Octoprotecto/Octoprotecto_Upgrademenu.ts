@@ -259,7 +259,7 @@ class Upgradescreen extends Phaser.Scene {
         this.DrawDisplayElements(octopusData);
     }
 
-    ConfigureUpgradeButton(row: HTMLTableCellElement, upgradeId: string, upgrade: WeaponUpgrade) {
+    ConfigureUpgradeButton(row: HTMLTableCellElement, upgradeId: string, upgrade: Upgrade) {
         row.textContent = "$" + upgrade.cost;
         row.setAttribute("serverId", upgradeId);
 

@@ -14,6 +14,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     lastHitTime: number = -1000;
     refreshCost: number = 1;
     invulnerable: boolean = false;
+    purchasableUpgrades: { [id: string]: Upgrade } = {};
 
     placeInScene(scene: Phaser.Scene,
         octopiPhysicsGroup: Phaser.Physics.Arcade.Group,
@@ -45,7 +46,8 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
             octopusData.luck,
             octopusData.armor,
             octopusData.refreshCost,
-            octopusData.weapons);
+            octopusData.weapons,
+            octopusData.purchasableUpgrades);
     }
 
     constructor(name: string, scene: Phaser.Scene, x: number, y: number,
@@ -56,7 +58,8 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         luck: number,
         armor: number,
         refreshCost: number,
-        weaponData: Weapon[]) {
+        weaponData: Weapon[],
+        purchasableUpgrades: { [id: string]: Upgrade },) {
         super(scene, x, y, 'octopus');
 
         this.name = name;
@@ -74,6 +77,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         this.luck = luck;
         this.armor = armor;
         this.refreshCost = refreshCost;
+        this.purchasableUpgrades = purchasableUpgrades;
 
         weaponData.forEach(w => {
             var newWeapon = Weapon.FromData(w, this);
