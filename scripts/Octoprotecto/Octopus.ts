@@ -99,8 +99,8 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
 
     // Just handles the octopus' end of taking damage
     TakeDamage(damage: number) {
-        this.hitPoints = this.hitPoints - damage;
-        // TODO: Apply armor
+        let actualDamage = Math.max(1, damage - this.armor);
+        this.hitPoints = this.hitPoints - actualDamage;
 
         if (this.hitPoints <= 0) {
             this.setActive(false);
