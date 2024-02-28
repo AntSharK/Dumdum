@@ -1,4 +1,6 @@
-﻿namespace Swollball.Upgrades
+﻿using Common.Util;
+
+namespace Swollball.Upgrades
 {
     internal class SpeedEnhancement : BasePersistentUpgrade
     {
@@ -10,8 +12,8 @@
 
         public override string Description => $"Speed upgrades purchased are {this.UpgradeAmount}x better.";
 
-        public override int BorderColor => UpgradeColors.BLUE;
-        public override int FillColor => UpgradeColors.ROSE;
+        public override int BorderColor => Colors.BLUE;
+        public override int FillColor => Colors.ROSE;
 
         public override void AnotherUpgradePurchased(IUpgrade upgrade)
         {

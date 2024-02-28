@@ -204,5 +204,19 @@ namespace Octoprotecto
                 room.StartGame();
             }
         }
+
+        public async Task PurchaseWeaponUpgrade(string roomId, string playerId, string upgradeId)
+        {
+            (var octopus, var room) = await this.FindPlayerAndRoom(playerId, roomId);
+            if (octopus == null || room == null) { return; }
+
+            if (room.State != OctoprotectoRoom.RoomState.Upgrading) { return; }
+            if (octopus.TryPurchaseWeaponUpgrade(upgradeId))
+            {
+                octopus.GenerateNewUpgrades();
+            }
+
+            await Clients.Caller.SendAsync("UpdateUpgrade", octopus);
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Swollball.Upgrades
+﻿using Common.Util;
+
+namespace Swollball.Upgrades
 {
     public class HpWhenDamageDone : BasePersistentUpgrade
     {
@@ -10,7 +12,7 @@
 
         public override string Description => $"Regain {this.UpgradeAmount} HP for every 10 damage dealt.";
 
-        public override int BorderColor => UpgradeColors.RED;
-        public override int FillColor => UpgradeColors.SKYBLUE;
+        public override int BorderColor => Colors.RED;
+        public override int FillColor => Colors.SKYBLUE;
     }
 }

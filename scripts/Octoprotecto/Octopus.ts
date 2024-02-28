@@ -8,6 +8,8 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     speed: number = 0.1497; // Expressed as distance covered per millisecond
     points: number = 20;
     hitPoints: number = 998;
+    luck: number = 0;
+    armor: number = 0;
     maxHitPoints: number = 998;
     lastHitTime: number = -1000;
     invulnerable: boolean = false;
@@ -30,11 +32,27 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         this.setCircle(this.width / 2, this.originX - this.width / 2, this.originY - this.width / 2);
     }
 
+    static FromData(octopusData: Octopus, scene: Phaser.Scene): Octopus {
+        return new Octopus(octopusData.name,
+            scene,
+            octopusData.desiredX,
+            octopusData.desiredY,
+            octopusData.tint,
+            octopusData.speed,
+            octopusData.points,
+            octopusData.maxHitPoints,
+            octopusData.luck,
+            octopusData.armor,
+            octopusData.weapons);
+    }
+
     constructor(name: string, scene: Phaser.Scene, x: number, y: number,
         tint: number,
         speed: number,
         points: number,
         maxHitPoints: number,
+        luck: number,
+        armor: number,
         weaponData: Weapon[]) {
         super(scene, x, y, 'octopus');
 
@@ -50,14 +68,16 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         this.tint = tint;
         this.points = points;
         this.maxHitPoints = maxHitPoints;
+        this.luck = luck;
+        this.armor = armor;
 
         weaponData.forEach(w => {
-            var newWeapon = new Weapon(this, w.range, w.spread, w.projectileDamage, w.projectileSpeed, w.fireRate);
+            var newWeapon = Weapon.FromData(w, this);
             this.weapons.push(newWeapon);
         })
 
         // Add a dummy element to handle off-by-one placement
-        var offByOne = new Weapon(this, 0, 0, 0, 0, 0);
+        var offByOne = new Weapon(this, 0, 0, 0, 0, 0, "dummy", {});
         this.weapons.unshift(offByOne);
         Phaser.Actions.PlaceOnCircle(this.weapons, new Phaser.Geom.Circle(this.x, this.y, this.width), 0, Math.PI);
         this.weapons.shift();
@@ -76,6 +96,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     // Just handles the octopus' end of taking damage
     TakeDamage(damage: number) {
         this.hitPoints = this.hitPoints - damage;
+        // TODO: Apply armor
 
         if (this.hitPoints <= 0) {
             this.setActive(false);

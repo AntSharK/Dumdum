@@ -1,9 +1,9 @@
 const FISHDEPTH = 100;
 class Fish extends Phaser.Physics.Arcade.Sprite {
     uniqueName: string;
-    hitPoints: integer = 75;
-    maxHitPoints: integer = 75;
-    points: number = 1;
+    hitPoints: integer = 35;
+    maxHitPoints: integer = 35;
+    points: number = 2;
     damage: integer = 100;
     speed: number = 50;
     static NumberOfFish: integer = 0;
@@ -29,7 +29,7 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
 
     Setup(scene: BattleArena) { }
 
-    constructor(uniqueName: string, scene: BattleArena, x: number, y: number, imageName: string) {
+    constructor(uniqueName: string, scene: BattleArena, x: number, y: number, imageName: string, difficultyMultiplier: number) {
         super(scene, x, y, imageName);
 
         this.uniqueName = uniqueName;
@@ -37,12 +37,22 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
         this.originY = this.height / 2;
         this.setDepth(FISHDEPTH);
         this.Setup(scene);
+        this.modifyDifficulty(difficultyMultiplier);
+    }
+
+    modifyDifficulty(modifier: number) {
+        this.speed = this.speed * modifier;
+        this.maxHitPoints = this.maxHitPoints * modifier;
+        this.damage = this.damage * modifier;
+
+        this.hitPoints = this.maxHitPoints;
     }
 
     static SpawnFishes(scene: BattleArena, numberOfFish: integer, spawningRect: Phaser.Geom.Rectangle,
         fishPhysicsGroup: Phaser.Physics.Arcade.Group,
         octopusPhysicsGroup: Phaser.Physics.Arcade.Group,
-        fishType: string) {
+        fishType: string,
+        difficultyMultiplier: number) {
         var spawnAnims: Phaser.GameObjects.Sprite[] = [];
         for (var i = 0; i < numberOfFish; i++) {
             var newSpawnAnim = scene.add.sprite(0, 0, 'explosion');
@@ -53,7 +63,7 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
         for (let i in spawnAnims) {
             spawnAnims[i].play('explosion_anim');
             spawnAnims[i].on(Phaser.Animations.Events.ANIMATION_COMPLETE, function (anim, frame, gameObject: Phaser.GameObjects.Sprite) {
-                Fish.SpawnOneFish(scene, gameObject.x, gameObject.y, fishPhysicsGroup, octopusPhysicsGroup, fishType);
+                Fish.SpawnOneFish(scene, gameObject.x, gameObject.y, fishPhysicsGroup, octopusPhysicsGroup, fishType, difficultyMultiplier);
                 gameObject.destroy();
             }, this);
         }
@@ -62,7 +72,8 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
     static SpawnOneFish(scene: BattleArena, x: number, y: number,
         fishPhysicsGroup: Phaser.Physics.Arcade.Group,
         octopusPhysicsGroup: Phaser.Physics.Arcade.Group,
-        fishType: string) {
+        fishType: string,
+        difficultyMultiplier: number) {
 
         // Check with every existing octopus location before spawning - don't spawn on top of octopi
         var allowSpawn = true;
@@ -78,10 +89,10 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
         var fish: Fish;
         switch (fishType) {
             case "starfish":
-                fish = new Fish("fish" + Fish.NumberOfFish, scene, x, y, "fish");
+                fish = new Fish("fish" + Fish.NumberOfFish, scene, x, y, "fish", difficultyMultiplier);
                 break;
             case "homingfish":
-                fish = new HomingFish("fish" + Fish.NumberOfFish, scene, x, y, "homingfish");
+                fish = new HomingFish("fish" + Fish.NumberOfFish, scene, x, y, "homingfish", difficultyMultiplier);
                 break;
             default:
                 window.alert("FISHTYPE " + fishType + " NOT SUPPORTED.");

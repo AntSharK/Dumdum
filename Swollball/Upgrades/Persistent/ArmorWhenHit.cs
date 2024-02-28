@@ -1,4 +1,6 @@
-﻿namespace Swollball.Upgrades
+﻿using Common.Util;
+
+namespace Swollball.Upgrades
 {
     public class ArmorWhenHit : BasePersistentUpgrade
     {
@@ -10,7 +12,7 @@
 
         public override string Description => $"Gain {this.UpgradeAmount} armor for the round when you get hit";
 
-        public override int BorderColor => UpgradeColors.GREEN;
-        public override int FillColor => UpgradeColors.SKYBLUE;
+        public override int BorderColor => Colors.GREEN;
+        public override int FillColor => Colors.SKYBLUE;
     }
 }

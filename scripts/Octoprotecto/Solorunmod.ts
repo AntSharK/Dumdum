@@ -6,10 +6,10 @@ class SoloRun {
     static ConfigureDebug(scene: BattleArena) {
         // Spawn enemies
         scene.input.keyboard.on('keydown-Q', event => {
-            Fish.SpawnFishes(scene, 1, scene.spawningRect, scene.fishes, scene.octopi, "starfish");
+            Fish.SpawnFishes(scene, 1, scene.spawningRect, scene.fishes, scene.octopi, "starfish", 1);
         }, scene);
         scene.input.keyboard.on('keydown-W', event => {
-            Fish.SpawnFishes(scene, 1, scene.spawningRect, scene.fishes, scene.octopi, "homingfish");
+            Fish.SpawnFishes(scene, 1, scene.spawningRect, scene.fishes, scene.octopi, "homingfish", 1);
         }, scene);
 
         // Take damage
@@ -56,12 +56,10 @@ class SoloRun {
     static SoloRunStart(arena: BattleArena) {
         SoloRun.Enabled = true;
         var startingWeapons = [
-            { range: 225, spread: 0.4, projectileDamage: 19, projectileSpeed: 500, fireRate: 200 },
-            { range: 225, spread: 0.4, projectileDamage: 19, projectileSpeed: 500, fireRate: 200 },
-            { range: 225, spread: 0.4, projectileDamage: 19, projectileSpeed: 500, fireRate: 200 },
-            { range: 225, spread: 0.4, projectileDamage: 19, projectileSpeed: 500, fireRate: 200 },
-            { range: 225, spread: 0.4, projectileDamage: 19, projectileSpeed: 500, fireRate: 200 },
-            { range: 225, spread: 0.4, projectileDamage: 19, projectileSpeed: 500, fireRate: 200 },
+            { range: 225, spread: 1.4, projectileDamage: 19, projectileSpeed: 350, fireRate: 1000 },
+            { range: 225, spread: 1.4, projectileDamage: 19, projectileSpeed: 350, fireRate: 1000 },
+            { range: 225, spread: 1.4, projectileDamage: 19, projectileSpeed: 350, fireRate: 1000 },
+            { range: 225, spread: 1.4, projectileDamage: 19, projectileSpeed: 350, fireRate: 1000 },
         ];
 
         // Create an object with the same properties as Octopus
@@ -73,6 +71,8 @@ class SoloRun {
             0.1497,
             20,
             998,
+            0,
+            0,
             startingWeapons as Weapon[]);
 
         arena.spawnOctopus(octopusData);

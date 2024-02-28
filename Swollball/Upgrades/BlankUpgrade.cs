@@ -1,4 +1,5 @@
-﻿using Swollball.PlayerData;
+﻿using Common.Util;
+using Swollball.PlayerData;
 
 namespace Swollball.Upgrades
 {
@@ -13,7 +14,7 @@ namespace Swollball.Upgrades
         public string ServerId { get; private set; } = Guid.NewGuid().ToString();
 
         public int BorderColor { get; private set; } = 0;
-        public int FillColor => UpgradeColors.WHITE;
+        public int FillColor => Colors.WHITE;
 
         public int UpgradeAmount { get; private set; } = 0;
 

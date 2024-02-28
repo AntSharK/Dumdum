@@ -16,15 +16,19 @@ namespace Octoprotecto
         public int MaxHitPoints { get; set; } = 998;
         public int Points { get; set; } = 20;
         public int TotalDeaths { get; set; } = 0;
+        public int Luck { get; set; } = 0;
+        public int Armor { get; set; } = 0;
         public bool IsActive { get; set; } = true;
         public List<Weapon> Weapons { get; } = new List<Weapon>();
+        public int RefreshCost = 1;
 
         public Octopus(string name, string connectionId, string roomName) 
             : base(name, connectionId, roomName)
         {
-            for (int i = 0; i < 6; i++)
+            const int STARTINGWEAPONCOUNT = 4;
+            for (int i = 0; i < STARTINGWEAPONCOUNT; i++)
             {
-                this.Weapons.Add(new Weapon());
+                this.Weapons.Add(new Weapon(name + i));
             }
         }
 
@@ -37,6 +41,46 @@ namespace Octoprotecto
         internal int GetRespawnCost()
         {
             return 10 + this.TotalDeaths * 5;
+        }
+
+        internal void GenerateNewUpgrades()
+        {
+            this.RefreshCost = this.RefreshCost * 2;
+            foreach(var weapon in this.Weapons)
+            {
+                weapon.GenerateUpgrades(this.Luck);
+            }
+
+            // TODO: Generate upgrades for main body
+        }
+
+        internal void NextRound()
+        {
+            this.IsActive = false;
+            this.GenerateNewUpgrades();
+            this.RefreshCost = 1;
+            this.Points = this.Points + 10;
+        }
+
+        internal bool TryPurchaseWeaponUpgrade(string upgradeId)
+        {
+            foreach (var weapon in this.Weapons)
+            {
+                foreach (var upgrade in weapon.PurchasableUpgrades)
+                {
+                    if (upgrade.Key == upgradeId)
+                    {
+                        if (this.Points >= upgrade.Value.Cost)
+                        {
+                            this.Points = this.Points - upgrade.Value.Cost;
+                            upgrade.Value.ApplyUpgrade(weapon);
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }

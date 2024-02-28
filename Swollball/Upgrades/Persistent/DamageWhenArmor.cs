@@ -1,4 +1,5 @@
-﻿using Swollball.PlayerData;
+﻿using Common.Util;
+using Swollball.PlayerData;
 
 namespace Swollball.Upgrades
 {
@@ -12,8 +13,8 @@ namespace Swollball.Upgrades
 
         public override string Description => $"Damage+{this.UpgradeAmount} every armor gained.";
 
-        public override int BorderColor => UpgradeColors.BROWN;
-        public override int FillColor => UpgradeColors.ROSE;
+        public override int BorderColor => Colors.BROWN;
+        public override int FillColor => Colors.ROSE;
 
         public override void Trigger(Ball ball, string increasedStat, int triggerStatIncrease, int triggerUpgradeDepth)
         {
