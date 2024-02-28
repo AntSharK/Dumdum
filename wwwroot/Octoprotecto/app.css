@@ -38,6 +38,7 @@
     position: absolute;
     z-index: 4;
     text-align: center;
+    background-color: rgba(255,255,255,0.8);
 }
 
 .displaytop {
@@ -45,11 +46,9 @@
     left: 50%;
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
-    background-color: rgba(255,255,255,0.5);
 }
 
 table, th, td {
-    background-color: rgba(255,255,255,0.5);
     border: 1px solid black;
     empty-cells: hide;
 }
@@ -66,5 +65,4 @@ table, th, td {
     left: 85%;
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
-    background-color: rgba(255,255,255,0.5);
 }

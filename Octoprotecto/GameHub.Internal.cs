@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
 namespace Octoprotecto
@@ -107,6 +102,17 @@ namespace Octoprotecto
                 var roomOctopus = roomPlayer.Value;
                 var roomPlayerId = roomPlayer.Key;
                 await Clients.Caller.SendAsync("SpawnOctopus", roomOctopus);
+            }
+        }
+
+        private void RefreshUpgrades(Octopus octopus)
+        {
+            const int REFRESHMULTIPLIER = 2;
+            if (octopus.RefreshCost <= octopus.Points)
+            {
+                octopus.Points = octopus.Points - octopus.RefreshCost;
+                octopus.GenerateNewUpgrades();
+                octopus.RefreshCost = octopus.RefreshCost * REFRESHMULTIPLIER;
             }
         }
     }

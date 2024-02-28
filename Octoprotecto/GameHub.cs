@@ -215,13 +215,7 @@ namespace Octoprotecto
             // A null upgrade ID is sent to refresh upgrades
             if (upgradeId == null)
             {
-                const int REFRESHMULTIPLIER = 2;
-                if (octopus.RefreshCost <= octopus.Points)
-                {
-                    octopus.Points = octopus.Points - octopus.RefreshCost;
-                    octopus.GenerateNewUpgrades();
-                    octopus.RefreshCost = octopus.RefreshCost * REFRESHMULTIPLIER;
-                }
+                this.RefreshUpgrades(octopus);
             }
             else if (octopus.TryPurchaseWeaponUpgrade(upgradeId))
             {
