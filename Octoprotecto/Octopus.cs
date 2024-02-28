@@ -7,7 +7,7 @@ namespace Octoprotecto
     /// <summary>
     /// All public properties are serialized by SignalR
     /// </summary>
-    public class Octopus : Player
+    public class Octopus : Player, IUpgradeTracker<Upgrade<Octopus>>
     {
         public double DesiredX { get; set; }
         public double DesiredY { get; set; }
@@ -21,6 +21,10 @@ namespace Octoprotecto
         public bool IsActive { get; set; } = true;
         public List<Weapon> Weapons { get; } = new List<Weapon>();
         public int RefreshCost { get; set; } = 1;
+        public List<Upgrade<Octopus>> TrackedUpgrades { get; } = new List<Upgrade<Octopus>>();
+        public Dictionary<string, Upgrade<Octopus>> PurchasableUpgrades { get; } = new Dictionary<string, Upgrade<Octopus>>();
+        public int UpgradesCreated { get; set; } = 0;
+        public int UpgradesApplied { get; set; } = 0;
 
         public Octopus(string name, string connectionId, string roomName) 
             : base(name, connectionId, roomName)
@@ -53,6 +57,7 @@ namespace Octoprotecto
             }
 
             // TODO: Generate upgrades for main body
+            this.PurchasableUpgrades.Clear();
         }
 
         internal void NextRound()

@@ -14,6 +14,7 @@ namespace Octoprotecto
         public virtual int Cost { get; set; } = 0;
         public abstract int UpgradeBaseCost { get; }
         public abstract int UpgradeIncrementCost { get; }
+        public abstract string UpgradeName { get; }
 
         public virtual void ApplyUpgrade(TargetType target)
         {
@@ -23,7 +24,7 @@ namespace Octoprotecto
         // Sets the cost and the name
         public virtual void ReadWeaponProperties(TargetType target)
         {
-            this.Name = target.Name + target.UpgradesCreated;
+            this.Name = target.Name + this.UpgradeName + target.UpgradesCreated;
             this.Cost = this.UpgradeBaseCost + target.UpgradesApplied * this.UpgradeIncrementCost;
         }
     }
