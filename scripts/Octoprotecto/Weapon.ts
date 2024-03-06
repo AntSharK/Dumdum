@@ -44,7 +44,7 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
 }
 
 // In sync with server-side property
-class WeaponUpgrade {
+class Upgrade {
     borderColor: number;
     cost: number;
     description: string;
@@ -69,7 +69,7 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
     nextFireTime: number = 0;
     fireRate: number = 100;
 
-    purchasableUpgrades: { [id: string]: WeaponUpgrade } = {};
+    purchasableUpgrades: { [id: string]: Upgrade } = {};
 
     placeInScene(weaponsPhysicsGroup: Phaser.Physics.Arcade.Group,
         bulletPhysicsGroup: Phaser.Physics.Arcade.Group,
@@ -103,7 +103,7 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
         projectileSpeed: number,
         fireRate: number,
         name: string,
-        purchaseableUpgrades: { [id: string]: WeaponUpgrade }) {
+        purchaseableUpgrades: { [id: string]: Upgrade }) {
         super(octopus.scene, octopus.x, octopus.y, 'fin');
 
         this.setOrigin(0, 0.5);

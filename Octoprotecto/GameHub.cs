@@ -205,7 +205,7 @@ namespace Octoprotecto
             }
         }
 
-        public async Task PurchaseWeaponUpgrade(string roomId, string playerId, string upgradeId)
+        public async Task PurchaseUpgrade(string roomId, string playerId, string upgradeId)
         {
             (var octopus, var room) = await this.FindPlayerAndRoom(playerId, roomId);
             if (octopus == null || room == null) { return; }
@@ -216,6 +216,10 @@ namespace Octoprotecto
             if (upgradeId == null)
             {
                 this.RefreshUpgrades(octopus);
+            }
+            else if (octopus.TryPurchaseBodyUpgrade(upgradeId))
+            {
+                octopus.GenerateNewUpgrades();
             }
             else if (octopus.TryPurchaseWeaponUpgrade(upgradeId))
             {

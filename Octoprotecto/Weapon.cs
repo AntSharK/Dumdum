@@ -1,21 +1,20 @@
 ﻿using Common.Util;
-using Octoprotecto.WeaponUpgrades;
 
 namespace Octoprotecto
 {
-    public class Weapon
+    public class Weapon : IUpgradeTracker<Upgrade<Weapon>>
     {
-        public double FireRate { get; set; } = 1000; // Milliseconds between shots
+        public double FireRate { get; set; } = 600; // Milliseconds between shots
         public double Spread { get; set; } = 1.4; // Total radians - equally spread in both directions
         public double Range { get; set; } = 225;
         public double ProjectileDamage { get; set; } = 19;
         public double ProjectileSpeed { get; set; } = 350; // Units per second
-        public List<WeaponUpgrade> TrackedUpgrades { get; } = new List<WeaponUpgrade>();
-        public Dictionary<string, WeaponUpgrade> PurchasableUpgrades { get; } = new Dictionary<string, WeaponUpgrade>();
+        public List<Upgrade<Weapon>> TrackedUpgrades { get; } = new List<Upgrade<Weapon>>();
+        public Dictionary<string, Upgrade<Weapon>> PurchasableUpgrades { get; } = new Dictionary<string, Upgrade<Weapon>>();
         public string Name { get; private set; }
 
-        public int UpgradesCreated = 0;
-        public int UpgradesApplied = 0;
+        public int UpgradesCreated { get; set; } = 0;
+        public int UpgradesApplied { get; set; } = 0;
 
         public Weapon(string weaponName)
         {
@@ -42,31 +41,15 @@ namespace Octoprotecto
                 }
             }
 
-            this.GenerateBaseUpgrades(numberOfBaseUpgrades);
-
-            // TODO: Generate augmentations, not just stat upgrades
-        }
-
-        private void GenerateBaseUpgrades(int numberOfUpgrades)
-        {
-            var possibleUpgrades = new List<WeaponUpgrade>() {
-                new StatUpgrade(WeaponStat.Cooldown),
-                new StatUpgrade(WeaponStat.ProjectileSpeed),
-                new StatUpgrade(WeaponStat.ProjectileSpread),
-                new StatUpgrade(WeaponStat.Damage),
+            var possibleUpgrades = new List<Upgrade<Weapon>>() {
+                new WeaponStatUpgrade(WeaponStat.Cooldown),
+                new WeaponStatUpgrade(WeaponStat.ProjectileSpeed),
+                new WeaponStatUpgrade(WeaponStat.ProjectileSpread),
+                new WeaponStatUpgrade(WeaponStat.Damage),
             };
 
-            for(var i = possibleUpgrades.Count; i > numberOfUpgrades; i--)
-            {
-                possibleUpgrades.RemoveAt(Utils.Rng.Next(possibleUpgrades.Count));
-            }
-
-            foreach (var upgrade in possibleUpgrades)
-            {
-                this.UpgradesCreated++;
-                upgrade.ReadWeaponProperties(this);
-                this.PurchasableUpgrades.Add(upgrade.Name, upgrade);
-            }
+            Upgrade<Weapon>.GenerateBaseUpgrades(possibleUpgrades, numberOfBaseUpgrades, this);
+            // TODO: Generate augmentations, not just stat upgrades
         }
     }
 }

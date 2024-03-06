@@ -7,12 +7,12 @@ namespace Octoprotecto
     /// <summary>
     /// All public properties are serialized by SignalR
     /// </summary>
-    public class Octopus : Player
+    public class Octopus : Player, IUpgradeTracker<Upgrade<Octopus>>
     {
         public double DesiredX { get; set; }
         public double DesiredY { get; set; }
         public int Tint { get; set; }
-        public double Speed { get; set; } = 0.1497; // Expressed as distance covered per millisecond
+        public double Speed { get; set; } = 0.15; // Expressed as distance covered per millisecond
         public int MaxHitPoints { get; set; } = 998;
         public int Points { get; set; } = 20;
         public int TotalDeaths { get; set; } = 0;
@@ -21,6 +21,10 @@ namespace Octoprotecto
         public bool IsActive { get; set; } = true;
         public List<Weapon> Weapons { get; } = new List<Weapon>();
         public int RefreshCost { get; set; } = 1;
+        public List<Upgrade<Octopus>> TrackedUpgrades { get; } = new List<Upgrade<Octopus>>();
+        public Dictionary<string, Upgrade<Octopus>> PurchasableUpgrades { get; } = new Dictionary<string, Upgrade<Octopus>>();
+        public int UpgradesCreated { get; set; } = 0;
+        public int UpgradesApplied { get; set; } = 0;
 
         public Octopus(string name, string connectionId, string roomName) 
             : base(name, connectionId, roomName)
@@ -52,7 +56,29 @@ namespace Octoprotecto
                 weapon.GenerateUpgrades(this.Luck);
             }
 
-            // TODO: Generate upgrades for main body
+            this.PurchasableUpgrades.Clear();
+            var numberOfBaseUpgrades = 1;
+            if (this.Luck > -5)
+            {
+                var randomSeed = Utils.Rng.Next(this.Luck + 30);
+                if (randomSeed >= 80)
+                {
+                    numberOfBaseUpgrades = 3;
+                }
+                else if (randomSeed >= 25)
+                {
+                    numberOfBaseUpgrades = 2;
+                }
+            }
+
+            var possibleUpgrades = new List<Upgrade<Octopus>>() {
+                new BodyStatUpgrade(BodyStat.Armor),
+                new BodyStatUpgrade(BodyStat.Speed),
+                new BodyStatUpgrade(BodyStat.MaxHp),
+            };
+
+            Upgrade<Octopus>.GenerateBaseUpgrades(possibleUpgrades, numberOfBaseUpgrades, this);
+            // TODO: Generate augmentations, not just stat upgrades
         }
 
         internal void NextRound()
@@ -81,6 +107,22 @@ namespace Octoprotecto
                             return true;
                         }
                     }
+                }
+            }
+
+            return false;
+        }
+
+        internal bool TryPurchaseBodyUpgrade(string upgradeId)
+        {
+            if (this.PurchasableUpgrades.ContainsKey(upgradeId))
+            {
+                var upgrade = this.PurchasableUpgrades[upgradeId];
+                if (this.Points >= upgrade.Cost)
+                {
+                    this.Points = this.Points - upgrade.Cost;
+                    upgrade.ApplyUpgrade(this);
+                    return true;
                 }
             }
 

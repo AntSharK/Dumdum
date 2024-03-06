@@ -1,14 +1,17 @@
-﻿namespace Octoprotecto.WeaponUpgrades
+﻿namespace Octoprotecto
 {
-    internal class StatUpgrade : WeaponUpgrade
+    internal class WeaponStatUpgrade : Upgrade<Weapon>
     {
         private string displayName;
         public override string DisplayName => this.displayName;
-
         public override string Description => "Improves Stats";
+        public override int UpgradeBaseCost => 5;
+        public override int UpgradeIncrementCost => 1;
+        public override string UpgradeName => "weaponstat";
+
         private WeaponStat statUpgraded;
 
-        public StatUpgrade(WeaponStat stat)
+        public WeaponStatUpgrade(WeaponStat stat)
         {
             this.statUpgraded = stat;
             switch (this.statUpgraded)
