@@ -56,7 +56,6 @@ namespace Octoprotecto
                 weapon.GenerateUpgrades(this.Luck);
             }
 
-            // TODO: Generate upgrades for main body
             this.PurchasableUpgrades.Clear();
             var numberOfBaseUpgrades = 1;
             if (this.Luck > -5)
