@@ -15,6 +15,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     refreshCost: number = 1;
     invulnerable: boolean = false;
     purchasableUpgrades: { [id: string]: Upgrade } = {};
+    displayName: string; // For display only
 
     placeInScene(scene: Phaser.Scene,
         octopiPhysicsGroup: Phaser.Physics.Arcade.Group,
