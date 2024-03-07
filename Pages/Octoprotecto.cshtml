@@ -41,6 +41,7 @@
                 COLOR
                 <input type="color" id="colorpicker" value="">
                 <hr />
+                <input type="text" id="playername" maxlength="10" size="10" placeholder="PLAYER NAME" oninput="this.value = this.value.toUpperCase()" class="display-3" /><br />
                 <input type="text" id="roomid" maxlength="5" size="5" placeholder="ROOM ID" oninput="this.value = this.value.toUpperCase()" value="@Model.RoomId" /><br />
                 <input type="button" id="joinroombutton" value="JOIN" />
             </div>

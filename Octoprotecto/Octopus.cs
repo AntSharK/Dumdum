@@ -26,6 +26,9 @@ namespace Octoprotecto
         public int UpgradesCreated { get; set; } = 0;
         public int UpgradesApplied { get; set; } = 0;
 
+        // Name for display purposes - not the tracking ID
+        public string DisplayName { get; set; }
+
         public Octopus(string name, string connectionId, string roomName) 
             : base(name, connectionId, roomName)
         {

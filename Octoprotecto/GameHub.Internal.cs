@@ -5,7 +5,7 @@ namespace Octoprotecto
 {
     public partial class GameHub
     {
-        private async Task CreateNewOctopus(OctoprotectoRoom room, string playerId, string colorIn)
+        private async Task CreateNewOctopus(OctoprotectoRoom room, string playerId, string colorIn, string playerNameIn)
         {
             if (playerId == null)
             {
@@ -25,6 +25,7 @@ namespace Octoprotecto
             var color = int.Parse(colorIn.TrimStart('#'), System.Globalization.NumberStyles.HexNumber);
             octopus.Tint = color;
             octopus.SetRandomLocation(room.OctopiMovementBounds);
+            octopus.DisplayName = playerNameIn;
 
             await Clients.Caller.SendAsync("InitializeNewPlayer", room.RoomId, room.OctopiMovementBounds, octopus);
             await Clients.Client(room.ConnectionId).SendAsync("SpawnOctopus", octopus);
