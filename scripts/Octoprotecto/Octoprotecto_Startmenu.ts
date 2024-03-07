@@ -154,6 +154,15 @@ function ConfigureMenuSignalRListening(signalRconnection: any) {
 
             clearState();
         }
+        else {
+            hideLobbyMenu();
+            // Check query string for room id
+            let urlParams = new URLSearchParams(document.location.search);
+            urlParams.has("JoinRoomId") ?
+                document.getElementById("lobbyjoingamemenu").hidden = false :
+                document.getElementById("lobbymenuinitial").hidden = false;
+            
+        }
     })
 
     signalRconnection.on("RoomCreated", function (roomId: string) {

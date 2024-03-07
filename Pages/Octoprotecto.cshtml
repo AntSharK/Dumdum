@@ -23,10 +23,10 @@
     <body>
         <div id="content">
             <div id="octoprotectogame"></div>
-            <div id="lobbymenuinitial" class="display-1 lobbymenu" @(string.IsNullOrEmpty(Model.RoomId) ? "" : "hidden='true'")>
-                <input type="button" id="joingamebutton" value="JOIN" />
+            <div id="lobbymenuinitial" class="display-1 lobbymenu" hidden="true">
+                <input type="button" id="joingamebutton" value="JOIN"/>
                 <hr />
-                <input type="button" id="hostgamebutton" value="HOST" />
+                <input type="button" id="hostgamebutton" value="HOST"/>
                 <hr />
                 <input type="button" id="sologamebutton" value="SOLO RUN" hidden="true" /> <!-- Hide the solo mode button until it's ready -->
             </div>
@@ -37,7 +37,7 @@
                 <input type="button" id="startgamebutton" value="START" />
             </div>
 
-            <div id="lobbyjoingamemenu" class="display-1 lobbymenu" @(string.IsNullOrEmpty(Model.RoomId) ? "hidden='true'" : ""))>
+            <div id="lobbyjoingamemenu" class="display-1 lobbymenu" hidden="true">
                 COLOR
                 <input type="color" id="colorpicker" value="">
                 <hr />
@@ -46,7 +46,7 @@
                 <input type="button" id="joinroombutton" value="JOIN" />
             </div>
 
-            <div id="lobbywaitingforserver" class="display-3 lobbymenu" hidden="true">
+            <div id="lobbywaitingforserver" class="display-3 lobbymenu">
                 <div id="waitingmessage">WAITING FOR SERVER...</div>
                 <input type="button" id="resetstatebutton" value="RESET" />
             </div>
