@@ -79,6 +79,7 @@ namespace Octoprotecto
                 new BodyStatUpgrade(BodyStat.Armor),
                 new BodyStatUpgrade(BodyStat.Speed),
                 new BodyStatUpgrade(BodyStat.MaxHp),
+                new BodyStatUpgrade(BodyStat.CollisionDamage),
             };
 
             Upgrade<Octopus>.GenerateBaseUpgrades(possibleUpgrades, numberOfBaseUpgrades, this);

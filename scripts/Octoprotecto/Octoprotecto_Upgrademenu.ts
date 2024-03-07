@@ -61,6 +61,7 @@ class Upgradescreen extends Phaser.Scene {
             table.innerHTML = "";
             let row = table.insertRow(0);
 
+            let collisionDmgButtonRow = row.insertCell(0);
             let armorButtonRow = row.insertCell(0);
             let playerspeedButtonRow = row.insertCell(0);
             let maxhpButtonRow = row.insertCell(0);
@@ -78,6 +79,9 @@ class Upgradescreen extends Phaser.Scene {
                     case "Maxhp+":
                         this.ConfigureUpgradeButton(maxhpButtonRow, key, upgrade);
                         break;
+                    case "Collision+":
+                        this.ConfigureUpgradeButton(collisionDmgButtonRow, key, upgrade);
+                        break;
                 }
             }
 
@@ -92,6 +96,7 @@ class Upgradescreen extends Phaser.Scene {
                 refreshButtonRow.onclick = purchaseUpgrade;
             }
 
+            row.insertCell(0).textContent = "" + Math.round(this.OctopusData.collisionDamage * 100) / 100;
             row.insertCell(0).textContent = "" + Math.round(this.OctopusData.armor * 100)/100;
             row.insertCell(0).textContent = "" + Math.round(this.OctopusData.speed * 10000)/100;
             row.insertCell(0).textContent = "" + Math.round(this.OctopusData.maxHitPoints * 100)/100;
@@ -99,6 +104,9 @@ class Upgradescreen extends Phaser.Scene {
             let cell = row.insertCell(0);
             cell.textContent = ">>";
             cell.title = "Refreshing will change the available purchaseable upgrades everywhere.";
+            cell = row.insertCell(0);
+            cell.textContent = "COL";
+            cell.title = "This is the amount of damage dealt to enemies when they collide with you.";
             cell = row.insertCell(0);
             cell.textContent = "ARM";
             cell.title = "Each point of armor reduces damage taken from a single hit.";

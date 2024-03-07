@@ -25,6 +25,9 @@
                 case BodyStat.MaxHp:
                     this.displayName = "Maxhp+";
                     break;
+                case BodyStat.CollisionDamage:
+                    this.displayName = "Collision+";
+                    break;
                 default:
                     this.displayName = "Unknown";
                     break;
@@ -36,13 +39,16 @@
             switch (this.statUpgraded)
             {
                 case BodyStat.Armor:
-                    octopus.Armor += 3;
+                    octopus.Armor += 6;
                     break;
                 case BodyStat.Speed:
                     octopus.Speed += 0.01;
                     break;
                 case BodyStat.MaxHp:
                     octopus.MaxHitPoints += 50;
+                    break;
+                case BodyStat.CollisionDamage:
+                    octopus.CollisionDamage += 5;
                     break;
             }
 
@@ -54,6 +60,7 @@
     {
         Armor,
         MaxHp,
-        Speed
+        Speed,
+        CollisionDamage
     }
 }
