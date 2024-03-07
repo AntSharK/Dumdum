@@ -1,6 +1,3 @@
-// Store when a click is made on the HTML Table, so that the menu doesn't need to response to this click
-var HTMLTABLEINTERACTED: boolean = false;
-
 class Upgradescreen extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
     OctopusData: Octopus;
@@ -33,15 +30,10 @@ class Upgradescreen extends Phaser.Scene {
     }
 
     update() {
-        HTMLTABLEINTERACTED = false;
     }
 
     onObjectClick(pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
         if (!this.DataSynchronized) {
-            return;
-        }
-
-        if (HTMLTABLEINTERACTED) {
             return;
         }
 
@@ -315,7 +307,7 @@ class Upgradescreen extends Phaser.Scene {
         }
         else {
             row.style.backgroundColor = "green";
-            row.onclick = purchaseUpgrade;
+            row.onmousedown = purchaseUpgrade; // Used to be onclick - but onmousedown happens first
         }
     }
 }
@@ -334,7 +326,6 @@ function purchaseUpgrade(ev: MouseEvent) {
     var upgradeScene = octoProtecto.game.scene.getScene("Upgradescreen") as Upgradescreen;
     upgradeScene.DataSynchronized = false;
 
-    HTMLTABLEINTERACTED = true;
     ev.preventDefault();
     ev.stopPropagation();
 }
