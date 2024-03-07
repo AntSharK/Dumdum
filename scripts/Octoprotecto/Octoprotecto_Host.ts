@@ -140,7 +140,6 @@ class BattleArena extends Phaser.Scene {
             row.insertCell(0).textContent = "" + (octopus.points + 10); // Add 10 for points per round
             let cell = row.insertCell(0);
             cell.textContent = octopus.displayName;
-            cell.style.color = octopus.tint.toString();
         }
 
         this.fishes.children.each(c => c.destroy());
