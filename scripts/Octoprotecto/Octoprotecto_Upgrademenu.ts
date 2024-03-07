@@ -46,8 +46,8 @@ class Upgradescreen extends Phaser.Scene {
             if (this.selectedImage.name == image.name) {
                 this.selectedImage = null;
                 document.getElementById("upgrademenupointsdisplay").hidden = false;
-                var table = document.getElementById("upgrademenustatsdisplay") as HTMLTableElement;
-                table.innerHTML = "";
+                (document.getElementById("upgrademenustatsdisplay") as HTMLTableElement).innerHTML = "";
+                (document.getElementById("specialupgrademenu") as HTMLTableElement).innerHTML = "";
                 return;
             }
         }
@@ -98,7 +98,7 @@ class Upgradescreen extends Phaser.Scene {
             cell.textContent = "HP";
             cell.title = "The maximum number of hit points your octopus has.";
 
-            // TODO: Special upgrade menu
+            // Special upgrade menu
             var specialUpgradeTable = document.getElementById("specialupgrademenu") as HTMLTableElement;
             specialUpgradeTable.innerHTML = "";
 
@@ -117,6 +117,19 @@ class Upgradescreen extends Phaser.Scene {
                         break;
                     case "Collision+":
                         this.ConfigureUpgradeButton(collisionDmgButtonRow, key, upgrade);
+                        break;
+                    default:
+                        let specialRow = specialUpgradeTable.insertRow(0);
+                        var specialUpgradeCell = specialRow.insertCell(0);
+                        specialUpgradeCell.textContent = "$" + upgrade.cost;
+                        this.ConfigureUpgradeButton(specialUpgradeCell, key, upgrade);
+                        specialRow.insertCell(0).textContent = upgrade.description;
+
+                        specialRow = specialUpgradeTable.insertRow(0);
+                        specialUpgradeTable.insertRow(0);
+                        let specialCell = specialRow.insertCell(0);
+                        specialCell.textContent = upgrade.displayName;
+                        specialCell.colSpan = 2;
                         break;
                 }
             }

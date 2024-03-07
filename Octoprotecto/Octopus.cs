@@ -84,6 +84,13 @@ namespace Octoprotecto
 
             Upgrade<Octopus>.GenerateBaseUpgrades(possibleUpgrades, numberOfBaseUpgrades, this);
             // TODO: Generate augmentations, not just stat upgrades
+
+            // TODO: Generate the special upgrade according to levels
+            var specialBodyUpgrade = new BodyArmorWhenHit();
+            this.UpgradesCreated++;
+            specialBodyUpgrade.ReadTargetProperties(this);
+            this.PurchasableUpgrades.Add(specialBodyUpgrade.Name, specialBodyUpgrade);
+
         }
 
         internal void NextRound()

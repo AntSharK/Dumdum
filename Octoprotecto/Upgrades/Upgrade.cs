@@ -22,7 +22,7 @@ namespace Octoprotecto
         }
 
         // Sets the cost and the name
-        public virtual void ReadWeaponProperties(TargetType target)
+        public virtual void ReadTargetProperties(TargetType target)
         {
             this.Name = target.Name + this.UpgradeName + target.UpgradesCreated;
             this.Cost = this.UpgradeBaseCost + target.UpgradesApplied * this.UpgradeIncrementCost;
@@ -38,7 +38,7 @@ namespace Octoprotecto
             foreach (var upgrade in possibleUpgrades)
             {
                 target.UpgradesCreated++;
-                upgrade.ReadWeaponProperties(target);
+                upgrade.ReadTargetProperties(target);
                 target.PurchasableUpgrades.Add(upgrade.Name, upgrade);
             }
         }
