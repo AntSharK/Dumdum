@@ -16,6 +16,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     invulnerable: boolean = false;
     purchasableUpgrades: { [id: string]: Upgrade } = {};
     displayName: string; // For display only
+    collisionDamage: number = 0;
 
     // Stuff for drawing
     displayNameText: Phaser.GameObjects.Text;
@@ -57,7 +58,8 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
             octopusData.refreshCost,
             octopusData.weapons,
             octopusData.purchasableUpgrades,
-            octopusData.displayName);
+            octopusData.displayName,
+            octopusData.collisionDamage);
     }
 
     constructor(name: string, scene: Phaser.Scene, x: number, y: number,
@@ -70,7 +72,8 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         refreshCost: number,
         weaponData: Weapon[],
         purchasableUpgrades: { [id: string]: Upgrade },
-        displayName: string) {
+        displayName: string,
+        collisionDamage: number) {
         super(scene, x, y, 'octopus');
 
         this.name = name;
@@ -90,6 +93,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         this.refreshCost = refreshCost;
         this.purchasableUpgrades = purchasableUpgrades;
         this.displayName = displayName;
+        this.collisionDamage = collisionDamage;
 
         weaponData.forEach(w => {
             var newWeapon = Weapon.FromData(w, this);
@@ -190,6 +194,11 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
             this.FadeOut(deltaTime);
             return;
         }
+
+        // Draw armor as a thick circle
+        graphics.lineStyle(Phaser.Math.Interpolation.QuadraticBezier(this.armor / 500, 0, 10, 15), this.tintTopLeft);
+        graphics.setDepth(this.depth + 0.3);
+        graphics.strokeCircle(this.x, this.y, this.body.radius);
 
         this.weapons.forEach(w => w.UpdateWeapon(graphics));
         this.displayNameText.setPosition(this.x, this.y);

@@ -18,6 +18,7 @@ namespace Octoprotecto
         public int TotalDeaths { get; set; } = 0;
         public int Luck { get; set; } = 0;
         public int Armor { get; set; } = 1;
+        public int CollisionDamage { get; set; } = 20;
         public bool IsActive { get; set; } = true;
         public List<Weapon> Weapons { get; } = new List<Weapon>();
         public int RefreshCost { get; set; } = 1;
@@ -78,6 +79,7 @@ namespace Octoprotecto
                 new BodyStatUpgrade(BodyStat.Armor),
                 new BodyStatUpgrade(BodyStat.Speed),
                 new BodyStatUpgrade(BodyStat.MaxHp),
+                new BodyStatUpgrade(BodyStat.CollisionDamage),
             };
 
             Upgrade<Octopus>.GenerateBaseUpgrades(possibleUpgrades, numberOfBaseUpgrades, this);
