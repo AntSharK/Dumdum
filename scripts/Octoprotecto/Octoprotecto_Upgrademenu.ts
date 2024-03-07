@@ -1,3 +1,6 @@
+// Store when a click is made on the HTML Table, so that the menu doesn't need to response to this click
+var HTMLTABLEINTERACTED: boolean = false;
+
 class Upgradescreen extends Phaser.Scene {
     graphics: Phaser.GameObjects.Graphics;
     OctopusData: Octopus;
@@ -30,10 +33,15 @@ class Upgradescreen extends Phaser.Scene {
     }
 
     update() {
+        HTMLTABLEINTERACTED = false;
     }
 
     onObjectClick(pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
         if (!this.DataSynchronized) {
+            return;
+        }
+
+        if (HTMLTABLEINTERACTED) {
             return;
         }
 
@@ -59,8 +67,10 @@ class Upgradescreen extends Phaser.Scene {
 
             var table = document.getElementById("upgrademenustatsdisplay") as HTMLTableElement;
             table.innerHTML = "";
-            let row = table.insertRow(0);
+            var specialUpgradeTable = document.getElementById("specialupgrademenu") as HTMLTableElement;
+            specialUpgradeTable.innerHTML = "";
 
+            let row = table.insertRow(0);
             let collisionDmgButtonRow = row.insertCell(0);
             let armorButtonRow = row.insertCell(0);
             let playerspeedButtonRow = row.insertCell(0);
@@ -97,10 +107,6 @@ class Upgradescreen extends Phaser.Scene {
             cell = row.insertCell(0);
             cell.textContent = "HP";
             cell.title = "The maximum number of hit points your octopus has.";
-
-            // Special upgrade menu
-            var specialUpgradeTable = document.getElementById("specialupgrademenu") as HTMLTableElement;
-            specialUpgradeTable.innerHTML = "";
 
             for (let key in this.OctopusData.purchasableUpgrades) {
                 var upgrade = this.OctopusData.purchasableUpgrades[key];
@@ -145,6 +151,9 @@ class Upgradescreen extends Phaser.Scene {
 
             var table = document.getElementById("upgrademenustatsdisplay") as HTMLTableElement;
             table.innerHTML = "";
+            var specialUpgradeTable = document.getElementById("specialupgrademenu") as HTMLTableElement;
+            specialUpgradeTable.innerHTML = "";
+
             let row = table.insertRow(0);
             let rangeButtonRow = row.insertCell(0);
             let spreadButtonRow = row.insertCell(0);
@@ -325,6 +334,7 @@ function purchaseUpgrade(ev: MouseEvent) {
     var upgradeScene = octoProtecto.game.scene.getScene("Upgradescreen") as Upgradescreen;
     upgradeScene.DataSynchronized = false;
 
+    HTMLTABLEINTERACTED = true;
     ev.preventDefault();
     ev.stopPropagation();
 }
