@@ -195,6 +195,11 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
             return;
         }
 
+        // Draw armor as a thick circle
+        graphics.lineStyle(Phaser.Math.Interpolation.QuadraticBezier(this.armor / 500, 0, 10, 15), this.tintTopLeft);
+        graphics.setDepth(this.depth + 0.3);
+        graphics.strokeCircle(this.x, this.y, this.body.radius);
+
         this.weapons.forEach(w => w.UpdateWeapon(graphics));
         this.displayNameText.setPosition(this.x, this.y);
 
