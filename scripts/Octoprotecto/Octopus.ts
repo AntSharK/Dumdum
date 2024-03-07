@@ -15,6 +15,10 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     refreshCost: number = 1;
     invulnerable: boolean = false;
     purchasableUpgrades: { [id: string]: Upgrade } = {};
+    displayName: string; // For display only
+
+    // Stuff for drawing
+    displayNameText: Phaser.GameObjects.Text;
 
     placeInScene(scene: Phaser.Scene,
         octopiPhysicsGroup: Phaser.Physics.Arcade.Group,
@@ -28,6 +32,11 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
             w.placeInScene(weaponsPhysicsGroup, bulletPhysicsGroup);
             w.tint = tint;
         });
+
+        // Add the display name
+        this.displayNameText = scene.add.text(0, 0, this.displayName, { color: 'White', fontSize: '3vw' });
+        this.displayNameText.setDepth(this.depth + 0.2);
+        this.displayNameText.setOrigin(0.5, -1);
 
         scene.add.existing(this);
         octopiPhysicsGroup.add(this);
@@ -47,7 +56,8 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
             octopusData.armor,
             octopusData.refreshCost,
             octopusData.weapons,
-            octopusData.purchasableUpgrades);
+            octopusData.purchasableUpgrades,
+            octopusData.displayName);
     }
 
     constructor(name: string, scene: Phaser.Scene, x: number, y: number,
@@ -59,7 +69,8 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         armor: number,
         refreshCost: number,
         weaponData: Weapon[],
-        purchasableUpgrades: { [id: string]: Upgrade },) {
+        purchasableUpgrades: { [id: string]: Upgrade },
+        displayName: string) {
         super(scene, x, y, 'octopus');
 
         this.name = name;
@@ -78,6 +89,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         this.armor = armor;
         this.refreshCost = refreshCost;
         this.purchasableUpgrades = purchasableUpgrades;
+        this.displayName = displayName;
 
         weaponData.forEach(w => {
             var newWeapon = Weapon.FromData(w, this);
@@ -156,6 +168,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
             delete BattleArena.OctopiMap[this.name];
             this.destroy();
             this.weapons.forEach(w => w.destroy());
+            this.displayNameText.destroy();
         }
 
         return;
@@ -179,6 +192,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         }
 
         this.weapons.forEach(w => w.UpdateWeapon(graphics));
+        this.displayNameText.setPosition(this.x, this.y);
 
         var speed = this.speed * deltaTime;
 

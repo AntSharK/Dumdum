@@ -41,6 +41,7 @@
                 COLOR
                 <input type="color" id="colorpicker" value="">
                 <hr />
+                <input type="text" id="playername" maxlength="10" size="10" placeholder="PLAYER NAME" oninput="this.value = this.value.toUpperCase()" class="display-3" /><br />
                 <input type="text" id="roomid" maxlength="5" size="5" placeholder="ROOM ID" oninput="this.value = this.value.toUpperCase()" value="@Model.RoomId" /><br />
                 <input type="button" id="joinroombutton" value="JOIN" />
             </div>
@@ -50,7 +51,15 @@
                 <input type="button" id="resetstatebutton" value="RESET" />
             </div>
 
-            <div id="gamenotificationmessage" class="display-3 gamenotification" hidden="true">WAITING FOR SERVER...</div>
+            <div id="gamenotificationarea" class="gamenotification" hidden="true">
+                <div id="gamenotificationmessage" class="display-3 gamenotification">
+                    WAITING FOR SERVER...
+                </div>
+                <hr />
+                <table id="leaderboarddisplay" class="display-4 gamenotification">
+                </table>
+            </div>
+
             <div id="upgrademenupointsdisplay" class="display-4 upgrademenu displaybottomright" hidden="true"></div>
             <table id="upgrademenustatsdisplay" class="display-4 upgrademenu displaytop" hidden="true">
             </table>

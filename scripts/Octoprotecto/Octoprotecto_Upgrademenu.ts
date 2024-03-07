@@ -97,6 +97,9 @@ class Upgradescreen extends Phaser.Scene {
             row.insertCell(0).textContent = "" + Math.round(this.OctopusData.maxHitPoints * 100)/100;
             row = table.insertRow(0);
             let cell = row.insertCell(0);
+            cell.textContent = ">>";
+            cell.title = "Refreshing will change the available purchaseable upgrades everywhere.";
+            cell = row.insertCell(0);
             cell.textContent = "ARM";
             cell.title = "Each point of armor reduces damage taken from a single hit.";
             cell = row.insertCell(0);

@@ -28,7 +28,7 @@ body {
     text-align: center;
 }
 
-.gamenotification {
+#gamenotificationarea {
     position: absolute;
     z-index: 4;
     top: 50%;

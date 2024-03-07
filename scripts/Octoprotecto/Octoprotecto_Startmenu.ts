@@ -101,10 +101,22 @@ window.onload = () => {
 
     document.getElementById("joinroombutton").addEventListener("click", function (event) {
         var roomIdIn = (document.getElementById("roomid") as HTMLInputElement).value;
+        var playerNameIn = (document.getElementById("playername") as HTMLInputElement).value;
         var colorIn = (document.getElementById("colorpicker") as HTMLInputElement).value;
+
+        // Client-side input validation
+        if (roomIdIn?.length != 5) {
+            window.alert("Invalid Room ID - Must be 5 letters.")
+            return;
+        }
+        if (playerNameIn?.length <= 0) {
+            window.alert("Player name must not be blank.")
+            return;
+        }
+
         hideLobbyMenu();
         document.getElementById("lobbywaitingforserver").hidden = false;
-        signalRconnection.invoke("JoinRoom", roomIdIn, colorIn).catch(function (err) {
+        signalRconnection.invoke("JoinRoom", roomIdIn, colorIn, playerNameIn).catch(function (err) {
             return console.error(err.toString());
         });
     });

@@ -115,17 +115,33 @@ class BattleArena extends Phaser.Scene {
 
         // Display HTML UI elements
         hideGameNotifications();
+        document.getElementById("gamenotificationarea").hidden = false;
         document.getElementById("gamenotificationmessage").hidden = false;
         document.getElementById("gamenotificationmessage").textContent = "ROUND " + this.currentRound + " FINISHED";
 
         this.currentRound++;
+
+        var table = document.getElementById("leaderboarddisplay") as HTMLTableElement;
+        table.hidden = false;
+        table.innerHTML = "";
+        let row = table.insertRow(0);
+        row.insertCell(0).textContent = "HP";
+        row.insertCell(0).textContent = "POINTS";
+        row.insertCell(0).textContent = "NAME";
 
         var pointsPerOctopus: { [id: string]: number } = {};
         for (let key in BattleArena.OctopiMap) {
             let octopus = BattleArena.OctopiMap[key];
             octopus.FinishRound();
             pointsPerOctopus[key] = octopus.points;
+
+            row = table.insertRow(table.rows.length);
+            row.insertCell(0).textContent = octopus.hitPoints + "/" + octopus.maxHitPoints;
+            row.insertCell(0).textContent = "" + (octopus.points + 10); // Add 10 for points per round
+            let cell = row.insertCell(0);
+            cell.textContent = octopus.displayName;
         }
+
         this.fishes.children.each(c => c.destroy());
 
         var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);        

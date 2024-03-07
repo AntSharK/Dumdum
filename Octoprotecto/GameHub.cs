@@ -29,9 +29,9 @@ namespace Octoprotecto
             }
         }
 
-        public async Task JoinRoom(string roomId, string colorIn)
+        public async Task JoinRoom(string roomId, string colorIn, string playerNameIn)
         {
-            Logger.LogInformation("PLAYER JOINS ROOM:{0}.", roomId);
+            Logger.LogInformation("PLAYER JOINS ROOM:{0}. {1}.", roomId, playerNameIn);
             if (!this.GameLobby.Rooms.ContainsKey(roomId))
             {
                 await this.JoinRoomError($"Room {roomId} not found.");
@@ -54,7 +54,7 @@ namespace Octoprotecto
             }
 
             await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
-            await CreateNewOctopus(room, playerId, colorIn);
+            await CreateNewOctopus(room, playerId, colorIn, playerNameIn);
         }
 
         public async Task StartRoom(string roomId, bool soloRun)
