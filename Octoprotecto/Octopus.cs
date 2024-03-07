@@ -18,6 +18,7 @@ namespace Octoprotecto
         public int TotalDeaths { get; set; } = 0;
         public int Luck { get; set; } = 0;
         public int Armor { get; set; } = 1;
+        public int CollisionDamage { get; set; } = 20;
         public bool IsActive { get; set; } = true;
         public List<Weapon> Weapons { get; } = new List<Weapon>();
         public int RefreshCost { get; set; } = 1;
