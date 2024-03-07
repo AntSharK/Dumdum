@@ -6,7 +6,7 @@ namespace Octoprotecto
     {
         public double FireRate { get; set; } = 600; // Milliseconds between shots
         public double Spread { get; set; } = 1.4; // Total radians - equally spread in both directions
-        public double Range { get; set; } = 225;
+        public double Range { get; set; } = 250;
         public double ProjectileDamage { get; set; } = 19;
         public double ProjectileSpeed { get; set; } = 350; // Units per second
         public List<Upgrade<Weapon>> TrackedUpgrades { get; } = new List<Upgrade<Weapon>>();
@@ -46,6 +46,7 @@ namespace Octoprotecto
                 new WeaponStatUpgrade(WeaponStat.ProjectileSpeed),
                 new WeaponStatUpgrade(WeaponStat.ProjectileSpread),
                 new WeaponStatUpgrade(WeaponStat.Damage),
+                new WeaponStatUpgrade(WeaponStat.Range),
             };
 
             Upgrade<Weapon>.GenerateBaseUpgrades(possibleUpgrades, numberOfBaseUpgrades, this);

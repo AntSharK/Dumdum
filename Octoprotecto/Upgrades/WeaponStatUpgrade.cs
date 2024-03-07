@@ -28,6 +28,9 @@
                 case WeaponStat.Cooldown:
                     this.displayName = "FireRate+";
                     break;
+                case WeaponStat.Range:
+                    this.displayName = "Range+";
+                    break;
                 default:
                     this.displayName = "Unknown";
                     break;
@@ -50,6 +53,9 @@
                 case WeaponStat.Cooldown:
                     weapon.FireRate = weapon.FireRate * 0.95d;
                     break;
+                case WeaponStat.Range:
+                    weapon.Range = weapon.Range + 35;
+                    break;
             }
 
             base.ApplyUpgrade(weapon);
@@ -62,5 +68,6 @@
         ProjectileSpread,
         Damage,
         Cooldown,
+        Range,
     }
 }

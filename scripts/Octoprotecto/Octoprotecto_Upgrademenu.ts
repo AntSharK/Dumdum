@@ -120,6 +120,7 @@ class Upgradescreen extends Phaser.Scene {
             var table = document.getElementById("upgrademenustatsdisplay") as HTMLTableElement;
             table.innerHTML = "";
             let row = table.insertRow(0);
+            let rangeButtonRow = row.insertCell(0);
             let spreadButtonRow = row.insertCell(0);
             let cooldownButtonRow = row.insertCell(0);
             let speedButtonRow = row.insertCell(0);
@@ -141,6 +142,9 @@ class Upgradescreen extends Phaser.Scene {
                     case "FireRate+":
                         this.ConfigureUpgradeButton(cooldownButtonRow, key, upgrade);
                         break;
+                    case "Range+":
+                        this.ConfigureUpgradeButton(rangeButtonRow, key, upgrade);
+                        break;
                 }
             }
 
@@ -155,6 +159,7 @@ class Upgradescreen extends Phaser.Scene {
                 refreshButtonRow.onclick = purchaseUpgrade;
             }
 
+            row.insertCell(0).textContent = "" + Math.round(selectedWeapon.range * 100) / 100;
             row.insertCell(0).textContent = "" + Math.round(selectedWeapon.spread * 100) / 100;
             row.insertCell(0).textContent = "" + Math.round(selectedWeapon.fireRate * 100) / 100;
             row.insertCell(0).textContent = "" + Math.round(selectedWeapon.projectileSpeed * 100) / 100;
@@ -163,6 +168,9 @@ class Upgradescreen extends Phaser.Scene {
             let cell = row.insertCell(0);
             cell.textContent = ">>";
             cell.title = "Refreshing will change the available purchaseable upgrades everywhere.";
+            cell = row.insertCell(0);
+            cell.textContent = "RAN";
+            cell.title = "Range is the distance enemies have to be for the weapon to fire at them.";
             cell = row.insertCell(0);
             cell.textContent = "ACC";
             cell.title = "Accuracy is the total spread of projectiles launched. A smaller value means more precision.";

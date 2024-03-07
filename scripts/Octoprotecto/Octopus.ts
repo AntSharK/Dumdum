@@ -36,7 +36,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         // Add the display name
         this.displayNameText = scene.add.text(0, 0, this.displayName, { color: 'White', fontSize: '3vw' });
         this.displayNameText.setDepth(this.depth + 0.2);
-        this.displayNameText.setOrigin(0.5, -1);
+        this.displayNameText.setOrigin(0.5, -0.3);
 
         scene.add.existing(this);
         octopiPhysicsGroup.add(this);
