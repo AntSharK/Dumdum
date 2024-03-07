@@ -98,6 +98,10 @@ class Upgradescreen extends Phaser.Scene {
             cell.textContent = "HP";
             cell.title = "The maximum number of hit points your octopus has.";
 
+            // TODO: Special upgrade menu
+            var specialUpgradeTable = document.getElementById("specialupgrademenu") as HTMLTableElement;
+            specialUpgradeTable.innerHTML = "";
+
             for (let key in this.OctopusData.purchasableUpgrades) {
                 var upgrade = this.OctopusData.purchasableUpgrades[key];
 
