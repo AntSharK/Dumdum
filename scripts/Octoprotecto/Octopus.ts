@@ -5,7 +5,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     lastUpdateTime: number;
     name: string;
     weapons: Weapon[] = [];
-    speed: number = 0.1497; // Expressed as distance covered per millisecond
+    speed: number = 0.15; // Expressed as distance covered per millisecond
     points: number = 20;
     hitPoints: number = 998;
     luck: number = 0;
@@ -17,9 +17,13 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     purchasableUpgrades: { [id: string]: Upgrade } = {};
     displayName: string; // For display only
     collisionDamage: number = 0;
+    trackedUpgrades: Upgrade[] = [];
 
     // Stuff for drawing
     displayNameText: Phaser.GameObjects.Text;
+
+    // Custom behaviors injected
+    onDamageTaken: ((octo: Octopus, dmgTaken: number) => void)[] = [];
 
     placeInScene(scene: Phaser.Scene,
         octopiPhysicsGroup: Phaser.Physics.Arcade.Group,
@@ -33,6 +37,16 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
             w.placeInScene(weaponsPhysicsGroup, bulletPhysicsGroup);
             w.tint = tint;
         });
+        
+        this.trackedUpgrades.forEach(u => {
+            switch (u.displayName) {
+                case "Toughen":
+                    this.onDamageTaken.push((octo, dmgTaken) => {
+                        octo.armor += 1;
+                    });
+                    break;
+            }
+        }, this);
 
         // Add the display name
         this.displayNameText = scene.add.text(0, 0, this.displayName, { color: 'White', fontSize: '3vw' });
@@ -59,7 +73,8 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
             octopusData.weapons,
             octopusData.purchasableUpgrades,
             octopusData.displayName,
-            octopusData.collisionDamage);
+            octopusData.collisionDamage,
+            octopusData.trackedUpgrades);
     }
 
     constructor(name: string, scene: Phaser.Scene, x: number, y: number,
@@ -73,7 +88,8 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         weaponData: Weapon[],
         purchasableUpgrades: { [id: string]: Upgrade },
         displayName: string,
-        collisionDamage: number) {
+        collisionDamage: number,
+        trackedUpgrades: Upgrade[]) {
         super(scene, x, y, 'octopus');
 
         this.name = name;
@@ -94,6 +110,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         this.purchasableUpgrades = purchasableUpgrades;
         this.displayName = displayName;
         this.collisionDamage = collisionDamage;
+        this.trackedUpgrades = trackedUpgrades;
 
         weaponData.forEach(w => {
             var newWeapon = Weapon.FromData(w, this);
@@ -121,6 +138,10 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     TakeDamage(damage: number) {
         let actualDamage = Math.max(1, damage - this.armor);
         this.hitPoints = this.hitPoints - actualDamage;
+
+        this.onDamageTaken.forEach(f => {
+            f(this, damage);
+        }, this);
 
         if (this.hitPoints <= 0) {
             this.setActive(false);

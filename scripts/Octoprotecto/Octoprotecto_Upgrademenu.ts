@@ -46,8 +46,8 @@ class Upgradescreen extends Phaser.Scene {
             if (this.selectedImage.name == image.name) {
                 this.selectedImage = null;
                 document.getElementById("upgrademenupointsdisplay").hidden = false;
-                var table = document.getElementById("upgrademenustatsdisplay") as HTMLTableElement;
-                table.innerHTML = "";
+                (document.getElementById("upgrademenustatsdisplay") as HTMLTableElement).innerHTML = "";
+                (document.getElementById("specialupgrademenu") as HTMLTableElement).innerHTML = "";
                 return;
             }
         }
@@ -59,31 +59,14 @@ class Upgradescreen extends Phaser.Scene {
 
             var table = document.getElementById("upgrademenustatsdisplay") as HTMLTableElement;
             table.innerHTML = "";
-            let row = table.insertRow(0);
+            var specialUpgradeTable = document.getElementById("specialupgrademenu") as HTMLTableElement;
+            specialUpgradeTable.innerHTML = "";
 
+            let row = table.insertRow(0);
             let collisionDmgButtonRow = row.insertCell(0);
             let armorButtonRow = row.insertCell(0);
             let playerspeedButtonRow = row.insertCell(0);
             let maxhpButtonRow = row.insertCell(0);
-
-            for (let key in this.OctopusData.purchasableUpgrades) {
-                var upgrade = this.OctopusData.purchasableUpgrades[key];
-
-                switch (upgrade.displayName) {
-                    case "Armor+":
-                        this.ConfigureUpgradeButton(armorButtonRow, key, upgrade);
-                        break;
-                    case "Playerspeed+":
-                        this.ConfigureUpgradeButton(playerspeedButtonRow, key, upgrade);
-                        break;
-                    case "Maxhp+":
-                        this.ConfigureUpgradeButton(maxhpButtonRow, key, upgrade);
-                        break;
-                    case "Collision+":
-                        this.ConfigureUpgradeButton(collisionDmgButtonRow, key, upgrade);
-                        break;
-                }
-            }
 
             row = table.insertRow(0);
             let refreshButtonRow = row.insertCell(0);
@@ -116,6 +99,39 @@ class Upgradescreen extends Phaser.Scene {
             cell = row.insertCell(0);
             cell.textContent = "HP";
             cell.title = "The maximum number of hit points your octopus has.";
+
+            for (let key in this.OctopusData.purchasableUpgrades) {
+                var upgrade = this.OctopusData.purchasableUpgrades[key];
+
+                switch (upgrade.displayName) {
+                    case "Armor+":
+                        this.ConfigureUpgradeButton(armorButtonRow, key, upgrade);
+                        break;
+                    case "Playerspeed+":
+                        this.ConfigureUpgradeButton(playerspeedButtonRow, key, upgrade);
+                        break;
+                    case "Maxhp+":
+                        this.ConfigureUpgradeButton(maxhpButtonRow, key, upgrade);
+                        break;
+                    case "Collision+":
+                        this.ConfigureUpgradeButton(collisionDmgButtonRow, key, upgrade);
+                        break;
+                    default:
+                        let specialRow = specialUpgradeTable.insertRow(0);
+                        var specialUpgradeCell = specialRow.insertCell(0);
+                        specialUpgradeCell.textContent = "$" + upgrade.cost;
+                        this.ConfigureUpgradeButton(specialUpgradeCell, key, upgrade);
+                        specialRow.insertCell(0).textContent = upgrade.description;
+
+                        specialRow = specialUpgradeTable.insertRow(0);
+                        specialUpgradeTable.insertRow(0);
+                        let specialCell = specialRow.insertCell(0);
+                        specialCell.textContent = upgrade.displayName;
+                        specialCell.colSpan = 2;
+                        break;
+                }
+            }
+
             return;
         }
 
@@ -127,34 +143,15 @@ class Upgradescreen extends Phaser.Scene {
 
             var table = document.getElementById("upgrademenustatsdisplay") as HTMLTableElement;
             table.innerHTML = "";
+            var specialUpgradeTable = document.getElementById("specialupgrademenu") as HTMLTableElement;
+            specialUpgradeTable.innerHTML = "";
+
             let row = table.insertRow(0);
             let rangeButtonRow = row.insertCell(0);
             let spreadButtonRow = row.insertCell(0);
             let cooldownButtonRow = row.insertCell(0);
             let speedButtonRow = row.insertCell(0);
             let damageButtonRow = row.insertCell(0);
-
-            for (let key in selectedWeapon.purchasableUpgrades) {
-                var upgrade = selectedWeapon.purchasableUpgrades[key];
-
-                switch (upgrade.displayName) {
-                    case "Speed+":
-                        this.ConfigureUpgradeButton(speedButtonRow, key, upgrade);
-                        break;
-                    case "Accuracy+":
-                        this.ConfigureUpgradeButton(spreadButtonRow, key, upgrade);
-                        break;
-                    case "Damage+":
-                        this.ConfigureUpgradeButton(damageButtonRow, key, upgrade);
-                        break;
-                    case "FireRate+":
-                        this.ConfigureUpgradeButton(cooldownButtonRow, key, upgrade);
-                        break;
-                    case "Range+":
-                        this.ConfigureUpgradeButton(rangeButtonRow, key, upgrade);
-                        break;
-                }
-            }
 
             row = table.insertRow(0);
             let refreshButtonRow = row.insertCell(0);
@@ -191,6 +188,29 @@ class Upgradescreen extends Phaser.Scene {
             cell = row.insertCell(0);
             cell.textContent = "DMG";
             cell.title = "Damage is the damage done to enemies when the projectile hits them.";
+
+            for (let key in selectedWeapon.purchasableUpgrades) {
+                var upgrade = selectedWeapon.purchasableUpgrades[key];
+
+                switch (upgrade.displayName) {
+                    case "Speed+":
+                        this.ConfigureUpgradeButton(speedButtonRow, key, upgrade);
+                        break;
+                    case "Accuracy+":
+                        this.ConfigureUpgradeButton(spreadButtonRow, key, upgrade);
+                        break;
+                    case "Damage+":
+                        this.ConfigureUpgradeButton(damageButtonRow, key, upgrade);
+                        break;
+                    case "FireRate+":
+                        this.ConfigureUpgradeButton(cooldownButtonRow, key, upgrade);
+                        break;
+                    case "Range+":
+                        this.ConfigureUpgradeButton(rangeButtonRow, key, upgrade);
+                        break;
+                }
+            }
+
             return;
         }
     }
@@ -287,7 +307,7 @@ class Upgradescreen extends Phaser.Scene {
         }
         else {
             row.style.backgroundColor = "green";
-            row.onclick = purchaseUpgrade;
+            row.onmousedown = purchaseUpgrade; // Used to be onclick - but onmousedown happens first
         }
     }
 }
