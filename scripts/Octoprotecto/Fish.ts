@@ -16,6 +16,11 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
 
             // Do some damage to itself on collision
             this.TakeDamage(octopus.collisionDamage);
+
+            // Destruction from collision gives points
+            if (this.hitPoints <= 0) {
+                octopus.points += this.points;
+            }
         }
     }
 
