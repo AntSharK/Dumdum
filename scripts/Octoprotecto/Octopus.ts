@@ -38,11 +38,16 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
             w.tint = tint;
         });
         
-        this.trackedUpgrades.forEach(u => {
+        this.trackedUpgrades.forEach(u => { // Go through the DisplayName in each of the TrackedUpgrades
             switch (u.displayName) {
                 case "Toughen":
                     this.onDamageTaken.push((octo, dmgTaken) => {
                         octo.armor += 1;
+                    });
+                    break;
+                case "Insurance":
+                    this.onDamageTaken.push((octo, dmgTaken) => {
+                        octo.points += 1;
                     });
                     break;
             }
