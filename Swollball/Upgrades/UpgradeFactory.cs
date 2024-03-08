@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Common.Util;
 
 namespace Swollball.Upgrades
 {
@@ -115,48 +111,20 @@ namespace Swollball.Upgrades
         
         private static Lazy<Func<IUpgrade>[]> Tier1Upgrades = new Lazy<Func<IUpgrade>[]>(() =>
         {
-            return GetUpgrades(Tier1UpgradeOdds);
+            return Utils.CollateOdds(Tier1UpgradeOdds);
         });
         private static Lazy<Func<IUpgrade>[]> Tier2Upgrades = new Lazy<Func<IUpgrade>[]>(() =>
         {
-            return GetUpgrades(Tier1UpgradeOdds, Tier2UpgradeOdds);
+            return Utils.CollateOdds(Tier1UpgradeOdds, Tier2UpgradeOdds);
         });
         private static Lazy<Func<IUpgrade>[]> Tier3Upgrades = new Lazy<Func<IUpgrade>[]>(() =>
         {
-            return GetUpgrades(Tier1UpgradeOdds, Tier2UpgradeOdds, Tier3UpgradeOdds);
+            return Utils.CollateOdds(Tier1UpgradeOdds, Tier2UpgradeOdds, Tier3UpgradeOdds);
         });
         private static Lazy<Func<IUpgrade>[]> Tier4Upgrades = new Lazy<Func<IUpgrade>[]>(() =>
         {
-            return GetUpgrades(Tier1UpgradeOdds, Tier2UpgradeOdds, Tier3UpgradeOdds, Tier4UpgradeOdds);
+            return Utils.CollateOdds(Tier1UpgradeOdds, Tier2UpgradeOdds, Tier3UpgradeOdds, Tier4UpgradeOdds);
         });
-
-        private static Func<IUpgrade>[] GetUpgrades(params List<Tuple<int, Func<IUpgrade>>>[] upgradeOddsList)
-        {
-            var totalSize = 0;
-            foreach (var upgradeOdds in upgradeOddsList)
-            {
-                foreach (var upg in upgradeOdds)
-                {
-                    totalSize += upg.Item1;
-                }
-            }
-
-            var array = new Func<IUpgrade>[totalSize];
-            var idx = 0;
-            foreach (var upgradeOdds in upgradeOddsList)
-            {
-                foreach (var upg in upgradeOdds)
-                {
-                    for (var i = 0; i < upg.Item1; i++)
-                    {
-                        array[idx] = upg.Item2;
-                        idx++;
-                    }
-                }
-            }
-
-            return array;
-        }
 
         public static Dictionary<string, IUpgrade> FillShop(Dictionary<string, IUpgrade> currentUpgrades, int shopSize, int shopTier, bool replaceBlankCards)
         {
