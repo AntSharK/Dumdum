@@ -5,7 +5,7 @@
         private string displayName;
         public override string DisplayName => this.displayName;
         public override string Description => "Improves Stats";
-        public override int UpgradeBaseCost => 11;
+        public override int UpgradeBaseCost => 21;
         public override int UpgradeIncrementCost => 3;
         public override string UpgradeName => "bodystat";
 
@@ -39,16 +39,16 @@
             switch (this.statUpgraded)
             {
                 case BodyStat.Armor:
-                    octopus.Armor += 6;
+                    octopus.Armor += 15;
                     break;
                 case BodyStat.Speed:
-                    octopus.Speed += 0.01;
+                    octopus.Speed += 0.05;
                     break;
                 case BodyStat.MaxHp:
-                    octopus.MaxHitPoints += 50;
+                    octopus.MaxHitPoints += 150;
                     break;
                 case BodyStat.CollisionDamage:
-                    octopus.CollisionDamage += 5;
+                    octopus.CollisionDamage += 50;
                     break;
             }
 

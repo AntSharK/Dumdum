@@ -17,7 +17,7 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
         var sp = this.scene.add.sprite(this.x, this.y, 'explosion');
 
         // Scale the explosion according to damage done
-        sp.scale = Phaser.Math.Interpolation.QuadraticBezier(this.bulletWeapon.projectileDamage / 100, 0, 3, 4);
+        sp.scale = Phaser.Math.Interpolation.QuadraticBezier(this.bulletWeapon.projectileDamage / 1000, 0, 1, 1.5);
 
         sp.play('explosion_anim');
         sp.on(Phaser.Animations.Events.ANIMATION_COMPLETE, function (anim, frame, gameObject) {
