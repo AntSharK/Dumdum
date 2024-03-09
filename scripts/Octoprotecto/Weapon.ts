@@ -17,7 +17,7 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
         var sp = this.scene.add.sprite(this.x, this.y, 'explosion');
 
         // Scale the explosion according to damage done
-        sp.scale = Phaser.Math.Interpolation.QuadraticBezier(this.bulletWeapon.projectileDamage / 1000, 0.5, 1.0, 1.1);
+        sp.scale = Phaser.Math.Interpolation.QuadraticBezier(this.bulletWeapon.projectileDamage / 1000, 0.4, 1.0, 1.2);
         sp.setDepth(fish.depth + 0.1);
 
         sp.play('explosion_anim');
@@ -43,9 +43,11 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
         this.moveDirection.normalize();
 
         // Scale the size according to damage done
-        this.scale = Phaser.Math.Interpolation.QuadraticBezier(this.bulletWeapon.projectileDamage / 1000, 0.8, 1.5, 1.6);
+        this.scale = Phaser.Math.Interpolation.QuadraticBezier(this.bulletWeapon.projectileDamage / 1000, 0.5, 1.5, 1.7);
 
+        // The next line sets the rotation to the actual movement, rather than the aimed direction
         //this.setRotation(Math.atan2(this.moveDirection.y, this.moveDirection.x));
+
         this.setVelocity(this.moveDirection.x * this.bulletWeapon.projectileSpeed, this.moveDirection.y * this.bulletWeapon.projectileSpeed);
         this.scene.time.addEvent({
             delay: this.bulletWeapon.range / this.bulletWeapon.projectileSpeed * 1000,
