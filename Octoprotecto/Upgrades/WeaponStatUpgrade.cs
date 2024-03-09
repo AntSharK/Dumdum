@@ -5,7 +5,7 @@
         private string displayName;
         public override string DisplayName => this.displayName;
         public override string Description => "Improves Stats";
-        public override int UpgradeBaseCost => 5;
+        public override int UpgradeBaseCost => 15;
         public override int UpgradeIncrementCost => 1;
         public override string UpgradeName => "weaponstat";
 
@@ -42,19 +42,19 @@
             switch (this.statUpgraded)
             {
                 case WeaponStat.ProjectileSpeed:
-                    weapon.ProjectileSpeed += 15;
+                    weapon.ProjectileSpeed += 150;
                     break;
                 case WeaponStat.ProjectileSpread:
-                    weapon.Spread = weapon.Spread * 0.95d;
+                    weapon.Spread = weapon.Spread * 0.8d;
                     break;
                 case WeaponStat.Damage:
-                    weapon.ProjectileDamage = weapon.ProjectileDamage + 1;
+                    weapon.ProjectileDamage = weapon.ProjectileDamage + 40;
                     break;
                 case WeaponStat.Cooldown:
-                    weapon.FireRate = weapon.FireRate * 0.95d;
+                    weapon.FireRate = weapon.FireRate * 0.8d;
                     break;
                 case WeaponStat.Range:
-                    weapon.Range = weapon.Range + 35;
+                    weapon.Range = weapon.Range + 110;
                     break;
             }
 

@@ -42,7 +42,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
             switch (u.displayName) {
                 case "Toughen":
                     this.onDamageTaken.push((octo, dmgTaken) => {
-                        octo.armor += 1;
+                        octo.armor += 3;
                     });
                     break;
                 case "Insurance":
@@ -54,7 +54,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         }, this);
 
         // Add the display name
-        this.displayNameText = scene.add.text(0, 0, this.displayName, { color: 'White', fontSize: '3vw' });
+        this.displayNameText = scene.add.text(0, 0, this.displayName, { color: 'White', fontSize: '2vw' });
         this.displayNameText.setDepth(this.depth + 0.2);
         this.displayNameText.setOrigin(0.5, -0.3);
 

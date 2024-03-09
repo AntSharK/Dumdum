@@ -15,6 +15,11 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
 
     ApplyHit(fish: Fish) {
         var sp = this.scene.add.sprite(this.x, this.y, 'explosion');
+
+        // Scale the explosion according to damage done
+        sp.scale = Phaser.Math.Interpolation.QuadraticBezier(this.bulletWeapon.projectileDamage / 1000, 0.4, 1.0, 1.2);
+        sp.setDepth(fish.depth + 0.1);
+
         sp.play('explosion_anim');
         sp.on(Phaser.Animations.Events.ANIMATION_COMPLETE, function (anim, frame, gameObject) {
             gameObject.destroy();
@@ -30,10 +35,19 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
 
     FireToFish(focusedFish: Fish, spread: number) {
         this.moveDirection = new Phaser.Math.Vector2(focusedFish.x - this.x, focusedFish.y - this.y);
+
+        // The rotation is set to be towards the target, to clearly show the deflection
+        this.setRotation(Math.atan2(this.moveDirection.y, this.moveDirection.x));
+
         this.moveDirection.rotate(Math.random() * spread - spread / 2);
         this.moveDirection.normalize();
 
-        this.setRotation(Math.atan2(this.moveDirection.y, this.moveDirection.x));
+        // Scale the size according to damage done
+        this.scale = Phaser.Math.Interpolation.QuadraticBezier(this.bulletWeapon.projectileDamage / 1000, 0.5, 1.5, 1.7);
+
+        // The next line sets the rotation to the actual movement, rather than the aimed direction
+        //this.setRotation(Math.atan2(this.moveDirection.y, this.moveDirection.x));
+
         this.setVelocity(this.moveDirection.x * this.bulletWeapon.projectileSpeed, this.moveDirection.y * this.bulletWeapon.projectileSpeed);
         this.scene.time.addEvent({
             delay: this.bulletWeapon.range / this.bulletWeapon.projectileSpeed * 1000,

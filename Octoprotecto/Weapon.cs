@@ -7,7 +7,7 @@ namespace Octoprotecto
         public double FireRate { get; set; } = 600; // Milliseconds between shots
         public double Spread { get; set; } = 1.4; // Total radians - equally spread in both directions
         public double Range { get; set; } = 250;
-        public double ProjectileDamage { get; set; } = 19;
+        public double ProjectileDamage { get; set; } = 100;
         public double ProjectileSpeed { get; set; } = 350; // Units per second
         public List<Upgrade<Weapon>> TrackedUpgrades { get; } = new List<Upgrade<Weapon>>();
         public Dictionary<string, Upgrade<Weapon>> PurchasableUpgrades { get; } = new Dictionary<string, Upgrade<Weapon>>();

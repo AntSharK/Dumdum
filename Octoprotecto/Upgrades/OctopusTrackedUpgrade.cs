@@ -21,8 +21,8 @@
             {
                 case UpgradeType.ArmorWhenHit:
                     this.displayName = "Toughen";
-                    this.description = "When hit, Armor+1 for this round";
-                    this.baseCost = 8;
+                    this.description = "When hit, Armor+3 for this round";
+                    this.baseCost = 20;
                     this.incrementCost = 2;
                     break;
                 case UpgradeType.PointsWhenHit:
