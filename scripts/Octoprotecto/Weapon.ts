@@ -15,6 +15,10 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
 
     ApplyHit(fish: Fish) {
         var sp = this.scene.add.sprite(this.x, this.y, 'explosion');
+
+        // Scale the explosion according to damage done
+        sp.scale = Phaser.Math.Interpolation.QuadraticBezier(this.bulletWeapon.projectileDamage / 100, 0, 3, 4);
+
         sp.play('explosion_anim');
         sp.on(Phaser.Animations.Events.ANIMATION_COMPLETE, function (anim, frame, gameObject) {
             gameObject.destroy();
