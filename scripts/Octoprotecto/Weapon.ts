@@ -14,6 +14,10 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
     }
 
     ApplyHit(fish: Fish) {
+        this.bulletWeapon.onBulletHit.forEach(f => {
+            f(this, fish);
+        }, this);
+
         var sp = this.scene.add.sprite(this.x, this.y, 'explosion');
 
         // Scale the explosion according to damage done
@@ -84,6 +88,10 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
     fireRate: number = 100;
 
     purchasableUpgrades: { [id: string]: Upgrade } = {};
+    trackedUpgrades: Upgrade[] = [];
+
+    // Custom behaviors injected
+    onBulletHit: ((bullet: Bullet, hitTarget: Fish) => void)[] = [];
 
     placeInScene(weaponsPhysicsGroup: Phaser.Physics.Arcade.Group,
         bulletPhysicsGroup: Phaser.Physics.Arcade.Group,
@@ -97,6 +105,16 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
         this.offsetX = this.x - this.weaponOwner.x;
         this.offsetY = this.y - this.weaponOwner.y;
         this.setRotation(Math.atan2(-this.offsetY, -this.offsetX));
+
+        this.trackedUpgrades.forEach(u => { // Go through the DisplayName in each of the TrackedUpgrades
+            switch (u.displayName) {
+                case "Consume":
+                    this.onBulletHit.push((bullet, hitTarget) => {
+                        bullet.bulletWeapon.weaponOwner.Heal(3);
+                    });
+                    break;
+            }
+        }, this);
     }
 
     static FromData(weaponData: Weapon, octopus: Octopus): Weapon {
@@ -107,7 +125,8 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
             weaponData.projectileSpeed,
             weaponData.fireRate,
             weaponData.name,
-            weaponData.purchasableUpgrades);
+            weaponData.purchasableUpgrades,
+            weaponData.trackedUpgrades);
     }
 
     constructor(octopus: Octopus,
@@ -117,7 +136,8 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
         projectileSpeed: number,
         fireRate: number,
         name: string,
-        purchaseableUpgrades: { [id: string]: Upgrade }) {
+        purchaseableUpgrades: { [id: string]: Upgrade },
+        trackedUpgrades: Upgrade[]) {
         super(octopus.scene, octopus.x, octopus.y, 'fin');
 
         this.setOrigin(0, 0.5);
@@ -132,6 +152,7 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
 
         this.name = name;
         this.purchasableUpgrades = purchaseableUpgrades;
+        this.trackedUpgrades = trackedUpgrades;
     }
 
     FireWeapon(focusedFish: Fish) {

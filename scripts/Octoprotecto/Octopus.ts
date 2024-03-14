@@ -164,6 +164,13 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         this.lastHitTime = this.scene.time.now;
     }
 
+    Heal(healAmount: number) {
+        this.hitPoints = this.hitPoints + healAmount;
+        if (this.hitPoints > this.maxHitPoints) {
+            this.hitPoints = this.maxHitPoints;
+        }
+    }
+
     DrawFlash(graphics: Phaser.GameObjects.Graphics) {
         const FLASHTIME = 300; // This is the same as invulnerability time
         const FLASHINTERVAL = 70;
