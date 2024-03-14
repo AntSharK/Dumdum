@@ -15,6 +15,7 @@ namespace Octoprotecto
         public abstract int UpgradeBaseCost { get; }
         public abstract int UpgradeIncrementCost { get; }
         public abstract string UpgradeName { get; }
+        public int MaxLimit { get; set; } = -1; // Defaults to negative to be disabled
 
         public virtual void ApplyUpgrade(TargetType target)
         {

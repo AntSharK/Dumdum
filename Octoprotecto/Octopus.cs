@@ -36,7 +36,7 @@ namespace Octoprotecto
             const int STARTINGWEAPONCOUNT = 4;
             for (int i = 0; i < STARTINGWEAPONCOUNT; i++)
             {
-                this.Weapons.Add(new Weapon(name + i));
+                this.Weapons.Add(new Weapon(this, i.ToString()));
             }
         }
 
@@ -85,14 +85,38 @@ namespace Octoprotecto
             Upgrade<Octopus>.GenerateBaseUpgrades(possibleUpgrades, numberOfBaseUpgrades, this);
 
             // Generate special upgrades
-            var generatedSpecialUpgrade = UpgradeFactory.GetBodyUpgrade(this.Luck > 0 ? this.Luck : 1);
+            this.GenerateSpecialUpgrade();
+        }
+
+        private void GenerateSpecialUpgrade()
+        {
+            Upgrade<Octopus>? generatedSpecialUpgrade = null;
+            var currentRetry = 0;
+            const int MAXRETRIES = 2;
+
+            // Limit the number of upgrades of a certain type
+            while (generatedSpecialUpgrade == null && currentRetry <= MAXRETRIES)
+            {
+                currentRetry++;
+                generatedSpecialUpgrade = UpgradeFactory.GetBodyUpgrade(this.Luck > 0 ? this.Luck : 1);
+
+                if (generatedSpecialUpgrade != null
+                    && generatedSpecialUpgrade.MaxLimit > 0)
+                {
+                    var numberOfSameNameUpgrades = this.TrackedUpgrades.Count(c => c.DisplayName == generatedSpecialUpgrade.DisplayName);
+                    if (numberOfSameNameUpgrades >= generatedSpecialUpgrade.MaxLimit)
+                    {
+                        generatedSpecialUpgrade = null;
+                    }
+                }
+            }
+
             if (generatedSpecialUpgrade != null)
             {
                 this.UpgradesCreated++;
                 generatedSpecialUpgrade.ReadTargetProperties(this);
                 this.PurchasableUpgrades.Add(generatedSpecialUpgrade.Name, generatedSpecialUpgrade);
             }
-
         }
 
         internal void NextRound()
