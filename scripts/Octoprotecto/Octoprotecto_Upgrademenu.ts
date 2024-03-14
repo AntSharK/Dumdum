@@ -208,6 +208,19 @@ class Upgradescreen extends Phaser.Scene {
                     case "Range+":
                         this.ConfigureUpgradeButton(rangeButtonRow, key, upgrade);
                         break;
+                    default:
+                        let specialRow = specialUpgradeTable.insertRow(0);
+                        var specialUpgradeCell = specialRow.insertCell(0);
+                        specialUpgradeCell.textContent = "$" + upgrade.cost;
+                        this.ConfigureUpgradeButton(specialUpgradeCell, key, upgrade);
+                        specialRow.insertCell(0).textContent = upgrade.description;
+
+                        specialRow = specialUpgradeTable.insertRow(0);
+                        specialUpgradeTable.insertRow(0);
+                        let specialCell = specialRow.insertCell(0);
+                        specialCell.textContent = upgrade.displayName;
+                        specialCell.colSpan = 2;
+                        break;
                 }
             }
 

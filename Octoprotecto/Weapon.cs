@@ -16,9 +16,12 @@ namespace Octoprotecto
         public int UpgradesCreated { get; set; } = 0;
         public int UpgradesApplied { get; set; } = 0;
 
-        public Weapon(string weaponName)
+        internal Octopus Owner { get; private set; }
+
+        public Weapon(Octopus owner, string weaponName)
         {
-            this.Name = weaponName;
+            this.Owner = owner;
+            this.Name = owner.Name + weaponName;
         }
 
         public void GenerateUpgrades(int luck)
@@ -50,7 +53,15 @@ namespace Octoprotecto
             };
 
             Upgrade<Weapon>.GenerateBaseUpgrades(possibleUpgrades, numberOfBaseUpgrades, this);
-            // TODO: Generate augmentations, not just stat upgrades
+
+            // Generate special upgrades
+            var generatedSpecialUpgrade = UpgradeFactory.GetWeaponUpgrade(luck > 0 ? luck : 1);
+            if (generatedSpecialUpgrade != null)
+            {
+                this.UpgradesCreated++;
+                generatedSpecialUpgrade.ReadTargetProperties(this);
+                this.PurchasableUpgrades.Add(generatedSpecialUpgrade.Name, generatedSpecialUpgrade);
+            }
         }
     }
 }

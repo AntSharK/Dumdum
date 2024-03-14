@@ -36,7 +36,7 @@ namespace Octoprotecto
             const int STARTINGWEAPONCOUNT = 4;
             for (int i = 0; i < STARTINGWEAPONCOUNT; i++)
             {
-                this.Weapons.Add(new Weapon(name + i));
+                this.Weapons.Add(new Weapon(this, i.ToString()));
             }
         }
 
@@ -92,7 +92,6 @@ namespace Octoprotecto
                 generatedSpecialUpgrade.ReadTargetProperties(this);
                 this.PurchasableUpgrades.Add(generatedSpecialUpgrade.Name, generatedSpecialUpgrade);
             }
-
         }
 
         internal void NextRound()

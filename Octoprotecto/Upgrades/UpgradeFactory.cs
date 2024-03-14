@@ -12,9 +12,19 @@ namespace Octoprotecto
             (1, 500, () => new OctopusTrackedUpgrade(OctopusTrackedUpgrade.UpgradeType.PointsWhenHit))
         };
 
+        private static (int luckMultiplier, int baseRate, Func<Upgrade<Weapon>> upgradeFunc)[] TentacleUpgrades =
+        {
+            (5, 10, () => new TentacleSpecialUpgrade(TentacleSpecialUpgrade.UpgradeType.Split)),
+        };
+
         public static Upgrade<Octopus> GetBodyUpgrade(int luck)
         {
             return GetSingleInstance(luck, OctopusUpgrades);
+        }
+
+        public static Upgrade<Weapon> GetWeaponUpgrade(int luck)
+        {
+            return GetSingleInstance(luck, TentacleUpgrades);
         }
 
         private static T GetSingleInstance<T>(int luck, (int luckMultiplier, int baseRate, Func<T> generationFunc)[] functionGenerator)
@@ -34,7 +44,7 @@ namespace Octoprotecto
             {
                 if (rng <= thresholdToFunction.threshold)
                 {
-                    return thresholdToFunction.generationFunc();
+                    var generatedUpgrade = thresholdToFunction.generationFunc();
                 }
             }
 
