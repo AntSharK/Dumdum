@@ -284,7 +284,9 @@ class Upgradescreen extends Phaser.Scene {
         // Add a dummy element to handle off-by-one placement
         var offByOne = this.add.image(this.game.canvas.width / 2, this.game.canvas.height / 2, "fin");
         this.Tentacles.unshift(offByOne);
-        Phaser.Actions.PlaceOnCircle(this.Tentacles, new Phaser.Geom.Circle(this.game.canvas.width / 2, this.game.canvas.height / 2, this.MainBody.displayWidth), 0, Math.PI);
+
+        let offSet = (this.Tentacles.length - 5) * 0.08; // More spread for more weapons
+        Phaser.Actions.PlaceOnCircle(this.Tentacles, new Phaser.Geom.Circle(this.game.canvas.width / 2, this.game.canvas.height / 2, this.MainBody.displayWidth), 0 - offSet, Math.PI + offSet);
 
         this.Tentacles.shift();
         offByOne.destroy();
