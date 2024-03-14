@@ -15,6 +15,7 @@ namespace Octoprotecto
         private static (int luckMultiplier, int baseRate, Func<Upgrade<Weapon>> upgradeFunc)[] TentacleUpgrades =
         {
             (5, 10, () => new TentacleSpecialUpgrade(TentacleSpecialUpgrade.UpgradeType.Split)),
+            (2, 200, () => new TentacleSpecialUpgrade(TentacleSpecialUpgrade.UpgradeType.Consume)),
         };
 
         public static Upgrade<Octopus> GetBodyUpgrade(int luck)
