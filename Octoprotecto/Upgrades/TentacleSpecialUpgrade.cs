@@ -21,7 +21,7 @@
             {
                 case UpgradeType.Split:
                     this.displayName = "Split";
-                    this.description = "Halves damage, then spawns a new tentacle with the same stats (Max once per tentacle).";
+                    this.description = "Halves damage, then spawns a new tentacle with the same stats";
                     this.baseCost = 1;
                     this.incrementCost = 0;
                     this.MaxLimit = 1;
@@ -31,6 +31,13 @@
                     this.description = "Unknown";
                     break;
             }
+        }
+
+        public override void ReadTargetProperties(Weapon weapon)
+        {
+            base.ReadTargetProperties(weapon);
+            var numberOfExistingUpgrades = weapon.TrackedUpgrades.Count(c => c.DisplayName == this.DisplayName);
+            this.description = this.description + " (owned: " + numberOfExistingUpgrades + (this.MaxLimit > 0 ? ("/" + this.MaxLimit + ")") : ")");
         }
 
         public override void ApplyUpgrade(Weapon weapon)
