@@ -14,26 +14,31 @@ namespace Octoprotecto
 
         public static Upgrade<Octopus> GetBodyUpgrade(int luck)
         {
+            return GetSingleInstance(luck, OctopusUpgrades);
+        }
+
+        private static T GetSingleInstance<T>(int luck, (int luckMultiplier, int baseRate, Func<T> generationFunc)[] functionGenerator)
+        {
             var currentThreshold = 0;
             var idx = 0;
-            var thresholdToUpgradeMap = new (int threshold, Func<Upgrade<Octopus>> upgradeFunc)[OctopusUpgrades.Length];
-            foreach (var octopusUpgrade in OctopusUpgrades)
+            var thresholdToFunctionMap = new (int threshold, Func<T> generationFunc)[functionGenerator.Length];
+            foreach (var functionGen in functionGenerator)
             {
-                currentThreshold += octopusUpgrade.baseRate * luck * octopusUpgrade.luckMultiplier;
-                thresholdToUpgradeMap[idx] = (currentThreshold, octopusUpgrade.upgradeFunc);
+                currentThreshold += functionGen.baseRate * luck * functionGen.luckMultiplier;
+                thresholdToFunctionMap[idx] = (currentThreshold, functionGen.generationFunc);
                 idx++;
             }
 
             var rng = Utils.Rng.Next(currentThreshold);
-            foreach (var thresholdToUpgrade in thresholdToUpgradeMap)
+            foreach (var thresholdToFunction in thresholdToFunctionMap)
             {
-                if (rng <= thresholdToUpgrade.threshold)
+                if (rng <= thresholdToFunction.threshold)
                 {
-                    return thresholdToUpgrade.upgradeFunc();
+                    return thresholdToFunction.generationFunc();
                 }
             }
 
-            return null;
+            return default(T);
         }
     }
 }
