@@ -44,7 +44,7 @@ namespace Octoprotecto
             {
                 if (rng <= thresholdToFunction.threshold)
                 {
-                    var generatedUpgrade = thresholdToFunction.generationFunc();
+                    return thresholdToFunction.generationFunc();
                 }
             }
 

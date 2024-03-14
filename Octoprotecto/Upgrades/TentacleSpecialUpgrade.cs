@@ -21,9 +21,10 @@
             {
                 case UpgradeType.Split:
                     this.displayName = "Split";
-                    this.description = "Halves damage, then spawns a new tentacle with the same stats.";
-                    this.baseCost = 100;
+                    this.description = "Halves damage, then spawns a new tentacle with the same stats (Max once per tentacle).";
+                    this.baseCost = 1;
                     this.incrementCost = 0;
+                    this.MaxLimit = 1;
                     break;
                 default:
                     this.displayName = "Unknown";
@@ -46,6 +47,7 @@
                     splitWeapon.Range = weapon.Range;
                     weapon.Owner.Weapons.Add(splitWeapon);
                     weapon.TrackedUpgrades.Add(this);
+                    splitWeapon.TrackedUpgrades.Add(this); // The split tentacle cannot be split again
                     break;
             }
 
