@@ -22,7 +22,7 @@
                 case UpgradeType.Split:
                     this.displayName = "Split";
                     this.description = "Halves damage, then spawns a new tentacle with the same stats (Max once per tentacle).";
-                    this.baseCost = 1;
+                    this.baseCost = 100;
                     this.incrementCost = 0;
                     this.MaxLimit = 1;
                     break;

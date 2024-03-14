@@ -53,8 +53,11 @@ namespace Octoprotecto
             };
 
             Upgrade<Weapon>.GenerateBaseUpgrades(possibleUpgrades, numberOfBaseUpgrades, this);
+            this.GenerateSpecialUpgrade(luck);
+        }
 
-            // Generate special upgrades
+        private void GenerateSpecialUpgrade(int luck)
+        {
             Upgrade<Weapon>? generatedSpecialUpgrade = null;
             var currentRetry = 0;
             const int MAXRETRIES = 2;
@@ -64,11 +67,15 @@ namespace Octoprotecto
             {
                 currentRetry++;
                 generatedSpecialUpgrade = UpgradeFactory.GetWeaponUpgrade(luck > 0 ? luck : 1);
-                var numberOfSameNameUpgrades = this.TrackedUpgrades.Count(c => c.DisplayName == generatedSpecialUpgrade.DisplayName);
-                if (generatedSpecialUpgrade != null 
-                    && numberOfSameNameUpgrades >= generatedSpecialUpgrade.MaxLimit)
+
+                if (generatedSpecialUpgrade != null
+                    && generatedSpecialUpgrade.MaxLimit > 0)
                 {
-                    generatedSpecialUpgrade = null;
+                    var numberOfSameNameUpgrades = this.TrackedUpgrades.Count(c => c.DisplayName == generatedSpecialUpgrade.DisplayName);
+                    if (numberOfSameNameUpgrades >= generatedSpecialUpgrade.MaxLimit)
+                    {
+                        generatedSpecialUpgrade = null;
+                    }
                 }
             }
 
