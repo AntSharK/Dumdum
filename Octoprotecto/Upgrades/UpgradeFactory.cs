@@ -16,7 +16,8 @@ namespace Octoprotecto
         {
             (5, 10, () => new TentacleSpecialUpgrade(TentacleSpecialUpgrade.UpgradeType.Split)),
             (2, 200, () => new TentacleSpecialUpgrade(TentacleSpecialUpgrade.UpgradeType.Consume)),
-            (3, 100, () => new TentacleSpecialUpgrade(TentacleSpecialUpgrade.UpgradeType.Pierce)),
+            (3, 100, () => new TentacleSpecialUpgrade(TentacleSpecialUpgrade.UpgradeType.Momentum)),
+            (4, 20000, () => new TentacleSpecialUpgrade(TentacleSpecialUpgrade.UpgradeType.Propel)),
         };
 
         public static Upgrade<Octopus> GetBodyUpgrade(int luck)

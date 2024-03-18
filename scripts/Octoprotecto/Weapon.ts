@@ -92,6 +92,7 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
 
     // Custom behaviors injected
     onBulletHit: ((bullet: Bullet, hitTarget: Fish) => void)[] = [];
+    onFireToFish: ((bullet: Bullet, target: Fish) => void)[] = [];
 
     placeInScene(weaponsPhysicsGroup: Phaser.Physics.Arcade.Group,
         bulletPhysicsGroup: Phaser.Physics.Arcade.Group,
@@ -113,12 +114,16 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
                         bullet.bulletWeapon.weaponOwner.Heal(3);
                     });
                     break;
-                case "Pierce":
+                case "Momentum":
                     this.onBulletHit.push((bullet, hitTarget) => {
                         hitTarget.TakeDamage(bullet.body.velocity.length() * 0.1);
                     });
                     break;
-                    
+                case "Propel":
+                    this.onFireToFish.push((bullet, target) => {
+                        bullet.setAcceleration(bullet.body.velocity.x, bullet.body.velocity.y);
+                    });
+                    break;
             }
         }, this);
     }
@@ -164,6 +169,10 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
     FireWeapon(focusedFish: Fish) {
         var bullet = new Bullet(this, this.bulletPhysicsGroup);
         bullet.FireToFish(focusedFish, this.spread);
+
+        this.onFireToFish.forEach(f => {
+            f(bullet, focusedFish);
+        }, this);
     }
 
     UpdateWeapon(graphics: Phaser.GameObjects.Graphics) {
