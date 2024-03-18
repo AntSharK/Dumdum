@@ -123,7 +123,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         })
 
         // Add a dummy element to handle off-by-one placement
-        var offByOne = new Weapon(this, 0, 0, 0, 0, 0, "dummy", {});
+        var offByOne = new Weapon(this, 0, 0, 0, 0, 0, "dummy", {}, []);
         this.weapons.unshift(offByOne);
         let offSet = (this.weapons.length - 5) * 0.08; // More spread for more weapons
         Phaser.Actions.PlaceOnCircle(this.weapons, new Phaser.Geom.Circle(this.x, this.y, this.width), 0 - offSet, Math.PI + offSet);
