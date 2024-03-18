@@ -115,7 +115,7 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
                     break;
                 case "Pierce":
                     this.onBulletHit.push((bullet, hitTarget) => {
-                        hitTarget.TakeDamage(bullet.body.velocity.length());
+                        hitTarget.TakeDamage(bullet.body.velocity.length() * 0.1);
                     });
                     break;
                     
