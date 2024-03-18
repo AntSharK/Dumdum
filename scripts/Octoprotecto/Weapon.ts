@@ -30,6 +30,8 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
         });
 
         fish.TakeDamage(this.bulletWeapon.projectileDamage);
+        this.bulletWeapon.damageDealt += this.bulletWeapon.projectileDamage;
+
         if (fish.hitPoints <= 0) {
             this.bulletWeapon.weaponOwner.points += fish.points;
         }
@@ -89,6 +91,9 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
 
     purchasableUpgrades: { [id: string]: Upgrade } = {};
     trackedUpgrades: Upgrade[] = [];
+
+    // For per-round tracking
+    damageDealt: number = 0;
 
     // Custom behaviors injected
     onBulletHit: ((bullet: Bullet, hitTarget: Fish) => void)[] = [];
