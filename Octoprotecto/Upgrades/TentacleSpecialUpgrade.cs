@@ -50,6 +50,14 @@
                     this.incrementCost = 3;
                     this.MaxLimit = 3;
                     break;
+
+                case UpgradeType.Integrate:
+                    this.displayName = "Integrate";
+                    this.description = "Resets upgrade cost";
+                    this.baseCost = 100;
+                    this.incrementCost = 0;
+                    this.MaxLimit = 1;
+                    break;
                 default:
                     this.displayName = "Unknown";
                     this.description = "Unknown";
@@ -87,6 +95,9 @@
                 case UpgradeType.Propel:
                     weapon.ProjectileSpeed = weapon.ProjectileSpeed / 2;
                     break;
+                case UpgradeType.Integrate:
+                    weapon.UpgradesApplied = -1;
+                    break;
                 default: // For everything else, the behavior is client-side
                     break;
             }
@@ -100,7 +111,8 @@
             Split,
             Consume,
             Momentum,
-            Propel
+            Propel,
+            Integrate
         }
     }
 }
