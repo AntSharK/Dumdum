@@ -113,6 +113,12 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
                         bullet.bulletWeapon.weaponOwner.Heal(3);
                     });
                     break;
+                case "Pierce":
+                    this.onBulletHit.push((bullet, hitTarget) => {
+                        hitTarget.TakeDamage(bullet.body.velocity.length());
+                    });
+                    break;
+                    
             }
         }, this);
     }

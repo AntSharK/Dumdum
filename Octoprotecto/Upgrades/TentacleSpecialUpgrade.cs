@@ -34,6 +34,14 @@
                     this.incrementCost = 2;
                     this.MaxLimit = 10;
                     break;
+
+                case UpgradeType.Pierce:
+                    this.displayName = "Pierce";
+                    this.description = "Bullet does 10% of speed as damage";
+                    this.baseCost = 10;
+                    this.incrementCost = 2;
+                    this.MaxLimit = 10;
+                    break;
                 default:
                     this.displayName = "Unknown";
                     this.description = "Unknown";
@@ -79,7 +87,8 @@
         public enum UpgradeType
         {
             Split,
-            Consume
+            Consume,
+            Pierce
         }
     }
 }
