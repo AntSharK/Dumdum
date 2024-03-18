@@ -8,6 +8,7 @@ namespace Octoprotecto
         // BaseRate is higher for low level upgrades
         private static (int luckMultiplier, int baseRate, Func<Upgrade<Octopus>> upgradeFunc)[] OctopusUpgrades =
         {
+            (5, 10000, () => new OctopusTrackedUpgrade(OctopusTrackedUpgrade.UpgradeType.Integrate)),
             (1, 900, () => new OctopusTrackedUpgrade(OctopusTrackedUpgrade.UpgradeType.ArmorWhenHit)),
             (1, 500, () => new OctopusTrackedUpgrade(OctopusTrackedUpgrade.UpgradeType.PointsWhenHit))
         };

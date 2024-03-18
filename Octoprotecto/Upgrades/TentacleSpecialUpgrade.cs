@@ -46,6 +46,7 @@
             base.ReadTargetProperties(weapon);
             var numberOfExistingUpgrades = weapon.TrackedUpgrades.Count(c => c.DisplayName == this.DisplayName);
             this.description = this.description + " (owned: " + numberOfExistingUpgrades + (this.MaxLimit > 0 ? ("/" + this.MaxLimit + ")") : ")");
+            this.Cost = this.UpgradeBaseCost + weapon.TrackedUpgrades.Count * this.UpgradeIncrementCost;
         }
 
         public override void ApplyUpgrade(Weapon weapon)
