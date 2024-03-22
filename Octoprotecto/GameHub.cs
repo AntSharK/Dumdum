@@ -186,6 +186,11 @@ namespace Octoprotecto
             await Task.WhenAll(room.Players.Values.Select(s => { return Clients.Client(s.ConnectionId).SendAsync("UpdateUpgrade", s); }));
         }
 
+        public async Task FinishRoundTest(string roomId, object OctopiMap)
+        {
+            //
+        }
+
         public async Task UpgradeDone(string roomId, string playerId)
         {
             (var octopus, var room) = await this.FindPlayerAndRoom(playerId, roomId);

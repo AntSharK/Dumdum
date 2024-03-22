@@ -47,10 +47,10 @@ body {
 }
 
 .displaytop {
-    top: 15%;
+    top: 5%;
     left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, 0);
+    transform: translate(-50%, 0);
 }
 
 table, th, td {

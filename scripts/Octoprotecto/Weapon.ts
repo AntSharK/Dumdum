@@ -131,7 +131,8 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
             weaponData.fireRate,
             weaponData.name,
             weaponData.purchasableUpgrades,
-            weaponData.trackedUpgrades);
+            weaponData.trackedUpgrades,
+            weaponData.damageDealt);
     }
 
     constructor(octopus: Octopus,
@@ -142,7 +143,8 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
         fireRate: number,
         name: string,
         purchaseableUpgrades: { [id: string]: Upgrade },
-        trackedUpgrades: Upgrade[]) {
+        trackedUpgrades: Upgrade[],
+        damageDealt: number) {
         super(octopus.scene, octopus.x, octopus.y, 'fin');
 
         this.setOrigin(0, 0.5);
@@ -158,6 +160,7 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
         this.name = name;
         this.purchasableUpgrades = purchaseableUpgrades;
         this.trackedUpgrades = trackedUpgrades;
+        this.damageDealt = damageDealt;
     }
 
     FireWeapon(focusedFish: Fish) {
