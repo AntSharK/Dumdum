@@ -28,8 +28,12 @@ namespace Octoprotecto
             this.State = RoomState.GameOver;
         }
 
-        internal void FinishRound(IDictionary<string, int> pointsPerOctopus)
+        internal void FinishRound(IDictionary<string, int> pointsPerOctopus,
+            IDictionary<string, int> weaponPerOctopus,
+            IDictionary<string, int> damagePerWeapon)
         {
+            // TODO: Weapon damage dealt synchronization
+
             this.State = RoomState.Upgrading;
             foreach (var entry in pointsPerOctopus)
             {
