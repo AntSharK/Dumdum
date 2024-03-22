@@ -175,7 +175,6 @@ namespace Octoprotecto
 
         public async Task FinishRound(string roomId, 
             IDictionary<string, int> pointsPerOctopus,
-            IDictionary<string, int> weaponPerOctopus,
             IDictionary<string, int> damagePerWeapon)
         {
             (_, var room) = await this.FindPlayerAndRoom(null, roomId);
@@ -185,7 +184,7 @@ namespace Octoprotecto
                 return;
             }
 
-            room.FinishRound(pointsPerOctopus, weaponPerOctopus, damagePerWeapon);
+            room.FinishRound(pointsPerOctopus, damagePerWeapon);
             await Task.WhenAll(room.Players.Values.Select(s => { return Clients.Client(s.ConnectionId).SendAsync("UpdateUpgrade", s); }));
         }
 

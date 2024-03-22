@@ -130,7 +130,6 @@ class BattleArena extends Phaser.Scene {
         row.insertCell(0).textContent = "NAME";
 
         var pointsPerOctopus: { [id: string]: number } = {};
-        var weaponPerOctopus: { [id: string]: string } = {};
         var damagePerWeapon: { [id: string]: number } = {};
         for (let octopusName in BattleArena.OctopiMap) {
             let octopus = BattleArena.OctopiMap[octopusName];
@@ -140,7 +139,6 @@ class BattleArena extends Phaser.Scene {
             pointsPerOctopus[octopusName] = octopus.points;
             for (let weaponName in octopus.weapons) {
                 let weapon = octopus.weapons[weaponName];
-                weaponPerOctopus[weapon.name] = octopusName;
                 damagePerWeapon[weapon.name] = weapon.damageDealt;
             }
 
@@ -154,7 +152,7 @@ class BattleArena extends Phaser.Scene {
         this.fishes.children.each(c => c.destroy());
 
         var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);
-        signalRconnection.invoke("FinishRound", roomId, pointsPerOctopus, weaponPerOctopus, damagePerWeapon).catch(function (err) {
+        signalRconnection.invoke("FinishRound", roomId, pointsPerOctopus, damagePerWeapon).catch(function (err) {
             return console.error(err.toString());
         });
 
