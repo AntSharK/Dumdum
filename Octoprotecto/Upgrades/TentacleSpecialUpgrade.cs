@@ -34,6 +34,30 @@
                     this.incrementCost = 2;
                     this.MaxLimit = 10;
                     break;
+
+                case UpgradeType.Momentum:
+                    this.displayName = "Momentum";
+                    this.description = "Bullet does 10% of speed as damage";
+                    this.baseCost = 10;
+                    this.incrementCost = 2;
+                    this.MaxLimit = 10;
+                    break;
+
+                case UpgradeType.Propel:
+                    this.displayName = "Propel";
+                    this.description = "Halves bullet speed, but makes bullet accelerate";
+                    this.baseCost = 18;
+                    this.incrementCost = 3;
+                    this.MaxLimit = 3;
+                    break;
+
+                case UpgradeType.Integrate:
+                    this.displayName = "Integrate";
+                    this.description = "Resets upgrade cost";
+                    this.baseCost = 100;
+                    this.incrementCost = 0;
+                    this.MaxLimit = 1;
+                    break;
                 default:
                     this.displayName = "Unknown";
                     this.description = "Unknown";
@@ -69,6 +93,12 @@
                     if (idx <= 0) idx = 0;
                     weapon.Owner.Weapons.Insert(idx, splitWeapon);
                     break;
+                case UpgradeType.Propel:
+                    weapon.ProjectileSpeed = weapon.ProjectileSpeed / 2;
+                    break;
+                case UpgradeType.Integrate:
+                    weapon.UpgradesApplied = -1;
+                    break;
                 default: // For everything else, the behavior is client-side
                     break;
             }
@@ -80,7 +110,10 @@
         public enum UpgradeType
         {
             Split,
-            Consume
+            Consume,
+            Momentum,
+            Propel,
+            Integrate
         }
     }
 }
