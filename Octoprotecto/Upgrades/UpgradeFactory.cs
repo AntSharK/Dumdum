@@ -8,6 +8,7 @@ namespace Octoprotecto
         // BaseRate is higher for low level upgrades
         private static (int luckMultiplier, int baseRate, Func<Upgrade<Octopus>> upgradeFunc)[] OctopusUpgrades =
         {
+            (1, 1000, () => null),
             (5, 10, () => new OctopusTrackedUpgrade(OctopusTrackedUpgrade.UpgradeType.Integrate)),
             (1, 900, () => new OctopusTrackedUpgrade(OctopusTrackedUpgrade.UpgradeType.ArmorWhenHit)),
             (1, 500, () => new OctopusTrackedUpgrade(OctopusTrackedUpgrade.UpgradeType.PointsWhenHit))
@@ -15,6 +16,7 @@ namespace Octoprotecto
 
         private static (int luckMultiplier, int baseRate, Func<Upgrade<Weapon>> upgradeFunc)[] TentacleUpgrades =
         {
+            (1, 400, () => null),
             (5, 10, () => new TentacleSpecialUpgrade(TentacleSpecialUpgrade.UpgradeType.Split)),
             (5, 10, () => new TentacleSpecialUpgrade(TentacleSpecialUpgrade.UpgradeType.Integrate)),
             (2, 200, () => new TentacleSpecialUpgrade(TentacleSpecialUpgrade.UpgradeType.Consume)),
@@ -39,7 +41,7 @@ namespace Octoprotecto
             var thresholdToFunctionMap = new (int threshold, Func<T> generationFunc)[functionGenerator.Length];
             foreach (var functionGen in functionGenerator)
             {
-                currentThreshold += functionGen.baseRate * luck * functionGen.luckMultiplier;
+                currentThreshold += functionGen.baseRate + (luck * functionGen.luckMultiplier);
                 thresholdToFunctionMap[idx] = (currentThreshold, functionGen.generationFunc);
                 idx++;
             }
