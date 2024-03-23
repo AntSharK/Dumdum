@@ -28,7 +28,8 @@ namespace Octoprotecto
             this.State = RoomState.GameOver;
         }
 
-        internal void FinishRound(IDictionary<string, int> pointsPerOctopus)
+        internal void FinishRound(IDictionary<string, int> pointsPerOctopus,
+            IDictionary<string, int> damagePerWeapon)
         {
             this.State = RoomState.Upgrading;
             foreach (var entry in pointsPerOctopus)
@@ -39,8 +40,17 @@ namespace Octoprotecto
                 }
             }
 
-            foreach (var player in Players.Values)
+            foreach (var player in this.Players.Values)
             {
+                // Update the weapon damage numbers
+                foreach (var weapon in player.Weapons)
+                {
+                    if (damagePerWeapon.ContainsKey(weapon.Name))
+                    {
+                        weapon.DamageDealt = damagePerWeapon[weapon.Name];
+                    }
+                }
+
                 player.NextRound();
             }
         }

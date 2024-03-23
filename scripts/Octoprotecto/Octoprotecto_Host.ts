@@ -130,10 +130,17 @@ class BattleArena extends Phaser.Scene {
         row.insertCell(0).textContent = "NAME";
 
         var pointsPerOctopus: { [id: string]: number } = {};
-        for (let key in BattleArena.OctopiMap) {
-            let octopus = BattleArena.OctopiMap[key];
+        var damagePerWeapon: { [id: string]: number } = {};
+        for (let octopusName in BattleArena.OctopiMap) {
+            let octopus = BattleArena.OctopiMap[octopusName];
             octopus.FinishRound();
-            pointsPerOctopus[key] = octopus.points;
+
+            // Fill in data
+            pointsPerOctopus[octopusName] = octopus.points;
+            for (let weaponName in octopus.weapons) {
+                let weapon = octopus.weapons[weaponName];
+                damagePerWeapon[weapon.name] = weapon.damageDealt;
+            }
 
             row = table.insertRow(table.rows.length);
             row.insertCell(0).textContent = octopus.hitPoints + "/" + octopus.maxHitPoints;
@@ -144,8 +151,13 @@ class BattleArena extends Phaser.Scene {
 
         this.fishes.children.each(c => c.destroy());
 
-        var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);        
-        signalRconnection.invoke("FinishRound", roomId, pointsPerOctopus).catch(function (err) {
+        var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);
+        signalRconnection.invoke("FinishRound", roomId, pointsPerOctopus, damagePerWeapon).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+
+        signalRconnection.invoke("FinishRoundTest", roomId, BattleArena.OctopiMap).catch(function (err) {
             return console.error(err.toString());
         });
     }

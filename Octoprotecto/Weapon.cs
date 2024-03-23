@@ -13,6 +13,9 @@ namespace Octoprotecto
         public Dictionary<string, Upgrade<Weapon>> PurchasableUpgrades { get; } = new Dictionary<string, Upgrade<Weapon>>();
         public string Name { get; private set; }
 
+        // For tracking - gets reset every round
+        public int DamageDealt { get; set; } = 0;
+
         public int UpgradesCreated { get; set; } = 0;
         public int UpgradesApplied { get; set; } = 0;
 
