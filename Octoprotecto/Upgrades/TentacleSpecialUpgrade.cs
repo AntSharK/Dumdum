@@ -31,7 +31,7 @@
                     this.displayName = "Consume";
                     this.description = "Restore 1 HP on hit";
                     this.baseCost = 15;
-                    this.incrementCost = 2;
+                    this.incrementCost = 5;
                     this.MaxLimit = 10;
                     break;
 
@@ -39,7 +39,7 @@
                     this.displayName = "Momentum";
                     this.description = "Bullet does 10% of speed as damage";
                     this.baseCost = 10;
-                    this.incrementCost = 2;
+                    this.incrementCost = 4;
                     this.MaxLimit = 10;
                     break;
 
@@ -47,7 +47,7 @@
                     this.displayName = "Propel";
                     this.description = "Halves bullet speed, but makes bullet accelerate";
                     this.baseCost = 18;
-                    this.incrementCost = 3;
+                    this.incrementCost = 6;
                     this.MaxLimit = 3;
                     break;
 

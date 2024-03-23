@@ -5,8 +5,8 @@
         private string displayName;
         public override string DisplayName => this.displayName;
         public override string Description => "Improves Stats";
-        public override int UpgradeBaseCost => 15;
-        public override int UpgradeIncrementCost => 1;
+        public override int UpgradeBaseCost => 16;
+        public override int UpgradeIncrementCost => 3;
         public override string UpgradeName => "weaponstat";
 
         private WeaponStat statUpgraded;
