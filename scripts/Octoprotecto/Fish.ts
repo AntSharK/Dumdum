@@ -8,6 +8,7 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
     speed: number = 50;
     static NumberOfFish: integer = 0;
     updateFish = () => { };
+    HitFish = (otherFish: Fish) => { };
 
     HitOctopus(octopus: Octopus) {
         if (octopus.active
@@ -99,6 +100,9 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
             case "homingfish":
                 fish = new HomingFish("fish" + Fish.NumberOfFish, scene, x, y, "homingfish", difficultyMultiplier);
                 break;
+            case "mergingfish":
+                fish = new MergingFish("fish" + Fish.NumberOfFish, scene, x, y, "mergingfish", difficultyMultiplier);
+                break;
             default:
                 window.alert("FISHTYPE " + fishType + " NOT SUPPORTED.");
                 return;
@@ -137,6 +141,38 @@ class HomingFish extends Fish {
 
                 if (!this.homingTarget.active) {
                     this.homingTarget = null;
+                }
+            }
+        }
+    }
+}
+
+class MergingFish extends Fish {
+    currentMerges: number = 1;
+
+    override Setup(scene: BattleArena) {
+        super.Setup(scene);
+        this.speed = 75;
+        const MERGELIMIT = 4;
+
+        this.HitFish = (otherFish: Fish) => {
+            var mergedFish = otherFish as MergingFish;
+            if (mergedFish != null) {
+                var mergeCount = this.currentMerges + mergedFish.currentMerges;
+                if (mergeCount < MERGELIMIT) {
+                    let scaleBloat = mergeCount / this.currentMerges;
+
+                    this.scale = this.scale * scaleBloat;
+                    this.setVelocity(this.body.velocity.x * scaleBloat, this.body.velocity.y * scaleBloat);
+
+                    this.hitPoints = this.hitPoints + mergedFish.hitPoints;
+                    this.damage = this.damage + mergedFish.damage;
+                    this.points = this.points + mergedFish.points;
+                    this.maxHitPoints = this.maxHitPoints + mergedFish.maxHitPoints;
+                    this.speed = this.speed + mergedFish.speed;
+
+                    this.currentMerges = mergeCount;
+                    mergedFish.destroy(true);
                 }
             }
         }

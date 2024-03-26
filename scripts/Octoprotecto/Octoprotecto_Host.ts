@@ -22,6 +22,7 @@ class BattleArena extends Phaser.Scene {
         this.load.image('octopus', '/content/Octoprotecto/ghost.png');
         this.load.image('fish', '/content/Octoprotecto/star.png');
         this.load.image('homingfish', '/content/Octoprotecto/pacman.png');
+        this.load.image('mergingfish', '/content/Octoprotecto/cyborgfish.png');
         this.load.image('dummy', '/content/Octoprotecto/dummy.png');
         this.load.image('bullet', '/content/Octoprotecto/bullet.png');
         this.load.image('fin', '/content/Octoprotecto/fin.png');
@@ -87,6 +88,12 @@ class BattleArena extends Phaser.Scene {
             var octopus = body2 as Octopus;
             var fish = body1 as Fish;
             fish.HitOctopus(octopus);
+        });
+
+        this.physics.add.overlap(this.fishes, this.fishes, (body1, body2) => {
+            var otherFish = body2 as Fish;
+            var fish = body1 as Fish;
+            fish.HitFish(otherFish);
         });
 
         // Initialize timer
