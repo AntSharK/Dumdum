@@ -76,10 +76,24 @@ function StartWave(arena: BattleArena) {
             }
             var baseInterval2 = 3500;
             for (var i = 3000; i < roundDuration - 6000; i = i + baseInterval2) {
-                baseInterval = baseInterval - 50;
+                baseInterval2 = baseInterval2 - 50;
                 arena.time.addEvent({
                     delay: i,
                     callback: () => Fish.SpawnFishes(arena, playerCount * 1, arena.spawningRect, arena.fishes, arena.octopi, "mergingfish", 1),
+                    callbackScope: arena,
+                    loop: false,
+                    repeat: 0,
+                });
+            }
+            break;
+
+        case 5:
+            var baseInterval = 2200;
+            for (var i = 3000; i < roundDuration - 6000; i = i + baseInterval) {
+                baseInterval = baseInterval * 0.98;
+                arena.time.addEvent({
+                    delay: i,
+                    callback: () => Fish.SpawnFishes(arena, playerCount * 1, arena.spawningRect, arena.fishes, arena.octopi, "mergingfish", 1.2),
                     callbackScope: arena,
                     loop: false,
                     repeat: 0,
