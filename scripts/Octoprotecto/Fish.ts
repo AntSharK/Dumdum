@@ -4,6 +4,7 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
     hitPoints: integer = 350;
     maxHitPoints: integer = 350;
     points: number = 2;
+    collisionScale: number = 0.33;
     damage: integer = 100;
     speed: number = 50;
     static NumberOfFish: integer = 0;
@@ -112,7 +113,7 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(fish);
         fishPhysicsGroup.add(fish);
         Phaser.Math.RandomXY(fish.body.velocity, fish.speed);
-        fish.setCircle(fish.width / 3, fish.originX - fish.width / 3, fish.originY - fish.width / 3);
+        fish.setCircle(fish.width * fish.collisionScale, fish.originX - fish.width * fish.collisionScale, fish.originY - fish.width * fish.collisionScale);
     }
 }
 
@@ -122,6 +123,7 @@ class HomingFish extends Fish {
     override Setup(scene: BattleArena) {
         super.Setup(scene);
         this.speed = 55;
+        this.collisionScale = 0.45;
 
         var minDistance = 3000;
         for (let key in BattleArena.OctopiMap) {
@@ -155,6 +157,7 @@ class MergingFish extends Fish {
 
     override Setup(scene: BattleArena) {
         super.Setup(scene);
+        this.collisionScale = 0.4;
         this.speed = 75;
         this.hitPoints = 500;
         this.maxHitPoints = 500;
