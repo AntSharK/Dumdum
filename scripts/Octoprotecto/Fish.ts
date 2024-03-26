@@ -135,15 +135,18 @@ class HomingFish extends Fish {
 
         this.updateFish = () => {
             if (this.homingTarget != null) {
-                var moveDirection = new Phaser.Math.Vector2(this.homingTarget.x - this.x, this.homingTarget.y - this.y);
-                moveDirection.normalize();
-                this.setVelocity(moveDirection.x * this.speed, moveDirection.y * this.speed);
-
+                HomingFish.moveTowardsTarget(this, this.homingTarget);
                 if (!this.homingTarget.active) {
                     this.homingTarget = null;
                 }
             }
         }
+    }
+
+    static moveTowardsTarget(origin: Fish, target: Phaser.GameObjects.Sprite) {
+        var moveDirection = new Phaser.Math.Vector2(target.x - origin.x, target.y - origin.y);
+        moveDirection.normalize();
+        origin.setVelocity(moveDirection.x * origin.speed, moveDirection.y * origin.speed);
     }
 }
 
@@ -153,6 +156,8 @@ class MergingFish extends Fish {
     override Setup(scene: BattleArena) {
         super.Setup(scene);
         this.speed = 75;
+        this.hitPoints = 500;
+        this.maxHitPoints = 500;
         const MERGELIMIT = 4;
 
         this.HitFish = (otherFish: Fish) => {
