@@ -4,10 +4,12 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
     hitPoints: integer = 350;
     maxHitPoints: integer = 350;
     points: number = 2;
+    collisionScale: number = 0.33;
     damage: integer = 100;
     speed: number = 50;
     static NumberOfFish: integer = 0;
     updateFish = () => { };
+    HitFish = (otherFish: Fish) => { };
 
     HitOctopus(octopus: Octopus) {
         if (octopus.active
@@ -99,6 +101,9 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
             case "homingfish":
                 fish = new HomingFish("fish" + Fish.NumberOfFish, scene, x, y, "homingfish", difficultyMultiplier);
                 break;
+            case "mergingfish":
+                fish = new MergingFish("fish" + Fish.NumberOfFish, scene, x, y, "mergingfish", difficultyMultiplier);
+                break;
             default:
                 window.alert("FISHTYPE " + fishType + " NOT SUPPORTED.");
                 return;
@@ -108,7 +113,7 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(fish);
         fishPhysicsGroup.add(fish);
         Phaser.Math.RandomXY(fish.body.velocity, fish.speed);
-        fish.setCircle(fish.width / 3, fish.originX - fish.width / 3, fish.originY - fish.width / 3);
+        fish.setCircle(fish.width * fish.collisionScale, fish.originX - fish.width * fish.collisionScale, fish.originY - fish.width * fish.collisionScale);
     }
 }
 
@@ -118,6 +123,7 @@ class HomingFish extends Fish {
     override Setup(scene: BattleArena) {
         super.Setup(scene);
         this.speed = 55;
+        this.collisionScale = 0.45;
 
         var minDistance = 3000;
         for (let key in BattleArena.OctopiMap) {
@@ -131,12 +137,50 @@ class HomingFish extends Fish {
 
         this.updateFish = () => {
             if (this.homingTarget != null) {
-                var moveDirection = new Phaser.Math.Vector2(this.homingTarget.x - this.x, this.homingTarget.y - this.y);
-                moveDirection.normalize();
-                this.setVelocity(moveDirection.x * this.speed, moveDirection.y * this.speed);
-
+                HomingFish.moveTowardsTarget(this, this.homingTarget);
                 if (!this.homingTarget.active) {
                     this.homingTarget = null;
+                }
+            }
+        }
+    }
+
+    static moveTowardsTarget(origin: Fish, target: Phaser.GameObjects.Sprite) {
+        var moveDirection = new Phaser.Math.Vector2(target.x - origin.x, target.y - origin.y);
+        moveDirection.normalize();
+        origin.setVelocity(moveDirection.x * origin.speed, moveDirection.y * origin.speed);
+    }
+}
+
+class MergingFish extends Fish {
+    currentMerges: number = 1;
+
+    override Setup(scene: BattleArena) {
+        super.Setup(scene);
+        this.collisionScale = 0.4;
+        this.speed = 75;
+        this.hitPoints = 500;
+        this.maxHitPoints = 500;
+        const MERGELIMIT = 4;
+
+        this.HitFish = (otherFish: Fish) => {
+            var mergedFish = otherFish as MergingFish;
+            if (mergedFish != null) {
+                var mergeCount = this.currentMerges + mergedFish.currentMerges;
+                if (mergeCount < MERGELIMIT) {
+                    let scaleBloat = mergeCount / this.currentMerges;
+
+                    this.scale = this.scale * scaleBloat;
+                    this.setVelocity(this.body.velocity.x * scaleBloat, this.body.velocity.y * scaleBloat);
+
+                    this.hitPoints = this.hitPoints + mergedFish.hitPoints;
+                    this.damage = this.damage + mergedFish.damage;
+                    this.points = this.points + mergedFish.points;
+                    this.maxHitPoints = this.maxHitPoints + mergedFish.maxHitPoints;
+                    this.speed = this.speed + mergedFish.speed;
+
+                    this.currentMerges = mergeCount;
+                    mergedFish.destroy(true);
                 }
             }
         }
