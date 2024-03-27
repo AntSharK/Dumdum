@@ -17,6 +17,9 @@ class SoloRun {
         scene.input.keyboard.on('keydown-R', event => {
             Fish.SpawnFishes(scene, 1, scene.spawningRect, scene.fishes, scene.octopi, "zippingfish", 1);
         }, scene);
+        scene.input.keyboard.on('keydown-T', event => {
+            Fish.SpawnFishes(scene, 1, scene.spawningRect, scene.fishes, scene.octopi, "chargingfish", 1);
+        }, scene);
 
         // Take damage
         scene.input.keyboard.on('keydown-Z', event => {

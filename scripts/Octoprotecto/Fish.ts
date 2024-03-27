@@ -107,6 +107,9 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
             case "zippingfish":
                 fish = new ZippingFish("fish" + Fish.NumberOfFish, scene, x, y, "zippingfish", difficultyMultiplier);
                 break;
+            case "chargingfish":
+                fish = new ChargingFish("fish" + Fish.NumberOfFish, scene, x, y, "chargingfish", difficultyMultiplier);
+                break;
             default:
                 window.alert("FISHTYPE " + fishType + " NOT SUPPORTED.");
                 return;
@@ -229,6 +232,49 @@ class ZippingFish extends HomingFish {
             callback: () => {
                 if (this.active) {
                     this.homingTarget = HomingFish.getClosestOctopus(this);
+                }
+            },
+            callbackScope: this,
+            loop: true,
+            repeat: 20 // For easy cleanup, stop it after a while
+        });
+    }
+}
+
+class ChargingFish extends Fish {
+    chargeStartTimer: Phaser.Time.TimerEvent;
+    chargeEndTimer: Phaser.Time.TimerEvent;
+
+    override Setup(scene: BattleArena) {
+        const CHARGESCALE = 8;
+        super.Setup(scene);
+        this.speed = 50;
+        this.collisionScale = 0.35;
+        this.hitPoints = 400;
+        this.maxHitPoints = 400;
+        this.points = 3;
+
+        this.chargeStartTimer = scene.time.addEvent({
+            delay: 5100,
+            callback: () => {
+                if (this.active) {
+                    let target = HomingFish.getClosestOctopus(this);
+                    this.speed = this.speed * CHARGESCALE;
+                    HomingFish.moveTowardsTarget(this, target);
+                }
+            },
+            callbackScope: this,
+            loop: true,
+            startAt: 900,
+            repeat: 20 // For easy cleanup, stop it after a while
+        });
+
+        this.chargeEndTimer = scene.time.addEvent({
+            delay: 5100,
+            callback: () => {
+                if (this.active) {
+                    this.speed = this.speed / CHARGESCALE;
+                    Phaser.Math.RandomXY(this.body.velocity, this.speed);
                 }
             },
             callbackScope: this,
