@@ -33,6 +33,38 @@ function StartWave(arena: BattleArena) {
                 4200 /*Base Interval*/, 0.98 /*Interval Modification Factor*/, 1.2 /*Difficulty*/);
             break;
 
+        case 6:
+            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, playerCount * 2, roundDuration,
+                3800 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.2 /*Difficulty*/);
+            AddSpawnTimer(arena, FISHNAME_ZIPPINGFISH, playerCount * 3, roundDuration,
+                6500 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.1 /*Difficulty*/);
+            break;
+
+        case 7:
+            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, playerCount * 1, roundDuration,
+                3500 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.1 /*Difficulty*/);
+            AddSpawnTimer(arena, FISHNAME_ZIPPINGFISH, playerCount * 2, roundDuration,
+                5500 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.1 /*Difficulty*/);
+            AddSpawnTimer(arena, FISHNAME_MERGINGFISH, playerCount * 2, roundDuration,
+                6500 /*Base Interval*/, 0.98 /*Interval Modification Factor*/, 1.1 /*Difficulty*/);
+            break;
+
+        case 8:
+            AddSpawnTimer(arena, FISHNAME_REGULARFISH, playerCount * 2, roundDuration,
+                3200 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.3 /*Difficulty*/);
+            AddSpawnTimer(arena, FISHNAME_CHARGINGFISH, playerCount * 1, roundDuration,
+                3400 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.15 /*Difficulty*/);
+            break;
+
+        case 9:
+            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, playerCount * 1, roundDuration,
+                4500 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.3 /*Difficulty*/);
+            AddSpawnTimer(arena, FISHNAME_CHARGINGFISH, playerCount * 2, roundDuration,
+                5100 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.3 /*Difficulty*/);
+            AddSpawnTimer(arena, FISHNAME_REGULARFISH, playerCount * 2, roundDuration,
+                4500 /*Base Interval*/, 0.98 /*Interval Modification Factor*/, 1.3 /*Difficulty*/);
+            break;
+
         default: // Variable spawning
             var numberOfSpawnEvents = Math.sqrt(arena.currentRound) * 2;
             for (var i = 0; i < numberOfSpawnEvents; i++) {
