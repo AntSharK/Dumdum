@@ -8,102 +8,73 @@ function StartWave(arena: BattleArena) {
             break;
 
         case 2:
-            var baseInterval = 3400;
-            for (var i = 3500; i < roundDuration - 3000; i = i + baseInterval) {
-                baseInterval = baseInterval - 50;
-                arena.time.addEvent({
-                    delay: i,
-                    callback: () => Fish.SpawnFishes(arena, playerCount * 3, arena.spawningRect, arena.fishes, arena.octopi, "starfish", 1.05),
-                    callbackScope: arena,
-                    loop: false,
-                    repeat: 0,
-                });
-            }
-            for (var i = 3000; i < roundDuration - 6000; i = i + 5000) {
-                arena.time.addEvent({
-                    delay: i,
-                    callback: () => Fish.SpawnFishes(arena, playerCount * 1, arena.spawningRect, arena.fishes, arena.octopi, "homingfish", 1),
-                    callbackScope: arena,
-                    loop: false,
-                    repeat: 0,
-                });
-            }
+            AddSpawnTimer(arena, FISHNAME_REGULARFISH, playerCount * 3, roundDuration,
+                3500 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.05 /*Difficulty*/);
+            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, playerCount * 1, roundDuration,
+                5500 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.0 /*Difficulty*/);
             break;
 
         case 3:
-            var baseInterval = 3400;
-            for (var i = 3500; i < roundDuration - 3000; i = i + baseInterval) {
-                baseInterval = baseInterval - 50;
-                arena.time.addEvent({
-                    delay: i,
-                    callback: () => Fish.SpawnFishes(arena, playerCount * 3, arena.spawningRect, arena.fishes, arena.octopi, "starfish", 1.1),
-                    callbackScope: arena,
-                    loop: false,
-                    repeat: 0,
-                });
-            }
-            for (var i = 3000; i < roundDuration - 6000; i = i + 4000) {
-                arena.time.addEvent({
-                    delay: i,
-                    callback: () => Fish.SpawnFishes(arena, playerCount * 1, arena.spawningRect, arena.fishes, arena.octopi, "homingfish", 1.1),
-                    callbackScope: arena,
-                    loop: false,
-                    repeat: 0,
-                });
-            }
+            AddSpawnTimer(arena, FISHNAME_REGULARFISH, playerCount * 3, roundDuration,
+                3200 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.1 /*Difficulty*/);
+            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, playerCount * 1, roundDuration,
+                4000 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.1 /*Difficulty*/);
             break;
 
         case 4:
-            var baseInterval = 5500;
-            for (var i = 3000; i < roundDuration - 6000; i = i + baseInterval) {
-                baseInterval = baseInterval - 50;
-                arena.time.addEvent({
-                    delay: i,
-                    callback: () => Fish.SpawnFishes(arena, playerCount * 1, arena.spawningRect, arena.fishes, arena.octopi, "homingfish", 1.1),
-                    callbackScope: arena,
-                    loop: false,
-                    repeat: 0,
-                });
-            }
-            var baseInterval2 = 3500;
-            for (var i = 3000; i < roundDuration - 6000; i = i + baseInterval2) {
-                baseInterval2 = baseInterval2 - 50;
-                arena.time.addEvent({
-                    delay: i,
-                    callback: () => Fish.SpawnFishes(arena, playerCount * 1, arena.spawningRect, arena.fishes, arena.octopi, "mergingfish", 1),
-                    callbackScope: arena,
-                    loop: false,
-                    repeat: 0,
-                });
-            }
+            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, playerCount * 3, roundDuration,
+                5600 /*Base Interval*/, 0.98 /*Interval Modification Factor*/, 1.1 /*Difficulty*/);
+            AddSpawnTimer(arena, FISHNAME_MERGINGFISH, playerCount * 1, roundDuration,
+                3600 /*Base Interval*/, 0.98 /*Interval Modification Factor*/, 1 /*Difficulty*/);
             break;
 
         case 5:
-            var baseInterval = 2200;
-            for (var i = 3000; i < roundDuration - 6000; i = i + baseInterval) {
-                baseInterval = baseInterval * 0.98;
-                arena.time.addEvent({
-                    delay: i,
-                    callback: () => Fish.SpawnFishes(arena, playerCount * 1, arena.spawningRect, arena.fishes, arena.octopi, "mergingfish", 1.2),
-                    callbackScope: arena,
-                    loop: false,
-                    repeat: 0,
-                });
-            }
+            AddSpawnTimer(arena, FISHNAME_MERGINGFISH, playerCount * 2, roundDuration,
+                4200 /*Base Interval*/, 0.98 /*Interval Modification Factor*/, 1.2 /*Difficulty*/);
             break;
 
-        default:
-            console.log("Round " + arena.currentRound + " not yet created.");
-            var baseInterval = 2400;
-            for (var i = 3500; i < roundDuration - 3000; i = i + baseInterval) {
-                baseInterval = baseInterval * 0.98;
-                arena.time.addEvent({
-                    delay: i,
-                    callback: () => Fish.SpawnFishes(arena, playerCount * 4, arena.spawningRect, arena.fishes, arena.octopi, "starfish", 1),
-                    callbackScope: arena,
-                    loop: false,
-                    repeat: 0,
-                });
+        default: // Variable spawning
+            var numberOfSpawnEvents = Math.sqrt(arena.currentRound) * 2;
+            for (var i = 0; i < numberOfSpawnEvents; i++) {
+                let randomNumber = Math.floor(Math.random() * 5);
+                let intervalModificationFactor = 1.0 - i * 0.01;
+                let difficulty = 1.0 + Math.sqrt(arena.currentRound) - i / 2;
+
+                let enemyType: string;
+                let spawnMultiplier: number;
+                let baseInterval: number;
+                switch (randomNumber) {
+                    case 0:
+                        enemyType = FISHNAME_REGULARFISH;
+                        spawnMultiplier = 3;
+                        baseInterval = 3600;
+                        break;
+                    case 1:
+                        enemyType = FISHNAME_HOMINGFISH;
+                        spawnMultiplier = 2;
+                        baseInterval = 4100;
+                        break;
+                    case 2:
+                        enemyType = FISHNAME_MERGINGFISH;
+                        spawnMultiplier = 2;
+                        baseInterval = 4600;
+                        break;
+                    case 3:
+                        enemyType = FISHNAME_ZIPPINGFISH;
+                        spawnMultiplier = 3;
+                        baseInterval = 6600;
+                        break;
+                    case 4:
+                        enemyType = FISHNAME_CHARGINGFISH;
+                        spawnMultiplier = 2;
+                        baseInterval = 6400;
+                        break;
+                    default:
+                        break;
+                }
+
+                AddSpawnTimer(arena, enemyType, playerCount * spawnMultiplier, roundDuration,
+                    baseInterval + i * 100, intervalModificationFactor, difficulty /*Difficulty*/);
             }
             break;
     }
