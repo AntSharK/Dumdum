@@ -1,4 +1,11 @@
 const FISHDEPTH = 100;
+
+const FISHNAME_REGULARFISH = "starfish";
+const FISHNAME_HOMINGFISH = "homingfish";
+const FISHNAME_MERGINGFISH = "mergingfish";
+const FISHNAME_ZIPPINGFISH = "zippingfish";
+const FISHNAME_CHARGINGFISH = "chargingfish";
+
 class Fish extends Phaser.Physics.Arcade.Sprite {
     uniqueName: string;
     hitPoints: integer = 350;
@@ -95,20 +102,20 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
         if (!allowSpawn) { return; }
         var fish: Fish;
         switch (fishType) {
-            case "starfish":
-                fish = new Fish("fish" + Fish.NumberOfFish, scene, x, y, "fish", difficultyMultiplier);
+            case FISHNAME_REGULARFISH:
+                fish = new Fish("fish" + Fish.NumberOfFish, scene, x, y, fishType, difficultyMultiplier);
                 break;
-            case "homingfish":
-                fish = new HomingFish("fish" + Fish.NumberOfFish, scene, x, y, "homingfish", difficultyMultiplier);
+            case FISHNAME_HOMINGFISH:
+                fish = new HomingFish("fish" + Fish.NumberOfFish, scene, x, y, fishType, difficultyMultiplier);
                 break;
-            case "mergingfish":
-                fish = new MergingFish("fish" + Fish.NumberOfFish, scene, x, y, "mergingfish", difficultyMultiplier);
+            case FISHNAME_MERGINGFISH:
+                fish = new MergingFish("fish" + Fish.NumberOfFish, scene, x, y, fishType, difficultyMultiplier);
                 break;
-            case "zippingfish":
-                fish = new ZippingFish("fish" + Fish.NumberOfFish, scene, x, y, "zippingfish", difficultyMultiplier);
+            case FISHNAME_ZIPPINGFISH:
+                fish = new ZippingFish("fish" + Fish.NumberOfFish, scene, x, y, fishType, difficultyMultiplier);
                 break;
-            case "chargingfish":
-                fish = new ChargingFish("fish" + Fish.NumberOfFish, scene, x, y, "chargingfish", difficultyMultiplier);
+            case FISHNAME_CHARGINGFISH:
+                fish = new ChargingFish("fish" + Fish.NumberOfFish, scene, x, y, fishType, difficultyMultiplier);
                 break;
             default:
                 window.alert("FISHTYPE " + fishType + " NOT SUPPORTED.");
