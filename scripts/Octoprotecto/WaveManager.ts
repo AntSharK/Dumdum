@@ -3,17 +3,8 @@ function StartWave(arena: BattleArena) {
     var roundDuration = 30000 + arena.currentRound * 4000;
     switch (arena.currentRound) {
         case 1:
-            var baseInterval = 3000;
-            for (var i = 3500; i < roundDuration - 3000; i = i + baseInterval) {
-                baseInterval = baseInterval - 50;
-                arena.time.addEvent({
-                    delay: i,
-                    callback: () => Fish.SpawnFishes(arena, playerCount * 3, arena.spawningRect, arena.fishes, arena.octopi, "starfish", 1),
-                    callbackScope: arena,
-                    loop: false,
-                    repeat: 0,
-                });
-            }
+            AddSpawnTimer(arena, FISHNAME_REGULARFISH, playerCount * 3, roundDuration,
+                3500 /*Base Interval*/, 0.98 /*Interval Modification Factor*/, 1.0 /*Difficulty*/);
             break;
 
         case 2:
@@ -120,3 +111,29 @@ function StartWave(arena: BattleArena) {
     arena.roundTimer = new Phaser.Time.TimerEvent({ delay: roundDuration, callback: arena.finishRound, callbackScope: arena });
     arena.time.addEvent(arena.roundTimer);
 }
+
+function AddSpawnTimer(arena: BattleArena,
+    fishType: string,
+    spawnCount: integer,
+    roundDuration: integer,
+    startingInterval: number,
+    intervalModificationFactor: number,
+    difficulty: number) {
+    const STARTSPAWNTIME = 2000;
+    const STOPSPAWNTIME = 5000;
+
+    var interval = startingInterval;
+    for (var i = STARTSPAWNTIME; i < roundDuration - STOPSPAWNTIME; i = i + interval) {
+        interval = interval * intervalModificationFactor;
+
+        arena.time.addEvent({
+            delay: i,
+            callback: () => Fish.SpawnFishes(arena, spawnCount, arena.spawningRect, arena.fishes, arena.octopi, fishType, difficulty),
+            callbackScope: arena,
+            loop: false,
+            repeat: 0,
+        });
+    }
+}
+
+
