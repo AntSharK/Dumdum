@@ -23,6 +23,7 @@ class BattleArena extends Phaser.Scene {
         this.load.image('fish', '/content/Octoprotecto/star.png');
         this.load.image('homingfish', '/content/Octoprotecto/pacman.png');
         this.load.image('mergingfish', '/content/Octoprotecto/cyborgfish.png');
+        this.load.image('zippingfish', '/content/Octoprotecto/greenfish.png');
         this.load.image('dummy', '/content/Octoprotecto/dummy.png');
         this.load.image('bullet', '/content/Octoprotecto/bullet.png');
         this.load.image('fin', '/content/Octoprotecto/fin.png');
