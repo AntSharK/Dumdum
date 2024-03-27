@@ -190,7 +190,7 @@ class MergingFish extends Fish {
                 if (mergeCount < MERGELIMIT) {
                     let scaleBloat = mergeCount / this.currentMerges;
 
-                    this.scale = this.scale * scaleBloat;
+                    this.scale = this.scale * Math.sqrt(scaleBloat);
                     this.setVelocity(this.body.velocity.x * scaleBloat, this.body.velocity.y * scaleBloat);
 
                     this.hitPoints = this.hitPoints + mergedFish.hitPoints;
@@ -200,7 +200,7 @@ class MergingFish extends Fish {
                     this.speed = this.speed + mergedFish.speed;
 
                     this.currentMerges = mergeCount;
-                    mergedFish.destroy(true);
+                    mergedFish.TakeDamage(99999); // Do a lot of damage to the fish being merged
                 }
             }
         }

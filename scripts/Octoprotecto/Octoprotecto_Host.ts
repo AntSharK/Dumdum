@@ -164,11 +164,6 @@ class BattleArena extends Phaser.Scene {
         signalRconnection.invoke("FinishRound", roomId, pointsPerOctopus, damagePerWeapon).catch(function (err) {
             return console.error(err.toString());
         });
-
-
-        signalRconnection.invoke("FinishRoundTest", roomId, BattleArena.OctopiMap).catch(function (err) {
-            return console.error(err.toString());
-        });
     }
 
     spawnOctopus(octopusData: Octopus) {
