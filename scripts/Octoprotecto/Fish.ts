@@ -104,6 +104,12 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
             case "mergingfish":
                 fish = new MergingFish("fish" + Fish.NumberOfFish, scene, x, y, "mergingfish", difficultyMultiplier);
                 break;
+            case "zippingfish":
+                fish = new ZippingFish("fish" + Fish.NumberOfFish, scene, x, y, "zippingfish", difficultyMultiplier);
+                break;
+            case "chargingfish":
+                fish = new ChargingFish("fish" + Fish.NumberOfFish, scene, x, y, "chargingfish", difficultyMultiplier);
+                break;
             default:
                 window.alert("FISHTYPE " + fishType + " NOT SUPPORTED.");
                 return;
@@ -124,17 +130,9 @@ class HomingFish extends Fish {
         super.Setup(scene);
         this.speed = 55;
         this.collisionScale = 0.45;
+        this.points = 2;
 
-        var minDistance = 3000;
-        for (let key in BattleArena.OctopiMap) {
-            var octopus = BattleArena.OctopiMap[key];
-            var distance = Phaser.Math.Distance.BetweenPoints(this, octopus);
-            if (distance < minDistance) {
-                minDistance = distance;
-                this.homingTarget = octopus;
-            }
-        }
-
+        this.homingTarget = HomingFish.getClosestOctopus(this);
         this.updateFish = () => {
             if (this.homingTarget != null) {
                 HomingFish.moveTowardsTarget(this, this.homingTarget);
@@ -143,6 +141,20 @@ class HomingFish extends Fish {
                 }
             }
         }
+    }
+
+    static getClosestOctopus(origin: Fish): Octopus {
+        let minDistance = 3000;
+        for (let key in BattleArena.OctopiMap) {
+            var octopus = BattleArena.OctopiMap[key];
+            var distance = Phaser.Math.Distance.BetweenPoints(origin, octopus);
+            if (distance < minDistance) {
+                minDistance = distance;
+                return octopus;
+            }
+        }
+
+        return null;
     }
 
     static moveTowardsTarget(origin: Fish, target: Phaser.GameObjects.Sprite) {
@@ -161,6 +173,7 @@ class MergingFish extends Fish {
         this.speed = 75;
         this.hitPoints = 500;
         this.maxHitPoints = 500;
+        this.points = 3;
         const MERGELIMIT = 4;
 
         this.HitFish = (otherFish: Fish) => {
@@ -184,5 +197,89 @@ class MergingFish extends Fish {
                 }
             }
         }
+    }
+}
+
+class ZippingFish extends HomingFish {
+    zipStartTimer: Phaser.Time.TimerEvent;
+    zipEndTimer: Phaser.Time.TimerEvent;
+
+    override Setup(scene: BattleArena) {
+        const ZIPSCALE = 5;
+        super.Setup(scene);
+        this.speed = 30;
+        this.collisionScale = 0.45;
+        this.hitPoints = 600;
+        this.maxHitPoints = 600;
+        this.points = 3;
+
+        this.zipStartTimer = scene.time.addEvent({
+            delay: 5500,
+            callback: () => {
+                if (this.active) {
+                    this.homingTarget = null;
+                    this.setVelocity(this.body.velocity.x * ZIPSCALE, this.body.velocity.y * ZIPSCALE);
+                }
+            },
+            callbackScope: this,
+            loop: true,
+            startAt: 2100,
+            repeat: 20 // For easy cleanup, stop it after a while
+        });
+
+        this.zipEndTimer = scene.time.addEvent({
+            delay: 5500,
+            callback: () => {
+                if (this.active) {
+                    this.homingTarget = HomingFish.getClosestOctopus(this);
+                }
+            },
+            callbackScope: this,
+            loop: true,
+            repeat: 20 // For easy cleanup, stop it after a while
+        });
+    }
+}
+
+class ChargingFish extends Fish {
+    chargeStartTimer: Phaser.Time.TimerEvent;
+    chargeEndTimer: Phaser.Time.TimerEvent;
+
+    override Setup(scene: BattleArena) {
+        const CHARGESCALE = 8;
+        super.Setup(scene);
+        this.speed = 50;
+        this.collisionScale = 0.35;
+        this.hitPoints = 400;
+        this.maxHitPoints = 400;
+        this.points = 3;
+
+        this.chargeStartTimer = scene.time.addEvent({
+            delay: 5100,
+            callback: () => {
+                if (this.active) {
+                    let target = HomingFish.getClosestOctopus(this);
+                    this.speed = this.speed * CHARGESCALE;
+                    HomingFish.moveTowardsTarget(this, target);
+                }
+            },
+            callbackScope: this,
+            loop: true,
+            startAt: 900,
+            repeat: 20 // For easy cleanup, stop it after a while
+        });
+
+        this.chargeEndTimer = scene.time.addEvent({
+            delay: 5100,
+            callback: () => {
+                if (this.active) {
+                    this.speed = this.speed / CHARGESCALE;
+                    Phaser.Math.RandomXY(this.body.velocity, this.speed);
+                }
+            },
+            callbackScope: this,
+            loop: true,
+            repeat: 20 // For easy cleanup, stop it after a while
+        });
     }
 }
