@@ -1,9 +1,16 @@
 const FISHDEPTH = 100;
+
+const FISHNAME_REGULARFISH = "starfish";
+const FISHNAME_HOMINGFISH = "homingfish";
+const FISHNAME_MERGINGFISH = "mergingfish";
+const FISHNAME_ZIPPINGFISH = "zippingfish";
+const FISHNAME_CHARGINGFISH = "chargingfish";
+
 class Fish extends Phaser.Physics.Arcade.Sprite {
     uniqueName: string;
     hitPoints: integer = 350;
     maxHitPoints: integer = 350;
-    points: number = 2;
+    points: number = 3;
     collisionScale: number = 0.33;
     damage: integer = 100;
     speed: number = 50;
@@ -95,20 +102,20 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
         if (!allowSpawn) { return; }
         var fish: Fish;
         switch (fishType) {
-            case "starfish":
-                fish = new Fish("fish" + Fish.NumberOfFish, scene, x, y, "fish", difficultyMultiplier);
+            case FISHNAME_REGULARFISH:
+                fish = new Fish("fish" + Fish.NumberOfFish, scene, x, y, fishType, difficultyMultiplier);
                 break;
-            case "homingfish":
-                fish = new HomingFish("fish" + Fish.NumberOfFish, scene, x, y, "homingfish", difficultyMultiplier);
+            case FISHNAME_HOMINGFISH:
+                fish = new HomingFish("fish" + Fish.NumberOfFish, scene, x, y, fishType, difficultyMultiplier);
                 break;
-            case "mergingfish":
-                fish = new MergingFish("fish" + Fish.NumberOfFish, scene, x, y, "mergingfish", difficultyMultiplier);
+            case FISHNAME_MERGINGFISH:
+                fish = new MergingFish("fish" + Fish.NumberOfFish, scene, x, y, fishType, difficultyMultiplier);
                 break;
-            case "zippingfish":
-                fish = new ZippingFish("fish" + Fish.NumberOfFish, scene, x, y, "zippingfish", difficultyMultiplier);
+            case FISHNAME_ZIPPINGFISH:
+                fish = new ZippingFish("fish" + Fish.NumberOfFish, scene, x, y, fishType, difficultyMultiplier);
                 break;
-            case "chargingfish":
-                fish = new ChargingFish("fish" + Fish.NumberOfFish, scene, x, y, "chargingfish", difficultyMultiplier);
+            case FISHNAME_CHARGINGFISH:
+                fish = new ChargingFish("fish" + Fish.NumberOfFish, scene, x, y, fishType, difficultyMultiplier);
                 break;
             default:
                 window.alert("FISHTYPE " + fishType + " NOT SUPPORTED.");
@@ -130,7 +137,7 @@ class HomingFish extends Fish {
         super.Setup(scene);
         this.speed = 55;
         this.collisionScale = 0.45;
-        this.points = 2;
+        this.points = 4;
 
         this.homingTarget = HomingFish.getClosestOctopus(this);
         this.updateFish = () => {
@@ -173,7 +180,7 @@ class MergingFish extends Fish {
         this.speed = 75;
         this.hitPoints = 500;
         this.maxHitPoints = 500;
-        this.points = 3;
+        this.points = 5;
         const MERGELIMIT = 4;
 
         this.HitFish = (otherFish: Fish) => {
@@ -211,7 +218,7 @@ class ZippingFish extends HomingFish {
         this.collisionScale = 0.45;
         this.hitPoints = 600;
         this.maxHitPoints = 600;
-        this.points = 3;
+        this.points = 6;
 
         this.zipStartTimer = scene.time.addEvent({
             delay: 5500,
@@ -252,7 +259,7 @@ class ChargingFish extends Fish {
         this.collisionScale = 0.35;
         this.hitPoints = 400;
         this.maxHitPoints = 400;
-        this.points = 3;
+        this.points = 5;
 
         this.chargeStartTimer = scene.time.addEvent({
             delay: 5100,
