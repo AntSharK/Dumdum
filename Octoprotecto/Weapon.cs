@@ -63,7 +63,7 @@ namespace Octoprotecto
         {
             Upgrade<Weapon>? generatedSpecialUpgrade = null;
             var currentRetry = 0;
-            const int MAXRETRIES = 2;
+            const int MAXRETRIES = 1;
 
             // Limit the number of upgrades of a certain type
             while (generatedSpecialUpgrade == null && currentRetry <= MAXRETRIES)

@@ -6,7 +6,7 @@
         public override string DisplayName => this.displayName;
         public override string Description => "Improves Stats";
         public override int UpgradeBaseCost => 21;
-        public override int UpgradeIncrementCost => 3;
+        public override int UpgradeIncrementCost => 5;
         public override string UpgradeName => "bodystat";
 
         private BodyStat statUpgraded;
