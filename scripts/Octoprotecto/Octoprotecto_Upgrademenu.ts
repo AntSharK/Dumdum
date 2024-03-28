@@ -43,10 +43,13 @@ class Upgradescreen extends Phaser.Scene {
         if (this.selectedImage != null) {
             this.selectedImage.tint = this.OriginalTint;
 
-            if (this.selectedImage.name == image.name) {
+            if (this.selectedImage.name == image.name) { // Deselect
                 this.selectedImage = null;
                 document.getElementById("upgrademenupointsdisplay").hidden = false;
-                (document.getElementById("upgrademenustatsdisplay") as HTMLTableElement).innerHTML = "";
+
+                document.getElementById("upgrademenubodystatsdisplay").hidden = true;
+                document.getElementById("upgrademenutentaclestatsdisplay").hidden = true;
+
                 (document.getElementById("specialupgrademenu") as HTMLTableElement).innerHTML = "";
                 return;
             }
@@ -57,6 +60,25 @@ class Upgradescreen extends Phaser.Scene {
             this.selectedImage = image;
             image.tint = 0xFFFFFF;
 
+            document.getElementById("upgrademenutentaclestatsdisplay").hidden = true;
+            document.getElementById("upgrademenubodystatsdisplay").hidden = false;
+
+            document.getElementById("upgrademenudisplaybodyhp").textContent = "" + Math.round(this.OctopusData.maxHitPoints * 100) / 100;
+            document.getElementById("upgrademenudisplaybodyspd").textContent = "" + Math.round(this.OctopusData.speed * 10000) / 100;
+            document.getElementById("upgrademenudisplaybodyarm").textContent = "" + Math.round(this.OctopusData.armor * 100) / 100;
+            document.getElementById("upgrademenudisplaybodycol").textContent = "" + Math.round(this.OctopusData.collisionDamage * 100) / 100;
+            document.getElementById("upgrademenudisplaybodylck").textContent = "" + Math.round(this.OctopusData.luck * 100) / 100;
+
+            let refreshButtonBody = document.getElementById("upgrademenudisplaycostbodyrefresh");
+            refreshButtonBody.textContent = "$" + this.OctopusData.refreshCost;
+            if (this.OctopusData.refreshCost > this.OctopusData.points) {
+                refreshButtonBody.style.backgroundColor = "red";
+            }
+            else {
+                refreshButtonBody.style.backgroundColor = "green";
+                refreshButtonBody.onclick = purchaseUpgrade;
+            }
+            /*
             var table = document.getElementById("upgrademenustatsdisplay") as HTMLTableElement;
             table.innerHTML = "";
             var specialUpgradeTable = document.getElementById("specialupgrademenu") as HTMLTableElement;
@@ -130,7 +152,7 @@ class Upgradescreen extends Phaser.Scene {
                         specialCell.colSpan = 2;
                         break;
                 }
-            }
+            }*/
 
             return;
         }
@@ -141,6 +163,26 @@ class Upgradescreen extends Phaser.Scene {
             this.selectedImage = image;
             image.tint = 0xFFFFFF;
 
+            document.getElementById("upgrademenutentaclestatsdisplay").hidden = false;
+            document.getElementById("upgrademenubodystatsdisplay").hidden = true;
+
+            document.getElementById("upgrademenudisplaytentacledmg").textContent = "" + Math.round(selectedWeapon.projectileDamage * 100) / 100;
+            document.getElementById("upgrademenudisplaytentaclespd").textContent = "" + Math.round(selectedWeapon.projectileSpeed * 100) / 100;
+            document.getElementById("upgrademenudisplaytentaclecd").textContent = "" + Math.round(selectedWeapon.fireRate * 100) / 100;
+            document.getElementById("upgrademenudisplaytentacleacc").textContent = "" + Math.round(selectedWeapon.spread * 100) / 100;
+            document.getElementById("upgrademenudisplaytentacleran").textContent = "" + Math.round(selectedWeapon.range * 100) / 100;
+
+            let refreshButtonTentacle = document.getElementById("upgrademenudisplaycostrefreshtentacle");
+            refreshButtonTentacle.textContent = "$" + this.OctopusData.refreshCost;
+            if (this.OctopusData.refreshCost > this.OctopusData.points) {
+                refreshButtonTentacle.style.backgroundColor = "red";
+            }
+            else {
+                refreshButtonTentacle.style.backgroundColor = "green";
+                refreshButtonTentacle.onclick = purchaseUpgrade;
+            }
+
+            /*
             var table = document.getElementById("upgrademenustatsdisplay") as HTMLTableElement;
             table.innerHTML = "";
             var specialUpgradeTable = document.getElementById("specialupgrademenu") as HTMLTableElement;
@@ -228,6 +270,7 @@ class Upgradescreen extends Phaser.Scene {
                         break;
                 }
             }
+            */
 
             return;
         }
