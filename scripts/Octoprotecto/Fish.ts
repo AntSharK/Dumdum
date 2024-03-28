@@ -177,11 +177,11 @@ class MergingFish extends Fish {
     override Setup(scene: BattleArena) {
         super.Setup(scene);
         this.collisionScale = 0.4;
-        this.speed = 75;
+        this.speed = 65;
         this.hitPoints = 500;
         this.maxHitPoints = 500;
         this.points = 5;
-        const MERGELIMIT = 4;
+        const MERGELIMIT = 5;
 
         this.HitFish = (otherFish: Fish) => {
             var mergedFish = otherFish as MergingFish;
