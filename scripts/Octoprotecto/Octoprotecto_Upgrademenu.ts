@@ -148,11 +148,8 @@ class Upgradescreen extends Phaser.Scene {
 
             var specialUpgradeTable = document.getElementById("specialupgrademenu") as HTMLTableElement;
             specialUpgradeTable.innerHTML = "";
-            /*
-            let cell = row.insertCell(0);
-            cell.rowSpan = 3;
-            cell.textContent = selectedWeapon.damageDealt + " DMG DONE";
-            */
+
+            document.getElementById("upgrademenudisplaytentacledamagedone").textContent = selectedWeapon.damageDealt + " DMG DONE";
             for (let key in selectedWeapon.purchasableUpgrades) {
                 var upgrade = selectedWeapon.purchasableUpgrades[key];
 
