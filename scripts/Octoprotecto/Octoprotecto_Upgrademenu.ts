@@ -43,78 +43,62 @@ class Upgradescreen extends Phaser.Scene {
         if (this.selectedImage != null) {
             this.selectedImage.tint = this.OriginalTint;
 
-            if (this.selectedImage.name == image.name) {
+            if (this.selectedImage.name == image.name) { // Deselect
                 this.selectedImage = null;
                 document.getElementById("upgrademenupointsdisplay").hidden = false;
-                (document.getElementById("upgrademenustatsdisplay") as HTMLTableElement).innerHTML = "";
+
+                document.getElementById("upgrademenubodystatsdisplay").hidden = true;
+                document.getElementById("upgrademenutentaclestatsdisplay").hidden = true;
+
                 (document.getElementById("specialupgrademenu") as HTMLTableElement).innerHTML = "";
                 return;
             }
         }
 
-        // For mainbody upgrades
+        // For main body upgrades
         if (image.name == Upgradescreen.MAINBODYNAME) {
             this.selectedImage = image;
             image.tint = 0xFFFFFF;
 
-            var table = document.getElementById("upgrademenustatsdisplay") as HTMLTableElement;
-            table.innerHTML = "";
-            var specialUpgradeTable = document.getElementById("specialupgrademenu") as HTMLTableElement;
-            specialUpgradeTable.innerHTML = "";
+            document.getElementById("upgrademenutentaclestatsdisplay").hidden = true;
+            document.getElementById("upgrademenubodystatsdisplay").hidden = false;
+            clearUpgradeMenuCosts();
 
-            let row = table.insertRow(0);
-            let collisionDmgButtonRow = row.insertCell(0);
-            let armorButtonRow = row.insertCell(0);
-            let playerspeedButtonRow = row.insertCell(0);
-            let maxhpButtonRow = row.insertCell(0);
+            document.getElementById("upgrademenudisplaybodyhp").textContent = "" + Math.round(this.OctopusData.maxHitPoints * 100) / 100;
+            document.getElementById("upgrademenudisplaybodyspd").textContent = "" + Math.round(this.OctopusData.speed * 10000) / 100;
+            document.getElementById("upgrademenudisplaybodyarm").textContent = "" + Math.round(this.OctopusData.armor * 100) / 100;
+            document.getElementById("upgrademenudisplaybodycol").textContent = "" + Math.round(this.OctopusData.collisionDamage * 100) / 100;
+            document.getElementById("upgrademenudisplaybodylck").textContent = "" + Math.round(this.OctopusData.luck * 100) / 100;
 
-            row = table.insertRow(0);
-            let refreshButtonRow = row.insertCell(0);
-            refreshButtonRow.textContent = "$" + this.OctopusData.refreshCost;
+            // Configure the refresh button cost
+            let refreshButtonBody = document.getElementById("upgrademenudisplaycostbodyrefresh");
+            refreshButtonBody.textContent = "$" + this.OctopusData.refreshCost;
             if (this.OctopusData.refreshCost > this.OctopusData.points) {
-                refreshButtonRow.style.backgroundColor = "red";
+                refreshButtonBody.style.backgroundColor = "red";
             }
             else {
-                refreshButtonRow.style.backgroundColor = "green";
-                refreshButtonRow.onclick = purchaseUpgrade;
+                refreshButtonBody.style.backgroundColor = "green";
+                refreshButtonBody.onclick = purchaseUpgrade;
             }
 
-            row.insertCell(0).textContent = "" + Math.round(this.OctopusData.collisionDamage * 100) / 100;
-            row.insertCell(0).textContent = "" + Math.round(this.OctopusData.armor * 100)/100;
-            row.insertCell(0).textContent = "" + Math.round(this.OctopusData.speed * 10000)/100;
-            row.insertCell(0).textContent = "" + Math.round(this.OctopusData.maxHitPoints * 100)/100;
-            row = table.insertRow(0);
-            let cell = row.insertCell(0);
-            cell.textContent = ">>";
-            cell.title = "Refreshing will change the available purchaseable upgrades everywhere.";
-            cell = row.insertCell(0);
-            cell.textContent = "COL";
-            cell.title = "This is the amount of damage dealt to enemies when they collide with you.";
-            cell = row.insertCell(0);
-            cell.textContent = "ARM";
-            cell.title = "Each point of armor reduces damage taken from a single hit.";
-            cell = row.insertCell(0);
-            cell.textContent = "SPD";
-            cell.title = "The speed of your octopus.";
-            cell = row.insertCell(0);
-            cell.textContent = "HP";
-            cell.title = "The maximum number of hit points your octopus has.";
+            var specialUpgradeTable = document.getElementById("specialupgrademenu") as HTMLTableElement;
+            specialUpgradeTable.innerHTML = "";
 
             for (let key in this.OctopusData.purchasableUpgrades) {
                 var upgrade = this.OctopusData.purchasableUpgrades[key];
 
                 switch (upgrade.displayName) {
                     case "Armor+":
-                        this.ConfigureUpgradeButton(armorButtonRow, key, upgrade);
+                        this.ConfigureUpgradeButton(document.getElementById("upgrademenucostbodyarm") as HTMLTableCellElement, key, upgrade);
                         break;
                     case "Playerspeed+":
-                        this.ConfigureUpgradeButton(playerspeedButtonRow, key, upgrade);
+                        this.ConfigureUpgradeButton(document.getElementById("upgrademenucostbodyspd") as HTMLTableCellElement, key, upgrade);
                         break;
                     case "Maxhp+":
-                        this.ConfigureUpgradeButton(maxhpButtonRow, key, upgrade);
+                        this.ConfigureUpgradeButton(document.getElementById("upgrademenucostbodyhp") as HTMLTableCellElement, key, upgrade);
                         break;
                     case "Collision+":
-                        this.ConfigureUpgradeButton(collisionDmgButtonRow, key, upgrade);
+                        this.ConfigureUpgradeButton(document.getElementById("upgrademenucostbodycol") as HTMLTableCellElement, key, upgrade);
                         break;
                     default:
                         let specialRow = specialUpgradeTable.insertRow(0);
@@ -141,77 +125,49 @@ class Upgradescreen extends Phaser.Scene {
             this.selectedImage = image;
             image.tint = 0xFFFFFF;
 
-            var table = document.getElementById("upgrademenustatsdisplay") as HTMLTableElement;
-            table.innerHTML = "";
+            document.getElementById("upgrademenutentaclestatsdisplay").hidden = false;
+            document.getElementById("upgrademenubodystatsdisplay").hidden = true;
+            clearUpgradeMenuCosts();
+
+            document.getElementById("upgrademenudisplaytentacledmg").textContent = "" + Math.round(selectedWeapon.projectileDamage * 100) / 100;
+            document.getElementById("upgrademenudisplaytentaclespd").textContent = "" + Math.round(selectedWeapon.projectileSpeed * 100) / 100;
+            document.getElementById("upgrademenudisplaytentaclecd").textContent = "" + Math.round(selectedWeapon.fireRate * 100) / 100;
+            document.getElementById("upgrademenudisplaytentacleacc").textContent = "" + Math.round(selectedWeapon.spread * 100) / 100;
+            document.getElementById("upgrademenudisplaytentacleran").textContent = "" + Math.round(selectedWeapon.range * 100) / 100;
+
+            // Configure the refresh button cost
+            let refreshButtonTentacle = document.getElementById("upgrademenudisplaycostrefreshtentacle");
+            refreshButtonTentacle.textContent = "$" + this.OctopusData.refreshCost;
+            if (this.OctopusData.refreshCost > this.OctopusData.points) {
+                refreshButtonTentacle.style.backgroundColor = "red";
+            }
+            else {
+                refreshButtonTentacle.style.backgroundColor = "green";
+                refreshButtonTentacle.onclick = purchaseUpgrade;
+            }
+
             var specialUpgradeTable = document.getElementById("specialupgrademenu") as HTMLTableElement;
             specialUpgradeTable.innerHTML = "";
 
-            let row = table.insertRow(0);
-            let rangeButtonRow = row.insertCell(0);
-            let spreadButtonRow = row.insertCell(0);
-            let cooldownButtonRow = row.insertCell(0);
-            let speedButtonRow = row.insertCell(0);
-            let damageButtonRow = row.insertCell(0);
-
-            row = table.insertRow(0);
-            let refreshButtonRow = row.insertCell(0);
-            refreshButtonRow.textContent = "$" + this.OctopusData.refreshCost;
-            if (this.OctopusData.refreshCost > this.OctopusData.points) {
-                refreshButtonRow.style.backgroundColor = "red";
-            }
-            else {
-                refreshButtonRow.style.backgroundColor = "green";
-                refreshButtonRow.onclick = purchaseUpgrade;
-            }
-
-            row.insertCell(0).textContent = "" + Math.round(selectedWeapon.range * 100) / 100;
-            row.insertCell(0).textContent = "" + Math.round(selectedWeapon.spread * 100) / 100;
-            row.insertCell(0).textContent = "" + Math.round(selectedWeapon.fireRate * 100) / 100;
-            row.insertCell(0).textContent = "" + Math.round(selectedWeapon.projectileSpeed * 100) / 100;
-            row.insertCell(0).textContent = "" + Math.round(selectedWeapon.projectileDamage * 100) / 100;
-            row = table.insertRow(0);
-
-            let cell = row.insertCell(0);
-            cell.rowSpan = 3;
-            cell.textContent = selectedWeapon.damageDealt + " DMG DONE";
-
-            cell = row.insertCell(0);
-            cell.textContent = ">>";
-            cell.title = "Refreshing will change the available purchaseable upgrades everywhere.";
-            cell = row.insertCell(0);
-            cell.textContent = "RAN";
-            cell.title = "Range is the distance enemies have to be for the weapon to fire at them.";
-            cell = row.insertCell(0);
-            cell.textContent = "ACC";
-            cell.title = "Accuracy is the total spread of projectiles launched. A smaller value means more precision.";
-            cell = row.insertCell(0);
-            cell.textContent = "CD";
-            cell.title = "Cooldown is the interval between firing. A lower cooldown means a higher rate of fire.";
-            cell = row.insertCell(0);
-            cell.textContent = "SPD";
-            cell.title = "Speed is the speed of the projectile.";
-            cell = row.insertCell(0);
-            cell.textContent = "DMG";
-            cell.title = "Damage is the damage done to enemies when the projectile hits them.";
-
+            document.getElementById("upgrademenudisplaytentacledamagedone").textContent = selectedWeapon.damageDealt + " DMG DONE";
             for (let key in selectedWeapon.purchasableUpgrades) {
                 var upgrade = selectedWeapon.purchasableUpgrades[key];
 
                 switch (upgrade.displayName) {
                     case "Speed+":
-                        this.ConfigureUpgradeButton(speedButtonRow, key, upgrade);
+                        this.ConfigureUpgradeButton(document.getElementById("upgrademenucosttentaclespd") as HTMLTableCellElement, key, upgrade);
                         break;
                     case "Accuracy+":
-                        this.ConfigureUpgradeButton(spreadButtonRow, key, upgrade);
+                        this.ConfigureUpgradeButton(document.getElementById("upgrademenucosttentacleacc") as HTMLTableCellElement, key, upgrade);
                         break;
                     case "Damage+":
-                        this.ConfigureUpgradeButton(damageButtonRow, key, upgrade);
+                        this.ConfigureUpgradeButton(document.getElementById("upgrademenucosttentacledmg") as HTMLTableCellElement, key, upgrade);
                         break;
                     case "FireRate+":
-                        this.ConfigureUpgradeButton(cooldownButtonRow, key, upgrade);
+                        this.ConfigureUpgradeButton(document.getElementById("upgrademenucosttentaclecd") as HTMLTableCellElement, key, upgrade);
                         break;
                     case "Range+":
-                        this.ConfigureUpgradeButton(rangeButtonRow, key, upgrade);
+                        this.ConfigureUpgradeButton(document.getElementById("upgrademenucosttentacleran") as HTMLTableCellElement, key, upgrade);
                         break;
                     default:
                         let specialRow = specialUpgradeTable.insertRow(0);
@@ -354,6 +310,16 @@ function setUpgradeMenuHidden(hidden: boolean) {
     var menuElements = document.getElementsByClassName("upgrademenu");
     [].forEach.call(menuElements, function (element, index, array) {
         element.hidden = hidden;
+    });
+}
+function clearUpgradeMenuCosts() {
+    var menuElements = document.getElementsByClassName("upgrademenucost");
+
+    [].forEach.call(menuElements, function (element, index, array) {
+        let cell = element as HTMLTableCellElement;
+        cell.textContent = "";
+        cell.style.backgroundColor = "white";
+        cell.onclick = () => { }; // Clear the onclick function
     });
 }
 
