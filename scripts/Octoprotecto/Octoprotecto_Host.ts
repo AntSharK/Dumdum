@@ -126,6 +126,8 @@ class BattleArena extends Phaser.Scene {
         this.roundTimer = null;
         this.fishes.children.each(c => c.destroy());
         this.currentRound++;
+
+        var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);
         hideGameNotifications();
         document.getElementById("gamenotificationarea").hidden = false;
         document.getElementById("gamenotificationmessage").hidden = false;
@@ -185,7 +187,6 @@ class BattleArena extends Phaser.Scene {
             row.insertCell(0).textContent = octopus.displayName;
         }
 
-        var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);
         signalRconnection.invoke("FinishRound", roomId, pointsPerOctopus, damagePerWeapon).catch(function (err) {
             return console.error(err.toString());
         });
