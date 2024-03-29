@@ -69,7 +69,7 @@ window.onload = () => {
         hideLobbyMenu();
         var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
         battleArenaScene.scene.setActive(true);
-        battleArenaScene.startGame(true);
+        battleArenaScene.startGame(true, 20 /*Number of rounds*/);
     });
 
     document.getElementById("startgamebutton").addEventListener("click", function (event) {
@@ -80,13 +80,14 @@ window.onload = () => {
         }
 
         var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);
+        var numRounds = (document.getElementById("numberofrounds") as HTMLInputElement).value;
         if (roomId == null) {
             window.alert("Error: No room ID!");
             return;
         }
 
         hideLobbyMenu();
-        battleArenaScene.startGame(false);
+        battleArenaScene.startGame(false, parseInt(numRounds));
     });
 
     document.getElementById("joingamebutton").addEventListener("click", function (event) {

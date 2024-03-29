@@ -122,12 +122,14 @@ namespace Octoprotecto
         internal void NextRound()
         {
             const int BASEREFRESHCOST = 1;
-            const int POINTSPERROUND = 10;
+            const int POINTSPERROUND = 20;
+            const int LUCKINCREASEPERROUND = 2;
 
             this.IsActive = false;
             this.GenerateNewUpgrades();
             this.RefreshCost = BASEREFRESHCOST;
             this.Points = this.Points + POINTSPERROUND;
+            this.Luck = this.Luck + LUCKINCREASEPERROUND;
         }
 
         internal bool TryPurchaseWeaponUpgrade(string upgradeId)

@@ -177,11 +177,11 @@ class MergingFish extends Fish {
     override Setup(scene: BattleArena) {
         super.Setup(scene);
         this.collisionScale = 0.4;
-        this.speed = 75;
+        this.speed = 65;
         this.hitPoints = 500;
         this.maxHitPoints = 500;
         this.points = 5;
-        const MERGELIMIT = 4;
+        const MERGELIMIT = 5;
 
         this.HitFish = (otherFish: Fish) => {
             var mergedFish = otherFish as MergingFish;
@@ -190,7 +190,7 @@ class MergingFish extends Fish {
                 if (mergeCount < MERGELIMIT) {
                     let scaleBloat = mergeCount / this.currentMerges;
 
-                    this.scale = this.scale * scaleBloat;
+                    this.scale = this.scale * Math.sqrt(scaleBloat);
                     this.setVelocity(this.body.velocity.x * scaleBloat, this.body.velocity.y * scaleBloat);
 
                     this.hitPoints = this.hitPoints + mergedFish.hitPoints;
@@ -200,7 +200,7 @@ class MergingFish extends Fish {
                     this.speed = this.speed + mergedFish.speed;
 
                     this.currentMerges = mergeCount;
-                    mergedFish.destroy(true);
+                    mergedFish.TakeDamage(99999); // Do a lot of damage to the fish being merged
                 }
             }
         }
