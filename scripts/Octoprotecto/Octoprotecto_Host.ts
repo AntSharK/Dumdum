@@ -158,6 +158,11 @@ class BattleArena extends Phaser.Scene {
             this.scene.setActive(false);
             clearState();
             setTimeout(() => window.location.reload(), 30000);
+
+            signalRconnection.invoke("TriggerVictory", roomId).catch(function (err) {
+                return console.error(err.toString());
+            });
+
             return;
         }
 
