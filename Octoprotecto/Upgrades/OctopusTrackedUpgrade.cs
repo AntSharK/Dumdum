@@ -21,15 +21,17 @@
             {
                 case UpgradeType.ArmorWhenHit:
                     this.displayName = "Toughen";
-                    this.description = "When hit, Armor+3 for this round";
+                    this.description = "When hit, Armor+2 for this round";
                     this.baseCost = 20;
                     this.incrementCost = 2;
+                    this.MaxLimit = 10;
                     break;
                 case UpgradeType.PointsWhenHit:
                     this.displayName = "Insurance";
                     this.description = "When hit, Gain 1 Point";
                     this.baseCost = 10;
                     this.incrementCost = 5;
+                    this.MaxLimit = 15;
                     break;
                 case UpgradeType.Integrate:
                     this.displayName = "Integrate";
