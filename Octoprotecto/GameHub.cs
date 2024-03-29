@@ -173,6 +173,15 @@ namespace Octoprotecto
             room.EndGame();
         }
 
+        public async Task TriggerVictory(string roomId)
+        {
+            (_, var room) = await this.FindPlayerAndRoom(null, roomId);
+            if (room == null) { return; }
+
+            await Clients.Group(room.RoomId).SendAsync("VictoryNotification");
+            room.EndGame();
+        }
+
         public async Task FinishRound(string roomId, 
             IDictionary<string, int> pointsPerOctopus,
             IDictionary<string, int> damagePerWeapon)

@@ -190,6 +190,15 @@ function ConfigureControllerSignalRListening(signalRconnection: any) {
         clearState();
         setTimeout(() => window.location.reload(), 10000);
     });
+    signalRconnection.on("VictoryNotification", function () {
+        var controllerScene = octoProtecto.game.scene.getScene("Octocontroller") as Octocontroller;
+        controllerScene.respawnDisplay.setVisible(false);
+        controllerScene.add.text(0, 0, "YOU WON", { color: 'White', fontSize: '5vw' });
+        controllerScene.state = ControllerState.WaitingForSync;
+        controllerScene.scene.setActive(false);
+        clearState();
+        setTimeout(() => window.location.reload(), 10000);
+    });
 }
 
 enum ControllerState {
