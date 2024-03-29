@@ -12,6 +12,7 @@ class BattleArena extends Phaser.Scene {
     roundTimer: Phaser.Time.TimerEvent;
     timeLeftDisplay: Phaser.GameObjects.Text;
     currentRound: integer = 1;
+    numberOfRounds: integer;
 
     constructor() {
         super({ key: 'BattleArena', active: false, visible: true });
@@ -105,12 +106,13 @@ class BattleArena extends Phaser.Scene {
         SoloRun.ConfigureDebug(this);
     }
 
-    startGame(soloRun: boolean) {
+    startGame(soloRun: boolean, numberOfRounds: integer) {
         if (soloRun) {
             SoloRun.ConfigureKeyboard(this);
             SoloRun.SoloRunStart(this);
         }
 
+        this.numberOfRounds = numberOfRounds;
         StartWave(this);
         var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);
         signalRconnection.invoke("StartRoom", roomId, soloRun).catch(function (err) {
@@ -120,15 +122,24 @@ class BattleArena extends Phaser.Scene {
 
     finishRound() {
         this.roundTimer = null;
-        this.timeLeftDisplay.text = "ROUND " + this.currentRound + " FINISHED";
-
-        // Display HTML UI elements
+        this.fishes.children.each(c => c.destroy());
+        this.currentRound++;
         hideGameNotifications();
         document.getElementById("gamenotificationarea").hidden = false;
         document.getElementById("gamenotificationmessage").hidden = false;
-        document.getElementById("gamenotificationmessage").textContent = "ROUND " + this.currentRound + " FINISHED";
 
-        this.currentRound++;
+        if (this.currentRound > this.numberOfRounds) {
+            // TODO: actual game ending logic
+            this.add.text(0, 0, "GAME FINISHED", { color: 'White', fontSize: '5vw' });
+            document.getElementById("gamenotificationmessage").textContent = "GAME FINISHED";
+            this.scene.setActive(false);
+            clearState();
+            setTimeout(() => window.location.reload(), 10000);
+            return;
+        }
+
+        this.timeLeftDisplay.text = "ROUND " + this.currentRound + " FINISHED";
+        document.getElementById("gamenotificationmessage").textContent = "ROUND " + this.currentRound + " FINISHED";
 
         var table = document.getElementById("leaderboarddisplay") as HTMLTableElement;
         table.hidden = false;
@@ -157,8 +168,6 @@ class BattleArena extends Phaser.Scene {
             let cell = row.insertCell(0);
             cell.textContent = octopus.displayName;
         }
-
-        this.fishes.children.each(c => c.destroy());
 
         var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);
         signalRconnection.invoke("FinishRound", roomId, pointsPerOctopus, damagePerWeapon).catch(function (err) {
