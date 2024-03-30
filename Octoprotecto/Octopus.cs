@@ -13,7 +13,7 @@ namespace Octoprotecto
         public double DesiredY { get; set; }
         public int Tint { get; set; }
         public double Speed { get; set; } = 0.15; // Expressed as distance covered per millisecond
-        public int MaxHitPoints { get; set; } = 998;
+        public int MaxHitPoints { get; set; } = 456;
         public int Points { get; set; } = 20;
         public int TotalDeaths { get; set; } = 0;
         public int Luck { get; set; } = 0;
