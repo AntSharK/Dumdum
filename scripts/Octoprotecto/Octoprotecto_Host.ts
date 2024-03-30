@@ -1,3 +1,5 @@
+var ISDEBUG: boolean = false;
+
 class BattleArena extends Phaser.Scene {
     static OctopiMap: { [id: string]: Octopus } = {};
     static LeaderboardData: { [id: string]: OctopusTrackedData[] } = {};
@@ -106,7 +108,9 @@ class BattleArena extends Phaser.Scene {
         this.timeLeftDisplay = this.add.text(0, 0, "", { color: 'Red', fontSize: '5vw' });
 
         // DEBUG MODE THINGS - comment out in real cases
-        SoloRun.ConfigureDebug(this);
+        if (ISDEBUG) {
+            SoloRun.ConfigureDebug(this);
+        }
     }
 
     startGame(soloRun: boolean, numberOfRounds: integer) {

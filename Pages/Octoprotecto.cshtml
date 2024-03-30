@@ -19,14 +19,17 @@
         <meta charset="utf-8" />
         <link rel="stylesheet" href="/OctoProtecto/app.css" type="text/css" />
         <title>OCTOPROTECTO</title>
+        <script>
+            ISDEBUG = @(Model.IsDebug ? "true" : "false");
+        </script>
     </head>
     <body>
         <div id="content">
             <div id="octoprotectogame"></div>
             <div id="lobbymenuinitial" class="display-1 lobbymenu" hidden="true">
-                <input type="button" id="joingamebutton" value="JOIN"/>
+                <input type="button" id="joingamebutton" value="JOIN" />
                 <hr />
-                <input type="button" id="hostgamebutton" value="HOST"/>
+                <input type="button" id="hostgamebutton" value="HOST" />
                 <hr />
                 <input type="button" id="sologamebutton" value="SOLO RUN" hidden="true" /> <!-- Hide the solo mode button until it's ready -->
             </div>
