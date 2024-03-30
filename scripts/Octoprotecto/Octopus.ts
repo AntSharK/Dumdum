@@ -158,7 +158,14 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
             this.setActive(false);
             var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);
 
-            signalRconnection.invoke("HostOctopusDeath", roomId, this.name, this.points).catch(function (err) {
+            // On death, synchronize points and weapon data, to be loaded back on respawn
+            var damagePerWeapon: { [id: string]: number } = {};
+            for (let weaponName in this.weapons) {
+                let weapon = this.weapons[weaponName];
+                damagePerWeapon[weapon.name] = weapon.damageDealt;
+            }
+
+            signalRconnection.invoke("HostOctopusDeath", roomId, this.name, this.points, damagePerWeapon).catch(function (err) {
                 return console.error(err.toString());
             });
             

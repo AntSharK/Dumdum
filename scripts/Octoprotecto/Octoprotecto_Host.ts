@@ -130,7 +130,7 @@ class BattleArena extends Phaser.Scene {
         document.getElementById("gamenotificationarea").hidden = false;
         document.getElementById("gamenotificationmessage").hidden = false;
 
-        // Fill in data
+        // Fill in data of live octopi - to pipe back
         var pointsPerOctopus: { [id: string]: number } = {};
         var damagePerWeapon: { [id: string]: number } = {};
 
@@ -139,8 +139,6 @@ class BattleArena extends Phaser.Scene {
             octopus.FinishRound();
 
             pointsPerOctopus[octopusName] = octopus.points;
-
-            // TODO: Keep track of octopi which haven't respawned
             for (let weaponName in octopus.weapons) {
                 let weapon = octopus.weapons[weaponName];
                 damagePerWeapon[weapon.name] = weapon.damageDealt;
