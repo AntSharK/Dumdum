@@ -47,7 +47,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
                     break;
                 case "Insurance":
                     this.onDamageTaken.push((octo, dmgTaken) => {
-                        octo.points += 1;
+                        octo.GainPoints(1);
                     });
                     break;
             }
@@ -139,6 +139,10 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
 
         // SetActive false immediately causes this to start fading out
         this.setActive(false);
+    }
+
+    GainPoints(pointsGained: number) {
+        this.points += pointsGained;
     }
 
     // Just handles the octopus' end of taking damage
