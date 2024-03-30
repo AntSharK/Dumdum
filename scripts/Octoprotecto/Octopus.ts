@@ -109,6 +109,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         this.tint = tint;
         this.points = points;
         this.maxHitPoints = maxHitPoints;
+        this.hitPoints = this.maxHitPoints; // Spawn at 100% HP
         this.luck = luck;
         this.armor = armor;
         this.refreshCost = refreshCost;

@@ -135,13 +135,13 @@ class BattleArena extends Phaser.Scene {
         var pointsPerOctopus: { [id: string]: number } = {};
         var damagePerWeapon: { [id: string]: number } = {};
 
-        // TODO: Keep track of octopi which haven't respawned
         for (let octopusName in BattleArena.OctopiMap) {
             let octopus = BattleArena.OctopiMap[octopusName];
             octopus.FinishRound();
 
-            // Fill in data
             pointsPerOctopus[octopusName] = octopus.points;
+
+            // TODO: Keep track of octopi which haven't respawned
             for (let weaponName in octopus.weapons) {
                 let weapon = octopus.weapons[weaponName];
                 damagePerWeapon[weapon.name] = weapon.damageDealt;
@@ -162,24 +162,9 @@ class BattleArena extends Phaser.Scene {
             return;
         }
 
+        DisplayEndRoundLeaderboard();
         this.timeLeftDisplay.text = "ROUND " + (this.currentRound - 1) + " FINISHED";
         document.getElementById("gamenotificationmessage").textContent = "ROUND " + (this.currentRound - 1) + " FINISHED";
-
-        var table = document.getElementById("leaderboarddisplay") as HTMLTableElement;
-        table.hidden = false;
-        table.innerHTML = "";
-        let row = table.insertRow(0);
-        row.insertCell(0).textContent = "HP";
-        row.insertCell(0).textContent = "POINTS";
-        row.insertCell(0).textContent = "NAME";
-
-        for (let octopusName in BattleArena.OctopiMap) {
-            let octopus = BattleArena.OctopiMap[octopusName];   
-            row = table.insertRow(table.rows.length);
-            row.insertCell(0).textContent = octopus.hitPoints + "/" + octopus.maxHitPoints;
-            row.insertCell(0).textContent = "" + (octopus.points + 10); // Add 10 for points per round
-            row.insertCell(0).textContent = octopus.displayName;
-        }
 
         signalRconnection.invoke("FinishRound", roomId, pointsPerOctopus, damagePerWeapon).catch(function (err) {
             return console.error(err.toString());
@@ -245,6 +230,18 @@ class BattleArena extends Phaser.Scene {
         setTimeout(() => window.location.reload(), 30000);
         return true;
     }
+}
+
+function DisplayEndRoundLeaderboard() {
+    var table = document.getElementById("leaderboarddisplay") as HTMLTableElement;
+    table.hidden = false;
+    table.innerHTML = "";
+    let row = table.insertRow(0);
+    row.insertCell(0).textContent = "HP";
+    row.insertCell(0).textContent = "POINTS";
+    row.insertCell(0).textContent = "NAME";
+
+    // TODO
 }
 
 function DisplayEndGameLeaderboard() {
