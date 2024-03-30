@@ -257,6 +257,7 @@ function DisplayEndRoundLeaderboard() {
     }
 
     let row = table.insertRow(0);
+    row.insertCell(0).textContent = "DMG TAKEN";
     row.insertCell(0).textContent = "DMG DEALT";
     row.insertCell(0).textContent = "POINTS";
     row.insertCell(0).textContent = "NAME";
