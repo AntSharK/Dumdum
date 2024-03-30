@@ -87,6 +87,14 @@ namespace Octoprotecto
 
             // Generate special upgrades
             this.GenerateSpecialUpgrade();
+            if (this.Luck > -5) // Generate a second special upgrade
+            {
+                var randomSeed = Utils.Rng.Next(this.Luck + 30);
+                if (randomSeed >= 25)
+                {
+                    this.GenerateSpecialUpgrade();
+                }
+            }
         }
 
         private void GenerateSpecialUpgrade()

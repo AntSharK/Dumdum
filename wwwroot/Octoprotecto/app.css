@@ -55,7 +55,6 @@ body {
 
 table, th, td {
     border: 1px solid black;
-    empty-cells: hide;
 }
 
 .displaybottomleft {
