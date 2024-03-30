@@ -293,6 +293,27 @@ function hideGameNotifications() {
 class OctopusTrackedData {
     PointsGained: number = 0;
     DamageDealt: number = 0;
-    HealingDone: number = 0;
+    DamageTaken: number = 0;
+    HealingReceived: number = 0;
     TimesDead: number = 0;
+
+    static OctopusDies(octopus: Octopus) {
+        BattleArena.LeaderboardData[octopus.name][BattleArena.CurrentRound].TimesDead++;
+    }
+
+    static TakeDamage(octopus: Octopus, damageTaken: number) {
+        BattleArena.LeaderboardData[octopus.name][BattleArena.CurrentRound].DamageTaken += damageTaken;
+    }
+
+    static ReceiveHealing(octopus: Octopus, healingReceived: number) {
+        BattleArena.LeaderboardData[octopus.name][BattleArena.CurrentRound].HealingReceived += healingReceived;
+    }
+
+    static GainPoints(octopus: Octopus, pointsGained: number) {
+        BattleArena.LeaderboardData[octopus.name][BattleArena.CurrentRound].PointsGained += pointsGained;
+    }
+
+    static DealDamage(octopus: Octopus, damageDealt: number) {
+        BattleArena.LeaderboardData[octopus.name][BattleArena.CurrentRound].DamageDealt += damageDealt;
+    }
 }

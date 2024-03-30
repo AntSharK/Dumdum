@@ -101,6 +101,7 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
 
     trackDamageDealt(damageDealt: number) {
         this.damageDealt += damageDealt;
+        OctopusTrackedData.DealDamage(this.weaponOwner, damageDealt);
     }
 
     placeInScene(weaponsPhysicsGroup: Phaser.Physics.Arcade.Group,
