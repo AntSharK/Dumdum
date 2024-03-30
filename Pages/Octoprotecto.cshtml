@@ -2,128 +2,131 @@
 @model Dumdum.Pages.OctoprotectoModel
 @{
     <!DOCTYPE html>
-    <html>
-    <head>
-        <script src="/lib/signalr/dist/browser/signalr.js"></script>
-        <script src="/phaser/phaser.js"></script>
-        <!-- Manually piece the dependent pieces together -->
-        <script src="/js/Octoprotecto/Fish.js"></script>
-        <script src="/js/Octoprotecto/Weapon.js"></script>
-        <script src="/js/Octoprotecto/Octopus.js"></script>
-        <script src="/js/Octoprotecto/WaveManager.js"></script>
-        <script src="/js/Octoprotecto/Octoprotecto_Startmenu.js"></script>
-        <script src="/js/Octoprotecto/Octoprotecto_Host.js"></script>
-        <script src="/js/Octoprotecto/Octoprotecto_Controller.js"></script>
-        <script src="/js/Octoprotecto/Octoprotecto_Upgrademenu.js"></script>
-        <script src="/js/Octoprotecto/Solorunmod.js"></script>
-        <meta charset="utf-8" />
-        <link rel="stylesheet" href="/OctoProtecto/app.css" type="text/css" />
+        <html>
+        <head>
+            <script src="/lib/signalr/dist/browser/signalr.js"></script>
+            <script src="/phaser/phaser.js"></script>
+            <!-- Manually piece the dependent pieces together -->
+            <script src="/js/Octoprotecto/Fish.js"></script>
+            <script src="/js/Octoprotecto/Weapon.js"></script>
+            <script src="/js/Octoprotecto/Octopus.js"></script>
+            <script src="/js/Octoprotecto/WaveManager.js"></script>
+            <script src="/js/Octoprotecto/Octoprotecto_Startmenu.js"></script>
+            <script src="/js/Octoprotecto/Octoprotecto_Host.js"></script>
+            <script src="/js/Octoprotecto/Octoprotecto_Controller.js"></script>
+            <script src="/js/Octoprotecto/Octoprotecto_Upgrademenu.js"></script>
+            <script src="/js/Octoprotecto/Solorunmod.js"></script>
+            <meta charset="utf-8" />
+            <link rel="stylesheet" href="/OctoProtecto/app.css" type="text/css" />
         <title>OCTOPROTECTO</title>
-    </head>
-    <body>
-        <div id="content">
-            <div id="octoprotectogame"></div>
-            <div id="lobbymenuinitial" class="display-1 lobbymenu" hidden="true">
-                <input type="button" id="joingamebutton" value="JOIN"/>
-                <hr />
-                <input type="button" id="hostgamebutton" value="HOST"/>
-                <hr />
-                <input type="button" id="sologamebutton" value="SOLO RUN" hidden="true" /> <!-- Hide the solo mode button until it's ready -->
-            </div>
-
-            <div id="lobbyhostcontent" class="display-3 lobbymenu" hidden="true">
-                <input type="button" id="generatelinkbutton" value="GET LINK" onclick="GenerateLink()" class="display-5" /><br />
-                <div id="gameidtext" style="border:2px solid black;">WAITING FOR GAME ID...</div>
-                WAVES:<input type="number" step="1" min="1" max="99" value="15" id="numberofrounds" /><br />
-                <input type="button" id="startgamebutton" value="START" />
-            </div>
-
-            <div id="lobbyjoingamemenu" class="display-1 lobbymenu" hidden="true">
-                COLOR
-                <input type="color" id="colorpicker" value="">
-                <hr />
-                <input type="text" id="playername" maxlength="10" size="10" placeholder="PLAYER NAME" oninput="this.value = this.value.toUpperCase()" class="display-3" /><br />
-                <input type="text" id="roomid" maxlength="5" size="5" placeholder="ROOM ID" oninput="this.value = this.value.toUpperCase()" value="@Model.RoomId" /><br />
-                <input type="button" id="joinroombutton" value="JOIN" />
-            </div>
-
-            <div id="lobbywaitingforserver" class="display-3 lobbymenu">
-                <div id="waitingmessage">WAITING FOR SERVER...</div>
-                <input type="button" id="resetstatebutton" value="RESET" />
-            </div>
-
-            <div id="gamenotificationarea" class="gamenotification" hidden="true">
-                <div id="gamenotificationmessage" class="display-3 gamenotification">
-                    WAITING FOR SERVER...
+        <script>
+            ISDEBUG = @(Model.IsDebug ? "true":"false");
+        </script>
+        </head>
+        <body>
+            <div id="content">
+                <div id="octoprotectogame"></div>
+                <div id="lobbymenuinitial" class="display-1 lobbymenu" hidden="true">
+                    <input type="button" id="joingamebutton" value="JOIN"/>
+                    <hr />
+                    <input type="button" id="hostgamebutton" value="HOST"/>
+                    <hr />
+                    <input type="button" id="sologamebutton" value="SOLO RUN" hidden="true" /> <!-- Hide the solo mode button until it's ready -->
                 </div>
-                <hr />
-                <table id="leaderboarddisplay" class="display-4 gamenotification">
-                </table>
-            </div>
 
-            <!-- THIS SECTION IS DEDICATED TO THE OCTOPUS UPGRADING UI -->
-            <div id="upgrademenupointsdisplay" class="display-4 upgrademenu displaybottomright" hidden="true"></div>
-            <div id="upgrademenudisplay" class="display-4 upgrademenu displaytop" hidden="true">
-                <table id="upgrademenubodystatsdisplay" hidden="true" style="empty-cells:hide">
-                    <tr>
-                        <th title="The maximum number of hit points your octopus has.">HP</th>
-                        <th title="The speed of your octopus.">SPD</th>
-                        <th title="Each point of armor reduces damage taken from a single hit.">ARM</th>
-                        <th title="This is the amount of damage dealt to enemies when they collide with you.">COL</th>
-                        <th title="Luck increases the chance of seeing rare upgrades.">LCK</th>
-                        <th title="Refreshing will change the available purchaseable upgrades everywhere.">>></th>
-                    </tr>
-                    <tr>
-                        <td id="upgrademenudisplaybodyhp"></td>
-                        <td id="upgrademenudisplaybodyspd"></td>
-                        <td id="upgrademenudisplaybodyarm"></td>
-                        <td id="upgrademenudisplaybodycol"></td>
-                        <td id="upgrademenudisplaybodylck"></td>
-                        <td id="upgrademenudisplaycostbodyrefresh" class="upgrademenucost"></td>
-                    </tr>
-                    <tr>
-                        <td id="upgrademenucostbodyhp" class="upgrademenucost"></td>
-                        <td id="upgrademenucostbodyspd" class="upgrademenucost"></td>
-                        <td id="upgrademenucostbodyarm" class="upgrademenucost"></td>
-                        <td id="upgrademenucostbodycol" class="upgrademenucost"></td>
-                        <!--<td id="upgrademenucostbodylck" class="upgrademenucost"></td> -->
-                    </tr>
-                </table>
+                <div id="lobbyhostcontent" class="display-3 lobbymenu" hidden="true">
+                    <input type="button" id="generatelinkbutton" value="GET LINK" onclick="GenerateLink()" class="display-5" /><br />
+                    <div id="gameidtext" style="border:2px solid black;">WAITING FOR GAME ID...</div>
+                    WAVES:<input type="number" step="1" min="1" max="99" value="15" id="numberofrounds" /><br />
+                    <input type="button" id="startgamebutton" value="START" />
+                </div>
 
-                <table id="upgrademenutentaclestatsdisplay" hidden="true">
-                    <tr>
-                        <th title="The damage done to enemies when the projectile hits them.">DMG</th>
-                        <th title="The speed of the projectile.">SPD</th>
-                        <th title="Cooldown is the interval between firing. A lower cooldown means a higher rate of fire.">CD</th>
-                        <!--<th title="Accuracy is the total spread of projectiles launched. A smaller value means more precision.">ACC</th> -->
-                        <th title="Range is the distance enemies have to be for the weapon to fire at them.">RAN</th>
-                        <th title="Refreshing will change the available purchaseable upgrades everywhere.">>></th>
-                        <td id="upgrademenudisplaytentacledamagedone" rowspan="3"></td>
-                    </tr>
-                    <tr>
-                        <td id="upgrademenudisplaytentacledmg"></td>
-                        <td id="upgrademenudisplaytentaclespd"></td>
-                        <td id="upgrademenudisplaytentaclecd"></td>
-                        <!--<td id="upgrademenudisplaytentacleacc"></td> -->
-                        <td id="upgrademenudisplaytentacleran"></td>
-                        <td id="upgrademenudisplaycostrefreshtentacle"></td>
-                    </tr>
-                    <tr>
-                        <td id="upgrademenucosttentacledmg" class="upgrademenucost"></td>
-                        <td id="upgrademenucosttentaclespd" class="upgrademenucost"></td>
-                        <td id="upgrademenucosttentaclecd" class="upgrademenucost"></td>
-                        <!--<td id="upgrademenucosttentacleacc" class="upgrademenucost"></td> -->
-                        <td id="upgrademenucosttentacleran" class="upgrademenucost"></td>
-                    </tr>
-                </table>
-                <hr />
-                <table id="specialupgrademenu" class="h1">
-                </table>
+                <div id="lobbyjoingamemenu" class="display-1 lobbymenu" hidden="true">
+                    COLOR
+                    <input type="color" id="colorpicker" value="">
+                    <hr />
+                    <input type="text" id="playername" maxlength="10" size="10" placeholder="PLAYER NAME" oninput="this.value = this.value.toUpperCase()" class="display-3" /><br />
+                    <input type="text" id="roomid" maxlength="5" size="5" placeholder="ROOM ID" oninput="this.value = this.value.toUpperCase()" value="@Model.RoomId" /><br />
+                    <input type="button" id="joinroombutton" value="JOIN" />
+                </div>
+
+                <div id="lobbywaitingforserver" class="display-3 lobbymenu">
+                    <div id="waitingmessage">WAITING FOR SERVER...</div>
+                    <input type="button" id="resetstatebutton" value="RESET" />
+                </div>
+
+                <div id="gamenotificationarea" class="gamenotification" hidden="true">
+                    <div id="gamenotificationmessage" class="display-3 gamenotification">
+                        WAITING FOR SERVER...
+                    </div>
+                    <hr />
+                    <table id="leaderboarddisplay" class="display-4 gamenotification">
+                    </table>
+                </div>
+
+                <!-- THIS SECTION IS DEDICATED TO THE OCTOPUS UPGRADING UI -->
+                <div id="upgrademenupointsdisplay" class="display-4 upgrademenu displaybottomright" hidden="true"></div>
+                <div id="upgrademenudisplay" class="display-4 upgrademenu displaytop" hidden="true">
+                    <table id="upgrademenubodystatsdisplay" hidden="true" style="empty-cells:hide">
+                        <tr>
+                            <th title="The maximum number of hit points your octopus has.">HP</th>
+                            <th title="The speed of your octopus.">SPD</th>
+                            <th title="Each point of armor reduces damage taken from a single hit.">ARM</th>
+                            <th title="This is the amount of damage dealt to enemies when they collide with you.">COL</th>
+                            <th title="Luck increases the chance of seeing rare upgrades.">LCK</th>
+                            <th title="Refreshing will change the available purchaseable upgrades everywhere.">>></th>
+                        </tr>
+                        <tr>
+                            <td id="upgrademenudisplaybodyhp"></td>
+                            <td id="upgrademenudisplaybodyspd"></td>
+                            <td id="upgrademenudisplaybodyarm"></td>
+                            <td id="upgrademenudisplaybodycol"></td>
+                            <td id="upgrademenudisplaybodylck"></td>
+                            <td id="upgrademenudisplaycostbodyrefresh" class="upgrademenucost"></td>
+                        </tr>
+                        <tr>
+                            <td id="upgrademenucostbodyhp" class="upgrademenucost"></td>
+                            <td id="upgrademenucostbodyspd" class="upgrademenucost"></td>
+                            <td id="upgrademenucostbodyarm" class="upgrademenucost"></td>
+                            <td id="upgrademenucostbodycol" class="upgrademenucost"></td>
+                            <!--<td id="upgrademenucostbodylck" class="upgrademenucost"></td> -->
+                        </tr>
+                    </table>
+
+                    <table id="upgrademenutentaclestatsdisplay" hidden="true">
+                        <tr>
+                            <th title="The damage done to enemies when the projectile hits them.">DMG</th>
+                            <th title="The speed of the projectile.">SPD</th>
+                            <th title="Cooldown is the interval between firing. A lower cooldown means a higher rate of fire.">CD</th>
+                            <!--<th title="Accuracy is the total spread of projectiles launched. A smaller value means more precision.">ACC</th> -->
+                            <th title="Range is the distance enemies have to be for the weapon to fire at them.">RAN</th>
+                            <th title="Refreshing will change the available purchaseable upgrades everywhere.">>></th>
+                            <td id="upgrademenudisplaytentacledamagedone" rowspan="3"></td>
+                        </tr>
+                        <tr>
+                            <td id="upgrademenudisplaytentacledmg"></td>
+                            <td id="upgrademenudisplaytentaclespd"></td>
+                            <td id="upgrademenudisplaytentaclecd"></td>
+                            <!--<td id="upgrademenudisplaytentacleacc"></td> -->
+                            <td id="upgrademenudisplaytentacleran"></td>
+                            <td id="upgrademenudisplaycostrefreshtentacle"></td>
+                        </tr>
+                        <tr>
+                            <td id="upgrademenucosttentacledmg" class="upgrademenucost"></td>
+                            <td id="upgrademenucosttentaclespd" class="upgrademenucost"></td>
+                            <td id="upgrademenucosttentaclecd" class="upgrademenucost"></td>
+                            <!--<td id="upgrademenucosttentacleacc" class="upgrademenucost"></td> -->
+                            <td id="upgrademenucosttentacleran" class="upgrademenucost"></td>
+                        </tr>
+                    </table>
+                    <hr />
+                    <table id="specialupgrademenu" class="h1">
+                    </table>
+                </div>
+                <input type="button" id="upgradefinishedbutton" class="display-3 upgrademenu displaybottomleft" hidden="true" value="DONE" />
             </div>
-            <input type="button" id="upgradefinishedbutton" class="display-3 upgrademenu displaybottomleft" hidden="true" value="DONE" />
-        </div>
-    </body>
-    </html>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+        </body>
+        </html>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
 }
