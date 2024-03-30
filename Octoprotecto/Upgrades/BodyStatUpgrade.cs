@@ -28,6 +28,9 @@
                 case BodyStat.CollisionDamage:
                     this.displayName = "Collision+";
                     break;
+                case BodyStat.Luck:
+                    this.displayName = "Luck+";
+                    break;
                 default:
                     this.displayName = "Unknown";
                     break;
@@ -50,6 +53,9 @@
                 case BodyStat.CollisionDamage:
                     octopus.CollisionDamage += 50;
                     break;
+                case BodyStat.Luck:
+                    octopus.Luck += 3;
+                    break;
             }
 
             base.ApplyUpgrade(octopus);
@@ -61,6 +67,7 @@
         Armor,
         MaxHp,
         Speed,
-        CollisionDamage
+        CollisionDamage,
+        Luck
     }
 }

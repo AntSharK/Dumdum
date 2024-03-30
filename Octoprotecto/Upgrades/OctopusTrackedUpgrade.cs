@@ -40,6 +40,13 @@
                     this.incrementCost = 0;
                     this.MaxLimit = 1;
                     break;
+                case UpgradeType.Renew:
+                    this.displayName = "Renew";
+                    this.description = "Resets respawn costs";
+                    this.baseCost = 80;
+                    this.incrementCost = 0;
+                    this.MaxLimit = 2;
+                    break;
                 default:
                     this.displayName = "Unknown";
                     this.description = "Unknown";
@@ -62,6 +69,9 @@
                 case UpgradeType.Integrate:
                     octopus.UpgradesApplied = -1;
                     break;
+                case UpgradeType.Renew:
+                    octopus.TotalDeaths = 0;
+                    break;
                 default: // For everything else, the behavior is client-side
                     break;
             }
@@ -75,6 +85,7 @@
             ArmorWhenHit,
             PointsWhenHit,
             Integrate,
+            Renew,
         }
     }
 }

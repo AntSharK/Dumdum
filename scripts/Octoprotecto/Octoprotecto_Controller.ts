@@ -182,23 +182,22 @@ function ConfigureControllerSignalRListening(signalRconnection: any) {
     });
 
     signalRconnection.on("LossNotification", function () {
-        var controllerScene = octoProtecto.game.scene.getScene("Octocontroller") as Octocontroller;
-        controllerScene.respawnDisplay.setVisible(false);
-        controllerScene.add.text(0, 0, "YOU LOSE", { color: 'White', fontSize: '5vw' });
-        controllerScene.state = ControllerState.WaitingForSync;
-        controllerScene.scene.setActive(false);
-        clearState();
-        setTimeout(() => window.location.reload(), 10000);
+        EndGameNotification("YOU LOST");
     });
+
     signalRconnection.on("VictoryNotification", function () {
-        var controllerScene = octoProtecto.game.scene.getScene("Octocontroller") as Octocontroller;
-        controllerScene.respawnDisplay.setVisible(false);
-        controllerScene.add.text(0, 0, "YOU WON", { color: 'White', fontSize: '5vw' });
-        controllerScene.state = ControllerState.WaitingForSync;
-        controllerScene.scene.setActive(false);
-        clearState();
-        setTimeout(() => window.location.reload(), 10000);
+        EndGameNotification("YOU WON");
     });
+}
+
+function EndGameNotification(notificationText: string) {
+    var controllerScene = octoProtecto.game.scene.getScene("Octocontroller") as Octocontroller;
+    controllerScene.respawnDisplay.setVisible(false);
+    controllerScene.add.text(0, 0, notificationText, { color: 'White', fontSize: '5vw' });
+    controllerScene.state = ControllerState.WaitingForSync;
+    controllerScene.scene.setActive(false);
+    clearState();
+    setTimeout(() => window.location.reload(), 10000);
 }
 
 enum ControllerState {

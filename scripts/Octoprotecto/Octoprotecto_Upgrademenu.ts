@@ -100,6 +100,9 @@ class Upgradescreen extends Phaser.Scene {
                     case "Collision+":
                         this.ConfigureUpgradeButton(document.getElementById("upgrademenucostbodycol") as HTMLTableCellElement, key, upgrade);
                         break;
+                    case "Luck+":
+                        this.ConfigureUpgradeButton(document.getElementById("upgrademenucostbodylck") as HTMLTableCellElement, key, upgrade);
+                        break;
                     default:
                         let specialRow = specialUpgradeTable.insertRow(0);
                         var specialUpgradeCell = specialRow.insertCell(0);
