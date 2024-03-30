@@ -48,10 +48,10 @@
                     octopus.Speed += 0.05;
                     break;
                 case BodyStat.MaxHp:
-                    octopus.MaxHitPoints += 150;
+                    octopus.MaxHitPoints += 102;
                     break;
                 case BodyStat.CollisionDamage:
-                    octopus.CollisionDamage += 50;
+                    octopus.CollisionDamage += 77;
                     break;
                 case BodyStat.Luck:
                     octopus.Luck += 3;

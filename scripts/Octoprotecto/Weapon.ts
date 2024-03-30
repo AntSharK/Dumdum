@@ -77,7 +77,7 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
     offsetX: number = 0;
     offsetY: number = 0;
     range: number = 0;
-    spread: number = 0.4;
+    spread: number = 0;
 
     projectileDamage: number = 19;
     projectileSpeed: number = 500;

@@ -135,7 +135,7 @@ class Upgradescreen extends Phaser.Scene {
             document.getElementById("upgrademenudisplaytentacledmg").textContent = "" + Math.round(selectedWeapon.projectileDamage * 100) / 100;
             document.getElementById("upgrademenudisplaytentaclespd").textContent = "" + Math.round(selectedWeapon.projectileSpeed * 100) / 100;
             document.getElementById("upgrademenudisplaytentaclecd").textContent = "" + Math.round(selectedWeapon.fireRate * 100) / 100;
-            document.getElementById("upgrademenudisplaytentacleacc").textContent = "" + Math.round(selectedWeapon.spread * 100) / 100;
+            //document.getElementById("upgrademenudisplaytentacleacc").textContent = "" + Math.round(selectedWeapon.spread * 100) / 100;
             document.getElementById("upgrademenudisplaytentacleran").textContent = "" + Math.round(selectedWeapon.range * 100) / 100;
 
             // Configure the refresh button cost
