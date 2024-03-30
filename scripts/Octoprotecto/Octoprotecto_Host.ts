@@ -246,9 +246,9 @@ function DisplayEndRoundLeaderboard() {
     for (let playerName in BattleArena.LeaderboardData) {
         var currentRoundData = BattleArena.LeaderboardData[playerName][BattleArena.CurrentRound];
         let row = table.insertRow(0);
-        row.insertCell(0).textContent = currentRoundData.DamageTaken + "";
-        row.insertCell(0).textContent = currentRoundData.DamageDealt + "";
-        row.insertCell(0).textContent = currentRoundData.PointsGained + "";
+        row.insertCell(0).textContent = Math.round(currentRoundData.DamageTaken) + "";
+        row.insertCell(0).textContent = Math.round(currentRoundData.DamageDealt) + "";
+        row.insertCell(0).textContent = Math.round(currentRoundData.PointsGained) + "";
         row.insertCell(0).textContent = currentRoundData.DisplayName;
     }
 
