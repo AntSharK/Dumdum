@@ -1,5 +1,7 @@
 class BattleArena extends Phaser.Scene {
     static OctopiMap: { [id: string]: Octopus } = {};
+    static LeaderboardData: { [id: string]: OctopusTrackedData[] } = {};
+
     static CurrentRound: integer = 1;
     static NumberOfRounds: integer = 1;
 
@@ -173,9 +175,14 @@ class BattleArena extends Phaser.Scene {
     spawnOctopus(octopusData: Octopus) {
         var newOctopus = Octopus.FromData(octopusData, this);
         newOctopus.placeInScene(this, this.octopi, this.weapons, this.bullets, octopusData.tint);
-
-        // TODO: Weapon damage dealt is lost when respawning
         BattleArena.OctopiMap[octopusData.name] = newOctopus;
+
+        if (!(newOctopus.name in BattleArena.LeaderboardData)) {
+            BattleArena.LeaderboardData[newOctopus.name] = [];
+        }
+        if (!(BattleArena.CurrentRound in BattleArena.LeaderboardData[newOctopus.name])) {
+            BattleArena.LeaderboardData[newOctopus.name][BattleArena.CurrentRound] = new OctopusTrackedData();
+        }
 
         // Destroy any existing enemies in the spawning radius
         this.fishes.children.each(f => {
@@ -281,4 +288,11 @@ function hideGameNotifications() {
     [].forEach.call(menuElements, function (element, index, array) {
         element.hidden = true;
     });
+}
+
+class OctopusTrackedData {
+    PointsGained: number = 0;
+    DamageDealt: number = 0;
+    HealingDone: number = 0;
+    TimesDead: number = 0;
 }
