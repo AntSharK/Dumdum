@@ -104,17 +104,7 @@ class Upgradescreen extends Phaser.Scene {
                         this.ConfigureUpgradeButton(document.getElementById("upgrademenucostbodylck") as HTMLTableCellElement, key, upgrade);
                         break;
                     default:
-                        let specialRow = specialUpgradeTable.insertRow(0);
-                        var specialUpgradeCell = specialRow.insertCell(0);
-                        specialUpgradeCell.textContent = "$" + upgrade.cost;
-                        this.ConfigureUpgradeButton(specialUpgradeCell, key, upgrade);
-                        specialRow.insertCell(0).textContent = upgrade.description;
-
-                        specialRow = specialUpgradeTable.insertRow(0);
-                        specialUpgradeTable.insertRow(0);
-                        let specialCell = specialRow.insertCell(0);
-                        specialCell.textContent = upgrade.displayName;
-                        specialCell.colSpan = 2;
+                        this.ConfigureSpecialUpgrade(specialUpgradeTable, key, upgrade);
                         break;
                 }
             }
@@ -173,17 +163,7 @@ class Upgradescreen extends Phaser.Scene {
                         this.ConfigureUpgradeButton(document.getElementById("upgrademenucosttentacleran") as HTMLTableCellElement, key, upgrade);
                         break;
                     default:
-                        let specialRow = specialUpgradeTable.insertRow(0);
-                        var specialUpgradeCell = specialRow.insertCell(0);
-                        specialUpgradeCell.textContent = "$" + upgrade.cost;
-                        this.ConfigureUpgradeButton(specialUpgradeCell, key, upgrade);
-                        specialRow.insertCell(0).textContent = upgrade.description;
-
-                        specialRow = specialUpgradeTable.insertRow(0);
-                        specialUpgradeTable.insertRow(0);
-                        let specialCell = specialRow.insertCell(0);
-                        specialCell.textContent = upgrade.displayName;
-                        specialCell.colSpan = 2;
+                        this.ConfigureSpecialUpgrade(specialUpgradeTable, key, upgrade);
                         break;
                 }
             }
@@ -275,6 +255,22 @@ class Upgradescreen extends Phaser.Scene {
         this.DataSynchronized = true;
         this.DrawOctopus(octopusData);
         this.DrawDisplayElements(octopusData);
+    }
+
+    ConfigureSpecialUpgrade(specialUpgradeTable: HTMLTableElement, upgradeId: string, upgrade: Upgrade) {
+        if (specialUpgradeTable.rows.length == 0) {
+            specialUpgradeTable.insertRow();
+            specialUpgradeTable.insertRow();
+        }
+
+        let costCell = specialUpgradeTable.rows[0].insertCell(0);
+        costCell.textContent = "$" + upgrade.cost;
+        this.ConfigureUpgradeButton(costCell, upgradeId, upgrade);
+        specialUpgradeTable.rows[0].insertCell(0).textContent = upgrade.displayName;
+
+        let descriptionCell = specialUpgradeTable.rows[1].insertCell(0);
+        descriptionCell.textContent = upgrade.description;
+        descriptionCell.colSpan = 2;
     }
 
     ConfigureUpgradeButton(row: HTMLTableCellElement, upgradeId: string, upgrade: Upgrade) {
