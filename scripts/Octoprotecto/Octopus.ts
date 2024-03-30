@@ -142,6 +142,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     }
 
     GainPoints(pointsGained: number) {
+        OctopusTrackedData.GainPoints(this, pointsGained);
         this.points += pointsGained;
     }
 
@@ -149,6 +150,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     TakeDamage(damage: number) {
         let actualDamage = Math.max(1, damage - this.armor);
         this.hitPoints = this.hitPoints - actualDamage;
+        OctopusTrackedData.TakeDamage(this, actualDamage);
 
         this.onDamageTaken.forEach(f => {
             f(this, damage);
@@ -157,6 +159,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         if (this.hitPoints <= 0) {
             this.setActive(false);
             var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);
+            OctopusTrackedData.OctopusDies(this);
 
             // On death, synchronize points and weapon data, to be loaded back on respawn
             var damagePerWeapon: { [id: string]: number } = {};
@@ -177,7 +180,9 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     }
 
     Heal(healAmount: number) {
+        if (this.hitPoints < this.maxHitPoints) { OctopusTrackedData.ReceiveHealing(this, healAmount); }
         this.hitPoints = this.hitPoints + healAmount;
+
         if (this.hitPoints > this.maxHitPoints) {
             this.hitPoints = this.maxHitPoints;
         }

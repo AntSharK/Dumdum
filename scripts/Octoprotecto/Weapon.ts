@@ -30,7 +30,7 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
         });
 
         fish.TakeDamage(this.bulletWeapon.projectileDamage);
-        this.bulletWeapon.damageDealt += this.bulletWeapon.projectileDamage;
+        this.bulletWeapon.trackDamageDealt(this.bulletWeapon.projectileDamage);
 
         if (fish.hitPoints <= 0) {
             this.bulletWeapon.weaponOwner.GainPoints(fish.points);
@@ -92,12 +92,17 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
     purchasableUpgrades: { [id: string]: Upgrade } = {};
     trackedUpgrades: Upgrade[] = [];
 
-    // For per-round tracking
+    // For tracking
     damageDealt: number = 0;
 
     // Custom behaviors injected
     onBulletHit: ((bullet: Bullet, hitTarget: Fish) => void)[] = [];
     onFireToFish: ((bullet: Bullet, target: Fish) => void)[] = [];
+
+    trackDamageDealt(damageDealt: number) {
+        this.damageDealt += damageDealt;
+        OctopusTrackedData.DealDamage(this.weaponOwner, damageDealt);
+    }
 
     placeInScene(weaponsPhysicsGroup: Phaser.Physics.Arcade.Group,
         bulletPhysicsGroup: Phaser.Physics.Arcade.Group,
@@ -121,7 +126,9 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
                     break;
                 case "Momentum":
                     this.onBulletHit.push((bullet, hitTarget) => {
-                        hitTarget.TakeDamage(bullet.body.velocity.length() * 0.1);
+                        let additionalDmg = bullet.body.velocity.length() * 0.1;
+                        hitTarget.TakeDamage(additionalDmg);
+                        bullet.bulletWeapon.trackDamageDealt(additionalDmg);
                     });
                     break;
                 case "Propel":

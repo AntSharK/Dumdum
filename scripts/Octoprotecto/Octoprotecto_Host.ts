@@ -1,5 +1,7 @@
 class BattleArena extends Phaser.Scene {
     static OctopiMap: { [id: string]: Octopus } = {};
+    static LeaderboardData: { [id: string]: OctopusTrackedData[] } = {};
+
     static CurrentRound: integer = 1;
     static NumberOfRounds: integer = 1;
 
@@ -173,9 +175,14 @@ class BattleArena extends Phaser.Scene {
     spawnOctopus(octopusData: Octopus) {
         var newOctopus = Octopus.FromData(octopusData, this);
         newOctopus.placeInScene(this, this.octopi, this.weapons, this.bullets, octopusData.tint);
-
-        // TODO: Weapon damage dealt is lost when respawning
         BattleArena.OctopiMap[octopusData.name] = newOctopus;
+
+        if (!(newOctopus.name in BattleArena.LeaderboardData)) {
+            BattleArena.LeaderboardData[newOctopus.name] = [];
+        }
+        if (!(BattleArena.CurrentRound in BattleArena.LeaderboardData[newOctopus.name])) {
+            BattleArena.LeaderboardData[newOctopus.name][BattleArena.CurrentRound] = new OctopusTrackedData(newOctopus.displayName);
+        }
 
         // Destroy any existing enemies in the spawning radius
         this.fishes.children.each(f => {
@@ -235,12 +242,20 @@ function DisplayEndRoundLeaderboard() {
     var table = document.getElementById("leaderboarddisplay") as HTMLTableElement;
     table.hidden = false;
     table.innerHTML = "";
+
+    for (let playerName in BattleArena.LeaderboardData) {
+        var currentRoundData = BattleArena.LeaderboardData[playerName][BattleArena.CurrentRound];
+        let row = table.insertRow(0);
+        row.insertCell(0).textContent = Math.round(currentRoundData.DamageTaken) + "";
+        row.insertCell(0).textContent = Math.round(currentRoundData.DamageDealt) + "";
+        row.insertCell(0).textContent = Math.round(currentRoundData.PointsGained) + "";
+        row.insertCell(0).textContent = currentRoundData.DisplayName;
+    }
+
     let row = table.insertRow(0);
-    row.insertCell(0).textContent = "HP";
+    row.insertCell(0).textContent = "DMG DEALT";
     row.insertCell(0).textContent = "POINTS";
     row.insertCell(0).textContent = "NAME";
-
-    // TODO
 }
 
 function DisplayEndGameLeaderboard() {
@@ -251,12 +266,35 @@ function DisplayEndGameLeaderboard() {
     var table = document.getElementById("leaderboarddisplay") as HTMLTableElement;
     table.hidden = false;
     table.innerHTML = "";
+
+    for (let playerName in BattleArena.LeaderboardData) {
+        var totalHealing = 0;
+        var totalDmgTaken = 0;
+        var totalDmgDealt = 0;
+        var totalPoints = 0;
+        for (let round in BattleArena.LeaderboardData[playerName]) {
+
+            var currentRoundData = BattleArena.LeaderboardData[playerName][round];
+            totalHealing += currentRoundData.HealingReceived;
+            totalDmgTaken += currentRoundData.DamageTaken;
+            totalDmgDealt += currentRoundData.DamageDealt;
+            totalPoints += currentRoundData.PointsGained;
+        }
+
+        let row = table.insertRow(0);
+        row.insertCell(0).textContent = Math.round(totalHealing) + "";
+        row.insertCell(0).textContent = Math.round(totalDmgTaken) + "";
+        row.insertCell(0).textContent = Math.round(totalDmgDealt) + "";
+        row.insertCell(0).textContent = Math.round(totalPoints) + "";
+        row.insertCell(0).textContent = currentRoundData.DisplayName;
+    }
+
     let row = table.insertRow(0);
-    row.insertCell(0).textContent = "DMG";
+    row.insertCell(0).textContent = "HEALING";
+    row.insertCell(0).textContent = "DMG TAKEN";
+    row.insertCell(0).textContent = "DMG DEALT";
     row.insertCell(0).textContent = "POINTS";
     row.insertCell(0).textContent = "NAME";
-
-    // TODO
 }
 
 function ConfigureHostSignalRListening(signalRconnection: any) {
@@ -281,4 +319,37 @@ function hideGameNotifications() {
     [].forEach.call(menuElements, function (element, index, array) {
         element.hidden = true;
     });
+}
+
+class OctopusTrackedData {
+    PointsGained: number = 0;
+    DamageDealt: number = 0;
+    DamageTaken: number = 0;
+    HealingReceived: number = 0;
+    TimesDead: number = 0;
+    DisplayName: string;
+
+    constructor(displayName: string) {
+        this.DisplayName = displayName;
+    }
+
+    static OctopusDies(octopus: Octopus) {
+        BattleArena.LeaderboardData[octopus.name][BattleArena.CurrentRound].TimesDead++;
+    }
+
+    static TakeDamage(octopus: Octopus, damageTaken: number) {
+        BattleArena.LeaderboardData[octopus.name][BattleArena.CurrentRound].DamageTaken += damageTaken;
+    }
+
+    static ReceiveHealing(octopus: Octopus, healingReceived: number) {
+        BattleArena.LeaderboardData[octopus.name][BattleArena.CurrentRound].HealingReceived += healingReceived;
+    }
+
+    static GainPoints(octopus: Octopus, pointsGained: number) {
+        BattleArena.LeaderboardData[octopus.name][BattleArena.CurrentRound].PointsGained += pointsGained;
+    }
+
+    static DealDamage(octopus: Octopus, damageDealt: number) {
+        BattleArena.LeaderboardData[octopus.name][BattleArena.CurrentRound].DamageDealt += damageDealt;
+    }
 }
