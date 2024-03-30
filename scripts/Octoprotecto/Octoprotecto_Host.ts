@@ -151,7 +151,7 @@ class BattleArena extends Phaser.Scene {
 
             // No need to reset these fields - octopi are re-instantiated every round
             leaderboardDataToAdd.points = octopus.points;
-            BattleArena.Leaderboard[octopusName][this.currentRound] = leaderboardDataToAdd;
+            BattleArena.Leaderboard[octopusName][this.currentRound - 1] = leaderboardDataToAdd;
         }
 
         if (this.currentRound > this.numberOfRounds) {
@@ -168,8 +168,8 @@ class BattleArena extends Phaser.Scene {
             return;
         }
 
-        this.timeLeftDisplay.text = "ROUND " + this.currentRound + " FINISHED";
-        document.getElementById("gamenotificationmessage").textContent = "ROUND " + this.currentRound + " FINISHED";
+        this.timeLeftDisplay.text = "ROUND " + (this.currentRound - 1) + " FINISHED";
+        document.getElementById("gamenotificationmessage").textContent = "ROUND " + (this.currentRound - 1) + " FINISHED";
 
         var table = document.getElementById("leaderboarddisplay") as HTMLTableElement;
         table.hidden = false;
