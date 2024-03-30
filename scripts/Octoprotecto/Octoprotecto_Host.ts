@@ -181,7 +181,7 @@ class BattleArena extends Phaser.Scene {
             BattleArena.LeaderboardData[newOctopus.name] = [];
         }
         if (!(BattleArena.CurrentRound in BattleArena.LeaderboardData[newOctopus.name])) {
-            BattleArena.LeaderboardData[newOctopus.name][BattleArena.CurrentRound] = new OctopusTrackedData();
+            BattleArena.LeaderboardData[newOctopus.name][BattleArena.CurrentRound] = new OctopusTrackedData(newOctopus.displayName);
         }
 
         // Destroy any existing enemies in the spawning radius
@@ -242,12 +242,21 @@ function DisplayEndRoundLeaderboard() {
     var table = document.getElementById("leaderboarddisplay") as HTMLTableElement;
     table.hidden = false;
     table.innerHTML = "";
+
+    for (let playerName in BattleArena.LeaderboardData) {
+        var currentRoundData = BattleArena.LeaderboardData[playerName][BattleArena.CurrentRound];
+        let row = table.insertRow(0);
+        row.insertCell(0).textContent = currentRoundData.DamageTaken + "";
+        row.insertCell(0).textContent = currentRoundData.DamageDealt + "";
+        row.insertCell(0).textContent = currentRoundData.PointsGained + "";
+        row.insertCell(0).textContent = currentRoundData.DisplayName;
+    }
+
     let row = table.insertRow(0);
-    row.insertCell(0).textContent = "HP";
+    row.insertCell(0).textContent = "DMG TAKEN";
+    row.insertCell(0).textContent = "DMG DEALT";
     row.insertCell(0).textContent = "POINTS";
     row.insertCell(0).textContent = "NAME";
-
-    // TODO
 }
 
 function DisplayEndGameLeaderboard() {
@@ -296,6 +305,11 @@ class OctopusTrackedData {
     DamageTaken: number = 0;
     HealingReceived: number = 0;
     TimesDead: number = 0;
+    DisplayName: string;
+
+    constructor(displayName: string) {
+        this.DisplayName = displayName;
+    }
 
     static OctopusDies(octopus: Octopus) {
         BattleArena.LeaderboardData[octopus.name][BattleArena.CurrentRound].TimesDead++;
