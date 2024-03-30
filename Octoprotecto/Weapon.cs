@@ -57,6 +57,14 @@ namespace Octoprotecto
 
             Upgrade<Weapon>.GenerateBaseUpgrades(possibleUpgrades, numberOfBaseUpgrades, this);
             this.GenerateSpecialUpgrade(luck);
+            if (luck > -5) // Generate a second special upgrade
+            {
+                var randomSeed = Utils.Rng.Next(luck + 20);
+                if (randomSeed >= 25)
+                {
+                    this.GenerateSpecialUpgrade(luck);
+                }
+            }
         }
 
         private void GenerateSpecialUpgrade(int luck)
