@@ -1,7 +1,7 @@
 function StartWave(arena: BattleArena) {
     var playerCount = arena.octopi.getLength();
-    var roundDuration = 30000 + arena.currentRound * 4000;
-    switch (arena.currentRound) {
+    var roundDuration = 30000 + BattleArena.CurrentRound * 4000;
+    switch (BattleArena.CurrentRound) {
         case 1:
             AddSpawnTimer(arena, FISHNAME_REGULARFISH, playerCount * 3, roundDuration,
                 3500 /*Base Interval*/, 0.98 /*Interval Modification Factor*/, 1.0 /*Difficulty*/);
@@ -66,11 +66,11 @@ function StartWave(arena: BattleArena) {
             break;
 
         default: // Variable spawning
-            var numberOfSpawnEvents = Math.sqrt(arena.currentRound) * 2;
+            var numberOfSpawnEvents = Math.sqrt(BattleArena.CurrentRound) * 2;
             for (var i = 0; i < numberOfSpawnEvents; i++) {
                 let randomNumber = Math.floor(Math.random() * 5);
                 let intervalModificationFactor = 1.0 - i * 0.01;
-                let difficulty = 1.0 + (arena.currentRound - i) / 5;
+                let difficulty = 1.0 + (BattleArena.CurrentRound - i) / 5;
 
                 let enemyType: string;
                 let spawnMultiplier: number;

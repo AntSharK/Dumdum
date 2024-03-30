@@ -33,7 +33,7 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
         this.bulletWeapon.damageDealt += this.bulletWeapon.projectileDamage;
 
         if (fish.hitPoints <= 0) {
-            this.bulletWeapon.weaponOwner.points += fish.points;
+            this.bulletWeapon.weaponOwner.GainPoints(fish.points);
         }
 
         this.destroy(true);

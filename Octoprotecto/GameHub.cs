@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using Common;
 using Common.Util;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
@@ -132,7 +133,8 @@ namespace Octoprotecto
             await Clients.Client(room.ConnectionId).SendAsync("UpdatePosition", playerId, x, y);
         }
 
-        public async Task HostOctopusDeath(string roomId, string playerId, int playerPoints)
+        public async Task HostOctopusDeath(string roomId, string playerId, int playerPoints,
+            IDictionary<string, int> damagePerWeapon)
         {
             (var octopus, var room) = await this.FindPlayerAndRoom(playerId, roomId);
             if (octopus == null || room == null) { return; }
@@ -140,6 +142,15 @@ namespace Octoprotecto
             octopus.Points = playerPoints;
             octopus.TotalDeaths++;
             octopus.IsActive = false;
+
+            // Update the weapon damage numbers
+            foreach (var weapon in octopus.Weapons)
+            {
+                if (damagePerWeapon.ContainsKey(weapon.Name))
+                {
+                    weapon.DamageDealt = damagePerWeapon[weapon.Name];
+                }
+            }
 
             await Clients.Client(octopus.ConnectionId).SendAsync("OctopusDeathNotification", octopus.Points, octopus.GetRespawnCost() /*Don't pass in IDs*/);
         }

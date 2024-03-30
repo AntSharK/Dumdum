@@ -1,5 +1,7 @@
 class BattleArena extends Phaser.Scene {
     static OctopiMap: { [id: string]: Octopus } = {};
+    static CurrentRound: integer = 1;
+    static NumberOfRounds: integer = 1;
 
     graphics: Phaser.GameObjects.Graphics;
     spawningRect: Phaser.Geom.Rectangle;
@@ -12,8 +14,6 @@ class BattleArena extends Phaser.Scene {
 
     roundTimer: Phaser.Time.TimerEvent;
     timeLeftDisplay: Phaser.GameObjects.Text;
-    currentRound: integer = 1;
-    numberOfRounds: integer;
 
     constructor() {
         super({ key: 'BattleArena', active: false, visible: true });
@@ -113,7 +113,7 @@ class BattleArena extends Phaser.Scene {
             SoloRun.SoloRunStart(this);
         }
 
-        this.numberOfRounds = numberOfRounds;
+        BattleArena.NumberOfRounds = numberOfRounds;
         StartWave(this);
         var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);
         signalRconnection.invoke("StartRoom", roomId, soloRun).catch(function (err) {
@@ -124,14 +124,13 @@ class BattleArena extends Phaser.Scene {
     finishRound() {
         this.roundTimer = null;
         this.fishes.children.each(c => c.destroy());
-        this.currentRound++;
 
         var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);
         hideGameNotifications();
         document.getElementById("gamenotificationarea").hidden = false;
         document.getElementById("gamenotificationmessage").hidden = false;
 
-        // Fill in data
+        // Fill in data of live octopi - to pipe back
         var pointsPerOctopus: { [id: string]: number } = {};
         var damagePerWeapon: { [id: string]: number } = {};
 
@@ -140,17 +139,15 @@ class BattleArena extends Phaser.Scene {
             octopus.FinishRound();
 
             pointsPerOctopus[octopusName] = octopus.points;
-
-            // TODO: Keep track of octopi which haven't respawned
             for (let weaponName in octopus.weapons) {
                 let weapon = octopus.weapons[weaponName];
                 damagePerWeapon[weapon.name] = weapon.damageDealt;
             }
         }
 
-        if (this.currentRound > this.numberOfRounds) {
+        if (BattleArena.CurrentRound >= BattleArena.NumberOfRounds) {
             DisplayEndGameLeaderboard();
-            document.getElementById("gamenotificationmessage").textContent = "FINISHED GAME AT WAVE " + (this.currentRound - 1);
+            document.getElementById("gamenotificationmessage").textContent = "FINISHED GAME AT WAVE " + (BattleArena.CurrentRound);
             this.scene.setActive(false);
             clearState();
             setTimeout(() => window.location.reload(), 30000);
@@ -163,8 +160,10 @@ class BattleArena extends Phaser.Scene {
         }
 
         DisplayEndRoundLeaderboard();
-        this.timeLeftDisplay.text = "ROUND " + (this.currentRound - 1) + " FINISHED";
-        document.getElementById("gamenotificationmessage").textContent = "ROUND " + (this.currentRound - 1) + " FINISHED";
+        this.timeLeftDisplay.text = "ROUND " + (BattleArena.CurrentRound) + " FINISHED";
+        document.getElementById("gamenotificationmessage").textContent = "ROUND " + (BattleArena.CurrentRound) + " FINISHED";
+
+        BattleArena.CurrentRound++;
 
         signalRconnection.invoke("FinishRound", roomId, pointsPerOctopus, damagePerWeapon).catch(function (err) {
             return console.error(err.toString());
@@ -224,7 +223,7 @@ class BattleArena extends Phaser.Scene {
         });
 
         DisplayEndGameLeaderboard();
-        document.getElementById("gamenotificationmessage").textContent = "LOST AT WAVE " + this.currentRound;
+        document.getElementById("gamenotificationmessage").textContent = "LOST AT WAVE " + BattleArena.CurrentRound;
         this.scene.setActive(false);
         clearState();
         setTimeout(() => window.location.reload(), 30000);
