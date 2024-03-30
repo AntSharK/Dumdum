@@ -194,8 +194,17 @@ class BattleArena extends Phaser.Scene {
 
     spawnOctopus(octopusData: Octopus) {
         var newOctopus = Octopus.FromData(octopusData, this);
-
         newOctopus.placeInScene(this, this.octopi, this.weapons, this.bullets, octopusData.tint);
+
+        // Persist points through respawning
+        if (octopusData.name in BattleArena.OctopiMap) {
+            let oldOctopus = BattleArena.OctopiMap[octopusData.name];
+            newOctopus.points = oldOctopus.points;
+            for (let i in newOctopus.weapons) {
+                newOctopus.weapons[i].damageDealt = oldOctopus.weapons[i].damageDealt;
+            }
+        }
+
         BattleArena.OctopiMap[octopusData.name] = newOctopus;
         BattleArena.Leaderboard[octopusData.name] = [];
 
@@ -243,6 +252,20 @@ class BattleArena extends Phaser.Scene {
         signalRconnection.invoke("TriggerLoss", roomId).catch(function (err) {
             return console.error(err.toString());
         });
+
+        // Fill in data for when the octopus expired
+        for (let octopusName in BattleArena.OctopiMap) {
+            let octopus = BattleArena.OctopiMap[octopusName];
+            let leaderboardDataToAdd = new LeaderboardData();
+
+            for (let weaponName in octopus.weapons) {
+                let weapon = octopus.weapons[weaponName];
+                leaderboardDataToAdd.damageDealt += weapon.damageDealt;
+            }
+
+            leaderboardDataToAdd.points = octopus.points;
+            BattleArena.Leaderboard[octopusName][this.currentRound] = leaderboardDataToAdd;
+        }
 
         DisplayEndGameLeaderboard();
         document.getElementById("gamenotificationmessage").textContent = "LOST AT WAVE " + this.currentRound;
