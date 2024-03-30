@@ -253,7 +253,6 @@ function DisplayEndRoundLeaderboard() {
     }
 
     let row = table.insertRow(0);
-    row.insertCell(0).textContent = "DMG TAKEN";
     row.insertCell(0).textContent = "DMG DEALT";
     row.insertCell(0).textContent = "POINTS";
     row.insertCell(0).textContent = "NAME";
@@ -267,12 +266,35 @@ function DisplayEndGameLeaderboard() {
     var table = document.getElementById("leaderboarddisplay") as HTMLTableElement;
     table.hidden = false;
     table.innerHTML = "";
+
+    for (let playerName in BattleArena.LeaderboardData) {
+        var totalHealing = 0;
+        var totalDmgTaken = 0;
+        var totalDmgDealt = 0;
+        var totalPoints = 0;
+        for (let round in BattleArena.LeaderboardData[playerName]) {
+
+            var currentRoundData = BattleArena.LeaderboardData[playerName][round];
+            totalHealing += currentRoundData.HealingReceived;
+            totalDmgTaken += currentRoundData.DamageTaken;
+            totalDmgDealt += currentRoundData.DamageDealt;
+            totalPoints += currentRoundData.PointsGained;
+        }
+
+        let row = table.insertRow(0);
+        row.insertCell(0).textContent = Math.round(totalHealing) + "";
+        row.insertCell(0).textContent = Math.round(totalDmgTaken) + "";
+        row.insertCell(0).textContent = Math.round(totalDmgDealt) + "";
+        row.insertCell(0).textContent = Math.round(totalPoints) + "";
+        row.insertCell(0).textContent = currentRoundData.DisplayName;
+    }
+
     let row = table.insertRow(0);
-    row.insertCell(0).textContent = "DMG";
+    row.insertCell(0).textContent = "HEALING";
+    row.insertCell(0).textContent = "DMG TAKEN";
+    row.insertCell(0).textContent = "DMG DEALT";
     row.insertCell(0).textContent = "POINTS";
     row.insertCell(0).textContent = "NAME";
-
-    // TODO
 }
 
 function ConfigureHostSignalRListening(signalRconnection: any) {
