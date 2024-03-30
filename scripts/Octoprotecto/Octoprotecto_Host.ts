@@ -1,6 +1,5 @@
 class BattleArena extends Phaser.Scene {
     static OctopiMap: { [id: string]: Octopus } = {};
-    static Leaderboard: { [id: string]: LeaderboardData[] } = {};
 
     graphics: Phaser.GameObjects.Graphics;
     spawningRect: Phaser.Geom.Rectangle;
@@ -135,23 +134,18 @@ class BattleArena extends Phaser.Scene {
         // Fill in data
         var pointsPerOctopus: { [id: string]: number } = {};
         var damagePerWeapon: { [id: string]: number } = {};
+
         for (let octopusName in BattleArena.OctopiMap) {
             let octopus = BattleArena.OctopiMap[octopusName];
             octopus.FinishRound();
 
-            let leaderboardDataToAdd = new LeaderboardData();
-
-            // Fill in data
             pointsPerOctopus[octopusName] = octopus.points;
+
+            // TODO: Keep track of octopi which haven't respawned
             for (let weaponName in octopus.weapons) {
                 let weapon = octopus.weapons[weaponName];
                 damagePerWeapon[weapon.name] = weapon.damageDealt;
-                leaderboardDataToAdd.damageDealt += weapon.damageDealt;
             }
-
-            // No need to reset these fields - octopi are re-instantiated every round
-            leaderboardDataToAdd.points = octopus.points;
-            BattleArena.Leaderboard[octopusName][this.currentRound - 1] = leaderboardDataToAdd;
         }
 
         if (this.currentRound > this.numberOfRounds) {
@@ -168,24 +162,9 @@ class BattleArena extends Phaser.Scene {
             return;
         }
 
+        DisplayEndRoundLeaderboard();
         this.timeLeftDisplay.text = "ROUND " + (this.currentRound - 1) + " FINISHED";
         document.getElementById("gamenotificationmessage").textContent = "ROUND " + (this.currentRound - 1) + " FINISHED";
-
-        var table = document.getElementById("leaderboarddisplay") as HTMLTableElement;
-        table.hidden = false;
-        table.innerHTML = "";
-        let row = table.insertRow(0);
-        row.insertCell(0).textContent = "HP";
-        row.insertCell(0).textContent = "POINTS";
-        row.insertCell(0).textContent = "NAME";
-
-        for (let octopusName in BattleArena.OctopiMap) {
-            let octopus = BattleArena.OctopiMap[octopusName];   
-            row = table.insertRow(table.rows.length);
-            row.insertCell(0).textContent = octopus.hitPoints + "/" + octopus.maxHitPoints;
-            row.insertCell(0).textContent = "" + (octopus.points + 10); // Add 10 for points per round
-            row.insertCell(0).textContent = octopus.displayName;
-        }
 
         signalRconnection.invoke("FinishRound", roomId, pointsPerOctopus, damagePerWeapon).catch(function (err) {
             return console.error(err.toString());
@@ -196,17 +175,8 @@ class BattleArena extends Phaser.Scene {
         var newOctopus = Octopus.FromData(octopusData, this);
         newOctopus.placeInScene(this, this.octopi, this.weapons, this.bullets, octopusData.tint);
 
-        // Persist points through respawning
-        if (octopusData.name in BattleArena.OctopiMap) {
-            let oldOctopus = BattleArena.OctopiMap[octopusData.name];
-            newOctopus.points = oldOctopus.points;
-            for (let i in newOctopus.weapons) {
-                newOctopus.weapons[i].damageDealt = oldOctopus.weapons[i].damageDealt;
-            }
-        }
-
+        // TODO: Weapon damage dealt is lost when respawning
         BattleArena.OctopiMap[octopusData.name] = newOctopus;
-        BattleArena.Leaderboard[octopusData.name] = [];
 
         // Destroy any existing enemies in the spawning radius
         this.fishes.children.each(f => {
@@ -253,20 +223,6 @@ class BattleArena extends Phaser.Scene {
             return console.error(err.toString());
         });
 
-        // Fill in data for when the octopus expired
-        for (let octopusName in BattleArena.OctopiMap) {
-            let octopus = BattleArena.OctopiMap[octopusName];
-            let leaderboardDataToAdd = new LeaderboardData();
-
-            for (let weaponName in octopus.weapons) {
-                let weapon = octopus.weapons[weaponName];
-                leaderboardDataToAdd.damageDealt += weapon.damageDealt;
-            }
-
-            leaderboardDataToAdd.points = octopus.points;
-            BattleArena.Leaderboard[octopusName][this.currentRound] = leaderboardDataToAdd;
-        }
-
         DisplayEndGameLeaderboard();
         document.getElementById("gamenotificationmessage").textContent = "LOST AT WAVE " + this.currentRound;
         this.scene.setActive(false);
@@ -274,6 +230,18 @@ class BattleArena extends Phaser.Scene {
         setTimeout(() => window.location.reload(), 30000);
         return true;
     }
+}
+
+function DisplayEndRoundLeaderboard() {
+    var table = document.getElementById("leaderboarddisplay") as HTMLTableElement;
+    table.hidden = false;
+    table.innerHTML = "";
+    let row = table.insertRow(0);
+    row.insertCell(0).textContent = "HP";
+    row.insertCell(0).textContent = "POINTS";
+    row.insertCell(0).textContent = "NAME";
+
+    // TODO
 }
 
 function DisplayEndGameLeaderboard() {
@@ -289,22 +257,7 @@ function DisplayEndGameLeaderboard() {
     row.insertCell(0).textContent = "POINTS";
     row.insertCell(0).textContent = "NAME";
 
-    let pointsPerOctopus: { [id: string]: number } = {};
-    let damagePerOctopus: { [id: string]: number } = {};
-    for (let octopusName in BattleArena.Leaderboard) {
-        let leaderboardData = BattleArena.Leaderboard[octopusName];
-        pointsPerOctopus[octopusName] = 0;
-        damagePerOctopus[octopusName] = 0;
-        leaderboardData.forEach(c => {
-            pointsPerOctopus[octopusName] += c.points;
-            damagePerOctopus[octopusName] += c.damageDealt;
-        });
-
-        row = table.insertRow(table.rows.length);
-        row.insertCell(0).textContent = "" + damagePerOctopus[octopusName];
-        row.insertCell(0).textContent = "" + pointsPerOctopus[octopusName];
-        row.insertCell(0).textContent = octopusName;
-    }
+    // TODO
 }
 
 function ConfigureHostSignalRListening(signalRconnection: any) {
@@ -329,10 +282,4 @@ function hideGameNotifications() {
     [].forEach.call(menuElements, function (element, index, array) {
         element.hidden = true;
     });
-}
-
-// This data is per-octopus
-class LeaderboardData {
-    damageDealt: number = 0;
-    points: number = 0;
 }
