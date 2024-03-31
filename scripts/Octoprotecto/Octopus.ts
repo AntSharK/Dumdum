@@ -42,12 +42,12 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
             switch (u.displayName) {
                 case "Toughen":
                     this.onDamageTaken.push((octo, dmgTaken) => {
-                        octo.armor += 2;
+                        octo.armor += 2 * u.currentAmount;
                     });
                     break;
                 case "Insurance":
                     this.onDamageTaken.push((octo, dmgTaken) => {
-                        octo.GainPoints(1);
+                        octo.GainPoints(1 * u.currentAmount);
                     });
                     break;
             }

@@ -65,11 +65,10 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
 
 // In sync with server-side property
 class Upgrade {
-    borderColor: number;
     cost: number;
     description: string;
     displayName: string;
-    fillColor: number;
+    currentAmount: number;
 }
 
 class Weapon extends Phaser.Physics.Arcade.Sprite {
@@ -121,19 +120,19 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
             switch (u.displayName) {
                 case "Consume":
                     this.onBulletHit.push((bullet, hitTarget) => {
-                        bullet.bulletWeapon.weaponOwner.Heal(3);
+                        bullet.bulletWeapon.weaponOwner.Heal(3 * u.currentAmount);
                     });
                     break;
                 case "Momentum":
                     this.onBulletHit.push((bullet, hitTarget) => {
-                        let additionalDmg = bullet.body.velocity.length() * 0.1;
+                        let additionalDmg = bullet.body.velocity.length() * 0.1 * u.currentAmount;
                         hitTarget.TakeDamage(additionalDmg);
                         bullet.bulletWeapon.trackDamageDealt(additionalDmg);
                     });
                     break;
                 case "Propel":
                     this.onFireToFish.push((bullet, target) => {
-                        bullet.setAcceleration(bullet.body.velocity.x, bullet.body.velocity.y);
+                        bullet.setAcceleration(bullet.body.velocity.x * u.currentAmount, bullet.body.velocity.y * u.currentAmount);
                     });
                     break;
             }

@@ -22,13 +22,13 @@ namespace Octoprotecto
         public bool IsActive { get; set; } = true;
         public List<Weapon> Weapons { get; } = new List<Weapon>();
         public int RefreshCost { get; set; } = 1;
-        public List<Upgrade<Octopus>> TrackedUpgrades { get; } = new List<Upgrade<Octopus>>();
+        public HashSet<Upgrade<Octopus>> TrackedUpgrades { get; } = new HashSet<Upgrade<Octopus>>();
         public Dictionary<string, Upgrade<Octopus>> PurchasableUpgrades { get; } = new Dictionary<string, Upgrade<Octopus>>();
         public int UpgradesCreated { get; set; } = 0;
         public int UpgradesApplied { get; set; } = 0;
 
         // Name for display purposes - not the tracking ID
-        public string DisplayName { get; set; }
+        public string DisplayName { get; set; } = "DummyDisplayName";
 
         public Octopus(string name, string connectionId, string roomName) 
             : base(name, connectionId, roomName)

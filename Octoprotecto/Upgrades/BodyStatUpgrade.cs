@@ -2,11 +2,10 @@
 {
     internal class BodyStatUpgrade : Upgrade<Octopus>
     {
-        private string displayName;
-        public override string DisplayName => this.displayName;
-        public override string Description => "Improves Stats";
-        public override int UpgradeBaseCost => 21;
-        public override int UpgradeIncrementCost => 5;
+        public override string DisplayName { get; set; }
+        public override string Description { get; set; } = "Improves Stats";
+        public override int UpgradeBaseCost { get; set; } = 21;
+        public override int UpgradeIncrementCost { get; set; } = 5;
         public override string UpgradeName => "bodystat";
 
         private BodyStat statUpgraded;
@@ -17,22 +16,22 @@
             switch (this.statUpgraded)
             {
                 case BodyStat.Armor:
-                    this.displayName = "Armor+";
+                    this.DisplayName = "Armor+";
                     break;
                 case BodyStat.Speed:
-                    this.displayName = "Playerspeed+";
+                    this.DisplayName = "Playerspeed+";
                     break;
                 case BodyStat.MaxHp:
-                    this.displayName = "Maxhp+";
+                    this.DisplayName = "Maxhp+";
                     break;
                 case BodyStat.CollisionDamage:
-                    this.displayName = "Collision+";
+                    this.DisplayName = "Collision+";
                     break;
                 case BodyStat.Luck:
-                    this.displayName = "Luck+";
+                    this.DisplayName = "Luck+";
                     break;
                 default:
-                    this.displayName = "Unknown";
+                    this.DisplayName = "Unknown";
                     break;
             }
         }
