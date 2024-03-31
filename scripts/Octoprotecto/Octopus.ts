@@ -82,6 +82,9 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
                                 var sp = this.scene.add.sprite(octo.x, octo.y, 'explosion');
                                 sp.setDepth(octo.depth + 0.1);
                                 sp.play('explosion_anim');
+                                sp.on(Phaser.Animations.Events.ANIMATION_COMPLETE, function (anim, frame, gameObject: Phaser.GameObjects.Sprite) {
+                                    gameObject.destroy();
+                                }, this);
                             }
                         }
                     });
@@ -236,6 +239,9 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
             var sp = this.scene.add.sprite(this.x, this.y, 'explosion');
             sp.setDepth(this.depth + 0.1);
             sp.play('explosion_anim');
+            sp.on(Phaser.Animations.Events.ANIMATION_COMPLETE, function (anim, frame, gameObject: Phaser.GameObjects.Sprite) {
+                gameObject.destroy();
+            }, this);
 
             OctopusTrackedData.ReceiveHealing(this, realAmountHealed);
             this.onHealingReceived.forEach(f => {
