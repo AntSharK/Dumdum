@@ -146,11 +146,6 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
                             var distance = Phaser.Math.Distance.BetweenPoints(hitTarget, BattleArena.OctopiMap[octopusName]);
                             if (distance < CARAMELIZERADIUS) {
                                 BattleArena.OctopiMap[octopusName].Heal(HEALAMOUNTPERCARAMELIZE);
-
-                                // TODO: A temporary animation for healing
-                                var sp = this.scene.add.sprite(BattleArena.OctopiMap[octopusName].x, BattleArena.OctopiMap[octopusName].y, 'explosion');
-                                sp.setDepth(BattleArena.OctopiMap[octopusName].depth + 0.1);
-                                sp.play('explosion_anim');
                             }
                         }
                     });

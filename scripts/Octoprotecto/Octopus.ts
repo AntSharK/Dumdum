@@ -64,11 +64,6 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
                             var distance = Phaser.Math.Distance.BetweenPoints(octo, BattleArena.OctopiMap[octopusName]);
                             if (distance < RANGEMATYR) {
                                 BattleArena.OctopiMap[octopusName].Heal(dmgTaken * DAMAGEMULTIPLIER);
-
-                                // TODO: A temporary animation for healing
-                                var sp = this.scene.add.sprite(octo.x, octo.y, 'explosion');
-                                sp.setDepth(octo.depth + 0.1);
-                                sp.play('explosion_anim');
                             }
                         }
                     });
@@ -236,6 +231,12 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
 
         var realAmountHealed = this.hitPoints - oldHitPoints;
         if (realAmountHealed > 0) {
+
+            // TODO: A temporary animation for healing
+            var sp = this.scene.add.sprite(this.x, this.y, 'explosion');
+            sp.setDepth(this.depth + 0.1);
+            sp.play('explosion_anim');
+
             OctopusTrackedData.ReceiveHealing(this, realAmountHealed);
             this.onHealingReceived.forEach(f => {
                 f(this, realAmountHealed);
