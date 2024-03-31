@@ -2,14 +2,10 @@
 {
     internal class TentacleSpecialUpgrade : Upgrade<Weapon>
     {
-        private string displayName;
-        private string description;
-        private int baseCost;
-        private int incrementCost;
-        public override string DisplayName => this.displayName;
-        public override string Description => this.description;
-        public override int UpgradeBaseCost => this.baseCost;
-        public override int UpgradeIncrementCost => this.incrementCost;
+        public override string DisplayName { get; set; }
+        public override string Description { get; set; }
+        public override int UpgradeBaseCost { get; set; }
+        public override int UpgradeIncrementCost { get; set; }
         public override string UpgradeName => "octopustrackedupgrade";
 
         private UpgradeType upgradeType;
@@ -20,47 +16,47 @@
             switch (this.upgradeType)
             {
                 case UpgradeType.Split:
-                    this.displayName = "Split";
-                    this.description = "Halves damage, then spawns a new tentacle with the same stats";
-                    this.baseCost = 100;
-                    this.incrementCost = 0;
+                    this.DisplayName = "Split";
+                    this.Description = "Halves damage, then spawns a new tentacle with the same stats";
+                    this.UpgradeBaseCost = 100;
+                    this.UpgradeIncrementCost = 0;
                     this.MaxLimit = 1;
                     break;
 
                 case UpgradeType.Consume:
-                    this.displayName = "Consume";
-                    this.description = "Restore 1 HP on hit";
-                    this.baseCost = 15;
-                    this.incrementCost = 5;
+                    this.DisplayName = "Consume";
+                    this.Description = "Restore 1 HP on hit";
+                    this.UpgradeBaseCost = 15;
+                    this.UpgradeIncrementCost = 5;
                     this.MaxLimit = 10;
                     break;
 
                 case UpgradeType.Momentum:
-                    this.displayName = "Momentum";
-                    this.description = "Bullet does 10% of speed as damage";
-                    this.baseCost = 10;
-                    this.incrementCost = 4;
+                    this.DisplayName = "Momentum";
+                    this.Description = "Bullet does 10% of speed as damage";
+                    this.UpgradeBaseCost = 10;
+                    this.UpgradeIncrementCost = 4;
                     this.MaxLimit = 10;
                     break;
 
                 case UpgradeType.Propel:
-                    this.displayName = "Propel";
-                    this.description = "Halves bullet speed, but makes bullet accelerate";
-                    this.baseCost = 18;
-                    this.incrementCost = 6;
+                    this.DisplayName = "Propel";
+                    this.Description = "Halves bullet speed, but makes bullet accelerate";
+                    this.UpgradeBaseCost = 18;
+                    this.UpgradeIncrementCost = 6;
                     this.MaxLimit = 3;
                     break;
 
                 case UpgradeType.Integrate:
-                    this.displayName = "Integrate";
-                    this.description = "Resets upgrade cost";
-                    this.baseCost = 100;
-                    this.incrementCost = 0;
+                    this.DisplayName = "Integrate";
+                    this.Description = "Resets upgrade cost";
+                    this.UpgradeBaseCost = 100;
+                    this.UpgradeIncrementCost = 0;
                     this.MaxLimit = 1;
                     break;
                 default:
-                    this.displayName = "Unknown";
-                    this.description = "Unknown";
+                    this.DisplayName = "Unknown";
+                    this.Description = "Unknown";
                     break;
             }
         }
@@ -68,12 +64,7 @@
         public override void ReadTargetProperties(Weapon weapon)
         {
             base.ReadTargetProperties(weapon);
-            weapon.TrackedUpgrades.TryGetValue(this, out var existingUpgrade);
-            var numberOfExistingUpgrades = existingUpgrade != null ? existingUpgrade.CurrentAmount : 0;
-            this.description = this.description + " (owned: " + numberOfExistingUpgrades + (this.MaxLimit > 0 ? ("/" + this.MaxLimit + ")") : ")");
-
-            var totalTrackedUpgradeCount = weapon.TrackedUpgrades.Sum(c => c.CurrentAmount);
-            this.Cost = this.UpgradeBaseCost + totalTrackedUpgradeCount * this.UpgradeIncrementCost;
+            this.AugmentTrackedProperties(weapon);
         }
 
         public override void ApplyUpgrade(Weapon weapon)
@@ -106,16 +97,7 @@
                     break;
             }
 
-            weapon.TrackedUpgrades.TryGetValue(this, out var existingUpgrade);
-            if (existingUpgrade != null)
-            {
-                existingUpgrade.CurrentAmount++;
-            }
-            else
-            {
-                weapon.TrackedUpgrades.Add(this);
-            }
-
+            this.IncrementUpgradeCount(weapon);
             base.ApplyUpgrade(weapon);
         }
 

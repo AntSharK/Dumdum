@@ -2,11 +2,10 @@
 {
     internal class WeaponStatUpgrade : Upgrade<Weapon>
     {
-        private string displayName;
-        public override string DisplayName => this.displayName;
-        public override string Description => "Improves Stats";
-        public override int UpgradeBaseCost => 16;
-        public override int UpgradeIncrementCost => 3;
+        public override string DisplayName { get; set; }
+        public override string Description { get; set; } = "Improves Stats";
+        public override int UpgradeBaseCost { get; set; } = 16;
+        public override int UpgradeIncrementCost { get; set; } = 3;
         public override string UpgradeName => "weaponstat";
 
         private WeaponStat statUpgraded;
@@ -17,22 +16,22 @@
             switch (this.statUpgraded)
             {
                 case WeaponStat.ProjectileSpeed:
-                    this.displayName = "Speed+";
+                    this.DisplayName = "Speed+";
                     break;
                 case WeaponStat.ProjectileSpread:
-                    this.displayName = "Accuracy+";
+                    this.DisplayName = "Accuracy+";
                     break;
                 case WeaponStat.Damage:
-                    this.displayName = "Damage+";
+                    this.DisplayName = "Damage+";
                     break;
                 case WeaponStat.Cooldown:
-                    this.displayName = "FireRate+";
+                    this.DisplayName = "FireRate+";
                     break;
                 case WeaponStat.Range:
-                    this.displayName = "Range+";
+                    this.DisplayName = "Range+";
                     break;
                 default:
-                    this.displayName = "Unknown";
+                    this.DisplayName = "Unknown";
                     break;
             }
         }
