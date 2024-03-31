@@ -68,9 +68,12 @@
         public override void ReadTargetProperties(Weapon weapon)
         {
             base.ReadTargetProperties(weapon);
-            var numberOfExistingUpgrades = weapon.TrackedUpgrades.Count(c => c.DisplayName == this.DisplayName);
+            weapon.TrackedUpgrades.TryGetValue(this, out var existingUpgrade);
+            var numberOfExistingUpgrades = existingUpgrade != null ? existingUpgrade.CurrentAmount : 0;
             this.description = this.description + " (owned: " + numberOfExistingUpgrades + (this.MaxLimit > 0 ? ("/" + this.MaxLimit + ")") : ")");
-            this.Cost = this.UpgradeBaseCost + weapon.TrackedUpgrades.Count * this.UpgradeIncrementCost;
+
+            var totalTrackedUpgradeCount = weapon.TrackedUpgrades.Sum(c => c.CurrentAmount);
+            this.Cost = this.UpgradeBaseCost + totalTrackedUpgradeCount * this.UpgradeIncrementCost;
         }
 
         public override void ApplyUpgrade(Weapon weapon)

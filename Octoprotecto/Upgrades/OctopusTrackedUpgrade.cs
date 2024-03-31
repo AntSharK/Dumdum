@@ -60,9 +60,9 @@
             octopus.TrackedUpgrades.TryGetValue(this, out var existingUpgrade);
             var numberOfExistingUpgrades = existingUpgrade != null ? existingUpgrade.CurrentAmount : 0;
             this.description = this.description + " (owned: " + numberOfExistingUpgrades + (this.MaxLimit > 0 ? ("/" + this.MaxLimit + ")") : ")");
-            
-            var totalTrackedUpgradeCount = 
-            this.Cost = this.UpgradeBaseCost + octopus.TrackedUpgrades.Count * this.UpgradeIncrementCost;
+
+            var totalTrackedUpgradeCount = octopus.TrackedUpgrades.Sum(c => c.CurrentAmount);
+            this.Cost = this.UpgradeBaseCost + totalTrackedUpgradeCount * this.UpgradeIncrementCost;
         }
 
         public override void ApplyUpgrade(Octopus octopus)
