@@ -145,7 +145,7 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
                         for (let octopusName in BattleArena.OctopiMap) {
                             var distance = Phaser.Math.Distance.BetweenPoints(hitTarget, BattleArena.OctopiMap[octopusName]);
                             if (distance < CARAMELIZERADIUS) {
-                                BattleArena.OctopiMap[octopusName].Heal(HEALAMOUNTPERCARAMELIZE);
+                                BattleArena.OctopiMap[octopusName].Heal(HEALAMOUNTPERCARAMELIZE * u.currentAmount);
                             }
                         }
                     });

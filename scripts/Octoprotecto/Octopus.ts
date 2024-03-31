@@ -63,7 +63,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
                             if (octopusName == octo.name) { continue; }
                             var distance = Phaser.Math.Distance.BetweenPoints(octo, BattleArena.OctopiMap[octopusName]);
                             if (distance < RANGEMATYR) {
-                                BattleArena.OctopiMap[octopusName].Heal(dmgTaken * DAMAGEMULTIPLIER);
+                                BattleArena.OctopiMap[octopusName].Heal(dmgTaken * DAMAGEMULTIPLIER * u.currentAmount);
                             }
                         }
                     });
@@ -76,7 +76,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
                             if (octopusName == octo.name) { continue; }
                             var distance = Phaser.Math.Distance.BetweenPoints(octo, BattleArena.OctopiMap[octopusName]);
                             if (distance < RANGEHEALTHISWEALTH) {
-                                BattleArena.OctopiMap[octopusName].IncreaseDamage(healingReceived * HEALINGMULTIPLIER);
+                                BattleArena.OctopiMap[octopusName].IncreaseDamage(healingReceived * HEALINGMULTIPLIER * u.currentAmount);
 
                                 // TODO: A temporary animation for buffing
                                 var sp = this.scene.add.sprite(octo.x, octo.y, 'explosion');
