@@ -29,8 +29,10 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
             gameObject.destroy();
         });
 
-        fish.TakeDamage(this.bulletWeapon.projectileDamage);
-        this.bulletWeapon.trackDamageDealt(this.bulletWeapon.projectileDamage);
+        var realDamageDone = this.bulletWeapon.projectileDamage + this.bulletWeapon.weaponOwner.roundDamageIncrease;
+
+        fish.TakeDamage(realDamageDone);
+        this.bulletWeapon.trackDamageDealt(realDamageDone);
 
         if (fish.hitPoints <= 0) {
             this.bulletWeapon.weaponOwner.GainPoints(fish.points);

@@ -13,7 +13,9 @@ namespace Octoprotecto
 #pragma warning restore CS8603 // Possible null reference return.
             (5, 10, () => new OctopusTrackedUpgrade(OctopusTrackedUpgrade.UpgradeType.Integrate)),
             (1, 900, () => new OctopusTrackedUpgrade(OctopusTrackedUpgrade.UpgradeType.ArmorWhenHit)),
-            (1, 500, () => new OctopusTrackedUpgrade(OctopusTrackedUpgrade.UpgradeType.PointsWhenHit))
+            (1, 500, () => new OctopusTrackedUpgrade(OctopusTrackedUpgrade.UpgradeType.PointsWhenHit)),
+            (3, 200, () => new OctopusTrackedUpgrade(OctopusTrackedUpgrade.UpgradeType.HealingIncreasesDamage)),
+            (2, 400, () => new OctopusTrackedUpgrade(OctopusTrackedUpgrade.UpgradeType.TakingDamageHeals))
         };
 
         private static (int luckMultiplier, int baseRate, Func<Upgrade<Weapon>> upgradeFunc)[] TentacleUpgrades =

@@ -22,8 +22,12 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     // Stuff for drawing
     displayNameText: Phaser.GameObjects.Text;
 
+    // Per-round numbers
+    roundDamageIncrease: number = 0;
+
     // Custom behaviors injected
     onDamageTaken: ((octo: Octopus, dmgTaken: number) => void)[] = [];
+    onHealingReceived: ((octo: Octopus, healingReceived: number) => void)[] = [];
 
     placeInScene(scene: Phaser.Scene,
         octopiPhysicsGroup: Phaser.Physics.Arcade.Group,
@@ -50,6 +54,44 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
                         octo.GainPoints(1 * u.currentAmount);
                     });
                     break;
+                case "Matyr":
+                    const RANGEMATYR = 250;
+                    const DAMAGEMULTIPLIER = 0.1;
+
+                    this.onDamageTaken.push((octo, dmgTaken) => {
+                        for (let octopusName in BattleArena.OctopiMap) {
+                            if (octopusName == octo.name) { continue; }
+                            var distance = Phaser.Math.Distance.BetweenPoints(octo, BattleArena.OctopiMap[octopusName]);
+                            if (distance < RANGEMATYR) {
+                                BattleArena.OctopiMap[octopusName].Heal(dmgTaken * DAMAGEMULTIPLIER);
+
+                                // TODO: A temporary animation for healing
+                                var sp = this.scene.add.sprite(octo.x, octo.y, 'explosion');
+                                sp.setDepth(octo.depth + 0.1);
+                                sp.play('explosion_anim');
+                            }
+                        }
+                    });
+                    break;
+                case "Health is Wealth":
+                    const RANGEHEALTHISWEALTH = 150;
+                    const HEALINGMULTIPLIER = 1;
+                    this.onHealingReceived.push((octo, healingReceived) => {
+                        for (let octopusName in BattleArena.OctopiMap) {
+                            if (octopusName == octo.name) { continue; }
+                            var distance = Phaser.Math.Distance.BetweenPoints(octo, BattleArena.OctopiMap[octopusName]);
+                            if (distance < RANGEHEALTHISWEALTH) {
+                                BattleArena.OctopiMap[octopusName].IncreaseDamage(healingReceived * HEALINGMULTIPLIER);
+
+                                // TODO: A temporary animation for buffing
+                                var sp = this.scene.add.sprite(octo.x, octo.y, 'explosion');
+                                sp.setDepth(octo.depth + 0.1);
+                                sp.play('explosion_anim');
+                            }
+                        }
+                    });
+                    break;
+
             }
         }, this);
 
@@ -61,6 +103,10 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         octopiPhysicsGroup.add(this);
         this.setCircle(this.width / 2, this.originX - this.width / 2, this.originY - this.width / 2);
+    }
+
+    IncreaseDamage(damageIncrease: number) {
+        this.roundDamageIncrease += damageIncrease;
     }
 
     static FromData(octopusData: Octopus, scene: Phaser.Scene): Octopus {
@@ -180,11 +226,20 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     }
 
     Heal(healAmount: number) {
-        if (this.hitPoints < this.maxHitPoints) { OctopusTrackedData.ReceiveHealing(this, healAmount); }
+        var oldHitPoints = this.hitPoints;
+
         this.hitPoints = this.hitPoints + healAmount;
 
         if (this.hitPoints > this.maxHitPoints) {
             this.hitPoints = this.maxHitPoints;
+        }
+
+        var realAmountHealed = this.hitPoints - oldHitPoints;
+        if (realAmountHealed > 0) {
+            OctopusTrackedData.ReceiveHealing(this, realAmountHealed);
+            this.onHealingReceived.forEach(f => {
+                f(this, realAmountHealed);
+            }, this);
         }
     }
 
