@@ -34,6 +34,13 @@ class BattleArena extends Phaser.Scene {
         this.load.image('dummy', '/content/Octoprotecto/dummy.png');
         this.load.image('bullet', '/content/Octoprotecto/bullet.png');
         this.load.image('fin', '/content/Octoprotecto/fin.png');
+
+        // Particles
+        this.load.image('particle_green1', '/content/Octoprotecto/green.png');
+        this.load.image('particle_green2', '/content/Octoprotecto/greenbubble.png');
+        this.load.image('particle_green3', '/content/Octoprotecto/green-orb.png');
+
+        // Sprite sheets
         this.load.spritesheet('explosion', '/content/Octoprotecto/explosionframes.png', { frameWidth: 128, frameHeight: 128 });
     }
 

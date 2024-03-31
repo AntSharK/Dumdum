@@ -29,6 +29,9 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     onDamageTaken: ((octo: Octopus, dmgTaken: number) => void)[] = [];
     onHealingReceived: ((octo: Octopus, healingReceived: number) => void)[] = [];
 
+    // Art
+    healingEmitter: Phaser.GameObjects.Particles.ParticleEmitterManager;
+
     placeInScene(scene: Phaser.Scene,
         octopiPhysicsGroup: Phaser.Physics.Arcade.Group,
         weaponsPhysicsGroup: Phaser.Physics.Arcade.Group,
@@ -36,6 +39,17 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         tint: number
     ) {
         this.setDepth(octopiPhysicsGroup.getLength());
+
+        // TODO: Configure particles
+        this.healingEmitter = scene.add.particles('particle_green1', {
+            speed: 24,
+            lifespan: 1500,
+            quality: 10,
+            scale: { start: 0.4, end: 0 },
+            emitting: false,
+            duration: 500
+        });
+        this.healingEmitter.setDepth(this.depth + 0.1);
         
         this.weapons.forEach(w => {
             w.placeInScene(weaponsPhysicsGroup, bulletPhysicsGroup);
@@ -77,14 +91,6 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
                             var distance = Phaser.Math.Distance.BetweenPoints(octo, BattleArena.OctopiMap[octopusName]);
                             if (distance < RANGEHEALTHISWEALTH) {
                                 BattleArena.OctopiMap[octopusName].IncreaseDamage(healingReceived * HEALINGMULTIPLIER * u.currentAmount);
-
-                                // TODO: A temporary animation for buffing
-                                var sp = this.scene.add.sprite(octo.x, octo.y, 'explosion');
-                                sp.setDepth(octo.depth + 0.1);
-                                sp.play('explosion_anim');
-                                sp.on(Phaser.Animations.Events.ANIMATION_COMPLETE, function (anim, frame, gameObject: Phaser.GameObjects.Sprite) {
-                                    gameObject.destroy();
-                                }, this);
                             }
                         }
                     });
@@ -105,6 +111,14 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
 
     IncreaseDamage(damageIncrease: number) {
         this.roundDamageIncrease += damageIncrease;
+
+        // TODO: A temporary animation for buffing
+        var sp = this.scene.add.sprite(this.x, this.y, 'explosion');
+        sp.setDepth(this.depth + 0.1);
+        sp.play('explosion_anim');
+        sp.on(Phaser.Animations.Events.ANIMATION_COMPLETE, function (anim, frame, gameObject: Phaser.GameObjects.Sprite) {
+            gameObject.destroy();
+        }, this);
     }
 
     static FromData(octopusData: Octopus, scene: Phaser.Scene): Octopus {
@@ -234,14 +248,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
 
         var realAmountHealed = this.hitPoints - oldHitPoints;
         if (realAmountHealed > 0) {
-
-            // TODO: A temporary animation for healing
-            var sp = this.scene.add.sprite(this.x, this.y, 'explosion');
-            sp.setDepth(this.depth + 0.1);
-            sp.play('explosion_anim');
-            sp.on(Phaser.Animations.Events.ANIMATION_COMPLETE, function (anim, frame, gameObject: Phaser.GameObjects.Sprite) {
-                gameObject.destroy();
-            }, this);
+            this.healingEmitter.emitParticleAt(this.x, this.y, 20);
 
             OctopusTrackedData.ReceiveHealing(this, realAmountHealed);
             this.onHealingReceived.forEach(f => {
