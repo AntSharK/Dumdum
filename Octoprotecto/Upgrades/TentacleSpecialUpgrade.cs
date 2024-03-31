@@ -103,7 +103,16 @@
                     break;
             }
 
-            weapon.TrackedUpgrades.Add(this); // All of the behavior is client-side and determined by the DisplayName
+            weapon.TrackedUpgrades.TryGetValue(this, out var existingUpgrade);
+            if (existingUpgrade != null)
+            {
+                existingUpgrade.CurrentAmount++;
+            }
+            else
+            {
+                weapon.TrackedUpgrades.Add(this);
+            }
+
             base.ApplyUpgrade(weapon);
         }
 

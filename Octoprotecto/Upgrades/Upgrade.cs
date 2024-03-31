@@ -7,15 +7,12 @@ namespace Octoprotecto
         public string Name { get; set; } = "Default";
         public abstract string DisplayName { get; }
         public abstract string Description { get; }
-
-        public virtual int BorderColor { get; } = Colors.BLACK;
-
-        public virtual int FillColor { get; } = Colors.WHITE;
         public virtual int Cost { get; set; } = 0;
         public abstract int UpgradeBaseCost { get; }
         public abstract int UpgradeIncrementCost { get; }
         public abstract string UpgradeName { get; }
         public int MaxLimit { get; set; } = -1; // Defaults to negative to be disabled
+        public int CurrentAmount { get; set; } = 1;
 
         public virtual void ApplyUpgrade(TargetType target)
         {
@@ -42,6 +39,17 @@ namespace Octoprotecto
                 upgrade.ReadTargetProperties(target);
                 target.PurchasableUpgrades.Add(upgrade.Name, upgrade);
             }
+        }
+
+        public override bool Equals(object? obj)
+        {
+            var upg = obj as Upgrade<TargetType>;
+            return upg != null && upg.DisplayName == this.DisplayName;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.DisplayName.GetHashCode();
         }
     }
 }

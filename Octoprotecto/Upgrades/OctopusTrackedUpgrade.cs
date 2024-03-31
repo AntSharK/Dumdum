@@ -57,8 +57,11 @@
         public override void ReadTargetProperties(Octopus octopus)
         {
             base.ReadTargetProperties(octopus);
-            var numberOfExistingUpgrades = octopus.TrackedUpgrades.Count(c => c.DisplayName == this.DisplayName);
+            octopus.TrackedUpgrades.TryGetValue(this, out var existingUpgrade);
+            var numberOfExistingUpgrades = existingUpgrade != null ? existingUpgrade.CurrentAmount : 0;
             this.description = this.description + " (owned: " + numberOfExistingUpgrades + (this.MaxLimit > 0 ? ("/" + this.MaxLimit + ")") : ")");
+            
+            var totalTrackedUpgradeCount = 
             this.Cost = this.UpgradeBaseCost + octopus.TrackedUpgrades.Count * this.UpgradeIncrementCost;
         }
 
@@ -76,7 +79,16 @@
                     break;
             }
 
-            octopus.TrackedUpgrades.Add(this); // All of the behavior is client-side and determined by the DisplayName
+            octopus.TrackedUpgrades.TryGetValue(this, out var existingUpgrade);
+            if (existingUpgrade != null)
+            {
+                existingUpgrade.CurrentAmount++;
+            }
+            else
+            {
+                octopus.TrackedUpgrades.Add(this);
+            }
+
             base.ApplyUpgrade(octopus);
         }
 
