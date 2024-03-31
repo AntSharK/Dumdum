@@ -12,10 +12,10 @@ namespace Octoprotecto
             (1, 1000, () => null),
 #pragma warning restore CS8603 // Possible null reference return.
             (5, 10, () => new OctopusTrackedUpgrade(OctopusTrackedUpgrade.UpgradeType.Integrate)),
-            (1, 900, () => new OctopusTrackedUpgrade(OctopusTrackedUpgrade.UpgradeType.ArmorWhenHit)),
+            (1, 500, () => new OctopusTrackedUpgrade(OctopusTrackedUpgrade.UpgradeType.ArmorWhenHit)),
             (1, 500, () => new OctopusTrackedUpgrade(OctopusTrackedUpgrade.UpgradeType.PointsWhenHit)),
-            (3, 200, () => new OctopusTrackedUpgrade(OctopusTrackedUpgrade.UpgradeType.HealingIncreasesDamage)),
-            (2, 400, () => new OctopusTrackedUpgrade(OctopusTrackedUpgrade.UpgradeType.TakingDamageHeals))
+            (3, 50, () => new OctopusTrackedUpgrade(OctopusTrackedUpgrade.UpgradeType.HealingIncreasesDamage)),
+            (2, 200, () => new OctopusTrackedUpgrade(OctopusTrackedUpgrade.UpgradeType.TakingDamageHeals))
         };
 
         private static (int luckMultiplier, int baseRate, Func<Upgrade<Weapon>> upgradeFunc)[] TentacleUpgrades =
@@ -27,7 +27,8 @@ namespace Octoprotecto
             (5, 10, () => new TentacleSpecialUpgrade(TentacleSpecialUpgrade.UpgradeType.Integrate)),
             (2, 200, () => new TentacleSpecialUpgrade(TentacleSpecialUpgrade.UpgradeType.Consume)),
             (3, 100, () => new TentacleSpecialUpgrade(TentacleSpecialUpgrade.UpgradeType.Momentum)),
-            (4, 200, () => new TentacleSpecialUpgrade(TentacleSpecialUpgrade.UpgradeType.Propel)),
+            (4, 20, () => new TentacleSpecialUpgrade(TentacleSpecialUpgrade.UpgradeType.Propel)),
+            (3, 100, () => new TentacleSpecialUpgrade(TentacleSpecialUpgrade.UpgradeType.Caramelize)),
         };
 
         public static Upgrade<Octopus> GetBodyUpgrade(int luck)
