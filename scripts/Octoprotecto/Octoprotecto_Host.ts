@@ -6,10 +6,10 @@ class BattleArena extends Phaser.Scene {
 
     static CurrentRound: integer = 1;
     static NumberOfRounds: integer = 1;
+    static OctopiMoveBounds: Phaser.Geom.Rectangle;
 
     graphics: Phaser.GameObjects.Graphics;
     spawningRect: Phaser.Geom.Rectangle;
-    octopiMoveBounds: Phaser.Geom.Rectangle;
 
     fishes: Phaser.Physics.Arcade.Group;
     octopi: Phaser.Physics.Arcade.Group;
@@ -53,7 +53,7 @@ class BattleArena extends Phaser.Scene {
         background.depth = -1;
         this.spawningRect = new Phaser.Geom.Rectangle(50, 50, this.game.canvas.width - 100, this.game.canvas.height - 100);
         var octopusImage = this.textures.get("octopus").getSourceImage();
-        this.octopiMoveBounds = new Phaser.Geom.Rectangle(octopusImage.width / 2, octopusImage.height / 2, this.game.canvas.width - octopusImage.width, this.game.canvas.height - octopusImage.height);
+        BattleArena.OctopiMoveBounds = new Phaser.Geom.Rectangle(octopusImage.width / 2, octopusImage.height / 2, this.game.canvas.width - octopusImage.width, this.game.canvas.height - octopusImage.height);
 
         this.anims.create({
             key: 'explosion_anim',

@@ -64,37 +64,8 @@ class SoloRun {
 
     static SoloRunStart(arena: BattleArena) {
         SoloRun.Enabled = true;
-        var startingWeapons = [
-            { range: 225, spread: 1.4, projectileDamage: 19, projectileSpeed: 350, fireRate: 1000 },
-            { range: 225, spread: 1.4, projectileDamage: 19, projectileSpeed: 350, fireRate: 1000 },
-            { range: 225, spread: 1.4, projectileDamage: 19, projectileSpeed: 350, fireRate: 1000 },
-            { range: 225, spread: 1.4, projectileDamage: 19, projectileSpeed: 350, fireRate: 1000 },
-        ];
-
-        // Create an object with the same properties as Octopus
-        /* Commenting out - solo mode is currently disabled
-        var octopusData = new Octopus("SoloPlayer",
-            arena,
-            arena.game.canvas.width / 2,
-            arena.game.canvas.height / 2,
-            0x00FFFF,
-            0.1497,
-            20,
-            998,
-            0,
-            0,
-            startingWeapons as Weapon[]);
-
-        arena.spawnOctopus(octopusData);
+        SoloRun.ConfigureKeyboard(arena);
         arena.events.on('update', () => SoloRun.ApplyKeyboardControls());
-        */
-
-        /* Old logic to reload in solo mode is overwritten by general logic to end game when no one is alive
-        signalRconnection.on("OctopusDeathNotification", function (totalPoints: integer, pointsToRespawn: integer) {
-            clearState();
-            window.alert("Unable to respawn in solo mode.");
-            window.location.reload();
-        }); */
     }
 
     static ApplyKeyboardControls() {
@@ -110,4 +81,27 @@ class SoloRun {
             }
         }
     }
+}
+
+function ConfigureSolorunSignalRListening(signalRconnection: any) {
+    // A combination of creating the room, joining the room, and starting the room
+    signalRconnection.on("StartSoloRun", function (roomId: string,
+        octopusData: Octopus) {
+        // Room creationg logic
+        sessionStorage.setItem(RoomIdSessionStorageKey, roomId);
+
+        // Room joining
+        sessionStorage.setItem(UserIdSessionStorageKey, octopusData.name);
+
+        var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
+        battleArenaScene.scene.setActive(true);
+        battleArenaScene.spawnOctopus(octopusData);
+
+        // Battle arena stuff
+        SoloRun.SoloRunStart(battleArenaScene);
+
+        // Start the game
+        const DEFAULTNUMROUNDS = 20;
+        battleArenaScene.startGame(DEFAULTNUMROUNDS);
+    })
 }

@@ -82,6 +82,23 @@ namespace Octoprotecto
             room.StartGame();
         }
 
+        public async Task SolorunStart(Rectangle octopiMovementBounds)
+        {
+            var newRoom = this.GameLobby.CreateRoom(Context.ConnectionId);
+            newRoom.OctopiMovementBounds = octopiMovementBounds;
+            var playerId = Utils.GenerateId(10, Enumerable.Empty<string>());
+
+            // This room is both the client and the server
+            await Groups.AddToGroupAsync(Context.ConnectionId, Context.ConnectionId);
+            var octopus = newRoom.CreatePlayer(playerId, Context.ConnectionId);
+
+            octopus.Tint = int.Parse("00FFFF", System.Globalization.NumberStyles.HexNumber);
+            octopus.SetRandomLocation(newRoom.OctopiMovementBounds);
+            octopus.DisplayName = "PLAYER";
+
+            await Clients.Caller.SendAsync("StartSoloRun", newRoom.RoomId, octopus);
+        }
+
         public override async Task OnConnectedAsync()
         {
             await Clients.Caller.SendAsync("ConnectionEstablished");

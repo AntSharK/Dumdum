@@ -49,6 +49,7 @@ window.onload = () => {
     ConfigureControllerSignalRListening(signalRconnection);
     ConfigureUpgradeMenuSignalRListening(signalRconnection);
     ConfigureHostSignalRListening(signalRconnection);
+    ConfigureSolorunSignalRListening(signalRconnection);
 
     octoProtecto = new Octoprotecto();
     (document.getElementById("colorpicker") as HTMLInputElement).value = GetRandomColor();
@@ -60,7 +61,7 @@ window.onload = () => {
         var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
         battleArenaScene.scene.setActive(true);
 
-        signalRconnection.invoke("CreateRoom", battleArenaScene.octopiMoveBounds).catch(function (err) {
+        signalRconnection.invoke("CreateRoom", BattleArena.OctopiMoveBounds).catch(function (err) {
             return console.error(err.toString());
         });
     });
@@ -70,13 +71,10 @@ window.onload = () => {
 
         var numRounds = (document.getElementById("numberofrounds") as HTMLInputElement).value;
         BattleArena.NumberOfRounds = parseInt(numRounds);
-        signalRconnection.invoke("SolorunStart").catch(function (err) {
+
+        signalRconnection.invoke("SolorunStart", BattleArena.OctopiMoveBounds).catch(function (err) {
             return console.error(err.toString());
         });
-
-        // Things to do after starting the run
-        var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
-        battleArenaScene.scene.setActive(true);
     });
 
     document.getElementById("startgamebutton").addEventListener("click", function (event) {
@@ -183,7 +181,7 @@ function ConfigureMenuSignalRListening(signalRconnection: any) {
 
         document.getElementById("gameidtext").textContent = "" + roomId;
 
-        // There are cases where the room creation on the server-side happens after the client has started the game (e.g. solo runs)
+        // There are cases where the room creation on the server-side happens after the client has started the game
         if (battleArenaScene.roundTimer == null) { 
             document.getElementById("lobbyhostcontent").hidden = false;
         }
