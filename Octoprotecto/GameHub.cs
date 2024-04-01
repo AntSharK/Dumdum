@@ -82,20 +82,25 @@ namespace Octoprotecto
             room.StartGame();
         }
 
+        // A combination of creating a room, joining a room, and starting it
+        // A lot of copy+pasted code from all the respective methods
         public async Task SolorunStart(Rectangle octopiMovementBounds)
         {
+            // Create the room
             var newRoom = this.GameLobby.CreateRoom(Context.ConnectionId);
+            
+            // Join the room as both the host and a player
             newRoom.OctopiMovementBounds = octopiMovementBounds;
+            newRoom.IsSoloRun = true;
             var playerId = Utils.GenerateId(10, Enumerable.Empty<string>());
-
-            // This room is both the client and the server
             await Groups.AddToGroupAsync(Context.ConnectionId, Context.ConnectionId);
-            var octopus = newRoom.CreatePlayer(playerId, Context.ConnectionId);
 
+            var octopus = newRoom.CreatePlayer(playerId, Context.ConnectionId);
             octopus.Tint = int.Parse("00FFFF", System.Globalization.NumberStyles.HexNumber);
             octopus.SetRandomLocation(newRoom.OctopiMovementBounds);
             octopus.DisplayName = "PLAYER";
 
+            // Start the room
             await Clients.Caller.SendAsync("StartSoloRun", newRoom.RoomId, octopus);
         }
 
@@ -111,6 +116,13 @@ namespace Octoprotecto
             if (room == null)
             {
                 await Clients.Caller.SendAsync(this.Message_ShowError, $"Room {roomId} not found.", true /*Refresh on click*/);
+                return;
+            }
+
+            if (room.IsSoloRun)
+            {
+                await Clients.Caller.SendAsync(this.Message_ShowError, $"Refreshing is not supported for solo runs.", true /*Refresh on click*/);
+                room.EndGame();
                 return;
             }
 

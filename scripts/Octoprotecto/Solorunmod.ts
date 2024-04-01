@@ -66,6 +66,10 @@ class SoloRun {
         SoloRun.Enabled = true;
         SoloRun.ConfigureKeyboard(arena);
         arena.events.on('update', () => SoloRun.ApplyKeyboardControls());
+        arena.events.on('afterFinishRound', () => {
+            document.getElementById("gamenotificationarea").hidden = true;
+            document.getElementById("gamenotificationmessage").hidden = true;
+        });
     }
 
     static ApplyKeyboardControls() {
