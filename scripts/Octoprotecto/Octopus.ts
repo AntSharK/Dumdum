@@ -21,9 +21,15 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
 
     // Stuff for drawing
     displayNameText: Phaser.GameObjects.Text;
+    healingEmitter: Phaser.GameObjects.Particles.ParticleEmitterManager;
+    buffEmitter: Phaser.GameObjects.Particles.ParticleEmitterManager;
+
+    // Per-round numbers
+    roundDamageIncrease: number = 0;
 
     // Custom behaviors injected
     onDamageTaken: ((octo: Octopus, dmgTaken: number) => void)[] = [];
+    onHealingReceived: ((octo: Octopus, healingReceived: number) => void)[] = [];
 
     placeInScene(scene: Phaser.Scene,
         octopiPhysicsGroup: Phaser.Physics.Arcade.Group,
@@ -32,6 +38,30 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         tint: number
     ) {
         this.setDepth(octopiPhysicsGroup.getLength());
+
+        // Configure particle emitters
+        this.healingEmitter = scene.add.particles('particle_green3', null, {
+            speed: 100,
+            lifespan: 300,
+            quantity: 5,
+            scale: { start: 0.6, end: 0.1, },
+            frequency: -1,
+            alpha: { start: 0.8, end: 0 },
+            angle: { min: -120, max: -60 },
+            follow: this,
+        });
+
+        this.healingEmitter.setDepth(this.depth + 0.1);
+        this.buffEmitter = scene.add.particles('particle_green1', null, {
+            speed: 30,
+            lifespan: 500,
+            quantity: 5,
+            scale: { start: 0.1, end: 0.5, },
+            frequency: -1,
+            alpha: { start: 0.5, end: 0.1 },
+            follow: this,
+        });
+        this.buffEmitter.setDepth(this.depth + 0.1);
         
         this.weapons.forEach(w => {
             w.placeInScene(weaponsPhysicsGroup, bulletPhysicsGroup);
@@ -50,6 +80,34 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
                         octo.GainPoints(1 * u.currentAmount);
                     });
                     break;
+                case "Matyr":
+                    const RANGEMATYR = 250;
+                    const DAMAGEMULTIPLIER = 0.1;
+
+                    this.onDamageTaken.push((octo, dmgTaken) => {
+                        for (let octopusName in BattleArena.OctopiMap) {
+                            if (octopusName == octo.name) { continue; }
+                            var distance = Phaser.Math.Distance.BetweenPoints(octo, BattleArena.OctopiMap[octopusName]);
+                            if (distance < RANGEMATYR) {
+                                BattleArena.OctopiMap[octopusName].Heal(dmgTaken * DAMAGEMULTIPLIER * u.currentAmount);
+                            }
+                        }
+                    });
+                    break;
+                case "Health is Wealth":
+                    const RANGEHEALTHISWEALTH = 150;
+                    const HEALINGMULTIPLIER = 1;
+                    this.onHealingReceived.push((octo, healingReceived) => {
+                        for (let octopusName in BattleArena.OctopiMap) {
+                            if (octopusName == octo.name) { continue; }
+                            var distance = Phaser.Math.Distance.BetweenPoints(octo, BattleArena.OctopiMap[octopusName]);
+                            if (distance < RANGEHEALTHISWEALTH) {
+                                BattleArena.OctopiMap[octopusName].IncreaseDamage(healingReceived * HEALINGMULTIPLIER * u.currentAmount);
+                            }
+                        }
+                    });
+                    break;
+
             }
         }, this);
 
@@ -61,6 +119,12 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         octopiPhysicsGroup.add(this);
         this.setCircle(this.width / 2, this.originX - this.width / 2, this.originY - this.width / 2);
+    }
+
+    IncreaseDamage(damageIncrease: number) {
+        const BUFFVISUALSCALE = 15;
+        this.roundDamageIncrease += damageIncrease;
+        this.buffEmitter.emitParticle(damageIncrease * BUFFVISUALSCALE);
     }
 
     static FromData(octopusData: Octopus, scene: Phaser.Scene): Octopus {
@@ -180,11 +244,23 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     }
 
     Heal(healAmount: number) {
-        if (this.hitPoints < this.maxHitPoints) { OctopusTrackedData.ReceiveHealing(this, healAmount); }
+        var oldHitPoints = this.hitPoints;
+
         this.hitPoints = this.hitPoints + healAmount;
 
         if (this.hitPoints > this.maxHitPoints) {
             this.hitPoints = this.maxHitPoints;
+        }
+
+        var realAmountHealed = this.hitPoints - oldHitPoints;
+        if (realAmountHealed > 0) {
+            const HEALINGVISUALSCALE = 4;
+            this.healingEmitter.emitParticle(realAmountHealed * HEALINGVISUALSCALE);
+
+            OctopusTrackedData.ReceiveHealing(this, realAmountHealed);
+            this.onHealingReceived.forEach(f => {
+                f(this, realAmountHealed);
+            }, this);
         }
     }
 

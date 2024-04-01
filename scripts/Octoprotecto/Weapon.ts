@@ -29,8 +29,10 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
             gameObject.destroy();
         });
 
-        fish.TakeDamage(this.bulletWeapon.projectileDamage);
-        this.bulletWeapon.trackDamageDealt(this.bulletWeapon.projectileDamage);
+        var realDamageDone = this.bulletWeapon.projectileDamage + this.bulletWeapon.weaponOwner.roundDamageIncrease;
+
+        fish.TakeDamage(realDamageDone);
+        this.bulletWeapon.trackDamageDealt(realDamageDone);
 
         if (fish.hitPoints <= 0) {
             this.bulletWeapon.weaponOwner.GainPoints(fish.points);
@@ -119,8 +121,9 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
         this.trackedUpgrades.forEach(u => { // Go through the DisplayName in each of the TrackedUpgrades
             switch (u.displayName) {
                 case "Consume":
+                    const HEALAMOUNTPERHIT = 3;
                     this.onBulletHit.push((bullet, hitTarget) => {
-                        bullet.bulletWeapon.weaponOwner.Heal(3 * u.currentAmount);
+                        bullet.bulletWeapon.weaponOwner.Heal(HEALAMOUNTPERHIT * u.currentAmount);
                     });
                     break;
                 case "Momentum":
@@ -133,6 +136,18 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
                 case "Propel":
                     this.onFireToFish.push((bullet, target) => {
                         bullet.setAcceleration(bullet.body.velocity.x * u.currentAmount, bullet.body.velocity.y * u.currentAmount);
+                    });
+                    break;
+                case "Caramelize":
+                    const HEALAMOUNTPERCARAMELIZE = 2;
+                    const CARAMELIZERADIUS = 250;
+                    this.onBulletHit.push((bullet, hitTarget) => {
+                        for (let octopusName in BattleArena.OctopiMap) {
+                            var distance = Phaser.Math.Distance.BetweenPoints(hitTarget, BattleArena.OctopiMap[octopusName]);
+                            if (distance < CARAMELIZERADIUS) {
+                                BattleArena.OctopiMap[octopusName].Heal(HEALAMOUNTPERCARAMELIZE * u.currentAmount);
+                            }
+                        }
                     });
                     break;
             }

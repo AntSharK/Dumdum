@@ -25,7 +25,7 @@
 
                 case UpgradeType.Consume:
                     this.DisplayName = "Consume";
-                    this.Description = "Restore 1 HP on hit";
+                    this.Description = "Restore 3 HP on hit";
                     this.UpgradeBaseCost = 15;
                     this.UpgradeIncrementCost = 5;
                     this.MaxLimit = 10;
@@ -53,6 +53,14 @@
                     this.UpgradeBaseCost = 100;
                     this.UpgradeIncrementCost = 0;
                     this.MaxLimit = 1;
+                    break;
+
+                case UpgradeType.Caramelize:
+                    this.DisplayName = "Caramelize";
+                    this.Description = "On hit, restore 2 HP on hit to all allies (including yourself) in 250 range";
+                    this.UpgradeBaseCost = 25;
+                    this.UpgradeIncrementCost = 4;
+                    this.MaxLimit = 10;
                     break;
                 default:
                     this.DisplayName = "Unknown";
@@ -107,7 +115,8 @@
             Consume,
             Momentum,
             Propel,
-            Integrate
+            Integrate,
+            Caramelize,
         }
     }
 }

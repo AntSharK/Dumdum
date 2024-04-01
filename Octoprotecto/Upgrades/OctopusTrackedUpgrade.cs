@@ -43,6 +43,20 @@
                     this.UpgradeIncrementCost = 0;
                     this.MaxLimit = 2;
                     break;
+                case UpgradeType.TakingDamageHeals:
+                    this.DisplayName = "Matyr";
+                    this.Description = "Heal allies in 250 range for 10% of damage taken";
+                    this.UpgradeBaseCost = 20;
+                    this.UpgradeIncrementCost = 5;
+                    this.MaxLimit = 8;
+                    break;
+                case UpgradeType.HealingIncreasesDamage:
+                    this.DisplayName = "Health is Wealth";
+                    this.Description = "When healed, allies in 150 range get an equivalent damage increase";
+                    this.UpgradeBaseCost = 30;
+                    this.UpgradeIncrementCost = 6;
+                    this.MaxLimit = 4;
+                    break;
                 default:
                     this.DisplayName = "Unknown";
                     this.Description = "Unknown";
@@ -80,6 +94,8 @@
             PointsWhenHit,
             Integrate,
             Renew,
+            HealingIncreasesDamage,
+            TakingDamageHeals,
         }
     }
 }
