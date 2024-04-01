@@ -64,15 +64,8 @@ namespace Octoprotecto
             await CreateNewOctopus(room, playerId, colorIn, playerNameIn);
         }
 
-        public async Task StartRoom(string roomId, bool soloRun)
+        public async Task StartRoom(string roomId)
         {
-            if (soloRun
-                && string.IsNullOrEmpty(roomId))
-            {
-                await this.StartSoloRun(roomId);
-                return;
-            }
-
             if (!this.GameLobby.Rooms.ContainsKey(roomId))
             {
                 await Clients.Caller.SendAsync(this.Message_ShowError, $"Room {roomId} not found.");

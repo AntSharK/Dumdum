@@ -120,16 +120,11 @@ class BattleArena extends Phaser.Scene {
         }
     }
 
-    startGame(soloRun: boolean, numberOfRounds: integer) {
-        if (soloRun) {
-            SoloRun.ConfigureKeyboard(this);
-            SoloRun.SoloRunStart(this);
-        }
-
+    startGame(numberOfRounds: integer) {
         BattleArena.NumberOfRounds = numberOfRounds;
         StartWave(this);
         var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);
-        signalRconnection.invoke("StartRoom", roomId, soloRun).catch(function (err) {
+        signalRconnection.invoke("StartRoom", roomId).catch(function (err) {
             return console.error(err.toString());
         });
     }
