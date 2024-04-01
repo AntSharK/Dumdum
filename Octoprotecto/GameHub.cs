@@ -46,6 +46,12 @@ namespace Octoprotecto
                 return;
             }
 
+            if (room.Players.Values.Any(c => c.DisplayName == playerNameIn))
+            {
+                await this.JoinRoomError($"Name {playerNameIn} already taken.");
+                return;
+            }
+
             var allKeys = room.Players.Keys;
             var playerId = Utils.GenerateId(10, allKeys);
             if (playerId == null)
@@ -58,15 +64,8 @@ namespace Octoprotecto
             await CreateNewOctopus(room, playerId, colorIn, playerNameIn);
         }
 
-        public async Task StartRoom(string roomId, bool soloRun)
+        public async Task StartRoom(string roomId)
         {
-            if (soloRun
-                && string.IsNullOrEmpty(roomId))
-            {
-                await this.StartSoloRun(roomId);
-                return;
-            }
-
             if (!this.GameLobby.Rooms.ContainsKey(roomId))
             {
                 await Clients.Caller.SendAsync(this.Message_ShowError, $"Room {roomId} not found.");
@@ -83,6 +82,28 @@ namespace Octoprotecto
             room.StartGame();
         }
 
+        // A combination of creating a room, joining a room, and starting it
+        // A lot of copy+pasted code from all the respective methods
+        public async Task SolorunStart(Rectangle octopiMovementBounds)
+        {
+            // Create the room
+            var newRoom = this.GameLobby.CreateRoom(Context.ConnectionId);
+            
+            // Join the room as both the host and a player
+            newRoom.OctopiMovementBounds = octopiMovementBounds;
+            newRoom.IsSoloRun = true;
+            var playerId = Utils.GenerateId(10, Enumerable.Empty<string>());
+            await Groups.AddToGroupAsync(Context.ConnectionId, Context.ConnectionId);
+
+            var octopus = newRoom.CreatePlayer(playerId, Context.ConnectionId);
+            octopus.Tint = int.Parse("00FFFF", System.Globalization.NumberStyles.HexNumber);
+            octopus.SetRandomLocation(newRoom.OctopiMovementBounds);
+            octopus.DisplayName = "PLAYER";
+
+            // Start the room
+            await Clients.Caller.SendAsync("StartSoloRun", newRoom.RoomId, octopus);
+        }
+
         public override async Task OnConnectedAsync()
         {
             await Clients.Caller.SendAsync("ConnectionEstablished");
@@ -95,6 +116,13 @@ namespace Octoprotecto
             if (room == null)
             {
                 await Clients.Caller.SendAsync(this.Message_ShowError, $"Room {roomId} not found.", true /*Refresh on click*/);
+                return;
+            }
+
+            if (room.IsSoloRun)
+            {
+                await Clients.Caller.SendAsync(this.Message_ShowError, $"Refreshing is not supported for solo runs.", true /*Refresh on click*/);
+                room.EndGame();
                 return;
             }
 
@@ -220,6 +248,7 @@ namespace Octoprotecto
             await Clients.Client(octopus.ConnectionId).SendAsync("OctopusRespawn", room.OctopiMovementBounds, octopus);
 
             // If all the octopi have respawned, trigger the next round
+            // This can indeed trigger before the final octopus respawn - since it's ok for octopi to spawn in the middle of a round
             if (room.Players.Values.Count(c => !c.IsActive) <= 0)
             {
                 await Clients.Client(room.ConnectionId).SendAsync("StartNextRound");

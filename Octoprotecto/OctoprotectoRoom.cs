@@ -6,6 +6,8 @@ namespace Octoprotecto
     public class OctoprotectoRoom : GameRoom<Octopus>
     {
         public RoomState State { get; private set; } = RoomState.SettingUp;
+        public bool IsSoloRun { get; internal set; } = false;
+
         public Rectangle OctopiMovementBounds;
 
         public OctoprotectoRoom(string roomId, string connectionId) 

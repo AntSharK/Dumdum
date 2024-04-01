@@ -37,20 +37,6 @@ namespace Octoprotecto
             await Clients.Caller.SendAsync("ErrorJoiningRoom", message);
         }
 
-        private async Task StartSoloRun(string roomId)
-        {
-            var newRoom = this.GameLobby.CreateRoom(Context.ConnectionId);
-            if (newRoom == null)
-            {
-                await Clients.Caller.SendAsync(this.Message_ShowError, $"Room {roomId} cannot be started.");
-                return;
-            }
-
-            await Clients.Caller.SendAsync("RoomCreated", newRoom.RoomId);
-            newRoom.CreatePlayer("SoloPlayer", Context.ConnectionId);
-            newRoom.StartGame();
-        }
-
         private async Task ReconnectPlayer(OctoprotectoRoom room, Octopus octopus)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, room.RoomId);

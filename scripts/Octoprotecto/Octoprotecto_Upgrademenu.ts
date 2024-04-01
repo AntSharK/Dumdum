@@ -335,10 +335,15 @@ function ConfigureUpgradeMenuSignalRListening(signalRconnection: any) {
             battleArenaScene.scene.transition({ target: "Upgradescreen" });
         }
 
-        var controllerScene = octoProtecto.game.scene.getScene("Octocontroller") as Octocontroller;
-        controllerScene.state = ControllerState.WaitingForSync;
-        controllerScene.scene.transition({ target: "Upgradescreen" });
+        var controllerScene = octoProtecto.game.scene.getScene("Octocontroller");
+        (controllerScene as Octocontroller).state = ControllerState.WaitingForSync;
 
+        // In the case of solo runs, the current scene is actually the battle arena
+        if (SoloRun.Enabled) {
+            controllerScene = octoProtecto.game.scene.getScene("BattleArena");
+        }
+
+        controllerScene.scene.transition({ target: "Upgradescreen" });
         var upgradeScene = octoProtecto.game.scene.getScene("Upgradescreen") as Upgradescreen;
         upgradeScene.LoadOctopus(octopusData);
     })

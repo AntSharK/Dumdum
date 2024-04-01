@@ -49,6 +49,7 @@ window.onload = () => {
     ConfigureControllerSignalRListening(signalRconnection);
     ConfigureUpgradeMenuSignalRListening(signalRconnection);
     ConfigureHostSignalRListening(signalRconnection);
+    ConfigureSolorunSignalRListening(signalRconnection);
 
     octoProtecto = new Octoprotecto();
     (document.getElementById("colorpicker") as HTMLInputElement).value = GetRandomColor();
@@ -60,16 +61,20 @@ window.onload = () => {
         var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
         battleArenaScene.scene.setActive(true);
 
-        signalRconnection.invoke("CreateRoom", battleArenaScene.octopiMoveBounds).catch(function (err) {
+        signalRconnection.invoke("CreateRoom", BattleArena.OctopiMoveBounds).catch(function (err) {
             return console.error(err.toString());
         });
     });
 
     document.getElementById("sologamebutton").addEventListener("click", function (event) {
         hideLobbyMenu();
-        var battleArenaScene = octoProtecto.game.scene.getScene("BattleArena") as BattleArena;
-        battleArenaScene.scene.setActive(true);
-        battleArenaScene.startGame(true, 20 /*Number of rounds*/);
+
+        var numRounds = (document.getElementById("numberofrounds") as HTMLInputElement).value;
+        BattleArena.NumberOfRounds = parseInt(numRounds);
+
+        signalRconnection.invoke("SolorunStart", BattleArena.OctopiMoveBounds).catch(function (err) {
+            return console.error(err.toString());
+        });
     });
 
     document.getElementById("startgamebutton").addEventListener("click", function (event) {
@@ -87,7 +92,7 @@ window.onload = () => {
         }
 
         hideLobbyMenu();
-        battleArenaScene.startGame(false, parseInt(numRounds));
+        battleArenaScene.startGame(parseInt(numRounds));
     });
 
     document.getElementById("joingamebutton").addEventListener("click", function (event) {
@@ -128,12 +133,19 @@ window.onload = () => {
         hideLobbyMenu();
         setUpgradeMenuHidden(true);
         document.getElementById("lobbywaitingforserver").hidden = false;
+
+        var controllerScene = octoProtecto.game.scene.getScene("Octocontroller") as Octocontroller;
+        controllerScene.state = ControllerState.WaitingForSync;
+
+        // For Solo Mode, instantly transition to the battle arena - this allows spawning to happen
+        if (SoloRun.Enabled) {
+            var upgradeScene = octoProtecto.game.scene.getScene("Upgradescreen") as Upgradescreen;
+            upgradeScene.scene.transition({ target: "BattleArena" });
+        }
+
         signalRconnection.invoke("UpgradeDone", existingRoomId, existingUserId).catch(function (err) {
             return console.error(err.toString());
         });
-        
-        var controllerScene = octoProtecto.game.scene.getScene("Octocontroller") as Octocontroller;
-        controllerScene.state = ControllerState.WaitingForSync;
     });
 };
 
@@ -176,7 +188,7 @@ function ConfigureMenuSignalRListening(signalRconnection: any) {
 
         document.getElementById("gameidtext").textContent = "" + roomId;
 
-        // There are cases where the room creation on the server-side happens after the client has started the game (e.g. solo runs)
+        // There are cases where the room creation on the server-side happens after the client has started the game
         if (battleArenaScene.roundTimer == null) { 
             document.getElementById("lobbyhostcontent").hidden = false;
         }
