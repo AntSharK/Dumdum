@@ -248,6 +248,7 @@ namespace Octoprotecto
             await Clients.Client(octopus.ConnectionId).SendAsync("OctopusRespawn", room.OctopiMovementBounds, octopus);
 
             // If all the octopi have respawned, trigger the next round
+            // This can indeed trigger before the final octopus respawn - since it's ok for octopi to spawn in the middle of a round
             if (room.Players.Values.Count(c => !c.IsActive) <= 0)
             {
                 await Clients.Client(room.ConnectionId).SendAsync("StartNextRound");

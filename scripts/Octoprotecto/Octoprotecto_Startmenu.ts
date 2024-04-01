@@ -133,12 +133,15 @@ window.onload = () => {
         hideLobbyMenu();
         setUpgradeMenuHidden(true);
         document.getElementById("lobbywaitingforserver").hidden = false;
+
         signalRconnection.invoke("UpgradeDone", existingRoomId, existingUserId).catch(function (err) {
             return console.error(err.toString());
         });
         
         var controllerScene = octoProtecto.game.scene.getScene("Octocontroller") as Octocontroller;
         controllerScene.state = ControllerState.WaitingForSync;
+
+        // TODO: For Solo Mode, do other things
     });
 };
 
