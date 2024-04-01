@@ -40,14 +40,16 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     ) {
         this.setDepth(octopiPhysicsGroup.getLength());
 
-        // TODO: Configure particles
-        this.healingEmitter = scene.add.particles('particle_green1', {
-            speed: 24,
-            lifespan: 1500,
-            quality: 10,
-            scale: { start: 0.4, end: 0 },
-            emitting: false,
-            duration: 500
+        // Configure particles for healing
+        this.healingEmitter = scene.add.particles('particle_green3', null, {
+            speed: 100,
+            lifespan: 300,
+            quantity: 5,
+            scale: { start: 0.6, end: 0.1, },
+            frequency: -1,
+            alpha: { start: 0.8, end: 0 },
+            angle: { min: -120, max: -60 },
+            follow: this,
         });
         this.healingEmitter.setDepth(this.depth + 0.1);
         
@@ -248,7 +250,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
 
         var realAmountHealed = this.hitPoints - oldHitPoints;
         if (realAmountHealed > 0) {
-            this.healingEmitter.emitParticleAt(this.x, this.y, 20);
+            this.healingEmitter.emitParticle(realAmountHealed * 10);
 
             OctopusTrackedData.ReceiveHealing(this, realAmountHealed);
             this.onHealingReceived.forEach(f => {
