@@ -172,15 +172,12 @@ function ConfigureControllerSignalRListening(signalRconnection: any) {
     });
 
     signalRconnection.on("OctopusRespawn", function (octopiMovementBounds: Phaser.Geom.Rectangle, octopusData: Octopus) {
+        // Don't need this for solo mode
+        if (SoloRun.Enabled) { return; }
+
         // Respawn events can also be triggered when coming from the upgrade screen
         var upgradeScene = octoProtecto.game.scene.getScene("Upgradescreen") as Upgradescreen;
         hideLobbyMenu();
-
-        // In solo mode, this is a completely different transition
-        if (SoloRun.Enabled) {
-            upgradeScene.scene.transition({ target: "BattleArena" });
-            return;
-        }
 
         upgradeScene.scene.transition({ target: "Octocontroller" });
 

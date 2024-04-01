@@ -65,6 +65,8 @@ class SoloRun {
     static SoloRunStart(arena: BattleArena) {
         SoloRun.Enabled = true;
         SoloRun.ConfigureKeyboard(arena);
+
+        arena.events.on('create', () => SoloRun.ConfigureKeyboard(arena)); // Re-configure keyboard on creation
         arena.events.on('update', () => SoloRun.ApplyKeyboardControls());
         arena.events.on('afterFinishRound', () => {
             document.getElementById("gamenotificationarea").hidden = true;
