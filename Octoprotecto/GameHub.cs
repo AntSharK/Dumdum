@@ -46,6 +46,12 @@ namespace Octoprotecto
                 return;
             }
 
+            if (room.Players.Values.Any(c => c.DisplayName == playerNameIn))
+            {
+                await this.JoinRoomError($"Name {playerNameIn} already taken.");
+                return;
+            }
+
             var allKeys = room.Players.Keys;
             var playerId = Utils.GenerateId(10, allKeys);
             if (playerId == null)
