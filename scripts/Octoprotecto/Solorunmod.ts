@@ -35,7 +35,8 @@ class SoloRun {
         }, this);
     }
 
-    static ConfigureKeyboard(scene: Phaser.Scene) {
+    static ConfigureSoloControls(scene: Phaser.Scene) {
+        // Configure Keyboard
         scene.input.keyboard.on('keydown-RIGHT', event => {
             SoloRun.KeyboardDirection[0] = 1;
         }, this);
@@ -60,13 +61,22 @@ class SoloRun {
         scene.input.keyboard.on('keyup-DOWN', event => {
             SoloRun.KeyboardDirection[1] = 0;
         }, this);
+
+        // Configure mouse
+        scene.input.on('pointerdown', function (pointer) {
+            for (let key in BattleArena.OctopiMap) {
+                let soloOctopus = BattleArena.OctopiMap[key];
+                soloOctopus.desiredX = pointer.x;
+                soloOctopus.desiredY = pointer.y;
+            }
+        }, this);
     }
 
     static SoloRunStart(arena: BattleArena) {
         SoloRun.Enabled = true;
-        SoloRun.ConfigureKeyboard(arena);
+        SoloRun.ConfigureSoloControls(arena);
 
-        arena.events.on('create', () => SoloRun.ConfigureKeyboard(arena)); // Re-configure keyboard on creation
+        arena.events.on('create', () => SoloRun.ConfigureSoloControls(arena)); // Re-configure keyboard on creation
         arena.events.on('update', () => SoloRun.ApplyKeyboardControls());
         arena.events.on('afterFinishRound', () => {
             document.getElementById("gamenotificationarea").hidden = true;
