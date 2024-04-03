@@ -51,6 +51,7 @@ class BattleArena extends Phaser.Scene {
         this.scale.setGameSize(OCTOPROTECTOCANVASWIDTH, OCTOPROTECTOCANVASHEIGHT);
         this.scale.refresh();
         this.scale.updateBounds();
+        this.physics.world.setBounds(0, 0, OCTOPROTECTOCANVASWIDTH, OCTOPROTECTOCANVASHEIGHT, true, true, true, true);
 
         var background = this.add.sprite(this.game.canvas.width / 2, this.game.canvas.height / 2, 'ocean');
         background.displayWidth = this.game.canvas.width;
