@@ -10,58 +10,58 @@ function StartWave(arena: BattleArena) {
         case 2:
             AddSpawnTimer(arena, FISHNAME_REGULARFISH, playerCount * 3, roundDuration,
                 3500 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.1 /*Difficulty*/);
-            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, playerCount * 1, roundDuration,
+            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, playerCount * 2, roundDuration,
                 5500 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.1 /*Difficulty*/);
             break;
 
         case 3:
-            AddSpawnTimer(arena, FISHNAME_REGULARFISH, playerCount * 3, roundDuration,
+            AddSpawnTimer(arena, FISHNAME_REGULARFISH, playerCount * 4, roundDuration,
                 3200 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.2 /*Difficulty*/);
-            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, playerCount * 1, roundDuration,
+            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, playerCount * 2, roundDuration,
                 4000 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.2 /*Difficulty*/);
             break;
 
         case 4:
-            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, playerCount * 3, roundDuration,
+            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, playerCount * 4, roundDuration,
                 5600 /*Base Interval*/, 0.98 /*Interval Modification Factor*/, 1.4 /*Difficulty*/);
-            AddSpawnTimer(arena, FISHNAME_MERGINGFISH, playerCount * 1, roundDuration,
+            AddSpawnTimer(arena, FISHNAME_MERGINGFISH, playerCount * 2, roundDuration,
                 3600 /*Base Interval*/, 0.98 /*Interval Modification Factor*/, 1.2 /*Difficulty*/);
             break;
 
         case 5:
-            AddSpawnTimer(arena, FISHNAME_MERGINGFISH, playerCount * 2, roundDuration,
+            AddSpawnTimer(arena, FISHNAME_MERGINGFISH, playerCount * 4, roundDuration,
                 4200 /*Base Interval*/, 0.98 /*Interval Modification Factor*/, 1.5 /*Difficulty*/);
             break;
 
         case 6:
-            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, playerCount * 2, roundDuration,
+            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, playerCount * 3, roundDuration,
                 3800 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.5 /*Difficulty*/);
-            AddSpawnTimer(arena, FISHNAME_ZIPPINGFISH, playerCount * 3, roundDuration,
+            AddSpawnTimer(arena, FISHNAME_ZIPPINGFISH, playerCount * 4, roundDuration,
                 6500 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.3 /*Difficulty*/);
             break;
 
         case 7:
-            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, playerCount * 1, roundDuration,
+            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, playerCount * 2, roundDuration,
                 3500 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.5 /*Difficulty*/);
-            AddSpawnTimer(arena, FISHNAME_ZIPPINGFISH, playerCount * 2, roundDuration,
+            AddSpawnTimer(arena, FISHNAME_ZIPPINGFISH, playerCount * 3, roundDuration,
                 5500 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.5 /*Difficulty*/);
-            AddSpawnTimer(arena, FISHNAME_MERGINGFISH, playerCount * 2, roundDuration,
+            AddSpawnTimer(arena, FISHNAME_MERGINGFISH, playerCount * 3, roundDuration,
                 6500 /*Base Interval*/, 0.98 /*Interval Modification Factor*/, 1.5 /*Difficulty*/);
             break;
 
         case 8:
-            AddSpawnTimer(arena, FISHNAME_REGULARFISH, playerCount * 2, roundDuration,
+            AddSpawnTimer(arena, FISHNAME_REGULARFISH, playerCount * 3, roundDuration,
                 3200 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.6 /*Difficulty*/);
-            AddSpawnTimer(arena, FISHNAME_CHARGINGFISH, playerCount * 1, roundDuration,
+            AddSpawnTimer(arena, FISHNAME_CHARGINGFISH, playerCount * 2, roundDuration,
                 3400 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.6 /*Difficulty*/);
             break;
 
         case 9:
-            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, playerCount * 1, roundDuration,
+            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, playerCount * 2, roundDuration,
                 4500 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.8 /*Difficulty*/);
-            AddSpawnTimer(arena, FISHNAME_CHARGINGFISH, playerCount * 2, roundDuration,
+            AddSpawnTimer(arena, FISHNAME_CHARGINGFISH, playerCount * 3, roundDuration,
                 5100 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.8 /*Difficulty*/);
-            AddSpawnTimer(arena, FISHNAME_REGULARFISH, playerCount * 2, roundDuration,
+            AddSpawnTimer(arena, FISHNAME_REGULARFISH, playerCount * 3, roundDuration,
                 4500 /*Base Interval*/, 0.98 /*Interval Modification Factor*/, 1.8 /*Difficulty*/);
             break;
 
@@ -78,7 +78,7 @@ function StartWave(arena: BattleArena) {
                 switch (randomNumber) {
                     case 0:
                         enemyType = FISHNAME_REGULARFISH;
-                        spawnMultiplier = 3;
+                        spawnMultiplier = 2;
                         baseInterval = 3600;
                         break;
                     case 1:
@@ -93,12 +93,12 @@ function StartWave(arena: BattleArena) {
                         break;
                     case 3:
                         enemyType = FISHNAME_ZIPPINGFISH;
-                        spawnMultiplier = 3;
+                        spawnMultiplier = 2;
                         baseInterval = 6600;
                         break;
                     case 4:
                         enemyType = FISHNAME_CHARGINGFISH;
-                        spawnMultiplier = 2;
+                        spawnMultiplier = 1;
                         baseInterval = 6400;
                         break;
                     default:
@@ -123,7 +123,7 @@ function AddSpawnTimer(arena: BattleArena,
     intervalModificationFactor: number,
     difficulty: number) {
     const STARTSPAWNTIME = 2000;
-    const STOPSPAWNTIME = 5000;
+    const STOPSPAWNTIME = 3000;
 
     var interval = startingInterval;
     for (var i = STARTSPAWNTIME; i < roundDuration - STOPSPAWNTIME; i = i + interval) {
