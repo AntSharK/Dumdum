@@ -8,6 +8,8 @@ declare const signalR;
 const RoomIdSessionStorageKey = "roomid";
 const UserIdSessionStorageKey = "userid";
 
+const OCTOPROTECTOCANVASHEIGHT = 1024;
+const OCTOPROTECTOCANVASWIDTH = 1440;
 class Octoprotecto {
     game: Phaser.Game;
     constructor() {
@@ -21,8 +23,8 @@ class Octoprotecto {
             },
 
             parent: 'octoprotectogame',
-            width: 1024,
-            height: 768,
+            width: OCTOPROTECTOCANVASWIDTH,
+            height: OCTOPROTECTOCANVASHEIGHT,
             backgroundColor: '#FFFFFF',
             transparent: false,
             clearBeforeRender: false,
