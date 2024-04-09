@@ -60,6 +60,7 @@ namespace Octoprotecto
                 return;
             }
 
+            Logger.LogInformation("PLAYER JOINED ROOM:{0}, PLAYERID:{1}", roomId, playerId);
             await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
             await CreateNewOctopus(room, playerId, colorIn, playerNameIn);
         }
@@ -79,6 +80,7 @@ namespace Octoprotecto
                 return;
             }
 
+            Logger.LogInformation("STARTING ROOM:{0}", roomId);
             room.StartGame();
         }
 
@@ -101,6 +103,7 @@ namespace Octoprotecto
             octopus.DisplayName = "PLAYER";
 
             // Start the room
+            Logger.LogInformation("SOLO RUN STARTING IN ROOM:{0}, PLAYERID:{1}", newRoom.RoomId, playerId);
             await Clients.Caller.SendAsync("StartSoloRun", newRoom.RoomId, octopus);
         }
 
@@ -180,6 +183,7 @@ namespace Octoprotecto
                 }
             }
 
+            Logger.LogInformation("KILLED PLAYER IN ROOM:{0}, PLAYERID:{1}", roomId, playerId);
             await Clients.Client(octopus.ConnectionId).SendAsync("OctopusDeathNotification", octopus.Points, octopus.GetRespawnCost() /*Don't pass in IDs*/);
         }
 
@@ -199,6 +203,7 @@ namespace Octoprotecto
             octopus.Points = octopus.Points - respawnCost;
             octopus.IsActive = true;
 
+            Logger.LogInformation("RESPAWNED PLAYER IN ROOM:{0}, PLAYERID:{1}", roomId, playerId);
             await Clients.Client(room.ConnectionId).SendAsync("SpawnOctopus", octopus);
             await Clients.Client(octopus.ConnectionId).SendAsync("OctopusRespawn", room.OctopiMovementBounds, octopus);
         }
@@ -208,8 +213,10 @@ namespace Octoprotecto
             (_, var room) = await this.FindPlayerAndRoom(null, roomId);
             if  (room == null) { return; }
 
+            Logger.LogInformation("GAME LOST FOR ROOM:{0}", roomId);
             await Clients.Group(room.RoomId).SendAsync("LossNotification");
             room.EndGame();
+            Logger.LogInformation("ROOM ENDED:{0}", roomId);
         }
 
         public async Task TriggerVictory(string roomId)
@@ -217,8 +224,10 @@ namespace Octoprotecto
             (_, var room) = await this.FindPlayerAndRoom(null, roomId);
             if (room == null) { return; }
 
+            Logger.LogInformation("GAME WON FOR ROOM:{0}", roomId);
             await Clients.Group(room.RoomId).SendAsync("VictoryNotification");
             room.EndGame();
+            Logger.LogInformation("ROOM ENDED:{0}", roomId);
         }
 
         public async Task FinishRound(string roomId, 
@@ -232,7 +241,9 @@ namespace Octoprotecto
                 return;
             }
 
+            Logger.LogInformation("FINISHING ROOM:{0}", roomId);
             room.FinishRound(pointsPerOctopus, damagePerWeapon);
+            Logger.LogInformation("ROUND FINISHED IN ROOM:{0}", roomId);
             await Task.WhenAll(room.Players.Values.Select(s => { return Clients.Client(s.ConnectionId).SendAsync("UpdateUpgrade", s); }));
         }
 
@@ -243,6 +254,7 @@ namespace Octoprotecto
 
             if (room.State != OctoprotectoRoom.RoomState.Upgrading) { return; }
 
+            Logger.LogInformation("FINISHED UPGRADE IN ROOM:{0} FOR PLAYER:{1}", roomId, playerId);
             octopus.IsActive = true;
             await Clients.Client(room.ConnectionId).SendAsync("SpawnOctopus", octopus);
             await Clients.Client(octopus.ConnectionId).SendAsync("OctopusRespawn", room.OctopiMovementBounds, octopus);
@@ -251,8 +263,10 @@ namespace Octoprotecto
             // This can indeed trigger before the final octopus respawn - since it's ok for octopi to spawn in the middle of a round
             if (room.Players.Values.Count(c => !c.IsActive) <= 0)
             {
+                Logger.LogInformation("STARTING NEXT ROUND FOR ROOM:{0}", roomId);
                 await Clients.Client(room.ConnectionId).SendAsync("StartNextRound");
                 room.StartGame();
+                Logger.LogInformation("STARTED NEXT ROUND FOR ROOM:{0}", roomId);
             }
         }
 

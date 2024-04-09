@@ -34,6 +34,7 @@ namespace Common
 
         protected async Task<(PlayerType? player, RoomType? room)> FindPlayerAndRoom(string? playerId, string roomId)
         {
+            Logger.LogInformation("FINDING ROOM:{0}", roomId);
             if (!this.GameLobby.Rooms.ContainsKey(roomId))
             {
                 Logger.LogWarning("UNABLE TO FIND ROOM ID:{0}", roomId);
@@ -45,6 +46,7 @@ namespace Common
             var room = this.GameLobby.Rooms[roomId];
             if (playerId == null)
             {
+                Logger.LogInformation("FOUND ROOM:{0}", roomId);
                 return (null, room);
             }
 
@@ -56,6 +58,7 @@ namespace Common
                 return (null, room);
             }
 
+            Logger.LogWarning("FOUND PLAYER {1} IN ROOM:{0}", roomId, playerId);
             var player = room.Players[playerId];
             return (player, room);
         }
