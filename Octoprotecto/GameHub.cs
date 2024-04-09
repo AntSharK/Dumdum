@@ -234,6 +234,7 @@ namespace Octoprotecto
             IDictionary<string, int> pointsPerOctopus,
             IDictionary<string, int> damagePerWeapon)
         {
+            Logger.LogInformation("FINISHING ROUND IN ROOM:{0}", roomId);
             (_, var room) = await this.FindPlayerAndRoom(null, roomId);
             if (room == null)
             {
@@ -241,7 +242,6 @@ namespace Octoprotecto
                 return;
             }
 
-            Logger.LogInformation("FINISHING ROOM:{0}", roomId);
             room.FinishRound(pointsPerOctopus, damagePerWeapon);
             Logger.LogInformation("ROUND FINISHED IN ROOM:{0}", roomId);
             await Task.WhenAll(room.Players.Values.Select(s => { return Clients.Client(s.ConnectionId).SendAsync("UpdateUpgrade", s); }));

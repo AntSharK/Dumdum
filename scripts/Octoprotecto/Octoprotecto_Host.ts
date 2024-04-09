@@ -178,9 +178,8 @@ class BattleArena extends Phaser.Scene {
         document.getElementById("gamenotificationmessage").textContent = "ROUND " + (BattleArena.CurrentRound) + " FINISHED";
 
         BattleArena.CurrentRound++;
-
         signalRconnection.invoke("FinishRound", roomId, pointsPerOctopus, damagePerWeapon).catch(function (err) {
-            return console.error(err.toString());
+            return console.error(err.toString() + " - Params:" + roomId + "," + JSON.stringify(pointsPerOctopus) + "," + JSON.stringify(damagePerWeapon));
         });
 
         this.events.emit("afterFinishRound");
