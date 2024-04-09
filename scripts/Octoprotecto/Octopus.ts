@@ -6,7 +6,7 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
     name: string;
     weapons: Weapon[] = [];
     speed: number = 0.15; // Expressed as distance covered per millisecond
-    points: number = 20;
+    points: integer = 20;
     hitPoints: number = 998;
     luck: number = 0;
     armor: number = 0;
@@ -226,14 +226,14 @@ class Octopus extends Phaser.Physics.Arcade.Sprite {
             OctopusTrackedData.OctopusDies(this);
 
             // On death, synchronize points and weapon data, to be loaded back on respawn
-            var damagePerWeapon: { [id: string]: number } = {};
+            var damagePerWeapon: { [id: string]: integer } = {};
             for (let weaponName in this.weapons) {
                 let weapon = this.weapons[weaponName];
-                damagePerWeapon[weapon.name] = weapon.damageDealt;
+                damagePerWeapon[weapon.name] = Math.round(weapon.damageDealt);
             }
 
-            signalRconnection.invoke("HostOctopusDeath", roomId, this.name, this.points, damagePerWeapon).catch(function (err) {
-                return console.error(err.toString());
+            signalRconnection.invoke("HostOctopusDeath", roomId, this.name, Math.round(this.points), damagePerWeapon).catch(function (err) {
+                return console.error(err.toString() + " - Params:" + roomId + "," + this.points + "," + JSON.stringify(damagePerWeapon));
             });
             
             return;

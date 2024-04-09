@@ -216,7 +216,6 @@ namespace Octoprotecto
             Logger.LogInformation("GAME LOST FOR ROOM:{0}", roomId);
             await Clients.Group(room.RoomId).SendAsync("LossNotification");
             room.EndGame();
-            Logger.LogInformation("ROOM ENDED:{0}", roomId);
         }
 
         public async Task TriggerVictory(string roomId)
@@ -227,7 +226,6 @@ namespace Octoprotecto
             Logger.LogInformation("GAME WON FOR ROOM:{0}", roomId);
             await Clients.Group(room.RoomId).SendAsync("VictoryNotification");
             room.EndGame();
-            Logger.LogInformation("ROOM ENDED:{0}", roomId);
         }
 
         public async Task FinishRound(string roomId, 
@@ -243,7 +241,6 @@ namespace Octoprotecto
             }
 
             room.FinishRound(pointsPerOctopus, damagePerWeapon);
-            Logger.LogInformation("ROUND FINISHED IN ROOM:{0}", roomId);
             await Task.WhenAll(room.Players.Values.Select(s => { return Clients.Client(s.ConnectionId).SendAsync("UpdateUpgrade", s); }));
         }
 
@@ -266,7 +263,6 @@ namespace Octoprotecto
                 Logger.LogInformation("STARTING NEXT ROUND FOR ROOM:{0}", roomId);
                 await Clients.Client(room.ConnectionId).SendAsync("StartNextRound");
                 room.StartGame();
-                Logger.LogInformation("STARTED NEXT ROUND FOR ROOM:{0}", roomId);
             }
         }
 

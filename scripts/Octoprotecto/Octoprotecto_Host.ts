@@ -144,18 +144,18 @@ class BattleArena extends Phaser.Scene {
         document.getElementById("gamenotificationarea").hidden = false;
         document.getElementById("gamenotificationmessage").hidden = false;
 
-        // Fill in data of live octopi - to pipe back
-        var pointsPerOctopus: { [id: string]: number } = {};
-        var damagePerWeapon: { [id: string]: number } = {};
+        // Fill in data of live octopi - to pipe back - these must be integers so they are accepted as integers on the server-side
+        var pointsPerOctopus: { [id: string]: integer } = {};
+        var damagePerWeapon: { [id: string]: integer } = {};
 
         for (let octopusName in BattleArena.OctopiMap) {
             let octopus = BattleArena.OctopiMap[octopusName];
             octopus.FinishRound();
 
-            pointsPerOctopus[octopusName] = octopus.points;
+            pointsPerOctopus[octopusName] = Math.round(octopus.points);
             for (let weaponName in octopus.weapons) {
                 let weapon = octopus.weapons[weaponName];
-                damagePerWeapon[weapon.name] = weapon.damageDealt;
+                damagePerWeapon[weapon.name] = Math.round(weapon.damageDealt);
             }
         }
 
