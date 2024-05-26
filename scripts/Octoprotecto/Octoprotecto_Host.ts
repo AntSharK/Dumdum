@@ -19,6 +19,9 @@ class BattleArena extends Phaser.Scene {
     roundTimer: Phaser.Time.TimerEvent;
     timeLeftDisplay: Phaser.GameObjects.Text;
 
+    static DifficultyMultiplier: number = 1.0; // Difficulty changes the speed, HP, and damage of each enemy
+    static SpawnIntervalMultiplier: number = 1.0; // The lower the SpawnIntervalMultiplier, the faster things spawn
+
     constructor() {
         super({ key: 'BattleArena', active: false, visible: true });
     }
@@ -126,11 +129,14 @@ class BattleArena extends Phaser.Scene {
         }
     }
 
-    startGame(numberOfRounds: integer) {
+    startGame(numberOfRounds: integer, spawnRateMultiplier: number, difficultyMultiplier: number) {
         BattleArena.NumberOfRounds = numberOfRounds;
+        BattleArena.SpawnIntervalMultiplier = spawnRateMultiplier;
+        BattleArena.DifficultyMultiplier = difficultyMultiplier;
+
         StartWave(this);
         var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);
-        signalRconnection.invoke("StartRoom", roomId).catch(function (err) {
+        signalRconnection.invoke("StartRoom", roomId, spawnRateMultiplier, difficultyMultiplier).catch(function (err) {
             return console.error(err.toString());
         });
     }

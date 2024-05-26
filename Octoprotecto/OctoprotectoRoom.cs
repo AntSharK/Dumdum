@@ -9,6 +9,8 @@ namespace Octoprotecto
         public bool IsSoloRun { get; internal set; } = false;
 
         public Rectangle OctopiMovementBounds;
+        public double SpawnRateMultiplier { get; private set; } = 1.0;
+        public double DifficultyMultiplier { get; private set; } = 1.0;
 
         public OctoprotectoRoom(string roomId, string connectionId) 
             : base(roomId, connectionId)
@@ -23,6 +25,12 @@ namespace Octoprotecto
         public void StartGame()
         {
             this.State = RoomState.Arena;
+        }
+
+        internal void SetDifficulty(double spawnRateMultiplier, double difficultyMultiplier)
+        {
+            this.SpawnRateMultiplier = spawnRateMultiplier;
+            this.DifficultyMultiplier = difficultyMultiplier;
         }
 
         internal void EndGame()
