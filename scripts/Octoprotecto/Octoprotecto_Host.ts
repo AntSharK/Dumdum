@@ -210,6 +210,11 @@ class BattleArena extends Phaser.Scene {
                 (f as Fish).TakeDamage(99999); // Do a lot of damage on spawn
             }
         })
+
+        // Change the default spawn rate - this only does anything during the game creationg screen
+        var spawnRateMultiplierElement = document.getElementById("spawnratemultiplier") as HTMLInputElement;
+        var newSpawnRate = 1.0 / Math.sqrt(this.octopi.getLength());
+        spawnRateMultiplierElement.value = (Math.round(newSpawnRate * 100) / 100).toFixed(2).toString();
     }
 
     update() {
