@@ -88,13 +88,15 @@ window.onload = () => {
 
         var roomId = sessionStorage.getItem(RoomIdSessionStorageKey);
         var numRounds = (document.getElementById("numberofrounds") as HTMLInputElement).value;
+        var spawnRateMultiplier = (document.getElementById("spawnratemultiplier") as HTMLInputElement).value;
+        var difficultyMultiplier = (document.getElementById("difficultymultiplier") as HTMLInputElement).value;
         if (roomId == null) {
             window.alert("Error: No room ID!");
             return;
         }
 
         hideLobbyMenu();
-        battleArenaScene.startGame(parseInt(numRounds));
+        battleArenaScene.startGame(parseInt(numRounds), parseFloat(spawnRateMultiplier), parseFloat(difficultyMultiplier));
     });
 
     document.getElementById("joingamebutton").addEventListener("click", function (event) {

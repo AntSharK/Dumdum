@@ -118,6 +118,8 @@ function ConfigureSolorunSignalRListening(signalRconnection: any) {
 
         // Start the game
         const DEFAULTNUMROUNDS = 20;
-        battleArenaScene.startGame(DEFAULTNUMROUNDS);
+        const DEFAULTSPAWNRATEMULTIPLIER = 1.0;
+        const DEFAULTDIFFICULTYMULTIPLIER = 1.0;
+        battleArenaScene.startGame(DEFAULTNUMROUNDS, DEFAULTSPAWNRATEMULTIPLIER, DEFAULTDIFFICULTYMULTIPLIER);
     })
 }

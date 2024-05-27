@@ -1,68 +1,67 @@
 function StartWave(arena: BattleArena) {
-    var playerCount = arena.octopi.getLength();
     var roundDuration = 30000 + BattleArena.CurrentRound * 4000;
     switch (BattleArena.CurrentRound) {
         case 1:
-            AddSpawnTimer(arena, FISHNAME_REGULARFISH, playerCount * 3, roundDuration,
-                3500 /*Base Interval*/, 0.98 /*Interval Modification Factor*/, 1.0 /*Difficulty*/);
+            AddSpawnTimer(arena, FISHNAME_REGULARFISH, 3 /*Spawn Count*/, roundDuration,
+                3500 * BattleArena.SpawnIntervalMultiplier, 0.98 /*Interval Modification Factor*/, 1.0 * BattleArena.DifficultyMultiplier);
             break;
 
         case 2:
-            AddSpawnTimer(arena, FISHNAME_REGULARFISH, playerCount * 3, roundDuration,
-                3500 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.1 /*Difficulty*/);
-            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, playerCount * 2, roundDuration,
-                5500 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.1 /*Difficulty*/);
+            AddSpawnTimer(arena, FISHNAME_REGULARFISH, 3 /*Spawn Count*/, roundDuration,
+                3500 * BattleArena.SpawnIntervalMultiplier, 0.99 /*Interval Modification Factor*/, 1.1 * BattleArena.DifficultyMultiplier);
+            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, 2 /*Spawn Count*/, roundDuration,
+                5500 * BattleArena.SpawnIntervalMultiplier, 0.99 /*Interval Modification Factor*/, 1.1 * BattleArena.DifficultyMultiplier);
             break;
 
         case 3:
-            AddSpawnTimer(arena, FISHNAME_REGULARFISH, playerCount * 4, roundDuration,
-                3200 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.2 /*Difficulty*/);
-            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, playerCount * 2, roundDuration,
-                4000 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.2 /*Difficulty*/);
+            AddSpawnTimer(arena, FISHNAME_REGULARFISH, 4 /*Spawn Count*/, roundDuration,
+                3200 * BattleArena.SpawnIntervalMultiplier, 0.99 /*Interval Modification Factor*/, 1.2 * BattleArena.DifficultyMultiplier);
+            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, 2 /*Spawn Count*/, roundDuration,
+                4000 * BattleArena.SpawnIntervalMultiplier, 0.99 /*Interval Modification Factor*/, 1.2 * BattleArena.DifficultyMultiplier);
             break;
 
         case 4:
-            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, playerCount * 4, roundDuration,
-                5600 /*Base Interval*/, 0.98 /*Interval Modification Factor*/, 1.4 /*Difficulty*/);
-            AddSpawnTimer(arena, FISHNAME_MERGINGFISH, playerCount * 2, roundDuration,
-                3600 /*Base Interval*/, 0.98 /*Interval Modification Factor*/, 1.2 /*Difficulty*/);
+            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, 4 /*Spawn Count*/, roundDuration,
+                5600 * BattleArena.SpawnIntervalMultiplier, 0.98 /*Interval Modification Factor*/, 1.4 * BattleArena.DifficultyMultiplier);
+            AddSpawnTimer(arena, FISHNAME_MERGINGFISH, 2 /*Spawn Count*/, roundDuration,
+                3600 * BattleArena.SpawnIntervalMultiplier, 0.98 /*Interval Modification Factor*/, 1.2 * BattleArena.DifficultyMultiplier);
             break;
 
         case 5:
-            AddSpawnTimer(arena, FISHNAME_MERGINGFISH, playerCount * 4, roundDuration,
-                4200 /*Base Interval*/, 0.98 /*Interval Modification Factor*/, 1.5 /*Difficulty*/);
+            AddSpawnTimer(arena, FISHNAME_MERGINGFISH, 4 /*Spawn Count*/, roundDuration,
+                4200 * BattleArena.SpawnIntervalMultiplier, 0.98 /*Interval Modification Factor*/, 1.5 * BattleArena.DifficultyMultiplier);
             break;
 
         case 6:
-            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, playerCount * 3, roundDuration,
-                3800 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.5 /*Difficulty*/);
-            AddSpawnTimer(arena, FISHNAME_ZIPPINGFISH, playerCount * 4, roundDuration,
-                6500 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.3 /*Difficulty*/);
+            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, 3 /*Spawn Count*/, roundDuration,
+                3800 * BattleArena.SpawnIntervalMultiplier, 0.99 /*Interval Modification Factor*/, 1.5 * BattleArena.DifficultyMultiplier);
+            AddSpawnTimer(arena, FISHNAME_ZIPPINGFISH, 4 /*Spawn Count*/, roundDuration,
+                6500 * BattleArena.SpawnIntervalMultiplier, 0.99 /*Interval Modification Factor*/, 1.3 * BattleArena.DifficultyMultiplier);
             break;
 
         case 7:
-            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, playerCount * 2, roundDuration,
-                3500 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.5 /*Difficulty*/);
-            AddSpawnTimer(arena, FISHNAME_ZIPPINGFISH, playerCount * 3, roundDuration,
-                5500 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.5 /*Difficulty*/);
-            AddSpawnTimer(arena, FISHNAME_MERGINGFISH, playerCount * 3, roundDuration,
-                6500 /*Base Interval*/, 0.98 /*Interval Modification Factor*/, 1.5 /*Difficulty*/);
+            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, 2 /*Spawn Count*/, roundDuration,
+                3500 * BattleArena.SpawnIntervalMultiplier, 0.99 /*Interval Modification Factor*/, 1.5 * BattleArena.DifficultyMultiplier);
+            AddSpawnTimer(arena, FISHNAME_ZIPPINGFISH, 3 /*Spawn Count*/, roundDuration,
+                5500 * BattleArena.SpawnIntervalMultiplier, 0.99 /*Interval Modification Factor*/, 1.5 * BattleArena.DifficultyMultiplier);
+            AddSpawnTimer(arena, FISHNAME_MERGINGFISH, 3 /*Spawn Count*/, roundDuration,
+                6500 * BattleArena.SpawnIntervalMultiplier, 0.98 /*Interval Modification Factor*/, 1.5 * BattleArena.DifficultyMultiplier);
             break;
 
         case 8:
-            AddSpawnTimer(arena, FISHNAME_REGULARFISH, playerCount * 3, roundDuration,
-                3200 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.6 /*Difficulty*/);
-            AddSpawnTimer(arena, FISHNAME_CHARGINGFISH, playerCount * 2, roundDuration,
-                3400 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.6 /*Difficulty*/);
+            AddSpawnTimer(arena, FISHNAME_REGULARFISH, 3 /*Spawn Count*/, roundDuration,
+                3200 * BattleArena.SpawnIntervalMultiplier, 0.99 /*Interval Modification Factor*/, 1.6 * BattleArena.DifficultyMultiplier);
+            AddSpawnTimer(arena, FISHNAME_CHARGINGFISH, 2 /*Spawn Count*/, roundDuration,
+                3400 * BattleArena.SpawnIntervalMultiplier, 0.99 /*Interval Modification Factor*/, 1.6 * BattleArena.DifficultyMultiplier);
             break;
 
         case 9:
-            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, playerCount * 2, roundDuration,
-                4500 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.8 /*Difficulty*/);
-            AddSpawnTimer(arena, FISHNAME_CHARGINGFISH, playerCount * 3, roundDuration,
-                5100 /*Base Interval*/, 0.99 /*Interval Modification Factor*/, 1.8 /*Difficulty*/);
-            AddSpawnTimer(arena, FISHNAME_REGULARFISH, playerCount * 3, roundDuration,
-                4500 /*Base Interval*/, 0.98 /*Interval Modification Factor*/, 1.8 /*Difficulty*/);
+            AddSpawnTimer(arena, FISHNAME_HOMINGFISH, 2 /*Spawn Count*/, roundDuration,
+                4500 * BattleArena.SpawnIntervalMultiplier, 0.99 /*Interval Modification Factor*/, 1.8 * BattleArena.DifficultyMultiplier);
+            AddSpawnTimer(arena, FISHNAME_CHARGINGFISH, 3 /*Spawn Count*/, roundDuration,
+                5100 * BattleArena.SpawnIntervalMultiplier, 0.99 /*Interval Modification Factor*/, 1.8 * BattleArena.DifficultyMultiplier);
+            AddSpawnTimer(arena, FISHNAME_REGULARFISH, 3 /*Spawn Count*/, roundDuration,
+                4500 * BattleArena.SpawnIntervalMultiplier, 0.98 /*Interval Modification Factor*/, 1.8 * BattleArena.DifficultyMultiplier);
             break;
 
         default: // Variable spawning
@@ -105,8 +104,8 @@ function StartWave(arena: BattleArena) {
                         break;
                 }
 
-                AddSpawnTimer(arena, enemyType, playerCount * spawnMultiplier, roundDuration,
-                    baseInterval + i * 100, intervalModificationFactor, difficulty /*Difficulty*/);
+                AddSpawnTimer(arena, enemyType, spawnMultiplier, roundDuration,
+                    (baseInterval + i * 100) * BattleArena.SpawnIntervalMultiplier, intervalModificationFactor, difficulty * BattleArena.DifficultyMultiplier);
             }
             break;
     }

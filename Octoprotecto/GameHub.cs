@@ -65,7 +65,7 @@ namespace Octoprotecto
             await CreateNewOctopus(room, playerId, colorIn, playerNameIn);
         }
 
-        public async Task StartRoom(string roomId)
+        public async Task StartRoom(string roomId, double spawnRateMultiplier, double difficultyMultiplier)
         {
             if (!this.GameLobby.Rooms.ContainsKey(roomId))
             {
@@ -80,7 +80,8 @@ namespace Octoprotecto
                 return;
             }
 
-            Logger.LogInformation("STARTING ROOM:{0}", roomId);
+            Logger.LogInformation("STARTING ROOM:{0} WITH DIFFICULTY:{1},{2}", roomId, spawnRateMultiplier, difficultyMultiplier);
+            room.SetDifficulty(spawnRateMultiplier, difficultyMultiplier);
             room.StartGame();
         }
 
